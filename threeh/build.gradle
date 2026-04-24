@@ -1,0 +1,86 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '2.7.7'
+	id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.cmyk'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(8)
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	compileOnly 'org.projectlombok:lombok'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	runtimeOnly 'com.oracle.database.jdbc:ojdbc8'
+	implementation 'com.oracle.database.security:osdt_cert'
+	implementation 'com.oracle.database.security:oraclepki'
+	implementation 'com.oracle.database.security:osdt_core'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.security:spring-security-test'
+	testCompileOnly 'org.projectlombok:lombok'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	testAnnotationProcessor 'org.projectlombok:lombok'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+//React 프로젝트가 여기 있다는 뜻
+def frontendDir = "$projectDir/src/main/frontend"
+
+//Spring이 읽을 리소스 위치 지정
+sourceSets {
+	main{
+		resources {srcDirs = ["$projectDir/src/main/resources"]}
+	}
+}
+
+//무조건 React 먼저 빌드하고 복사함
+processResources {dependsOn "copyReactBuildFiles"}
+
+task installReact(type:Exec){ //npm install npm audit fix
+	workingDir "$frontendDir"
+	inputs.dir "$frontendDir"
+	group = BasePlugin.BUILD_GROUP
+	if(System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+		commandLine "npm.cmd", "audit" ,"fix"
+		commandLine 'npm.cmd', 'install'
+	}
+	else{
+		commandLine "npm", "audit", "fix" 
+		commandLine 'npm', 'install'
+	}
+}
+
+task buildReact(type:Exec) {
+	dependsOn "installReact" 
+	workingDir "$frontendDir"
+	inputs.dir "$frontendDir"
+	group = BasePlugin.BUILD_GROUP
+	if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+		commandLine "npm.cmd", "run-script", "build"
+	} else {
+		commandLine "npm", "run-script", "build"
+	}
+}
+
+task copyReactBuildFiles(type:Copy){
+	dependsOn "buildReact"
+	from "$frontendDir/build"
+	into "$projectDir/src/main/resources/static"
+}
