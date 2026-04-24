@@ -95,17 +95,19 @@ AI는 자유롭게 사용해도 되나 맹신 금지 (본인의 판단을 믿기
 ## 📂 프로젝트 구조
 
 ```bash
-src/main/java/com/cmyk/3h/
-├── 🔧 config/
+threeh/src/main/java/com/cmyk
+/threeh/
+
 ├── 📦 domain/
-│   └── product/
-│       ├── 🎮 controller/
-│       ├── ⚙️ service/
-│       ├── 💾 repository/
-│       └── 📑 entity/
+├── 🎮 controller/
+├── ⚙️ service/
+├── 💾 repository/
+└── 📑 entity/
 └── 🌍 global/
     ├── ❌ error/
     └── 🛠️ utils/
+    └── 🔧 config/
+    └── common/
 
 이것들은 모두 초대후 제가 알려드립니다
 
