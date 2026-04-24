@@ -1,7 +1,8 @@
-# 3H_Furniture
-FinalProject
+
 
 # CMYK-Team
+
+3H_Furniture
 
 휴먼교육센터 수원 3차 프로젝트
 
