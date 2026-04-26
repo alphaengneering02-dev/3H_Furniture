@@ -1,0 +1,7 @@
+# 이 파일을 복사해서 application-local.properties 만들고
+# 본인 경로로 수정하세요
+#단 전자지갑 압축폴더를 압축을 풀고 그 폴더의 경로를 적으세요
+spring.datasource.url=jdbc:oracle:thin:@swdb_medium?TNS_ADMIN=여기에_본인_지갑경로
+spring.datasource.username=admin
+spring.datasource.password=@Alibi240319
+wallet.path=여기에_본인_지갑경로
