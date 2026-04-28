@@ -20,72 +20,71 @@ import com.cmyk.threeh.enums.MemberRole;
 
 import lombok.Data;
 
-
 @Entity
 @Data
 public class Member {
     
     @Id  //Primary Key
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "member_id")
     private Long memberId;
 
-    @Column(unique = true, nullable = false)
+    @Column(name = "id", unique = true, nullable = false)
     private String id;
 
-    @Column(nullable = false)
+    @Column(name = "password", nullable = false)
     private String password;
 
+    @Column(name = "name")
     private String name;
 
-    @Column(unique = true)
+    @Column(name = "email", unique = true)
     private String email;
 
-    @Column(unique = true)
+    @Column(name = "phone", unique = true)
     private String phone;
 
     @Enumerated(EnumType.STRING)
-	@Column(nullable = false)
+	@Column(name = "role", nullable = false)
     private MemberRole role;
 
+    @Column(name = "reg_no")
     private String regNo;
 
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
 
 
     //Bookmarks 테이블
-	@OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
 	private List<Bookmarks> bookmarksList;
-
-    /* 
-    * 각각에 해당하는 Entity를 만든 후, 주석을 풀어주세요. */
     
     //Member_address 테이블
-	@OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
 	private List<MemberAddress> memberAddressList;
 
     //Review 테이블
-	@OneToOne(mappedBy = "member", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+	@OneToOne(mappedBy = "member", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
 	private Review review;
     
     //Article 테이블
-	// @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+	// @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
 	// private List<Article> articleList;
     
     //Cart 테이블
-	@OneToOne(mappedBy = "member", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+	@OneToOne(mappedBy = "member", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
 	private Cart cart;
 
     //Orders 테이블
-	@OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
 	private List<Orders> ordersList;
     
     //Payment 테이블
-	// @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+	// @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
 	// private List<Payment> paymentList;
     
-
-
 }
