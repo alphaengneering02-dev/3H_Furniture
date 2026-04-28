@@ -34,7 +34,7 @@ public class MemberService {
 		user.setRole(MemberRole.USER);  //권한: USER("ROLE_USER", "일반 고객")
 		user.setRegNo(form.getRegNo());
 		user.setCreatedAt(LocalDateTime.now());
-		user.setUpdatedAt(null);  //수정일: 회원가입할 때는 null
+		//수정일: 회원가입할 때는 null
 		
 		//Bcrypt 해싱 함수를 사용해서 비밀번호를 암호화
 		user.setPassword(passwordEncoder.encode(form.getPassword()));
@@ -55,6 +55,7 @@ public class MemberService {
 		if(!Member.isPresent()) {
 			ErrorCode error = ErrorCode.MEMBER_NOT_FOUND;
 			System.out.println(error);
+			return null;
 		}
 
 		return Member.get();

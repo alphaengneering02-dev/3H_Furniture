@@ -50,7 +50,7 @@ public class Member {
 	@Column(name = "role", nullable = false)
     private MemberRole role;
 
-    @Column(name = "reg_no", nullable = false)
+    @Column(name = "reg_no", unique = true, nullable = false)
     private String regNo;
 
     @Column(name = "created_at")

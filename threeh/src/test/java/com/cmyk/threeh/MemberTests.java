@@ -1,5 +1,7 @@
 package com.cmyk.threeh;
 
+import javax.transaction.Transactional;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,26 +27,21 @@ class MemberTests {
 	private MemberService memberService;
 
 	@Test
+	@Transactional
 	void memberSave() {
 
 		RegisterForm form = new RegisterForm();
 
-		form.setId("user1");
+		form.setId("user2");
 		form.setPassword("a123");
-		form.setName("테스트사용자1");
-		form.setEmail("aaa@gmail.com");
-		form.setPhone("010-1111-1111");
-		form.setRegNo("123456-1234567");
+		form.setName("테스트사용자2");
+		form.setEmail("bbb@gmail.com");
+		form.setPhone("010-2222-2222");
+		form.setRegNo("223456-1234567");
 
 		memberService.create(form);
 
-	}
-
-
-	@Test
-	void memberFind() {
-
-		Member member = memberService.getUser("user1");
+		Member member = memberService.getUser("user2");
 		System.out.println(member);
 
 	}
