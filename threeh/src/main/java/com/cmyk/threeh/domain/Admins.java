@@ -1,6 +1,9 @@
 package com.cmyk.threeh.domain;
 
 import javax.persistence.*;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -34,4 +37,9 @@ public class Admins {
 
     @Column(name = "CREATED_AT")
     private LocalDateTime createdAt;
+
+    @PrePersist // 저장 전 시간 자동 세팅
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+    }
 }

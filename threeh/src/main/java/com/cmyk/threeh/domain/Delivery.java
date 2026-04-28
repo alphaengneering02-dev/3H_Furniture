@@ -2,6 +2,8 @@ package com.cmyk.threeh.domain;
 
 import javax.persistence.*;
 
+import com.cmyk.threeh.enums.DeliveryStatus;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -42,4 +44,10 @@ public class Delivery {
 
     @Column(name = "DELIVERY_CARNO", nullable = false)
     private String deliveryCarNo;
+
+    @Column(name = "STATUS")
+    @Enumerated(EnumType.STRING) 
+    private DeliveryStatus status = DeliveryStatus.WAITING;
+
+
 }
