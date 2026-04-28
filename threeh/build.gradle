@@ -83,12 +83,10 @@ task buildReact(type:Exec) {
 }
 
 
-task copyReactBuildFiles(type:Copy){
-	dependsOn "buildReact"
-	from "$frontendDir/build"
-	into "$projectDir/src/main/resources/static"
-}
 
-test {
-    dependsOn.remove('copyReactBuildFiles')
+task copyReactBuildFiles(type:Copy){
+    dependsOn "buildReact"
+    from "$frontendDir/build"
+    into "$projectDir/src/main/resources/static"
+    onlyIf { !project.gradle.startParameter.taskNames.contains("test") }
 }

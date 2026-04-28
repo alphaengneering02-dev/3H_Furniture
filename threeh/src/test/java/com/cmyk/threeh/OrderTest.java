@@ -7,6 +7,7 @@ import javax.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 
 import com.cmyk.threeh.domain.Item;
 import com.cmyk.threeh.domain.Member;
@@ -21,6 +22,7 @@ import com.cmyk.threeh.service.OrderService;
 
 @SpringBootTest
 @Transactional
+@Import(TestSecurityConfig.class)
 public class OrderTest {
     
     @Autowired OrderService orderService;
