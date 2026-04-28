@@ -15,6 +15,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.SequenceGenerator;
 
 import com.cmyk.threeh.enums.MemberRole;
 
@@ -24,8 +25,9 @@ import lombok.Data;
 @Data
 public class Member {
     
-    @Id  //Primary Key
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "member_seq")
+    @SequenceGenerator(name = "member_seq", sequenceName = "MEMBER_SEQ", allocationSize = 1)
     @Column(name = "member_id", nullable = false)
     private Long memberId;
 
