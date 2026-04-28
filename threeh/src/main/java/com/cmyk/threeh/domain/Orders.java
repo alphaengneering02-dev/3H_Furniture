@@ -45,7 +45,7 @@ public class Orders {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "delivery_id", nullable = false)
     private Delivery delivery;
 
@@ -73,6 +73,8 @@ public class Orders {
 
     @OneToMany(mappedBy = "orders", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems = new ArrayList<>();
+
+  
 
     // == 연관관계 편의 메서드 == //
     public void addOrderItem(OrderItem orderItem){

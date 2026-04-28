@@ -1,6 +1,9 @@
 package com.cmyk.threeh.service;
 
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
@@ -10,6 +13,8 @@ import com.cmyk.threeh.domain.Item;
 import com.cmyk.threeh.domain.Member;
 import com.cmyk.threeh.domain.OrderItem;
 import com.cmyk.threeh.domain.Orders;
+import com.cmyk.threeh.enums.OrderState;
+import com.cmyk.threeh.enums.OrderType;
 import com.cmyk.threeh.global.error.CustomException;
 import com.cmyk.threeh.global.error.ErrorCode;
 import com.cmyk.threeh.repository.ItemRepository;
@@ -46,6 +51,9 @@ public class OrderService {
         Orders order = new Orders();
         Delivery delivery = new Delivery();
 
+        order.setOrderDate(LocalDateTime.now());
+      
+
 
         order.setDeliveryAddr(order.getDeliveryAddr());
         order.setDeliveryAddrDetail(order.getDeliveryAddr());
@@ -53,6 +61,9 @@ public class OrderService {
         OrderItem orderItem = OrderItem.creaOrderItem(item, item.getPrice(), count);
 
         order = Orders.createOrder(member, delivery, orderItem);
+
+        order.setOrderType(OrderType.DELIVERY_ONLY.name());
+        order.setDeliveryDate(LocalDate.now().plusDays(3));
 
         orderRepository.save(order);
 

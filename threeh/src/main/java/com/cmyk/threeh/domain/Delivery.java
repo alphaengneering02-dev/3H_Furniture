@@ -1,5 +1,7 @@
 package com.cmyk.threeh.domain;
 
+import java.util.List;
+
 import javax.persistence.*;
 
 import com.cmyk.threeh.enums.DeliveryStatus;
@@ -14,7 +16,8 @@ import lombok.Setter;
 public class Delivery {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "delivery_seq")
+    @SequenceGenerator(name = "delivery_seq", sequenceName = "DELIVERY_SEQ", allocationSize = 1)
     @Column(name = "DELIVERY_ID")
     private Long deliveryId;
 
@@ -44,6 +47,7 @@ public class Delivery {
 
     @Column(name = "DELIVERY_CARNO", nullable = false)
     private String deliveryCarNo;
+
 
     @Column(name = "STATUS")
     @Enumerated(EnumType.STRING) 

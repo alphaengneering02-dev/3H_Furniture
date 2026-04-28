@@ -9,13 +9,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 
+import com.cmyk.threeh.domain.Admins;
 import com.cmyk.threeh.domain.Item;
 import com.cmyk.threeh.domain.Member;
 import com.cmyk.threeh.domain.Orders;
+import com.cmyk.threeh.dto.AdminsDTO;
+import com.cmyk.threeh.enums.ItemSellStatus;
+import com.cmyk.threeh.enums.MemberRole;
 import com.cmyk.threeh.enums.OrderState;
 import com.cmyk.threeh.repository.ItemRepository;
 import com.cmyk.threeh.repository.MemberRepository;
 import com.cmyk.threeh.repository.OrderRepository;
+import com.cmyk.threeh.service.AdminsService;
 import com.cmyk.threeh.service.ItemService;
 import com.cmyk.threeh.service.MemberService;
 import com.cmyk.threeh.service.OrderService;
@@ -55,20 +60,45 @@ public class OrderTest {
     }
 
     private Member createMember() {
-        Member member = new Member();
-        member.setId("user1");
-        member.setName("회원1");
-        memberRepository.save(member);
-        return member;
+    Member member = new Member();
+    member.setId("user2");
+    member.setPassword("1234");
+    member.setEmail("test@naver.com");
+    member.setPhone("01083691703");
+    member.setRegNo("0202243074212");       // ← 추가
+    member.setName("회원1");
+    member.setRole(MemberRole.USER);    // ← 추가 (enum 값 확인해서 맞게)
+    memberRepository.save(member);
+    return member;
+}
+    @Autowired
+    AdminsService adminsService;
+
+    private Admins createAdmins(){
+        AdminsDTO dto = new AdminsDTO();
+        dto.setAdLoginId("admin1");
+        dto.setPassword("123");
+        dto.setAdminName("관리자");
+
+        return adminsService.createAdmin(dto);
     }
 
     private Item createItem(String name, int price, int stock) {
+
+        Admins admins = createAdmins();
+    
         Item item = new Item();
+        item.setItemDetail("이가구가 짱");
         item.setItemName(name);
         item.setPrice(price);
-        // item.setStockQuantity(stock); // 재고 필드가 있다면
+        item.setStock(stock);                          // ← 추가
+        item.setCategory("가구");                      // ← 추가
+        item.setCurrency("KRW");                       // ← 추가
+        item.setItemSellStatus(ItemSellStatus.SELL);
+        item.setAdmin(admins);
+        // ← 추가
         itemRepository.save(item);
         return item;
-    }
+}
 
 }

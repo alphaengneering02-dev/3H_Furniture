@@ -68,6 +68,9 @@ task installReact(type:Exec){ //npm install npm audit fix
 		commandLine "npm", "audit", "fix" 
 		commandLine 'npm', 'install'
 	}
+
+	onlyIf { !project.gradle.startParameter.taskNames.contains("test") }
+
 }
 
 task buildReact(type:Exec) {
@@ -80,6 +83,7 @@ task buildReact(type:Exec) {
 	} else {
 		commandLine "npm", "run-script", "build"
 	}
+	
 }
 
 

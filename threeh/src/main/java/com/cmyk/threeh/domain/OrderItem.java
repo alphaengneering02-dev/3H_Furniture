@@ -51,7 +51,7 @@ public class OrderItem {
         orderItem.setOrderPrice(OrderPrice);
         orderItem.setCount(count);
 
-        //item.removeStock(count); 주문 생성시 재고 감소 로직
+        item.removeStock(count); //주문 생성시 재고 감소 로직
 
         return orderItem;
     }
@@ -61,7 +61,7 @@ public class OrderItem {
     }
 
     public void cancel() {
-        //getItem().addStock(count); 취소시 재고가 다시 롤백되는 함수
+        getItem().addStock(count); //취소시 재고가 다시 롤백되는 함수
     }
     
 
