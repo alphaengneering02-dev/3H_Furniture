@@ -1,4 +1,4 @@
-package com.cmyk.threeh.domain;
+package com.cmyk.threeh.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
