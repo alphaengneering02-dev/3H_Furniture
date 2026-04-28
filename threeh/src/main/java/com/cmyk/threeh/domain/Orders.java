@@ -85,6 +85,16 @@ public class Orders {
 
         Orders order = new Orders();
 
+        order.setMember(member);
+        order.setDelivery(delivery);
+
+        for(OrderItem orderItem : orderItems){
+            order.addOrderItem(orderItem);
+        }
+
+        order.setOrderState(OrderState.ORDER);
+        order.setOrderDate(LocalDateTime.now());
+
         return order;
     }
 
@@ -106,9 +116,40 @@ public class Orders {
         this.setOrderState(OrderState.CANCEL);
 
         for(OrderItem  orderItem: orderItems){
-            //orderItem.cancel();
+            orderItem.cancel();
         }
 
     }
+
+    /*
+    * 전체 주문 가격 조회
+    */
+   public int getTotalPrice(){
+        int totalPrice = 0;
+
+        for (OrderItem orderItem : orderItems){
+            totalPrice += orderItem.getTotalPrice();
+        }
+
+        return totalPrice;
+   }
+
+   /*
+   주문 할당(주문 상태 변경)
+   */
+  public void assinOrder(){
+    this.delivery = delivery;
+    this.setOrderState(orderState.READY);
+  }
+  /*
+  주문 상태 변경
+  */
+  public void changeOrderState(OrderState newState) {
+    
+    if(this.orderState == OrderState.DELIVERED && newState == OrderState.ORDER ){
+        throw new CustomException(ErrorCode.ORDER_CANCEL_FAIL);
+    }
+  }
+
 
 }

@@ -11,8 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-
-
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,7 +20,7 @@ import lombok.Setter;
 @Table(name = "order_item")
 @Getter
 @Setter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OrderItem {
 
     @Id
@@ -43,6 +42,27 @@ public class OrderItem {
 
     @Column(name = "order_price")
     private int orderPrice;
+
+
+    public static OrderItem creaOrderItem(Item item, int OrderPrice, int count){
+        OrderItem orderItem = new OrderItem();
+        
+        orderItem.setItem(item);
+        orderItem.setOrderPrice(OrderPrice);
+        orderItem.setCount(count);
+
+        //item.removeStock(count); 주문 생성시 재고 감소 로직
+
+        return orderItem;
+    }
+
+    public int getTotalPrice(){
+        return getOrderPrice() * getCount();
+    }
+
+    public void cancel() {
+        //getItem().addStock(count); 취소시 재고가 다시 롤백되는 함수
+    }
     
 
 }

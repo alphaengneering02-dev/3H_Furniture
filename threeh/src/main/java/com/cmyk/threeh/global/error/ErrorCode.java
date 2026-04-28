@@ -13,6 +13,8 @@ public enum ErrorCode {
     //주문
     ORDER_CANCEL_FAIL(400, "이미 배송완료 상품은 취소가 불가능합니다."),
 
+    ORDER_NOT_FOUND(404, "주문을 찾을 수 없습니댜."),
+
     //상품 찾기
     ITEM_NOT_FOUND(404,"상품을 찾을 수 없습니다."),
 
