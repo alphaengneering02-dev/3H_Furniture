@@ -8,6 +8,6 @@ import com.cmyk.threeh.domain.Cart;
 
 public interface CartRepository extends JpaRepository<Cart, Long> {
 	
-	Optional<Cart> findBymember_memberid(Long memberid);
+	Optional<Cart> findBymember_memberId(Long memberId);
 	
 }
