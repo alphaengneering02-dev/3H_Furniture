@@ -71,5 +71,29 @@ public class Orders {
 
     @OneToMany(mappedBy = "orders", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems = new ArrayList<>();
+
+    // == 연관관계 편의 메서드 == //
+    public void addOrderItem(OrderItem orderItem){
+        orderItem.add(orderItem);
+        orderItem.setOrders(this);
+    }
+
+    // == 생성 메서드 ==/
+    public static Orders createOrder(Member member, Delivery delivery, OrderItem... orderItems){
+
+        Orders order = new Orders();
+
+        return order;
+    }
+
+
+    /*
+    주문 취소
+     */   
     
+    public void cancel() {
+
+        this.setOrderState(OrderState.CANCEL);
+
+    }
 }
