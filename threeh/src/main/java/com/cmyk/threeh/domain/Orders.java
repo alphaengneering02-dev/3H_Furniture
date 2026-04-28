@@ -57,7 +57,7 @@ public class Orders {
     private LocalDateTime orderDate;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "order_sate", nullable = false)
+    @Column(name = "order_state", nullable = false)
     private OrderState orderState = OrderState.ORDER;
 
     @Column(name = "order_type", nullable = false, length = 50)

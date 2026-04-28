@@ -7,7 +7,6 @@ public enum OrderState {
 
     ORDER("주문"),
     CANCEL("주문취소"),
-    PAYMENTED("결제완료"),
     READY("배송 준비중"),
     DELIVERYING("배송중"),
     DELIVERED("배송완료"),

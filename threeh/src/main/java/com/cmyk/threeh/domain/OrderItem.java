@@ -11,7 +11,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import org.hibernate.cache.spi.support.AbstractReadWriteAccess.Item;
 
 
 import lombok.Getter;
@@ -32,7 +31,7 @@ public class OrderItem {
     private Long orderItemId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "Order_id", nullable = false)
+    @JoinColumn(name = "order_id", nullable = false)
     private Orders orders;
 
     @ManyToOne(fetch = FetchType.LAZY)

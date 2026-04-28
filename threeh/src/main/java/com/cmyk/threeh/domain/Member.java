@@ -19,7 +19,7 @@ import javax.persistence.OneToOne;
 import com.cmyk.threeh.enums.MemberRole;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
+
 
 @Entity
 @Data

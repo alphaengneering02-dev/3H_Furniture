@@ -47,6 +47,17 @@ public class OrderResponseDTO {
                 .deliveryAddr(orders.getDeliveryAddr())
                 .deliveryAddrDetail(orders.getDeliveryAddrDetail())
                 .installDate(orders.getInstallDate())
+                .orderitems(
+                    orders.getOrderItems().stream()
+                        .map(oi -> OrderItemDTO.builder()
+                            .itemId(oi.getItem().getItemId())
+                            .itemName(oi.getItem().getItemName())
+                            .count(oi.getCount())
+                            .orderPrice(oi.getOrderPrice())
+                            .build()
+                        )
+                        .collect(java.util.stream.Collectors.toList())
+                    )
                 .build();
     }
 }

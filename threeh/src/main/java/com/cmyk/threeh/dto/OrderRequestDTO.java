@@ -3,6 +3,8 @@ package com.cmyk.threeh.dto;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.cmyk.threeh.enums.OrderType;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -11,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class OrderRequestDTO {
     private Long memberId;
     private Long deliveryId;
-    private String orderType;
+    private OrderType orderType;
     private LocalDate deliveryDate;
     private LocalDate installDate;
     private String deliveryAddr;
