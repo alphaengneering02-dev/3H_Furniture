@@ -15,7 +15,7 @@ public class MemberAddress {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "mem_addr_seq")
     @SequenceGenerator(name = "mem_addr_seq", sequenceName = "MEM_ADDR_SEQ", allocationSize = 1)
-    @Column(name = "addr_id")
+    @Column(name = "address_id")
     private Long addrId;
 
     @ManyToOne(fetch = FetchType.LAZY)
