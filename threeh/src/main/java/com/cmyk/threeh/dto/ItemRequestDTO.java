@@ -1,5 +1,7 @@
 package com.cmyk.threeh.dto;
 
+import javax.validation.constraints.NotNull;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -7,7 +9,9 @@ import lombok.Setter;
 @Setter
 public class ItemRequestDTO {
 
+@NotNull
 private Long adminId;
+
 private String category;
 private String itemName;
 private String itemDetail;

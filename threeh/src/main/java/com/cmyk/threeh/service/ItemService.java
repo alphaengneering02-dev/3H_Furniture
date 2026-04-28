@@ -82,7 +82,7 @@ public class ItemService {
     }
 
 
-    //상품수정
+    //상품수정 (Item.java에서 만들어놓은 validatePrice(),validateStock()사용)
 
     public ItemResponseDTO updateItem(
 
@@ -94,10 +94,16 @@ public class ItemService {
             .orElseThrow(()->
             new CustomException(ErrorCode.ITEM_NOT_FOUND)); 
 
-        item.setItemName(dto.getItemName());
-        item.setItemDetail(dto.getItemDetail());
-        item.setPrice(dto.getPrice());
-        item.setStock(dto.getStock());
+        item.updateItem(
+            item.getCategory(),
+            dto.getItemName(),
+            dto.getItemDetail(),
+            item.getItemColor(),
+            dto.getPrice(),
+            item.getDiscountPrice(),
+            item.getCurrency(),
+            dto.getStock()
+        );
 
         Item updatedItem = itemRepository.save(item);
 

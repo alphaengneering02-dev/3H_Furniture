@@ -1,5 +1,7 @@
 package com.cmyk.threeh.dto;
 
+import javax.validation.constraints.NotNull;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -7,7 +9,9 @@ import lombok.Setter;
 @Setter
 public class ItemImgRequestDTO {
     
+    @NotNull
     private Long itemId;
+    
     private String imgName;
     private String imgUrl;
     private String subImgUrl;

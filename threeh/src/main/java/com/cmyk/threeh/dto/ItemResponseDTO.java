@@ -1,5 +1,7 @@
 package com.cmyk.threeh.dto;
 
+import javax.validation.constraints.NotNull;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,9 +14,13 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ItemResponseDTO {
-    
+
+@NotNull
 private Long itemId;
+
+@NotNull
 private Long adminId;
+
 private String category;
 private String itemName;
 private String itemDetail;
