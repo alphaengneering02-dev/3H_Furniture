@@ -10,7 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.cmyk.threeh.enums.SubImg;
@@ -27,7 +27,9 @@ import lombok.Setter;
 public class ItemImg {
 
    @Id
-   @GeneratedValue(strategy = GenerationType.IDENTITY)
+   @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "itemImgs_seq")
+   @SequenceGenerator(name = "itemImgs_seq",sequenceName = "ITEMIMGS_SEQ",allocationSize=1)
+   @Column(name="itemImg_id")
    private long itemImgId;
 
    @ManyToOne(fetch = FetchType.LAZY)
