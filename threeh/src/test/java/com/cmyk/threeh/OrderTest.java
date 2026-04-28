@@ -59,6 +59,21 @@ public class OrderTest {
         // assertEquals(8, item.getStockQuantity(), "주문 후 재고가 줄어야 한다");
     }
 
+    // public void orderCancel() throws Exception{
+    //     Member member =createMember();
+    //     Item item = createItem("침구", 10000, 1);
+    //     int orderCount = 1;
+
+    //     Long orderId = orderService.order(member.getMemberId(), item.getItemId(), orderCount);
+
+    //     //then
+    //     Orders getOrders = orderRepository.findById(orderId).get();
+    //     assertEquals(OrderState.CANCEL, getOrders.getOrderState());
+
+    //     Item canceledItem = itemRepository.findById(item.getItemId()).get();
+    //     assertEquals(1, canceledItem.getStock(), " 주문취소시 재고 원복");
+    // }
+
     private Member createMember() {
     Member member = new Member();
     member.setId("user2");
