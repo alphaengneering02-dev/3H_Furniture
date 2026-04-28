@@ -1,6 +1,5 @@
 package com.cmyk.threeh.service;
 
-import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -34,7 +33,7 @@ public class OrderService {
      */
 
     @Transactional
-    public Long order(String memberId, Long itemId, int count){
+    public Long order(Long memberId, Long itemId, int count){
 
         //엔티티 조회
         Member member = memberRepository.findById(memberId)
