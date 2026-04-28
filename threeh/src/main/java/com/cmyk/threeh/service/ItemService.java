@@ -23,7 +23,7 @@ public class ItemService {
 
     //상품등록
 
-    public ItemResponseDTO createItem(ItemRequestDTO dto){
+    public ItemResponseDTO createItems(ItemRequestDTO dto){
 
         Item item = new Item();
 
@@ -63,7 +63,7 @@ public class ItemService {
 
     }
 
-    //상품 상세 수정
+    //상품 상세 조회
 
     public ItemResponseDTO getItem(Long itemId){
 
