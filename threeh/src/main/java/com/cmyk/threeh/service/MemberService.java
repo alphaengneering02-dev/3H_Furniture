@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.cmyk.threeh.domain.Member;
 import com.cmyk.threeh.dto.RegisterForm;
 import com.cmyk.threeh.enums.MemberRole;
+import com.cmyk.threeh.global.error.ErrorCode;
 import com.cmyk.threeh.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -51,12 +52,12 @@ public class MemberService {
 		
 		Optional<Member> Member = memberRepository.findById(id);
 		
-		if(Member.isPresent()) {
-			return Member.get();
-		} else {
-            throw new RuntimeException("User not Found");
-			//throw new DataNotFoundException("User not Found");
+		if(!Member.isPresent()) {
+			ErrorCode error = ErrorCode.MEMBER_NOT_FOUND;
+			System.out.println(error);
 		}
+
+		return Member.get();
 		
 	}
 
