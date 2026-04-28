@@ -26,7 +26,7 @@ public class Member {
     
     @Id  //Primary Key
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "member_id")
+    @Column(name = "member_id", nullable = false)
     private Long memberId;
 
     @Column(name = "id", unique = true, nullable = false)
@@ -35,20 +35,20 @@ public class Member {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "email", unique = true)
+    @Column(name = "email", unique = true, nullable = false)
     private String email;
 
-    @Column(name = "phone", unique = true)
+    @Column(name = "phone", unique = true, nullable = false)
     private String phone;
 
     @Enumerated(EnumType.STRING)
 	@Column(name = "role", nullable = false)
     private MemberRole role;
 
-    @Column(name = "reg_no")
+    @Column(name = "reg_no", nullable = false)
     private String regNo;
 
     @Column(name = "created_at")
