@@ -25,8 +25,9 @@ public class Bookmarks {
     private Long bookmakrId;
 
     //member_id (외래키)
-    // @ManyToOne
-    // private Member member;
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     //item_id (외래키)
     // @OneToOne

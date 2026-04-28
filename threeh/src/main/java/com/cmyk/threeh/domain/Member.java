@@ -16,6 +16,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import com.cmyk.threeh.enums.MemberRole;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -54,11 +56,11 @@ public class Member {
 
 
     //Bookmarks 테이블
-	// @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
-	// private List<Bookmarks> bookmarksList;
+	@OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+	private List<Bookmarks> bookmarksList;
 
     /* 
-    * 각각에 해당하는 Entity를 만든 후, 주석을 풀어주세요.
+    * 각각에 해당하는 Entity를 만든 후, 주석을 풀어주세요. */
     
     //Member_address 테이블
 	@OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
@@ -69,8 +71,8 @@ public class Member {
 	private Review review;
     
     //Article 테이블
-	@OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
-	private List<Article> articleList;
+	// @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+	// private List<Article> articleList;
     
     //Cart 테이블
 	@OneToOne(mappedBy = "member", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
@@ -81,9 +83,9 @@ public class Member {
 	private List<Orders> ordersList;
     
     //Payment 테이블
-	@OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
-	private List<Payment> paymentList;
-    */
+	// @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+	// private List<Payment> paymentList;
+    
 
 
 }
