@@ -27,6 +27,7 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "cart")
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -43,6 +44,6 @@ public class Cart {
     private Member member;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
-    private List<Cart_Item> cartItems = new ArrayList<>();
+    private List<CartItem> cartItems = new ArrayList<>();
 
 }

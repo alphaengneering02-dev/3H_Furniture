@@ -14,7 +14,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 
-public class Cart_Item {
+public class CartItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cart_item_seq")
