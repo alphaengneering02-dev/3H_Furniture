@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class ItemRequestDTO {
 
-private long adminId;
+private Long adminId;
 private String category;
 private String itemName;
 private String itemDetail;
