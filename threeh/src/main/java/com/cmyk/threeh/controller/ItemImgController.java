@@ -52,7 +52,7 @@ public class ItemImgController {
 
     //이미지 삭제(이미지 제거)_deleteItemImg
 
-    @DeleteMapping("/{itemImgId")
+    @DeleteMapping("/{itemImgId}")
     public void deleteItemImg(@PathVariable Long itemImgId){
 
         itemImgService.deleteItemImg(itemImgId);
