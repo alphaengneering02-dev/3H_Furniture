@@ -39,3 +39,4 @@ out/
 
 ### Local ###
 src/main/resources/application-local.properties
+src/main/resources/DB/3HProjectTable.vuerd.json

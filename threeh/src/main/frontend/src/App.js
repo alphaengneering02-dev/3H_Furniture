@@ -4,12 +4,10 @@ import './App.css';
 function App() {
   return (
     <div className="App">
-      return (
-    <div>
+      <p>Test1</p>
+    </div>
     	
-    </div>
-  );
-    </div>
+  
   );
 }
 
