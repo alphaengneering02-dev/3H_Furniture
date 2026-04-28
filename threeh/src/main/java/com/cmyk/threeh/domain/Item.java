@@ -6,14 +6,11 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GenerationType;
 import javax.persistence.GeneratedValue;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import org.springframework.boot.autoconfigure.kafka.KafkaProperties.Admin;
 
 import com.cmyk.threeh.enums.ItemSellStatus;
 
@@ -29,14 +26,13 @@ import lombok.Setter;
 public class Item {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="item_id")
     private Long itemId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "admin_id")
-    @Column(name = "admin_id")
-    private Admin adminId;
+    private Admins adminId;
 
     @Column(nullable = false,length = 100)
     private String category;
@@ -51,8 +47,7 @@ public class Item {
     @Column( name="item_sell_status", nullable = false, length = 50)
     private ItemSellStatus itemSellStatus = ItemSellStatus.SELL;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @Column(nullable = true, length = 50)
+    @Column(nullable=true, length =50 )
     private String itemColor;
 
     @Column(nullable = false)
@@ -64,7 +59,6 @@ public class Item {
     @Column(nullable = false, length = 10)
     private String currency;
 
-    @Enumerated    
     @Column(nullable = false)
     private int stock;
 

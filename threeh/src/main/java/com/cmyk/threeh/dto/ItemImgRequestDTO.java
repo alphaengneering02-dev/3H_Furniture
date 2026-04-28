@@ -5,13 +5,12 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ItemImgDTO {
+public class ItemImgRequestDTO {
     
-    private Integer itemImgId;
-    private Integer itemId;
+    private Long itemId;
     private String imgName;
     private String imgUrl;
     private String subImgUrl;
-    private String subimgYn;
 
 }
+//이미지 등록 요청용 DTO
