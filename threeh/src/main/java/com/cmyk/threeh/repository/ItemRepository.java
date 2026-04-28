@@ -10,7 +10,7 @@ import com.cmyk.threeh.enums.ItemSellStatus;
 public interface ItemRepository extends JpaRepository<Item,Long>{
     
     //상품명 조회
-    List<Item> findItemName(String itemName);
+    List<Item> findByItemName(String itemName);
 
     //판매중 상품 조회
     List<Item> findByItemSellStatus(ItemSellStatus selltatus);
