@@ -21,6 +21,8 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.cmyk.threeh.enums.OrderState;
+import com.cmyk.threeh.global.error.CustomException;
+import com.cmyk.threeh.global.error.ErrorCode;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -74,7 +76,7 @@ public class Orders {
 
     // == 연관관계 편의 메서드 == //
     public void addOrderItem(OrderItem orderItem){
-        orderItem.add(orderItem);
+        orderItems.add(orderItem);
         orderItem.setOrders(this);
     }
 
@@ -93,7 +95,20 @@ public class Orders {
     
     public void cancel() {
 
+        if(this.orderState == OrderState.DELIVERED ||
+            this.orderState == OrderState.DELIVERED||
+            this.orderState == OrderState.INSTALLED ||
+            this.orderState == OrderState.PURCHASED){
+
+            throw new CustomException(ErrorCode.ORDER_CANCEL_FAIL);    
+        }
+
         this.setOrderState(OrderState.CANCEL);
 
+        for(OrderItem  orderItem: orderItems){
+            //orderItem.cancel();
+        }
+
     }
+
 }

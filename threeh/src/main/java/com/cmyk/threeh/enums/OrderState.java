@@ -1,10 +1,9 @@
 package com.cmyk.threeh.enums;
 
 import lombok.Getter;
-import lombok.Setter;
+
 
 @Getter
-@Setter
 public enum OrderState {
 
     ORDER("주문"),
