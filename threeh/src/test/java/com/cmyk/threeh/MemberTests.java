@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Import;
 
 import com.cmyk.threeh.domain.Member;
 import com.cmyk.threeh.service.MemberService;
-import com.cmyk.threeh.dto.RegisterForm;
+import com.cmyk.threeh.dto.MemberDTO;
 
 @SpringBootTest
 @Import(TestSecurityConfig.class)
@@ -26,24 +26,121 @@ class MemberTests {
 	@Autowired
 	private MemberService memberService;
 
+	// @Test
+	// //@Transactional
+	// void memberCreate() {
+
+	// 	MemberDTO dto = new MemberDTO();
+
+	// 	dto.setId("user2");
+	// 	dto.setPassword("a123");
+	// 	dto.setName("회원2");
+	// 	dto.setEmail("bbb@gmail.com");
+	// 	dto.setPhone("010-2222-2222");
+	// 	dto.setRegNo("223456-1234567");
+
+	// 	boolean createFlag = memberService.create(dto);
+	// 	if(!createFlag) {
+	// 		System.out.println("회원정보 등록 실패: " + createFlag);
+	// 		return;
+	// 	}
+
+	// 	Member member = memberService.getUser("user2");
+	
+	// 	System.out.println("회원정보 등록 성공: " + createFlag);
+	// 	System.out.printf(
+	// 		"%d, %s, %s, %s, %s, %s, %s, %s, %s, %s\n",
+	// 		member.getMemberId(), member.getId(), member.getPassword(), member.getName(), member.getEmail(), member.getPhone(), member.getRole(), member.getRegNo(), member.getCreatedAt(), member.getUpdatedAt()
+	// 	);
+
+	// }
+
+
+	// @Test
+	// @Transactional
+	// void memberUpdate() {
+
+	// 	Member member = memberService.getUser("user2");
+	// 	MemberDTO dto = new MemberDTO();
+
+	// 	System.out.println("수정할 회원 아이디:" + member.getId());
+	// 	dto.setPassword("a123");
+	// 	dto.setName("회원3");
+	// 	dto.setEmail("ccc@gmail.com");
+	// 	dto.setPhone("010-3333-3333");
+	// 	dto.setRegNo("323456-1234567");
+
+	// 	boolean updateFlag = memberService.update(member, dto);
+
+	// 	if(!updateFlag) {
+	// 		System.out.println("회원정보 수정 실패: " + updateFlag);
+	// 		return;
+	// 	}
+
+	// 	System.out.println("회원정보 수정 성공: " + updateFlag);
+
+	// }
+
+
+	// @Test
+	// @Transactional
+	// void memberDelete() {
+
+	// 	Member member = memberService.getUser("user2");
+
+	// 	System.out.println("삭제할 회원 아이디:" + member.getId());
+	// 	boolean deleteFlag = memberService.delete(member.getId());
+
+	// 	if(!deleteFlag) {
+	// 		System.out.println("회원정보 삭제 실패: " + deleteFlag);
+	// 		return;
+	// 	}
+
+	// 	System.out.println("회원정보 삭제 성공: " + deleteFlag);
+
+	// }
+
+
+	//=============================================================
+
+
 	@Test
-	@Transactional
-	void memberSave() {
+	void findId() {
 
-		RegisterForm form = new RegisterForm();
+		MemberDTO dto = new MemberDTO();
 
-		form.setId("user2");
-		form.setPassword("a123");
-		form.setName("테스트사용자2");
-		form.setEmail("bbb@gmail.com");
-		form.setPhone("010-2222-2222");
-		form.setRegNo("223456-1234567");
+		dto.setName("회원2");  //이름
+		dto.setPhone("010-2222-2222");  //전화번호 또는 이메일
+		// dto.setEmail("bbb@gmail.com");
 
-		memberService.create(form);
+		String result = memberService.findUserInfo(dto);
+		if(result.isEmpty()) {
+			System.out.println("아이디 찾기 실패: " + result);
+			return;
+		}
 
-		Member member = memberService.getUser("user2");
-		System.out.println(member);
+		System.out.println("아이디 찾기 성공: " + result);
 
 	}
+
+
+	// @Test
+	// void findPassword() {
+
+	// 	MemberDTO dto = new MemberDTO();
+
+	// 	dto.setId("user2");  //아이디
+	// 	dto.setPhone("010-2222-2222");  //전화번호 또는 이메일
+	// 	// dto.setEmail("bbb@gmail.com");
+
+	// 	String result = memberService.findUserInfo(dto);
+	// 	if(result.isEmpty()) {
+	// 		System.out.println("비밀번호 찾기 실패: " + result);
+	// 		return;
+	// 	}
+
+	// 	System.out.println("비밀번호 찾기 성공: " + result);
+
+	// }
 
 }
