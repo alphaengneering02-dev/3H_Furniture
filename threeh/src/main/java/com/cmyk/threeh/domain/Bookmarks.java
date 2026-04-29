@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.persistence.SequenceGenerator;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,8 +20,9 @@ import lombok.NoArgsConstructor;
 @Getter
 public class Bookmarks {
 
-    @Id  //Primary Key
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "bookmarks_seq")
+    @SequenceGenerator(name = "bookmarks_seq", sequenceName = "BOOKMARKS_SEQ", allocationSize = 1)
     @Column(name = "bookmakr_Id")
     private Long bookmakrId;
 
