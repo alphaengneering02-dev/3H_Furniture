@@ -162,4 +162,11 @@ public class Item {
 
     }
 
+    //최종 판매가 메서드
+    public int getFinalPrice(){
+
+        return this.price -this.discountPrice;
+        
+    }
+
 }
