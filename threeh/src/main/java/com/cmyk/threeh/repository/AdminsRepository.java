@@ -5,8 +5,6 @@ import org.springframework.stereotype.Repository;
 import com.cmyk.threeh.domain.Admins;
 
 @Repository
-public interface AdminsRepository extends JpaRepository<Admins, Long> {
+public interface AdminsRepository extends JpaRepository<Admins,Long> {
    
 }
-
-

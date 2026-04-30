@@ -488,7 +488,6 @@ public class ItemTest {
 
         assertEquals(2, items.size());
 
-        System.out.println(items.get(2));
         System.out.println("상품 전체조회 테스트성공!!");
 
     }
