@@ -23,9 +23,7 @@ public class Admins {
     @SequenceGenerator(
             name = "admin_seq",
             sequenceName = "ADMIN_SEQ",
-            allocationSize = 1
-    )
-
+            allocationSize = 1)
     @OneToMany(mappedBy = "admin", cascade = CascadeType.ALL)
     private List<Delivery> deliveries;
 
