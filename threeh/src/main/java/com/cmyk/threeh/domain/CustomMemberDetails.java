@@ -18,7 +18,7 @@ public class CustomMemberDetails implements UserDetails {
     }
 
 
-    // 엔티티의 MemberRole을 스프링 시큐리티의 권한 형태로 변환
+    // 엔티티의 MemberRole을 스프링 시큐리티의 권한으로 변환 (인가(Authorization))
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> authorities = new ArrayList<>();  //시큐리티의 권한 목록을 가져옴
@@ -60,3 +60,8 @@ public class CustomMemberDetails implements UserDetails {
 
     
 }
+
+
+
+
+

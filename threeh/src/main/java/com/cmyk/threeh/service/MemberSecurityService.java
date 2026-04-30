@@ -1,12 +1,8 @@
 //<Spring Security 로그인>
 package com.cmyk.threeh.service;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -25,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 public class MemberSecurityService implements UserDetailsService {
     private final MemberRepository memberRepository;
 	
+	//DB의 회원정보를 가져오는 메소드
 	@Override
 	public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
 		
@@ -33,21 +30,15 @@ public class MemberSecurityService implements UserDetailsService {
 		
 		//사용자명에 해당하는 데이터가 없을 경우
 		if(!searchMember.isPresent()) {
-			throw new CustomException(ErrorCode.MEMBER_FOUND);
+			throw new CustomException(ErrorCode.MEMBER_NOT_FOUND);
 		}
 		//사용자명에 해당하는 데이터가 있을 경우
 		Member member = searchMember.get();
-		
-		
-		
-		// DB에 있는 내 Role을 꺼내서, 시큐리티 권한에 등록하는 과정 (인가(Authorization))
-		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();  //시큐리티 권한 목록을 가져옴
-		authorities.add(new SimpleGrantedAuthority(member.getRole().getKey()));  //권한 목록에 role 등록
-
 		
 
        // 찾은 엔티티를 CustomUserDetails에 담아서 시큐리티에 넘겨줍니다.
         return new CustomMemberDetails(member);
         
 	}
+
 }

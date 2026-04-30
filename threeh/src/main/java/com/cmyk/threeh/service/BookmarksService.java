@@ -12,6 +12,7 @@ import com.cmyk.threeh.domain.Item;
 import com.cmyk.threeh.domain.Member;
 import com.cmyk.threeh.dto.BookmarksDTO;
 import com.cmyk.threeh.dto.ItemResponseDTO;
+import com.cmyk.threeh.global.error.CustomException;
 import com.cmyk.threeh.global.error.ErrorCode;
 import com.cmyk.threeh.repository.BookmarksRepository;
 import com.cmyk.threeh.repository.ItemRepository;
@@ -58,9 +59,7 @@ public class BookmarksService {
 			Optional<Bookmarks> op = bookmarksRepository.findByBookmakrId(bookmakrId);
 		
 			if(!op.isPresent()) {
-				ErrorCode error = ErrorCode.BOOKMARK_NOT_FOUND;
-				System.out.println(error);
-				return null;
+				throw new CustomException(ErrorCode.BOOKMARK_NOT_FOUND);
 			}
 
 			return op.get();
@@ -79,9 +78,7 @@ public class BookmarksService {
 	// 		List<Bookmarks> bookmarks = bookmarksRepository.findById(id);
 		
 	// 		if(!op.isPresent()) {
-	// 			ErrorCode error = ErrorCode.BOOKMARK_NOT_FOUND;
-	// 			System.out.println(error);
-	// 			return null;
+	//			throw new CustomException(ErrorCode.BOOKMARK_NOT_FOUND);
 	// 		}
 
 	// 		return op.get();

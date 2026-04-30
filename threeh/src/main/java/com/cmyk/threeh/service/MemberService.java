@@ -122,7 +122,7 @@ public class MemberService {
 	//회원 탈퇴
 	public boolean delete(String id) {
 		
-		Member member = findMember(id);
+		Member member = getUser(id);
 
 		memberRepository.delete(member);
 		return true;
@@ -131,26 +131,26 @@ public class MemberService {
 
 
 	//회원 role 가져오기
-	public String findMemberRole() {
-		// 1. 스프링 시큐리티 전역 컨텍스트에서 인증 정보 가져오기
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+	public String checkMemberRole(String id) {
 
+		Member member = getUser(id);
+        String UserRole = member.getRole().getKey();
+		String result = null;
 
-        // 2. 로그인 상태 검증 (로그인이 안 되어있다면 auth는 null입니다.)
-        if (auth == null) {
-            throw new CustomException(ErrorCode.NOT_LOGIN);
-        }
+		switch (UserRole) {
+			case "ROLE_ADMIN":
+				result = "관리자";
+				break;
 
+			case "ROLE_USER":
+				result = "일반 고객";
+				break;
+		
+			default:
+				throw new CustomException(ErrorCode.SOME_COLUMN_IS_NULL);  //회원정보에 누락된 항목 있음
+		}
 
-		// 3. 사용자 정보를 꺼내 CustomMemberDetails로 형변환(Casting)
-    	CustomMemberDetails memberDetails = (CustomMemberDetails)auth.getPrincipal();
-
-
-        // 시큐리티에 등록된 권한과 엔티티의 role 가져오기 (예: "ROLE_USER")
-        String securityRole = memberDetails.getAuthorities().iterator().next().getAuthority();
-        MemberRole UserRole = memberDetails.getMember().getRole();
-
-        return "나의 시큐리티 권한은 " + securityRole + " 이고, 실제 MemberRole 값은 " + UserRole + " 입니다.";
+        return result;
     }
 	
 
@@ -206,7 +206,7 @@ public class MemberService {
 		// (세션에 유저 정보가 올라가 있으면, 로그인 상태)
 
 		//2. 회원가입이 되어있는 상태인지 검사한다. (세션 유저 정보에서 가져옴)
-		member = findMember(id);
+		member = getUser(id);
 		if(member==null) {
 			throw new CustomException(ErrorCode.MEMBER_NOT_FOUND);
 		}
@@ -227,9 +227,6 @@ public class MemberService {
 		return true;
 		
 	}
-
-
-	//=============================================================
 
     
 }

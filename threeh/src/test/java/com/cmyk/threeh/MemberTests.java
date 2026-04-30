@@ -178,9 +178,10 @@ class MemberTests {
 
 	@Test
 	@Transactional
-	void checkAuth() {
+	void checkRole() {
 
-		memberService.findMemberRole();
+		String result = memberService.checkMemberRole("user2");
+		System.out.println("회원 role: " + result);
 
 	}
 

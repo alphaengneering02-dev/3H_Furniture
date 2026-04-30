@@ -16,6 +16,7 @@ public enum ErrorCode {
     INPUT_NOT_CORRECT(400, "입력한 값이 형식에 맞지 않습니다."),
     PASSWORD_NOT_SAME(401, "비밀번호가 일치하지 않습니다."),
     NOT_LOGIN(401, "로그인 상태가 아닙니다."),
+    SOME_COLUMN_IS_NULL(404, "회원정보에 누락된 항목이 있습니다."),
     
     //북마크
     BOOKMARK_NOT_FOUND(404, "북마크가 존재하지 않습니다."),
