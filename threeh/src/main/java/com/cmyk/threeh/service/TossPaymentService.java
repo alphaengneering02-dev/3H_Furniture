@@ -5,20 +5,19 @@ import org.springframework.stereotype.Service;
 
 import com.cmyk.threeh.domain.Member;
 import com.cmyk.threeh.domain.Payment;
+import com.cmyk.threeh.dto.PaymentResponseDTO;
 import com.cmyk.threeh.global.error.CustomException;
 import com.cmyk.threeh.global.error.ErrorCode;
 import com.cmyk.threeh.repository.PaymentRepository;
 
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @Service
-@NoArgsConstructor
+@RequiredArgsConstructor
 public class TossPaymentService {
     
-   @Autowired 
-   MemberService memberService;
-   @Autowired
-   PaymentRepository paymentRepository;
+    private final MemberService memberService;
+    private final PaymentRepository paymentRepository;
 
     public Payment requestPayment(Payment payment, String userEmail){
         Member member = memberService.findMember(userEmail); 
@@ -31,4 +30,24 @@ public class TossPaymentService {
 
         return paymentRepository.save(payment);
     }
+
+
+    public PaymentResponseDTO confirmPayment(String paymentKey, String orderId, Long amount){
+
+        Payment payment = paymentRepository.findByOrderId(orderId)
+        .orElseThrow(() -> new CustomException(ErrorCode.BOOKMARK_NOT_FOUND));
+
+
+        return  payment.toPaymentResponseDTO();
+    }
+
+    /**
+     * 
+     * public void failPayment(String code, String message, String orderId){
+     * }
+     */
+
+    /**
+     * 결제 취소 로직
+     */
 }

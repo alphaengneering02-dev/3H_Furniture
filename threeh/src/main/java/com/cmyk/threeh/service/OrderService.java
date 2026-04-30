@@ -2,12 +2,13 @@ package com.cmyk.threeh.service;
 
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import com.cmyk.threeh.domain.Adress;
@@ -16,6 +17,7 @@ import com.cmyk.threeh.domain.Item;
 import com.cmyk.threeh.domain.Member;
 import com.cmyk.threeh.domain.OrderItem;
 import com.cmyk.threeh.domain.Orders;
+import com.cmyk.threeh.dto.OrderRequestDTO;
 import com.cmyk.threeh.dto.OrderResponseDTO;
 import com.cmyk.threeh.enums.OrderType;
 import com.cmyk.threeh.global.error.CustomException;
@@ -25,6 +27,7 @@ import com.cmyk.threeh.repository.MemberRepository;
 import com.cmyk.threeh.repository.OrderRepository;
 
 import lombok.RequiredArgsConstructor;
+
 
 @Service
 @RequiredArgsConstructor
@@ -41,30 +44,31 @@ public class OrderService {
      */
 
     @Transactional
-    public Long order(Long memberId, Long itemId, int count, String city, String street, String zipCode, OrderType orderType){
+    public Long order(Long memberId, List<OrderRequestDTO.OrderItemDTO> orderItems, String city, String street, String zipCode, OrderType orderType){
 
         //엔티티 조회
         Member member = memberRepository.findById(memberId)
         .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
 
-        Item item = itemRepository.findById(itemId)
-                    .orElseThrow(() -> new CustomException(ErrorCode.ITEM_NOT_FOUND));
+
+        Adress address = new Adress(city, street, zipCode);
+        Delivery delivery = new Delivery();
+        //delivery.setAddress(address);
+
+
+        List<OrderItem> oderitemList = orderItems.stream()
+            .map(dto -> {
+                Item item = itemRepository.findById(dto.getItemId())
+                    .orElseThrow(()-> new CustomException(ErrorCode.ITEM_NOT_FOUND));
+                return OrderItem.creaOrderItem(item, item.getPrice(), dto.getCount());
+            })
+            .collect(Collectors.toList());
 
         //주문 정보 생성
-        Orders order = new Orders();
-        Delivery delivery = new Delivery();
-        Adress address = new Adress(city, street, zipCode);
-        delivery.setBusinessAddAdress(address);
-
-        order.setOrderDate(LocalDateTime.now());
-
-        OrderItem orderItem = OrderItem.creaOrderItem(item, item.getPrice(), count);
-
-        //주문생성
-        order = Orders.createOrder(member, delivery, orderItem);
-
+        Orders order = Orders.createOrder(member, delivery, oderitemList.toArray(new OrderItem[0]));
         order.setOrderType(orderType);
         order.setDeliveryDate(LocalDate.now().plusDays(3));
+        order.setInstallDate(order.getDeliveryDate());
 
         orderRepository.save(order);
 
@@ -82,7 +86,7 @@ public class OrderService {
         orders.cancel();
     }
 
-    @Transactional
+    @Transactional()
     public List<OrderResponseDTO> getOrdersBymember (String memberId){
 
         List<Orders> orders = orderRepository.findByMemberId(memberId);
@@ -98,6 +102,57 @@ public class OrderService {
             .build()
         )
         .collect(java.util.stream.Collectors.toList());
+    }
+
+
+    /**
+     * 단품 취소
+     * @param user
+     * @return
+     */
+    @Transactional
+    public void cancelOrder(Long orderId, Long itemId) {
+        Orders order = orderRepository.findById(orderId)
+                .orElseThrow(()-> new CustomException(ErrorCode.ORDER_NOT_FOUND));
+        
+        OrderItem orderItem = order.getOrderItems().stream()
+            .filter(oi -> oi.getItem().getItemId().equals(itemId))
+            .findFirst()
+            .orElseThrow(()-> new CustomException(ErrorCode.ITEMIMG_NOT_FOUND));
+
+
+        orderItem.cancel();
+        order.getOrderItems().remove(orderItem);
+
+        if(order.getOrderItems().isEmpty()){
+            order.cancel();
+        }
+    }
+
+    /**
+     * 다중 취소 기능
+     */
+    @Transactional
+    public void cancelOrderItems(@AuthenticationPrincipal User user, Long orderId, List<Long> itemIds){
+        Orders order = orderRepository.findById(orderId)
+            .orElseThrow(()-> new CustomException(ErrorCode.ORDER_NOT_FOUND));
+        
+        itemIds.forEach(itemId -> {
+            OrderItem orderItem = order.getOrderItems().stream()
+                .filter(oi -> oi.getItem().getItemId().equals(itemId))
+                .findFirst()
+                .orElseThrow(()-> new CustomException(ErrorCode.ITEM_NOT_FOUND));
+                
+                orderItem.cancel();
+                order.getOrderItems().remove(orderItem);
+        });
+
+        if(order.getOrderItems().isEmpty()){
+            order.cancel();
+        }
+        
+        
+        
     }
 
 }

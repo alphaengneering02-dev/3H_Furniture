@@ -2,6 +2,7 @@ package com.cmyk.threeh.domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,6 +75,12 @@ public class Orders {
 
     @Column(name = "delivery_date", nullable = false)
     private LocalDate deliveryDate;
+
+    @Column
+    private LocalTime requestTime;   // 희망 배송 시간
+
+    @Column
+    private String requestMessage;   // 요청사항
 
     @OneToMany(mappedBy = "orders", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems = new ArrayList<>();

@@ -23,6 +23,7 @@ public class OrderResponseDTO {
     private LocalDate installDate;
     private String deliveryAddr;       
     private String deliveryAddrDetail;
+    private String zipCode;
     private List<OrderItemDTO> orderitems;
 
     @Getter
@@ -50,6 +51,7 @@ public class OrderResponseDTO {
                 .deliveryAddr(orders.getDeliveryAddr())
                 .deliveryAddrDetail(orders.getDeliveryAddrDetail())
                 .installDate(orders.getInstallDate())
+                //.zipCode(orders.getDelivery().getAddress().getzipcode())
                 .orderitems(
                     orders.getOrderItems().stream()
                         .map(oi -> OrderItemDTO.builder()

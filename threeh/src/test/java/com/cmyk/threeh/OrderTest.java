@@ -3,6 +3,7 @@ package com.cmyk.threeh;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.plaf.basic.BasicInternalFrameTitlePane.SystemMenuBar;
@@ -19,6 +20,7 @@ import com.cmyk.threeh.domain.Item;
 import com.cmyk.threeh.domain.Member;
 import com.cmyk.threeh.domain.Orders;
 import com.cmyk.threeh.dto.AdminsDTO;
+import com.cmyk.threeh.dto.OrderRequestDTO;
 import com.cmyk.threeh.dto.OrderResponseDTO;
 import com.cmyk.threeh.enums.ItemSellStatus;
 import com.cmyk.threeh.enums.MemberRole;
@@ -72,9 +74,18 @@ public class OrderTest {
         Item item = createItem("JPA 책", 10000, 10);
         int orderCount = 2;
 
-        // when (실행)
-        Long orderId = orderService.order(savedMember.getMemberId(), item.getItemId(), orderCount, "서울", "무슨길", "12345", OrderType.DELIVERY_WITH_INSTALLATION);
+         List<OrderRequestDTO.OrderItemDTO> orderItems = new ArrayList<>();
+         OrderRequestDTO.OrderItemDTO orderItemDTO = new OrderRequestDTO.OrderItemDTO();
 
+        orderItemDTO.setItemId(item.getItemId());
+        orderItemDTO.setCount(orderCount);
+        orderItems.add(orderItemDTO);
+
+
+          
+
+        // when (실행)
+        Long orderId = orderService.order(savedMember.getMemberId(), orderItems, "서울", "무슨길", "12345", OrderType.DELIVERY_ONLY);
         // then (검증)
         Orders getOrder = orderRepository.findById(orderId).get();
 
@@ -88,12 +99,21 @@ public class OrderTest {
     @Test
     @Transactional
     public void orderCancel() throws Exception{
-        Member member =createMember();
+        
          Item item = createItem("침구", 10000, 1);
          int orderCount = 1;
 
-         Long orderId = orderService.order(member.getMemberId(), item.getItemId(), orderCount, "서울", "무슨길", "12345", OrderType.DELIVERY_ONLY);
+         
+         List<OrderRequestDTO.OrderItemDTO> orderItems = new ArrayList<>();
+         OrderRequestDTO.OrderItemDTO orderItemDTO = new OrderRequestDTO.OrderItemDTO();
 
+        orderItemDTO.setItemId(item.getItemId());
+        orderItemDTO.setCount(orderCount);
+        orderItems.add(orderItemDTO);
+
+
+         Long orderId = orderService.order(savedMember.getMemberId(), orderItems, "서울", "무슨길", "12345", OrderType.DELIVERY_ONLY);
+      
       
 
         //then
@@ -112,12 +132,6 @@ public class OrderTest {
         
         String memberId = savedMember.getId();
        
-       
-       
-         Item item = createItem("JPA 책", 10000, 10);
-        int orderCount = 2;
-        Long orderId = orderService.order(savedMember.getMemberId(), item.getItemId(), orderCount, "서울", "무슨길", "12345", OrderType.DELIVERY_WITH_INSTALLATION);
-
         //when
          List<OrderResponseDTO> orderLists =  orderService.getOrdersBymember(memberId);
 
