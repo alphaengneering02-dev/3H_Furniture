@@ -44,9 +44,18 @@ public class Admins {
     @Column(name = "CREATED_AT")
     private LocalDateTime createdAt;
 
+    /* 테스트 끝 나면 테스트 확인용 지우고 주석제거
     @Enumerated(EnumType.STRING)
 	@Column(name = "role", nullable = false)
     private MemberRole role;
+        */
+
+    //테스트 확인용
+    @Column(name = "ROLE", nullable = false)
+    private String role = "ADMIN";
+
+    @Column(name = "MEMBER_ADDRESS")
+    private String memberAddress;
 
 
 
