@@ -22,6 +22,10 @@ public class MemberAddress {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
+    //우편번호 추가
+    @Column(name = "zipcode", length = 10, nullable = false)
+    private String zipcode;
+
     @Column(name = "addr", nullable = false)
     private String addr;
 
