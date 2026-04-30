@@ -13,7 +13,6 @@ import com.cmyk.threeh.domain.Item;
 import com.cmyk.threeh.domain.Member;
 import com.cmyk.threeh.domain.OrderItem;
 import com.cmyk.threeh.domain.Orders;
-import com.cmyk.threeh.enums.OrderState;
 import com.cmyk.threeh.enums.OrderType;
 import com.cmyk.threeh.global.error.CustomException;
 import com.cmyk.threeh.global.error.ErrorCode;
@@ -38,7 +37,7 @@ public class OrderService {
      */
 
     @Transactional
-    public Long order(Long memberId, Long itemId, int count){
+    public Long order(Long memberId, Long itemId, int count, String city, String street, String zipCode){
 
         //엔티티 조회
         Member member = memberRepository.findById(memberId)
@@ -50,6 +49,7 @@ public class OrderService {
         //주문 정보 생성
         Orders order = new Orders();
         Delivery delivery = new Delivery();
+        Adress address = new Adress(city, street, zipcode);
 
         order.setOrderDate(LocalDateTime.now());
       

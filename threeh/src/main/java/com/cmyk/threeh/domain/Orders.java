@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -17,6 +18,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -74,7 +76,10 @@ public class Orders {
     @OneToMany(mappedBy = "orders", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems = new ArrayList<>();
 
-  
+   
+
+    @Embedded
+    private Adress adress;
 
     // == 연관관계 편의 메서드 == //
     public void addOrderItem(OrderItem orderItem){
@@ -89,6 +94,7 @@ public class Orders {
 
         order.setMember(member);
         order.setDelivery(delivery);
+        
 
         for(OrderItem orderItem : orderItems){
             order.addOrderItem(orderItem);
