@@ -28,6 +28,9 @@ public class Delivery {
    @Embedded
     private Adress businessAddAdress;
 
+    @OneToOne(mappedBy = "delivery")
+    private Orders orders;
+
     @Column(name = "COMPANY_NAME", nullable = false)
     private String companyName;
 
