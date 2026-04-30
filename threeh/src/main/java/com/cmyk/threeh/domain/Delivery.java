@@ -23,7 +23,10 @@ public class Delivery {
 
     @ManyToOne(fetch = FetchType.LAZY) //불필요한 쿼리 나오는걸 제어
     @JoinColumn(name = "ADMIN_ID", nullable = false)
-    private Admins admin;   
+    private Admins admin;
+    
+   @Embedded
+    private Adress businessAddAdress;
 
     @Column(name = "COMPANY_NAME", nullable = false)
     private String companyName;
