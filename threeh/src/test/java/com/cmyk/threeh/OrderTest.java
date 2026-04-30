@@ -17,6 +17,7 @@ import com.cmyk.threeh.dto.AdminsDTO;
 import com.cmyk.threeh.enums.ItemSellStatus;
 import com.cmyk.threeh.enums.MemberRole;
 import com.cmyk.threeh.enums.OrderState;
+import com.cmyk.threeh.enums.OrderType;
 import com.cmyk.threeh.repository.ItemRepository;
 import com.cmyk.threeh.repository.MemberRepository;
 import com.cmyk.threeh.repository.OrderRepository;
@@ -40,14 +41,14 @@ public class OrderTest {
     @Autowired
     ItemService itemService;
     @Test
-    public void 상품주문() throws Exception {
+    public void orderItem() throws Exception {
         // given (준비)
         Member member = createMember();
         Item item = createItem("JPA 책", 10000, 10);
         int orderCount = 2;
 
         // when (실행)
-        Long orderId = orderService.order(member.getMemberId(), item.getItemId(), orderCount);
+        Long orderId = orderService.order(member.getMemberId(), item.getItemId(), orderCount, "서울", "무슨길", "12345", OrderType.DELIVERY_WITH_INSTALLATION);
 
         // then (검증)
         Orders getOrder = orderRepository.findById(orderId).get();

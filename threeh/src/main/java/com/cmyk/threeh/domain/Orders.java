@@ -22,7 +22,9 @@ import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.cmyk.threeh.enums.DeliveryStatus;
 import com.cmyk.threeh.enums.OrderState;
+import com.cmyk.threeh.enums.OrderType;
 import com.cmyk.threeh.global.error.CustomException;
 import com.cmyk.threeh.global.error.ErrorCode;
 
@@ -65,7 +67,7 @@ public class Orders {
     private OrderState orderState = OrderState.ORDER;
 
     @Column(name = "order_type", nullable = false, length = 50)
-    private String orderType;
+    private OrderType orderType;
 
     @Column(name = "install_date")
     private LocalDate installDate;
@@ -113,10 +115,8 @@ public class Orders {
     
     public void cancel() {
 
-        if(this.orderState == OrderState.DELIVERED ||
-            this.orderState == OrderState.DELIVERED||
-            this.orderState == OrderState.INSTALLED ||
-            this.orderState == OrderState.PURCHASED){
+
+        if(delivery.getStatus() == DeliveryStatus.COMPLETED){
 
             throw new CustomException(ErrorCode.ORDER_CANCEL_FAIL);    
         }
@@ -143,21 +143,24 @@ public class Orders {
    }
 
    /*
-   주문 할당(주문 상태 변경)
+   주문 할당
    */
   public void assinOrder(){
     this.delivery = delivery;
     this.setOrderState(orderState.READY);
   }
+
   /*
-  주문 상태 변경
+  주문 상태 변경 
   */
   public void changeOrderState(OrderState newState) {
     
-    if(this.orderState == OrderState.DELIVERED && newState == OrderState.ORDER ){
+    if(delivery.getStatus() == DeliveryStatus.COMPLETED && newState == OrderState.ORDER ){
         throw new CustomException(ErrorCode.ORDER_CANCEL_FAIL);
     }
-  }
 
+    this.setOrderState(newState);
+  }
+  
 
 }

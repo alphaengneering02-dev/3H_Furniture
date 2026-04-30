@@ -8,6 +8,7 @@ import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
+import com.cmyk.threeh.domain.Adress;
 import com.cmyk.threeh.domain.Delivery;
 import com.cmyk.threeh.domain.Item;
 import com.cmyk.threeh.domain.Member;
@@ -37,7 +38,7 @@ public class OrderService {
      */
 
     @Transactional
-    public Long order(Long memberId, Long itemId, int count, String city, String street, String zipCode){
+    public Long order(Long memberId, Long itemId, int count, String city, String street, String zipCode, OrderType orderType){
 
         //엔티티 조회
         Member member = memberRepository.findById(memberId)
@@ -49,20 +50,16 @@ public class OrderService {
         //주문 정보 생성
         Orders order = new Orders();
         Delivery delivery = new Delivery();
-        Adress address = new Adress(city, street, zipcode);
+        Adress address = new Adress(city, street, zipCode);
+        //delivery.setAddress(address);
 
         order.setOrderDate(LocalDateTime.now());
-      
-
-
-        order.setDeliveryAddr(order.getDeliveryAddr());
-        order.setDeliveryAddrDetail(order.getDeliveryAddr());
 
         OrderItem orderItem = OrderItem.creaOrderItem(item, item.getPrice(), count);
 
         order = Orders.createOrder(member, delivery, orderItem);
 
-        order.setOrderType(OrderType.DELIVERY_ONLY.name());
+        order.setOrderType(orderType);
         order.setDeliveryDate(LocalDate.now().plusDays(3));
 
         orderRepository.save(order);
