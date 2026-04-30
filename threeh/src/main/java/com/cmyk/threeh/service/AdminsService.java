@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 
 import com.cmyk.threeh.domain.Admins;
 import com.cmyk.threeh.dto.AdminsDTO;
+import com.cmyk.threeh.enums.MemberRole;
 import com.cmyk.threeh.repository.AdminsRepository;
 
 @Service
@@ -26,6 +27,12 @@ public class AdminsService {
         admin.setAdLoginId(dto.getAdLoginId());
         admin.setPassword(dto.getPassword());
         admin.setAdminName(dto.getAdminName());
+
+        if (dto.getRole() != null) {
+            admin.setRole(dto.getRole());
+        } else {
+            admin.setRole(MemberRole.ADMIN); 
+        }
 
         return adminsRepository.save(admin);
     }
