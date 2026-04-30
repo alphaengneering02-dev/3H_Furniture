@@ -1,9 +1,14 @@
 package com.cmyk.threeh;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
+import java.util.List;
+
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane.SystemMenuBar;
 import javax.transaction.Transactional;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,10 +19,12 @@ import com.cmyk.threeh.domain.Item;
 import com.cmyk.threeh.domain.Member;
 import com.cmyk.threeh.domain.Orders;
 import com.cmyk.threeh.dto.AdminsDTO;
+import com.cmyk.threeh.dto.OrderResponseDTO;
 import com.cmyk.threeh.enums.ItemSellStatus;
 import com.cmyk.threeh.enums.MemberRole;
 import com.cmyk.threeh.enums.OrderState;
 import com.cmyk.threeh.enums.OrderType;
+import com.cmyk.threeh.repository.AdminsRepository;
 import com.cmyk.threeh.repository.ItemRepository;
 import com.cmyk.threeh.repository.MemberRepository;
 import com.cmyk.threeh.repository.OrderRepository;
@@ -27,7 +34,7 @@ import com.cmyk.threeh.service.MemberService;
 import com.cmyk.threeh.service.OrderService;
 
 @SpringBootTest
-@Transactional
+
 @Import(TestSecurityConfig.class)
 public class OrderTest {
     
@@ -35,20 +42,38 @@ public class OrderTest {
     @Autowired OrderRepository orderRepository;
     @Autowired MemberRepository memberRepository;
     @Autowired ItemRepository itemRepository;
+    @Autowired AdminsRepository adminsRepository;
 
     @Autowired
     MemberService memberService;
     @Autowired
     ItemService itemService;
+
+    private Member savedMember;
+    private Admins savedAdmins; 
+
+    @BeforeEach
+    @Transactional
+    void setUp() {
+        orderRepository.deleteAll();
+        itemRepository.deleteAll();
+        adminsRepository.deleteAll(); // ← admin도 지워야 함
+        memberRepository.deleteAll();
+
+        savedMember = createMember();
+        savedAdmins = createAdmins();
+    }
+
     @Test
+    @Transactional
     public void orderItem() throws Exception {
         // given (준비)
-        Member member = createMember();
+       
         Item item = createItem("JPA 책", 10000, 10);
         int orderCount = 2;
 
         // when (실행)
-        Long orderId = orderService.order(member.getMemberId(), item.getItemId(), orderCount, "서울", "무슨길", "12345", OrderType.DELIVERY_WITH_INSTALLATION);
+        Long orderId = orderService.order(savedMember.getMemberId(), item.getItemId(), orderCount, "서울", "무슨길", "12345", OrderType.DELIVERY_WITH_INSTALLATION);
 
         // then (검증)
         Orders getOrder = orderRepository.findById(orderId).get();
@@ -59,25 +84,53 @@ public class OrderTest {
         // item의 재고가 줄었는지도 확인 필요 (Item 엔티티에 로직이 있다면)
         // assertEquals(8, item.getStockQuantity(), "주문 후 재고가 줄어야 한다");
     }
+     
+    @Test
+    @Transactional
+    public void orderCancel() throws Exception{
+        Member member =createMember();
+         Item item = createItem("침구", 10000, 1);
+         int orderCount = 1;
 
-    // public void orderCancel() throws Exception{
-    //     Member member =createMember();
-    //     Item item = createItem("침구", 10000, 1);
-    //     int orderCount = 1;
+         Long orderId = orderService.order(member.getMemberId(), item.getItemId(), orderCount, "서울", "무슨길", "12345", OrderType.DELIVERY_ONLY);
 
-    //     Long orderId = orderService.order(member.getMemberId(), item.getItemId(), orderCount);
+      
 
-    //     //then
-    //     Orders getOrders = orderRepository.findById(orderId).get();
-    //     assertEquals(OrderState.CANCEL, getOrders.getOrderState());
+        //then
+        Orders getOrders = orderRepository.findById(orderId).get();
+        getOrders.cancel();
+        assertEquals(OrderState.CANCEL, getOrders.getOrderState());
 
-    //     Item canceledItem = itemRepository.findById(item.getItemId()).get();
-    //     assertEquals(1, canceledItem.getStock(), " 주문취소시 재고 원복");
-    // }
+        Item canceledItem = itemRepository.findById(item.getItemId()).get();
+        assertEquals(1, canceledItem.getStock(), " 주문취소시 재고 원복");
+     }
+
+    @Test
+    @Transactional
+    public void getOrdersBymember(){
+        //given
+        
+        String memberId = savedMember.getId();
+       
+       
+       
+         Item item = createItem("JPA 책", 10000, 10);
+        int orderCount = 2;
+        Long orderId = orderService.order(savedMember.getMemberId(), item.getItemId(), orderCount, "서울", "무슨길", "12345", OrderType.DELIVERY_WITH_INSTALLATION);
+
+        //when
+         List<OrderResponseDTO> orderLists =  orderService.getOrdersBymember(memberId);
+
+        //then
+        assertFalse(orderLists.isEmpty(), "주문 목록이 비어있으면 안된다");
+        assertEquals(1, orderLists.size(), "주문은 반드시 1건");
+        assertEquals("배송 준비중", orderLists.get(0).getOrderSate(), "주문 상태여야 함");
+        assertEquals("JPA 책", orderLists.get(0).getOrderitems().get(0).getItemName(), "배송 상품 이름이 맞아야함");
+    }
 
     private Member createMember() {
     Member member = new Member();
-    member.setId("user2");
+    member.setId("user1" );
     member.setPassword("1234");
     member.setEmail("test@naver.com");
     member.setPhone("01083691703");
@@ -92,16 +145,20 @@ public class OrderTest {
 
     private Admins createAdmins(){
         AdminsDTO dto = new AdminsDTO();
+        dto.setAdminId(1L);
         dto.setAdLoginId("admin1");
         dto.setPassword("123");
-        dto.setAdminName("관리자");
+        dto.setAdminName("관리자1");
+        dto.setRole(MemberRole.ADMIN);
+        
+        
 
         return adminsService.createAdmin(dto);
     }
 
     private Item createItem(String name, int price, int stock) {
 
-        Admins admins = createAdmins();
+        
     
         Item item = new Item();
         item.setItemDetail("이가구가 짱");
@@ -111,7 +168,8 @@ public class OrderTest {
         item.setCategory("가구");                      // ← 추가
         item.setCurrency("KRW");                       // ← 추가
         item.setItemSellStatus(ItemSellStatus.SELL);
-        item.setAdmin(admins);
+         item.setAdmin(savedAdmins);
+        item.setAdmin(savedAdmins);
         // ← 추가
         itemRepository.save(item);
         return item;

@@ -21,7 +21,7 @@ public class OrderResponseDTO {
     private LocalDateTime orderDate;
     private LocalDate deliveryDate;
     private LocalDate installDate;
-    private String deliveryAddr;        // ← 추가
+    private String deliveryAddr;       
     private String deliveryAddrDetail;
     private List<OrderItemDTO> orderitems;
 
@@ -33,6 +33,8 @@ public class OrderResponseDTO {
         private int count;
         private int orderPrice;
     }
+
+    
     
     /*
     Entity -> DTO변환

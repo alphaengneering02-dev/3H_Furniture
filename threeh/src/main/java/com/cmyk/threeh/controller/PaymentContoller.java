@@ -1,0 +1,34 @@
+package com.cmyk.threeh.controller;
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import com.cmyk.threeh.dto.PaymentDTO;
+import com.cmyk.threeh.dto.PaymentResponseDTO;
+import com.cmyk.threeh.global.config.TossPaymentsConfig;
+import com.cmyk.threeh.service.TossPaymentService;
+
+@Controller
+public class PaymentContoller {
+
+    @Autowired TossPaymentService tossPaymentService;
+    @Autowired TossPaymentsConfig tossPaymentsConfig;
+    
+    @GetMapping("/toss")
+    public ResponseEntity requestTossPayment(@AuthenticationPrincipal User prinUser, @RequestBody PaymentDTO paymentDTO){
+        PaymentResponseDTO payemntResDTO = tossPaymentService.requestPayment(paymentDTO.toEntity(), prinUser.getUsername()).toPaymentResponseDTO();
+
+        paymentDTO.setYourSuccessUrl(paymentDTO.getYourSuccessUrl()== null ? tossPaymentsConfig.getSuccessUrl() : paymentDTO.getYourSuccessUrl());
+
+        payemntResDTO.setFailUrl(paymentDTO.getYourFailUrl() == null ? tossPaymentsConfig.getFailUrl() : paymentDTO.getYourFailUrl());
+
+        return ResponseEntity.ok().body(payemntResDTO);
+
+    }
+}

@@ -3,6 +3,8 @@ package com.cmyk.threeh.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collector;
 
 import javax.transaction.Transactional;
 
@@ -14,6 +16,7 @@ import com.cmyk.threeh.domain.Item;
 import com.cmyk.threeh.domain.Member;
 import com.cmyk.threeh.domain.OrderItem;
 import com.cmyk.threeh.domain.Orders;
+import com.cmyk.threeh.dto.OrderResponseDTO;
 import com.cmyk.threeh.enums.OrderType;
 import com.cmyk.threeh.global.error.CustomException;
 import com.cmyk.threeh.global.error.ErrorCode;
@@ -51,7 +54,7 @@ public class OrderService {
         Orders order = new Orders();
         Delivery delivery = new Delivery();
         Adress address = new Adress(city, street, zipCode);
-        //delivery.setAddress(address);
+        delivery.setBusinessAddAdress(address);
 
         order.setOrderDate(LocalDateTime.now());
 
@@ -77,6 +80,24 @@ public class OrderService {
 
 
         orders.cancel();
+    }
+
+    @Transactional
+    public List<OrderResponseDTO> getOrdersBymember (String memberId){
+
+        List<Orders> orders = orderRepository.findByMemberId(memberId);
+
+        return orders.stream()
+            .map(order -> OrderResponseDTO.builder()
+            .orderId(order.getOrderId())
+            .memberName(order.getMember().getName())
+            .orderSate(order.getOrderState().getMessage())
+            .orderType(order.getOrderType())
+            .orderDate(order.getOrderDate())
+            .deliveryDate(order.getDeliveryDate())
+            .build()
+        )
+        .collect(java.util.stream.Collectors.toList());
     }
 
 }

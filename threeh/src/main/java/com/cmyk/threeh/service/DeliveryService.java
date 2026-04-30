@@ -27,7 +27,7 @@ public class DeliveryService {
 
         Admins admin = adminsRepository.findById(dto.getAdminId()) 
         .orElseThrow(() -> new RuntimeException("관리자 정보가 없습니다. ID: " + dto.getAdminId()));
-    delivery.setAdmin(admin); 
+        delivery.setAdmin(admin); 
         delivery.setCompanyName(dto.getCompanyName());
         delivery.setBusinessName(dto.getBusinessName());
         delivery.setBusinessPhone(dto.getBusinessPhone());
