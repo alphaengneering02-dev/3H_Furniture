@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.time.LocalDateTime;
+import java.util.List;
+
 
 @Entity
 @Table(name = "ADMINS")
@@ -23,6 +25,10 @@ public class Admins {
             sequenceName = "ADMIN_SEQ",
             allocationSize = 1
     )
+
+    @OneToMany(mappedBy = "admin", cascade = CascadeType.ALL)
+    private List<Delivery> deliveries;
+
     @Column(name = "ADMIN_ID")
     private Long adminId;
 

@@ -21,8 +21,9 @@ public class Delivery {
     @Column(name = "DELIVERY_ID")
     private Long deliveryId;
 
-    @Column(name = "ADMIN_ID", nullable = false)
-    private Long adminId;
+    @ManyToOne(fetch = FetchType.LAZY) //불필요한 쿼리 나오는걸 제어
+    @JoinColumn(name = "ADMIN_ID", nullable = false)
+    private Admins admin;   
 
     @Column(name = "COMPANY_NAME", nullable = false)
     private String companyName;
