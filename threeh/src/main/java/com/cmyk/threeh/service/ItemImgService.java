@@ -24,6 +24,17 @@ public class ItemImgService {
     private final ItemImgRepository itemImgRepository;
     private final ItemRepository itemRepository;
 
+    private ItemImgResponseDTO toDto(ItemImg itemImg){
+
+        return ItemImgResponseDTO.builder()
+            .itemImgId(itemImg.getItemImgId())
+            .imgName(itemImg.getImgName())
+            .imgUrl(itemImg.getImgUrl())
+            .subImgUrl(itemImg.getSubImgUrl())
+            .subImg(itemImg.getSubImg())
+            .build();
+    }
+
     //이미지 등록(상품 이미지 저장)
 
     public ItemImgResponseDTO createItemImg(
@@ -42,15 +53,11 @@ public class ItemImgService {
         itemImg.setImgName(dto.getImgName());
         itemImg.setImgUrl(dto.getImgUrl());
         itemImg.setSubImgUrl(dto.getSubImgUrl());
+        itemImg.setSubImg(dto.getSubImg());
 
         ItemImg savedImg = itemImgRepository.save(itemImg);
 
-        return ItemImgResponseDTO.builder()
-            .itemImgId(savedImg.getItemImgId())
-            .imgName(savedImg.getImgName())
-            .imgUrl(savedImg.getImgUrl())
-            .subImgUrl(savedImg.getSubImgUrl())
-            .build();
+        return toDto(savedImg);
 
     }
 
@@ -60,12 +67,7 @@ public class ItemImgService {
 
         return itemImgRepository.findByItem_ItemId(itemId)
         .stream()
-        .map(img -> ItemImgResponseDTO.builder() 
-            .itemImgId(img.getItemImgId())
-            .imgName(img.getImgName())
-            .imgUrl(img.getImgUrl())
-            .subImgUrl(img.getSubImgUrl())
-            .build())
+        .map(this::toDto)
             .collect(Collectors.toList());
 
     }
@@ -89,12 +91,7 @@ public class ItemImgService {
 
         ItemImg updatedImg = itemImgRepository.save(itemImg);
 
-        return ItemImgResponseDTO.builder()
-            .itemImgId(updatedImg.getItemImgId())
-            .imgName(updatedImg.getImgName())
-            .imgUrl(updatedImg.getImgUrl())
-            .subImgUrl(updatedImg.getSubImgUrl())
-            .build();
+        return toDto(updatedImg);
     }
 
 
@@ -120,12 +117,7 @@ public class ItemImgService {
             .orElseThrow(() ->
                 new CustomException(ErrorCode.ITEMIMG_NOT_FOUND));
 
-        return ItemImgResponseDTO.builder()
-        .itemImgId(itemImg.getItemImgId())
-        .imgName(itemImg.getImgName())
-        .imgUrl(itemImg.getImgUrl())
-        .subImgUrl(itemImg.getSubImgUrl())
-        .build();
+        return toDto(itemImg);
     }
 
 

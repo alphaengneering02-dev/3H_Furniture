@@ -47,6 +47,7 @@ public class ItemImg {
 
    @Enumerated(EnumType.STRING)
    @Column(name = "subimg_yn",nullable = false, length = 1)
-   private SubImg subImg = SubImg.Y;
+   private SubImg subImg = SubImg.N;
+   //대표이미지는 1개, 일반 이미지는 여러개니까 기본값이 N이 더 안전
 
 }
