@@ -2,6 +2,8 @@ package com.cmyk.threeh.domain;
 
 import javax.persistence.*;
 
+import com.cmyk.threeh.enums.MemberRole;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,23 +26,29 @@ public class Admins {
             name = "admin_seq",
             sequenceName = "ADMIN_SEQ",
             allocationSize = 1)
-    @Column(name = "ADMIN_ID", nullable = true)
+    @Column(name = "ADMIN_ID", nullable = false)
     private Long adminId;   
 
     @OneToMany(mappedBy = "admin", cascade = CascadeType.ALL)
     private List<Delivery> deliveries;   
 
-    @Column(name = "AD_LOGIN_ID", nullable = false, length = 255)
+    @Column(name = "AD_LOGIN_ID", nullable = true, length = 255)
     private String adLoginId;
 
-    @Column(name = "PASSWORD", nullable = false, length = 255)
+    @Column(name = "PASSWORD", nullable = true, length = 255)
     private String password;
 
-    @Column(name = "ADMIN_NAME", nullable = false, length = 255)
+    @Column(name = "ADMIN_NAME", nullable = true, length = 255)
     private String adminName;
 
     @Column(name = "CREATED_AT")
     private LocalDateTime createdAt;
+
+    @Enumerated(EnumType.STRING)
+	@Column(name = "role", nullable = false)
+    private MemberRole role;
+
+
 
     @PrePersist // 저장 전 시간 자동 세팅
     public void prePersist() {
