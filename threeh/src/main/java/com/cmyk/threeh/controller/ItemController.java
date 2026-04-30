@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 @RequestMapping("/items")
 public class ItemController {
     
-    @Resource
     private final ItemService itemService;
 
     //상품 등록(createItems)
@@ -34,8 +33,12 @@ public class ItemController {
     @PostMapping()
     public ItemResponseDTO createItems(@RequestBody ItemRequestDTO dto) {
 
-        return itemService.createItems(dto);
+        return itemService.createItems(dto, 1L);
     }
+
+    //**1L은 임시로 현재 로그인한 관리자 의미로
+    // 나중에 Spring Security+JWT붙이면 Long adminId = 로그인한 관리자 ID로 자동 교체됨 */
+
 
     //상품 전체 조회
 
@@ -59,7 +62,7 @@ public class ItemController {
     @PutMapping("/{itemId}")
     public ItemResponseDTO updateItem(@PathVariable Long itemId, @RequestBody ItemUpdateRequestDTO dto) {
         
-        return itemService.updateItem(itemId, dto);
+        return itemService.updateItem(itemId, 1L, dto);
     }
 
     //상품 삭제
@@ -67,7 +70,7 @@ public class ItemController {
     @DeleteMapping("/{itemId}")
     public void deleteItem(@PathVariable Long itemId){
 
-        itemService.deleteItem(itemId);
+        itemService.deleteItem(itemId, 1L);
     }
     
 }

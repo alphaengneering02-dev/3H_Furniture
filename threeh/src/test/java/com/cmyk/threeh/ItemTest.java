@@ -4,7 +4,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-
+import com.cmyk.threeh.domain.Admins;
 import com.cmyk.threeh.domain.Item;
 import com.cmyk.threeh.domain.Member;
 import com.cmyk.threeh.domain.OrderItem;
@@ -13,10 +13,13 @@ import com.cmyk.threeh.dto.ItemRequestDTO;
 import com.cmyk.threeh.dto.ItemResponseDTO;
 import com.cmyk.threeh.dto.ItemUpdateRequestDTO;
 import com.cmyk.threeh.enums.ItemSellStatus;
+import com.cmyk.threeh.enums.MemberRole;
 import com.cmyk.threeh.global.error.CustomException;
+import com.cmyk.threeh.repository.AdminsRepository;
 import com.cmyk.threeh.repository.ItemRepository;
 import com.cmyk.threeh.repository.MemberRepository;
 import com.cmyk.threeh.repository.OrderRepository;
+import com.cmyk.threeh.service.AdminsService;
 import com.cmyk.threeh.service.ItemService;
 import com.cmyk.threeh.service.OrderService;
 
@@ -39,6 +42,8 @@ public class ItemTest {
     @Autowired MemberRepository memberRepository;
     @Autowired OrderService orderService;
     @Autowired OrderRepository orderRepository;
+    @Autowired AdminsRepository adminsRepository;
+    @Autowired AdminsService adminsService;
 
     
     @Test
@@ -465,8 +470,17 @@ public class ItemTest {
 
     public void 상품전체조회테스트(){
 
+        Admins admin = new Admins();
+        admin.setAdLoginId("admin");
+        admin.setPassword("1234");
+        admin.setAdminName("관리자");
+        admin.setRole(MemberRole.ADMIN);
+        
+        adminsRepository.save(admin);
+
         Item item1 = new Item();
 
+        item1.setAdmin(admin);
         item1.setCategory("거실");
         item1.setItemName("소파");
         item1.setPrice(300000);
@@ -476,6 +490,8 @@ public class ItemTest {
         itemRepository.save(item1);
 
         Item item2 = new Item();
+        
+        item2.setAdmin(admin);
         item2.setCategory("침실");
         item2.setItemName("일룸침대");
         item2.setPrice(200000);

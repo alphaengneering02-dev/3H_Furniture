@@ -17,6 +17,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.cmyk.threeh.enums.ItemSellStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,7 +37,7 @@ public class Item {
     private Long itemId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "admin_id")
+    @JoinColumn(name = "admin_id", nullable = false)
     private Admins admin;
 
     @Column(nullable = false,length = 100)
@@ -59,14 +60,15 @@ public class Item {
     private int price;
 
     @Column(nullable = true)
-    private int discountPrice;
+    private int discountPrice = 0;
 
     @Column(nullable = false, length = 10)
-    private String currency;
+    private String currency = "KRW";
 
     @Column(nullable = false)
     private int stock;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "item")
     private List<Bookmarks> bookmarksList;
 

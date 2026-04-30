@@ -5,7 +5,9 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.cmyk.threeh.domain.Admins;
 import com.cmyk.threeh.domain.Item;
+import com.cmyk.threeh.repository.AdminsRepository;
 import com.cmyk.threeh.repository.ItemRepository;
 import com.cmyk.threeh.dto.ItemRequestDTO;
 import com.cmyk.threeh.dto.ItemResponseDTO;
@@ -20,13 +22,18 @@ import lombok.RequiredArgsConstructor;
 public class ItemService {
     
     private final ItemRepository itemRepository;
+    private final AdminsRepository adminsRepository;
 
-    //상품등록
+    //상품등록(관리자 검증 필요)
 
-    public ItemResponseDTO createItems(ItemRequestDTO dto){
+    public ItemResponseDTO createItems(ItemRequestDTO dto,Long adminId){
+
+        Admins admin = adminsRepository.findById(adminId)
+            .orElseThrow(()->new IllegalArgumentException("존재하지 않는 관리자입니다."));
 
         Item item = new Item();
 
+        item.setAdmin(admin);
         item.setCategory(dto.getCategory());
         item.setItemName(dto.getItemName());
         item.setItemDetail(dto.getItemDetail());
@@ -40,6 +47,7 @@ public class ItemService {
 
 
         return ItemResponseDTO.builder()
+            .itemId(savedItem.getItemId())
             .itemName(item.getItemName())
             .price(item.getPrice())
             .stock(item.getStock())
@@ -87,12 +95,19 @@ public class ItemService {
     public ItemResponseDTO updateItem(
 
         Long itemId,
+        Long adminId,
         ItemUpdateRequestDTO dto
     ){
+        Admins admin = adminsRepository.findById(adminId)
+            .orElseThrow(()-> new IllegalArgumentException("존재하지 않는 관리자입니다."));
 
         Item item = itemRepository.findById(itemId)
             .orElseThrow(()->
             new CustomException(ErrorCode.ITEM_NOT_FOUND)); 
+
+         if(!item.getAdmin().getAdminId().equals(admin.getAdminId())){
+            throw new IllegalArgumentException("수정 권한이 없습니다.")
+         ;}
 
         item.updateItem(
             item.getCategory(),
@@ -118,14 +133,24 @@ public class ItemService {
 
     //상품삭제
 
-    public void deleteItem(Long itemId){
+    public void deleteItem(Long itemId, Long adminId){
+
+        Admins admin = adminsRepository.findById(adminId)
+            .orElseThrow(()-> new IllegalArgumentException("존재하지 않는 관리자입니다."));
 
         Item item = itemRepository.findById(itemId)
             .orElseThrow(()->
             new CustomException(ErrorCode.ITEM_NOT_FOUND)); 
 
+        if(!item.getAdmin().getAdminId().equals(admin.getAdminId())){
+            throw new IllegalArgumentException("삭제 권한이 없습니다.");
+        }
             itemRepository.delete(item);
     }
+
+    //관리자 조회 + 검증 추가
+
+
 
 
 }

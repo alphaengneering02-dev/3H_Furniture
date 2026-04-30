@@ -33,7 +33,7 @@ public class ItemImg {
    private long itemImgId;
 
    @ManyToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "item_id")
+   @JoinColumn(name = "item_id",nullable = false)
    private Item item;
 
    @Column(name = "img_name",nullable = false,length = 255)
