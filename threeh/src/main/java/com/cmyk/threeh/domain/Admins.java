@@ -32,13 +32,13 @@ public class Admins {
     @OneToMany(mappedBy = "admin", cascade = CascadeType.ALL)
     private List<Delivery> deliveries;   
 
-    @Column(name = "AD_LOGIN_ID", nullable = true, length = 255)
+    @Column(name = "AD_LOGIN_ID", nullable = false, length = 255)
     private String adLoginId;
 
-    @Column(name = "PASSWORD", nullable = true, length = 255)
+    @Column(name = "PASSWORD", nullable = false, length = 255)
     private String password;
 
-    @Column(name = "ADMIN_NAME", nullable = true, length = 255)
+    @Column(name = "ADMIN_NAME", nullable = false, length = 255)
     private String adminName;
 
     @Column(name = "CREATED_AT")
