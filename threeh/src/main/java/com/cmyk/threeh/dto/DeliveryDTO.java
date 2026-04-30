@@ -1,5 +1,7 @@
 package com.cmyk.threeh.dto;
 
+import com.cmyk.threeh.domain.Admins;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -7,7 +9,12 @@ import lombok.Setter;
 @Setter
 public class DeliveryDTO {
 
+    
+    private Admins admin;
+
+    private Long deliveryId;
     private Long adminId;
+    private String adminName;
     private String companyName;
     private String businessName;
     private String businessPhone;
