@@ -57,6 +57,7 @@ public class OrderService {
 
         OrderItem orderItem = OrderItem.creaOrderItem(item, item.getPrice(), count);
 
+        //주문생성
         order = Orders.createOrder(member, delivery, orderItem);
 
         order.setOrderType(orderType);
