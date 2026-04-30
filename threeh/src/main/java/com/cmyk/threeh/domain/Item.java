@@ -1,5 +1,7 @@
 package com.cmyk.threeh.domain;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -10,6 +12,7 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -63,6 +66,9 @@ public class Item {
 
     @Column(nullable = false)
     private int stock;
+
+    @OneToMany(mappedBy = "item")
+    private List<Bookmarks> bookmarksList;
 
 
     //재고 검증 메서드 
