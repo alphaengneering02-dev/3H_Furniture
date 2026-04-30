@@ -12,6 +12,6 @@ import com.cmyk.threeh.domain.Bookmarks;
 public interface BookmarksRepository extends JpaRepository<Bookmarks, Long> {
 
     Optional<Bookmarks> findByBookmakrId(Long bookmakrId);  //데이터 1개
-    List<Bookmarks> findById(String id);
+    List<Bookmarks> findByMember_Id(String id);
     
 }
