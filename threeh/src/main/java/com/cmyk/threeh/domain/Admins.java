@@ -24,13 +24,11 @@ public class Admins {
             name = "admin_seq",
             sequenceName = "ADMIN_SEQ",
             allocationSize = 1)
-    @Column(name = "ADMIN_ID")
+    @Column(name = "ADMIN_ID", nullable = true)
     private Long adminId;   
 
     @OneToMany(mappedBy = "admin", cascade = CascadeType.ALL)
-    private List<Delivery> deliveries;
-
-    
+    private List<Delivery> deliveries;   
 
     @Column(name = "AD_LOGIN_ID", nullable = false, length = 255)
     private String adLoginId;
