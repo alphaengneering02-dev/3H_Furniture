@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.cmyk.threeh.domain.Orders;
+import com.cmyk.threeh.enums.OrderType;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -16,7 +17,7 @@ public class OrderResponseDTO {
     private Long orderId;
     private String memberName;
     private String orderSate;
-    private String orderType;
+    private OrderType orderType;
     private LocalDateTime orderDate;
     private LocalDate deliveryDate;
     private LocalDate installDate;
@@ -39,7 +40,7 @@ public class OrderResponseDTO {
     public static OrderResponseDTO from (Orders orders){
         return OrderResponseDTO.builder()
                 .orderId(orders.getOrderId())
-                //.memberName(orders.getMember().getName()) 
+                .memberName(orders.getMember().getName()) 
                 .orderSate(orders.getOrderState().getMessage())
                 .orderType(orders.getOrderType())
                 .orderDate(orders.getOrderDate())
