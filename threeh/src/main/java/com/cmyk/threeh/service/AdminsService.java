@@ -27,13 +27,13 @@ public class AdminsService {
         admin.setAdLoginId(dto.getAdLoginId());
         admin.setPassword(dto.getPassword());
         admin.setAdminName(dto.getAdminName());
-
+/* 테스트 확인용 
         if (dto.getRole() != null) {
             admin.setRole(dto.getRole());
         } else {
             admin.setRole(MemberRole.ADMIN); 
         }
-
+*/
         return adminsRepository.save(admin);
     }
 
