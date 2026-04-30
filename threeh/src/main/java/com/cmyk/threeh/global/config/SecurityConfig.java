@@ -52,4 +52,10 @@ public class SecurityConfig {
 			AuthenticationConfiguration authenticationConfiguration) throws Exception {
 		return authenticationConfiguration.getAuthenticationManager();
 	}
+
+
+	//사용자의 role을 가져오는 메소드
+
+
+
 }

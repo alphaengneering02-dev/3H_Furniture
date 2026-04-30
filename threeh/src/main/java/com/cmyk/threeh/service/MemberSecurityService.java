@@ -7,14 +7,14 @@ import java.util.Optional;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.cmyk.threeh.domain.CustomMemberDetails;
 import com.cmyk.threeh.domain.Member;
-import com.cmyk.threeh.enums.MemberRole;
+import com.cmyk.threeh.global.error.CustomException;
 import com.cmyk.threeh.global.error.ErrorCode;
 import com.cmyk.threeh.repository.MemberRepository;
 
@@ -28,32 +28,26 @@ public class MemberSecurityService implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
 		
-		//<사용자명으로(ID) Member 객체를 조회>
+		// 엔티티의 컬럼명 id를 기준으로 회원을 찾습니다.
 		Optional<Member> searchMember = memberRepository.findById(id);
 		
 		//사용자명에 해당하는 데이터가 없을 경우
 		if(!searchMember.isPresent()) {
-			ErrorCode error = ErrorCode.MEMBER_NOT_FOUND;
-			System.out.println(error);
+			throw new CustomException(ErrorCode.MEMBER_FOUND);
 		}
 		//사용자명에 해당하는 데이터가 있을 경우
 		Member member = searchMember.get();
 		
 		
 		
-		// <사용자에게 권한을 부여하는 코드>
-		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();  //권한 목록을 가져옴
-		
-		if("admin".equals(id)) {  //ADMIN 권한을 부여
-			authorities.add(new SimpleGrantedAuthority(MemberRole.ADMIN.getKey()));
-		} else {  //USER 권한을 부여
-			authorities.add(new SimpleGrantedAuthority(MemberRole.USER.getKey()));
-		}
+		// DB에 있는 내 Role을 꺼내서, 시큐리티 권한에 등록하는 과정 (인가(Authorization))
+		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();  //시큐리티 권한 목록을 가져옴
+		authorities.add(new SimpleGrantedAuthority(member.getRole().getKey()));  //권한 목록에 role 등록
 
 		
 
-        //<사용자 등록(아이디, 비밀번호, 권한)>
-		return new User(member.getId(), member.getPassword(), authorities);
+       // 찾은 엔티티를 CustomUserDetails에 담아서 시큐리티에 넘겨줍니다.
+        return new CustomMemberDetails(member);
         
 	}
 }

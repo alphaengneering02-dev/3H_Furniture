@@ -9,7 +9,14 @@ public enum ErrorCode {
     
     //회원
     MEMBER_NOT_FOUND(404, "회원을 찾을 수 없습니다."),
-
+    MEMBER_FOUND(409, "이미 가입된 회원입니다."),
+    EMAIL_IS_EXIST(409, "이미 가입된 이메일입니다."),
+    PHONE_IS_EXIST(409, "이미 가입된 전화번호입니다."),
+    REGNO_IS_EXIST(409, "이미 가입된 주민등록번호입니다."),
+    INPUT_NOT_CORRECT(400, "입력한 값이 형식에 맞지 않습니다."),
+    PASSWORD_NOT_SAME(401, "비밀번호가 일치하지 않습니다."),
+    NOT_LOGIN(401, "로그인 상태가 아닙니다."),
+    
     //북마크
     BOOKMARK_NOT_FOUND(404, "북마크가 존재하지 않습니다."),
 
