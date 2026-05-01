@@ -88,5 +88,7 @@ public class Member {
     //Payment 테이블
 	// @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
 	// private List<Payment> paymentList;
+
+
     
 }
