@@ -11,11 +11,9 @@ import com.cmyk.threeh.domain.Bookmarks;
 import com.cmyk.threeh.domain.Item;
 import com.cmyk.threeh.domain.Member;
 import com.cmyk.threeh.dto.BookmarksDTO;
-import com.cmyk.threeh.dto.ItemResponseDTO;
 import com.cmyk.threeh.global.error.CustomException;
 import com.cmyk.threeh.global.error.ErrorCode;
 import com.cmyk.threeh.repository.BookmarksRepository;
-import com.cmyk.threeh.repository.ItemRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,45 +22,64 @@ import lombok.RequiredArgsConstructor;
 public class BookmarksService {
     
     private final BookmarksRepository bookmarksRepository;
-    private final MemberService memberService;
-    // private final ItemRepository itemRepository;
 
 	
 
-	//북마크 추가
-    public boolean create(String id, Long itemId, String type) {
+	//북마크 토글 (추가/삭제)
+    public int toggle(BookmarksDTO dto) {
+
+        int toggleFlag=-1; //1. case 에러
+
+        //북마크 정보
+        Member member = dto.getMember();
+        Item item = dto.getItem();
+        LocalDateTime createdAt = LocalDateTime.now();
+        String type = dto.getType();
+
 		
-		try {
-			Bookmarks bookmarks = new Bookmarks();
-            Member member = memberService.getUser(id);
-            // Optional<Item> item = itemRepository.findById(itemId);
-		
-			bookmarks.setMember(member);
-			// bookmarks.setItem(item);
-			bookmarks.setCreatedAt(LocalDateTime.now());
-			bookmarks.setType(type);
-			
-			bookmarksRepository.save(bookmarks);
-			return true;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
-		
+        //회원, 상품 상태 체크
+        if(member == null) throw new CustomException(ErrorCode.MEMBER_NOT_FOUND);
+        if(item == null) throw new CustomException(ErrorCode.ITEM_NOT_FOUND);
+
+        
+        //북마크 추가/삭제
+		Optional<Bookmarks> op_existingBookmark = bookmarksRepository.findByMemberAndItem(member, item);
+
+        if(!op_existingBookmark.isPresent()) {  //2. case 추가
+            Bookmarks bookmarks = new Bookmarks();
+
+            bookmarks.setMember(member);
+            bookmarks.setItem(item);
+            bookmarks.setCreatedAt(createdAt);
+            bookmarks.setType(type);
+
+            bookmarksRepository.save(bookmarks);
+            toggleFlag=1;
+        } else {  //3. case 삭제
+            Bookmarks existingBookmark = op_existingBookmark.get();
+            bookmarksRepository.delete(existingBookmark);
+            toggleFlag=0;
+        }
+
+        return toggleFlag;
 	}
 
 
-    //북마크 번호로 1개 가져오기
-	public Bookmarks getBookmark(Long bookmakrId) {
+
+    //북마크 조회
+    //북마크 1개 가져오기
+	public Bookmarks getBookmark(Member member, Item item) {
 		
 		try {
-			Optional<Bookmarks> op = bookmarksRepository.findByBookmakrId(bookmakrId);
+			Optional<Bookmarks> op = bookmarksRepository.findByMemberAndItem(member, item);
 		
 			if(!op.isPresent()) {
 				throw new CustomException(ErrorCode.BOOKMARK_NOT_FOUND);
 			}
 
-			return op.get();
+            Bookmarks bookmark = op.get();
+
+			return bookmark;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -71,35 +88,17 @@ public class BookmarksService {
 	}
 
 
-    // //회원 아이디로 1개 가져오기
-	// public Bookmarks getBookmarkById(String id) {
-		
-	// 	try {
-	// 		List<Bookmarks> bookmarks = bookmarksRepository.findById(id);
-		
-	// 		if(!op.isPresent()) {
-	//			throw new CustomException(ErrorCode.BOOKMARK_NOT_FOUND);
-	// 		}
 
-	// 		return op.get();
-	// 	} catch (Exception e) {
-	// 		e.printStackTrace();
-	// 		return null;
-	// 	}
-		
-	// }
-
-
-    //북마크 전체 조회
-    public List<BookmarksDTO> getAllBookmarks(){
+    //북마크 리스트 가져오기
+    public List<BookmarksDTO> getMyBookmarkList(Member member){
 
         try {
-            return bookmarksRepository.findAll()
+            return bookmarksRepository.findByMember(member)
             .stream()
             .map(bookmark -> BookmarksDTO.builder()
                 .bookmakrId(bookmark.getBookmakrId())
-                .memberId(bookmark.getMember().getMemberId()) 
-                .itemId(bookmark.getItem().getItemId()) 
+                .member(bookmark.getMember())
+                .item(bookmark.getItem()) 
                 .createdAt(bookmark.getCreatedAt())
                 .type(bookmark.getType())
                 .build())
@@ -111,21 +110,4 @@ public class BookmarksService {
 
     }
 
-
-	//북마크 삭제
-	public boolean delete(Long bookmakrId) {
-		
-		try {
-			Bookmarks bookmark = getBookmark(bookmakrId);
-
-			bookmarksRepository.delete(bookmark);
-			return true;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
-		
-	}
-
-    
 }

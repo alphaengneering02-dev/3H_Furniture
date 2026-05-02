@@ -2,18 +2,25 @@ package com.cmyk.threeh.dto;
 
 import java.time.LocalDateTime;
 
+import com.cmyk.threeh.domain.Item;
+import com.cmyk.threeh.domain.Member;
+
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 public class BookmarksDTO {
 
     private Long bookmakrId;
 
-    private Long memberId; // Member 엔티티 대신 ID만
+    private Member member;
 
-    private Long itemId;     // Item 엔티티 대신 ID만
+    private Item item;
 
     private LocalDateTime createdAt;
 

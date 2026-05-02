@@ -11,7 +11,8 @@ import com.cmyk.threeh.domain.Member;
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
     //회원정보 가져오기
-    Optional<Member> findById(String id);  //로그인 아이디(String)로 회원정보를 가져옴
+    Optional<Member> findByMemberId(Long memberId);  //사용자 식별번호(Long)로 회원정보를 가져옴
+    Optional<Member> findById(String id);  //로그인 아이디(String)
     Optional<Member> findByEmail(String email);  //이메일
 
 
