@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.cmyk.threeh.domain.Member;
 import com.cmyk.threeh.dto.MemberDTO;
 import com.cmyk.threeh.enums.MemberRole;
+import com.cmyk.threeh.form.SignupUpdateForm;
 import com.cmyk.threeh.global.error.CustomException;
 import com.cmyk.threeh.global.error.ErrorCode;
 import com.cmyk.threeh.repository.MemberRepository;
@@ -25,15 +26,15 @@ public class MemberService {
 
 	//<계정 관리>
     //회원가입
-    public boolean create(MemberDTO dto) {
+    public boolean create(SignupUpdateForm form) {
 		
 		//회원이 입력한 정보
-		String id = dto.getId();
-		String name = dto.getName();
-		String email = dto.getEmail();
-		String phone = dto.getPhone();
+		String id = form.getId();
+		String name = form.getName();
+		String email = form.getEmail();
+		String phone = form.getPhone();
 		MemberRole role = MemberRole.USER;
-		String regNo = dto.getRegNo();
+		String regNo = form.getRegNo();
 		LocalDateTime createdAt = LocalDateTime.now();
 		
 
@@ -53,6 +54,7 @@ public class MemberService {
 		Member member = new Member();
 	
 		member.setId(id);
+        member.setPassword(passwordEncoder.encode(form.getPassword1()));
 		member.setName(name);
 		member.setEmail(email);
 		member.setPhone(phone);
@@ -60,9 +62,6 @@ public class MemberService {
 		member.setRegNo(regNo);
 		member.setCreatedAt(createdAt);
 		//수정일: 회원가입할 때는 null
-		
-		//Bcrypt 해싱 함수를 사용해서 비밀번호를 암호화
-		member.setPassword(passwordEncoder.encode(dto.getPassword()));
 		
 		memberRepository.save(member);
 		return true;
@@ -98,13 +97,13 @@ public class MemberService {
 
 
 	//회원정보 수정
-	public boolean update(Member member, MemberDTO dto) {
+	public boolean update(Member member, SignupUpdateForm form) {
 
-		member.setPassword(passwordEncoder.encode(dto.getPassword()));
-		member.setName(dto.getName());
-		member.setEmail(dto.getEmail());
-		member.setPhone(dto.getPhone());
-		member.setRegNo(dto.getRegNo());
+		member.setPassword(passwordEncoder.encode(form.getPassword1()));
+		member.setName(form.getName());
+		member.setEmail(form.getEmail());
+		member.setPhone(form.getPhone());
+		member.setRegNo(form.getRegNo());
 		member.setUpdatedAt(LocalDateTime.now());
 
 		memberRepository.save(member);

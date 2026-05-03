@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Import;
 import com.cmyk.threeh.domain.Member;
 import com.cmyk.threeh.service.MemberService;
 import com.cmyk.threeh.dto.MemberDTO;
+import com.cmyk.threeh.form.SignupUpdateForm;
 
 @SpringBootTest
 @Import(TestSecurityConfig.class)
@@ -30,16 +31,17 @@ class MemberTests {
 	//@Transactional
 	void memberCreate() {
 
-		MemberDTO dto = new MemberDTO();
+		SignupUpdateForm form = new SignupUpdateForm();
 
-		dto.setId("user2");
-		dto.setPassword("a123");
-		dto.setName("회원2");
-		dto.setEmail("bbb@gmail.com");
-		dto.setPhone("010-2222-2222");
-		dto.setRegNo("223456-1234567");
+		form.setId("user2");
+		form.setPassword1("a123");
+		form.setPassword2("a123");
+		form.setName("회원2");
+		form.setEmail("bbb@gmail.com");
+		form.setPhone("010-2222-2222");
+		form.setRegNo("223456-1234567");
 
-		boolean createFlag = memberService.create(dto);
+		boolean createFlag = memberService.create(form);
 		if(!createFlag) {
 			System.out.println("회원정보 등록 실패: " + createFlag);
 			return;
@@ -75,16 +77,17 @@ class MemberTests {
 	void memberUpdate() {
 
 		Member member = memberService.getUser("user2");
-		MemberDTO dto = new MemberDTO();
+		SignupUpdateForm form = new SignupUpdateForm();
 
 		System.out.println("수정할 회원 아이디:" + member.getId());
-		dto.setPassword("a123");
-		dto.setName("회원3");
-		dto.setEmail("ccc@gmail.com");
-		dto.setPhone("010-3333-3333");
-		dto.setRegNo("323456-1234567");
+		form.setPassword1("a123");
+		form.setPassword2("a123");
+		form.setName("회원3");
+		form.setEmail("ccc@gmail.com");
+		form.setPhone("010-3333-3333");
+		form.setRegNo("323456-1234567");
 
-		boolean updateFlag = memberService.update(member, dto);
+		boolean updateFlag = memberService.update(member, form);
 
 		if(!updateFlag) {
 			System.out.println("회원정보 수정 실패: " + updateFlag);
