@@ -40,7 +40,7 @@ import lombok.RequiredArgsConstructor;
 @Controller
 @RequestMapping("/member")
 @RequiredArgsConstructor
-public class MemberContoller {
+public class MemberController {
 
     private final MemberService memberService;
 
@@ -54,7 +54,7 @@ public class MemberContoller {
 
     //로그인 처리(POST): spring security가 자동으로 수행하므로, 따로 맵핑할 필요가 없다.
     @PostMapping("/login")
-	public ResponseEntity<?> login(@Valid @RequestBody LoginForm loginForm, BindingResult bindingResult) {
+	public ResponseEntity<?> login(@Valid @RequestBody LoginForm loginForm, BindingResult bindingResult) {  //RequestBody: 클라이언트 -> 서버로 넘어오는 요청본문(json 데이터가 담김) 
 
         //백엔드 - 에러 메세지를 JSON 형태로 반환
 		
@@ -129,23 +129,23 @@ public class MemberContoller {
 
     //회원 조회(가져오기)
     @GetMapping("/info/{id}")
-    public ResponseEntity<?> getMember(Model model, @PathVariable("id") String id){
+    public ResponseEntity<?> getMember(Model model, @PathVariable("id") String id){  //Model=파라미터/어트리뷰트
 
         try {
-			Member member = memberService.getUser(id);
+			Member entity = memberService.getUser(id);
             MemberDTO dto = new MemberDTO();
 
             //Member 엔티티 ---> Member dto
-            dto.setMemberId(member.getMemberId());
-            dto.setId(member.getId());
-            dto.setPassword(member.getPassword());
-            dto.setName(member.getName());
-            dto.setEmail(member.getEmail());
-            dto.setPhone(member.getPhone());
-            dto.setRole(member.getRole());
-            dto.setRegNo(member.getRegNo());
-            dto.setCreatedAt(member.getCreatedAt());
-            dto.setUpdatedAt(member.getUpdatedAt());
+            dto.setMemberId(entity.getMemberId());
+            dto.setId(entity.getId());
+            dto.setPassword(entity.getPassword());
+            dto.setName(entity.getName());
+            dto.setEmail(entity.getEmail());
+            dto.setPhone(entity.getPhone());
+            dto.setRole(entity.getRole());
+            dto.setRegNo(entity.getRegNo());
+            dto.setCreatedAt(entity.getCreatedAt());
+            dto.setUpdatedAt(entity.getUpdatedAt());
 
             model.addAttribute("member", dto);
             return ResponseEntity.ok().body("회원정보가 조회되었습니다"); // 성공 응답
@@ -193,7 +193,7 @@ public class MemberContoller {
 
 
 
-    @PostMapping("/update/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<?> update(@Valid @RequestBody SignupUpdateForm suform, BindingResult bindingResult) {
 
         //백엔드 - 에러 메세지를 JSON 형태로 반환
