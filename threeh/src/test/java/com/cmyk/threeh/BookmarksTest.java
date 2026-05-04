@@ -14,7 +14,6 @@ import com.cmyk.threeh.domain.Bookmarks;
 import com.cmyk.threeh.domain.Item;
 import com.cmyk.threeh.domain.Member;
 import com.cmyk.threeh.dto.BookmarksDTO;
-import com.cmyk.threeh.dto.ItemResponseDTO;
 import com.cmyk.threeh.repository.BookmarksRepository;
 import com.cmyk.threeh.repository.ItemRepository;
 import com.cmyk.threeh.repository.MemberRepository;
@@ -56,7 +55,7 @@ class BookmarksTest {
     //     dto.setType("상품");
 
 
-    //     //추가
+    //     //북마크 추가
 	// 	int toggleFlag = bookmarksService.toggle(dto);
         
 

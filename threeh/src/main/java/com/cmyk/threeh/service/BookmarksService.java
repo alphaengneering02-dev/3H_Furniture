@@ -7,12 +7,10 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.cmyk.threeh.domain.Admins;
 import com.cmyk.threeh.domain.Bookmarks;
 import com.cmyk.threeh.domain.Item;
 import com.cmyk.threeh.domain.Member;
 import com.cmyk.threeh.dto.BookmarksDTO;
-import com.cmyk.threeh.dto.ItemResponseDTO;
 import com.cmyk.threeh.global.error.CustomException;
 import com.cmyk.threeh.global.error.ErrorCode;
 import com.cmyk.threeh.repository.AdminsRepository;

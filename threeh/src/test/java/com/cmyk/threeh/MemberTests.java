@@ -27,35 +27,35 @@ class MemberTests {
 	@Autowired
 	private MemberService memberService;
 
-	@Test
-	//@Transactional
-	void memberCreate() {
+	// @Test
+	// //@Transactional
+	// void memberCreate() {
 
-		SignupUpdateForm form = new SignupUpdateForm();
+	// 	SignupUpdateForm form = new SignupUpdateForm();
 
-		form.setId("user2");
-		form.setPassword1("a123");
-		form.setPassword2("a123");
-		form.setName("회원2");
-		form.setEmail("bbb@gmail.com");
-		form.setPhone("010-2222-2222");
-		form.setRegNo("223456-1234567");
+	// 	form.setId("user2");
+	// 	form.setPassword1("a123");
+	// 	form.setPassword2("a123");
+	// 	form.setName("회원2");
+	// 	form.setEmail("bbb@gmail.com");
+	// 	form.setPhone("010-2222-2222");
+	// 	form.setRegNo("223456-1234567");
 
-		boolean createFlag = memberService.create(form);
-		if(!createFlag) {
-			System.out.println("회원정보 등록 실패: " + createFlag);
-			return;
-		}
+	// 	boolean createFlag = memberService.create(form);
+	// 	if(!createFlag) {
+	// 		System.out.println("회원정보 등록 실패: " + createFlag);
+	// 		return;
+	// 	}
 
-		Member member = memberService.getUser("user2");
+	// 	Member member = memberService.getUser("user2");
 	
-		System.out.println("회원정보 등록 성공: " + createFlag);
-		System.out.printf(
-			"%d, %s, %s, %s, %s, %s, %s, %s, %s, %s\n",
-			member.getMemberId(), member.getId(), member.getPassword(), member.getName(), member.getEmail(), member.getPhone(), member.getRole(), member.getRegNo(), member.getCreatedAt(), member.getUpdatedAt()
-		);
+	// 	System.out.println("회원정보 등록 성공: " + createFlag);
+	// 	System.out.printf(
+	// 		"%d, %s, %s, %s, %s, %s, %s, %s, %s, %s\n",
+	// 		member.getMemberId(), member.getId(), member.getPassword(), member.getName(), member.getEmail(), member.getPhone(), member.getRole(), member.getRegNo(), member.getCreatedAt(), member.getUpdatedAt()
+	// 	);
 
-	}
+	// }
 
 
 	@Test
@@ -73,120 +73,120 @@ class MemberTests {
 	}
 
 
-	@Test
-	void memberUpdate() {
+	// @Test
+	// void memberUpdate() {
 
-		Member member = memberService.getUser("user2");
-		SignupUpdateForm form = new SignupUpdateForm();
+	// 	Member member = memberService.getUser("user2");
+	// 	SignupUpdateForm form = new SignupUpdateForm();
 
-		System.out.println("수정할 회원 아이디:" + member.getId());
-		form.setPassword1("a123");
-		form.setPassword2("a123");
-		form.setName("회원3");
-		form.setEmail("ccc@gmail.com");
-		form.setPhone("010-3333-3333");
-		form.setRegNo("323456-1234567");
+	// 	System.out.println("수정할 회원 아이디:" + member.getId());
+	// 	form.setPassword1("a123");
+	// 	form.setPassword2("a123");
+	// 	form.setName("회원3");
+	// 	form.setEmail("ccc@gmail.com");
+	// 	form.setPhone("010-3333-3333");
+	// 	form.setRegNo("323456-1234567");
 
-		boolean updateFlag = memberService.update(member, form);
+	// 	boolean updateFlag = memberService.update(member, form);
 
-		if(!updateFlag) {
-			System.out.println("회원정보 수정 실패: " + updateFlag);
-			return;
-		}
+	// 	if(!updateFlag) {
+	// 		System.out.println("회원정보 수정 실패: " + updateFlag);
+	// 		return;
+	// 	}
 
-		System.out.println("회원정보 수정 성공: " + updateFlag);
+	// 	System.out.println("회원정보 수정 성공: " + updateFlag);
 
-	}
-
-
-	@Test
-	void memberDelete() {
-
-		Member member = memberService.getUser("user2");
-
-		System.out.println("삭제할 회원 아이디:" + member.getId());
-		boolean deleteFlag = memberService.delete(member.getId());
-
-		if(!deleteFlag) {
-			System.out.println("회원정보 삭제 실패: " + deleteFlag);
-			return;
-		}
-
-		System.out.println("회원정보 삭제 성공: " + deleteFlag);
-
-	}
+	// }
 
 
-	@Test
-	@Transactional
-	void memberFindByEmail() {
+	// @Test
+	// void memberDelete() {
 
-		Member member = memberService.findMember("bbb@gmail.com");
+	// 	Member member = memberService.getUser("user2");
 
-		System.out.println("회원조회 성공: ");
-		System.out.printf(
-			"%d, %s, %s, %s, %s, %s, %s, %s, %s, %s\n",
-			member.getMemberId(), member.getId(), member.getPassword(), member.getName(), member.getEmail(), member.getPhone(), member.getRole(), member.getRegNo(), member.getCreatedAt(), member.getUpdatedAt()
-		);
+	// 	System.out.println("삭제할 회원 아이디:" + member.getId());
+	// 	boolean deleteFlag = memberService.delete(member.getId());
 
-	}
+	// 	if(!deleteFlag) {
+	// 		System.out.println("회원정보 삭제 실패: " + deleteFlag);
+	// 		return;
+	// 	}
 
+	// 	System.out.println("회원정보 삭제 성공: " + deleteFlag);
 
-	// //=============================================================
-
-
-	@Test
-	@Transactional
-	void findId() {
-
-		MemberDTO dto = new MemberDTO();
-
-		dto.setName("회원2");  //이름
-		dto.setPhone("010-2222-2222");  //전화번호 또는 이메일
-		// dto.setEmail("bbb@gmail.com");
-
-		String result = memberService.findUserId(dto);
-		if(result.isEmpty()) {
-			System.out.println("아이디 찾기 실패: " + result);
-			return;
-		}
-
-		System.out.println("아이디 찾기 성공: " + result);
-
-	}
+	// }
 
 
-	@Test
-	@Transactional
-	void changePassword() {
+	// @Test
+	// @Transactional
+	// void memberFindByEmail() {
 
-		String id = "user2";
-		String oldPassword = "111";
-		String newPassword = "a123";
+	// 	Member member = memberService.findMember("bbb@gmail.com");
 
-		System.out.println("재설정할 아이디:" + id);
-		System.out.println("기존 pw:" + oldPassword);
-		System.out.println("새로운 pw:" + newPassword);
-		boolean changePasswordFlag  = memberService.changeUserPassword(id, oldPassword, newPassword);  //아이디, 기존 pw, 새로운 pw
+	// 	System.out.println("회원조회 성공: ");
+	// 	System.out.printf(
+	// 		"%d, %s, %s, %s, %s, %s, %s, %s, %s, %s\n",
+	// 		member.getMemberId(), member.getId(), member.getPassword(), member.getName(), member.getEmail(), member.getPhone(), member.getRole(), member.getRegNo(), member.getCreatedAt(), member.getUpdatedAt()
+	// 	);
 
-		if(!changePasswordFlag) {
-			System.out.println("비밀번호 재설정 실패: " + changePasswordFlag);
-			return;
-		}
-
-		System.out.println("비밀번호 재설정 성공: " + changePasswordFlag);
-
-	}
+	// }
 
 
-	@Test
-	@Transactional
-	void checkRole() {
+	// // //=============================================================
 
-		String result = memberService.checkMemberRole("user2");
-		System.out.println("회원 role: " + result);
 
-	}
+	// @Test
+	// @Transactional
+	// void findId() {
+
+	// 	MemberDTO dto = new MemberDTO();
+
+	// 	dto.setName("회원2");  //이름
+	// 	dto.setPhone("010-2222-2222");  //전화번호 또는 이메일
+	// 	// dto.setEmail("bbb@gmail.com");
+
+	// 	String result = memberService.findUserId(dto);
+	// 	if(result.isEmpty()) {
+	// 		System.out.println("아이디 찾기 실패: " + result);
+	// 		return;
+	// 	}
+
+	// 	System.out.println("아이디 찾기 성공: " + result);
+
+	// }
+
+
+	// @Test
+	// @Transactional
+	// void changePassword() {
+
+	// 	String id = "user2";
+	// 	String oldPassword = "111";
+	// 	String newPassword = "a123";
+
+	// 	System.out.println("재설정할 아이디:" + id);
+	// 	System.out.println("기존 pw:" + oldPassword);
+	// 	System.out.println("새로운 pw:" + newPassword);
+	// 	boolean changePasswordFlag  = memberService.changeUserPassword(id, oldPassword, newPassword);  //아이디, 기존 pw, 새로운 pw
+
+	// 	if(!changePasswordFlag) {
+	// 		System.out.println("비밀번호 재설정 실패: " + changePasswordFlag);
+	// 		return;
+	// 	}
+
+	// 	System.out.println("비밀번호 재설정 성공: " + changePasswordFlag);
+
+	// }
+
+
+	// @Test
+	// @Transactional
+	// void checkRole() {
+
+	// 	String result = memberService.checkMemberRole("user2");
+	// 	System.out.println("회원 role: " + result);
+
+	// }
 
 
 

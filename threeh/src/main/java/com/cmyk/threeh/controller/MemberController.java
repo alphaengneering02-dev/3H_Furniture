@@ -6,7 +6,6 @@ import java.util.Map;
 
 import javax.validation.Valid;
 
-import org.aspectj.weaver.patterns.TypePatternQuestions.Question;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,16 +22,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.cmyk.threeh.domain.Member;
-import com.cmyk.threeh.dto.ItemResponseDTO;
-import com.cmyk.threeh.dto.ItemUpdateRequestDTO;
 import com.cmyk.threeh.dto.MemberDTO;
 import com.cmyk.threeh.form.LoginForm;
 import com.cmyk.threeh.form.SignupUpdateForm;
-import com.cmyk.threeh.global.error.CustomException;
-import com.cmyk.threeh.global.error.ErrorCode;
 import com.cmyk.threeh.service.MemberService;
 
 import lombok.RequiredArgsConstructor;
