@@ -474,7 +474,7 @@ public class ItemTest {
         admin.setAdLoginId("admin");
         admin.setPassword("1234");
         admin.setAdminName("관리자");
-        admin.setRole(MemberRole.ADMIN);
+        //admin.setRole(MemberRole.ADMIN);
         
         adminsRepository.save(admin);
 
