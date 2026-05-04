@@ -3,6 +3,7 @@ package com.cmyk.threeh.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -29,6 +30,7 @@ import com.cmyk.threeh.dto.BookmarksDTO;
 import com.cmyk.threeh.dto.ItemResponseDTO;
 import com.cmyk.threeh.dto.MemberDTO;
 import com.cmyk.threeh.form.SignupUpdateForm;
+import com.cmyk.threeh.repository.ItemRepository;
 import com.cmyk.threeh.service.BookmarksService;
 import com.cmyk.threeh.service.ItemService;
 import com.cmyk.threeh.service.MemberService;
@@ -41,6 +43,7 @@ import lombok.RequiredArgsConstructor;
 public class BookmarkController {
 
     private final MemberService memberService;
+    private final ItemRepository itemRepository;
     private final ItemService itemService;
     private final BookmarksService bookmarksService;
 
@@ -82,9 +85,11 @@ public class BookmarkController {
 
         try {
             Member member = memberService.getUser(id);
-            ItemResponseDTO itemResDto = itemService.getItem(itemId);
+            Optional<Item> op_i  = itemRepository.findById(itemId);
+            Item item = op_i.get();
+            
 
-			Bookmarks bookmark = bookmarksService.getBookmark(member, itemResDto);
+			Bookmarks bookmark = bookmarksService.getBookmark(member, item);
 
             model.addAttribute("bookmark", bookmark);
             return ResponseEntity.ok().body("해당 북마크가 조회되었습니다"); // 성공 응답
