@@ -16,6 +16,8 @@ public class DeliveryDTO {
     private Long adminId;
     private String adminName;
     private String companyName;
+
+    
     private String businessName;
     private String businessPhone;
     private String businessNo;

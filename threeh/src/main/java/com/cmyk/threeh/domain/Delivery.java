@@ -26,7 +26,7 @@ public class Delivery {
     private Admins admin;
     
    @Embedded
-    private Adress businessAddAdress;
+    private Adress savedAddress;
 
     @OneToOne(mappedBy = "delivery")
     private Orders orders;
