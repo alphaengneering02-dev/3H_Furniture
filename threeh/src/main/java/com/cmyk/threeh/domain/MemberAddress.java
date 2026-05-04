@@ -22,16 +22,15 @@ public class MemberAddress {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    //우편번호 추가
-    @Column(name = "zipcode", length = 10, nullable = false)
-    private String zipcode;
+    // 기존의 개별 zipcode, addr 필드는 이 객체가 대신합니다.
+    @Embedded
+    private Adress adressl;
 
-    @Column(name = "addr", nullable = false)
-    private String addr;
-
+    //상세주소는 VO에 없으므로 별도 유지
     @Column(name = "addr_detail")
     private String addrDetail;
 
+    //기본배송지 여부 (기본값 'N')
     @Column(name = "is_default", length = 1)
     private String isDefault = "N"; 
 }

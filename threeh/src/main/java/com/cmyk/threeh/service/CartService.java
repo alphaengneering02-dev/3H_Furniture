@@ -7,7 +7,6 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
 
-
 import org.springframework.stereotype.Service;
 
 import com.cmyk.threeh.domain.Cart;
@@ -31,6 +30,7 @@ public class CartService {
     @Resource
     private final MemberService memberService;
 
+    // 장바구니 생성 (기초 로직)
     @Transactional
     public Cart createCart(String userid) {
         Member member = memberService.getUser(userid);
@@ -41,6 +41,7 @@ public class CartService {
         return cartRepository.save(cart);
     }
 
+    // 장바구니 목록 조회 (순수 상품 목록만)
     @Transactional
     public CartDTO getCartDto(String userid) {
 
@@ -74,16 +75,15 @@ public class CartService {
         cartDTO.setCartItems(itemDtoList);
 
         return cartDTO;
-
     }
 
-    //장바구니 삭제
+    // 장바구니 상품 삭제
     @Transactional
     public void deleteCartItem(Long cartItemId) {
         cartItemRepository.deleteById(cartItemId);
     }
 
-    //장바구니 상품 수량 변경
+    // 장바구니 상품 수량 변경
     @Transactional
     public void updateCount(Long cartItemId, int count) {
 
@@ -95,8 +95,4 @@ public class CartService {
 
          cartItem.setCount(count);
     }
-
-
 }
-
-

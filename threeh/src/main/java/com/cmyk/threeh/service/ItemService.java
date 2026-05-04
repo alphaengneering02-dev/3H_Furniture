@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import com.cmyk.threeh.domain.Admins;
 import com.cmyk.threeh.domain.Item;
@@ -23,7 +25,6 @@ public class ItemService {
     
     private final ItemRepository itemRepository;
     private final AdminsRepository adminsRepository;
-
     //상품등록(관리자 검증 필요)
 
     public ItemResponseDTO createItems(ItemRequestDTO dto,Long adminId){
@@ -48,8 +49,14 @@ public class ItemService {
 
         return ItemResponseDTO.builder()
             .itemId(savedItem.getItemId())
-            .itemName(item.getItemName())
-            .price(item.getPrice())
+            .adminId(savedItem.getAdmin().getAdminId())
+            .itemName(savedItem.getItemName())
+            .itemDetail(savedItem.getItemDetail())
+            .category(savedItem.getCategory())
+            .itemColor(savedItem.getItemColor())
+            .price(savedItem.getPrice())
+            .discountPrice(savedItem.getDiscountPrice())
+            .currency(savedItem.getCurrency())
             .stock(item.getStock())
             .build();
 

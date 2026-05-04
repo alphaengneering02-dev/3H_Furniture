@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/items")
+@RequestMapping("/products")
 public class ItemController {
     
     private final ItemService itemService;
@@ -33,7 +33,11 @@ public class ItemController {
     @PostMapping()
     public ItemResponseDTO createItems(@RequestBody ItemRequestDTO dto) {
 
-        return itemService.createItems(dto, 1L);
+        //System.out.println("category: " + dto.getCategory());
+        //System.out.println("itemName: " + dto.getItemName());
+        //System.out.println("currency: " + dto.getCurrency());
+     
+        return itemService.createItems(dto, 1L);   
     }
 
     //**1L은 임시로 현재 로그인한 관리자 의미로
