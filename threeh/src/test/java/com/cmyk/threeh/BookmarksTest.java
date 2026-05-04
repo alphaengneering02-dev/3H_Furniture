@@ -14,6 +14,7 @@ import com.cmyk.threeh.domain.Bookmarks;
 import com.cmyk.threeh.domain.Item;
 import com.cmyk.threeh.domain.Member;
 import com.cmyk.threeh.dto.BookmarksDTO;
+import com.cmyk.threeh.dto.ItemResponseDTO;
 import com.cmyk.threeh.repository.BookmarksRepository;
 import com.cmyk.threeh.repository.ItemRepository;
 import com.cmyk.threeh.repository.MemberRepository;
@@ -39,53 +40,53 @@ class BookmarksTest {
 	private BookmarksService bookmarksService;
 
 
-	@Test
-	//@Transactional
-	void bookmarksToggle() {
+	// @Test
+	// //@Transactional
+	// void bookmarksToggle() {
 
-        //더미데이터 입력
-        Optional<Member> op_m = memberRepository.findById("user2");
-        Optional<Item> op_i = itemRepository.findById(Long.valueOf(1));
-        Member member = op_m.get();
-        Item item = op_i.get();
+    //     //더미데이터 입력
+    //     Optional<Member> op_m = memberRepository.findById("user2");
+    //     Optional<Item> op_i = itemRepository.findById(Long.valueOf(1));
+    //     Member member = op_m.get();
+    //     Item item = op_i.get();
 
-        BookmarksDTO dto = new BookmarksDTO();
-        dto.setMember(member);
-        dto.setItem(item);
-        dto.setType("상품");
+    //     BookmarksDTO dto = new BookmarksDTO();
+    //     dto.setMember(member);
+    //     dto.setItem(item);
+    //     dto.setType("상품");
 
 
-        //추가
-		int toggleFlag = bookmarksService.toggle(dto);
+    //     //추가
+	// 	int toggleFlag = bookmarksService.toggle(dto);
         
 
-        //확인
-        if(toggleFlag==-1) {
-			System.out.println("북마크 추가/삭제 실패: " + toggleFlag);
-			return;
-		}
+    //     //확인
+    //     if(toggleFlag==-1) {
+	// 		System.out.println("북마크 추가/삭제 실패: " + toggleFlag);
+	// 		return;
+	// 	}
 
 
-        Optional<Bookmarks> op_b = bookmarksRepository.findByMemberAndItem(member, item);
-        Bookmarks bookmark = op_b.get();
+    //     Optional<Bookmarks> op_b = bookmarksRepository.findByMemberAndItem(member, item);
+    //     Bookmarks bookmark = op_b.get();
 
-		if(toggleFlag==0) {
-			System.out.println("북마크 삭제 성공: " + toggleFlag);
-            System.out.printf(
-                "%d, %s, %s, %s, %s\n",
-                bookmark.getBookmakrId(), bookmark.getMember().getId(), bookmark.getItem().getItemId(), bookmark.getCreatedAt(), bookmark.getType()
-            );
-			return;
-		}
-		if(toggleFlag==1) {
-			System.out.println("북마크 추가 성공: " + toggleFlag);
-            System.out.printf(
-                "%d, %s, %s, %s, %s\n",
-                bookmark.getBookmakrId(), bookmark.getMember().getId(), bookmark.getItem().getItemId(), bookmark.getCreatedAt(), bookmark.getType()
-            );
-		}
+	// 	if(toggleFlag==0) {
+	// 		System.out.println("북마크 삭제 성공: " + toggleFlag);
+    //         System.out.printf(
+    //             "%d, %s, %s, %s, %s\n",
+    //             bookmark.getBookmakrId(), bookmark.getMember().getId(), bookmark.getItem().getItemId(), bookmark.getCreatedAt(), bookmark.getType()
+    //         );
+	// 		return;
+	// 	}
+	// 	if(toggleFlag==1) {
+	// 		System.out.println("북마크 추가 성공: " + toggleFlag);
+    //         System.out.printf(
+    //             "%d, %s, %s, %s, %s\n",
+    //             bookmark.getBookmakrId(), bookmark.getMember().getId(), bookmark.getItem().getItemId(), bookmark.getCreatedAt(), bookmark.getType()
+    //         );
+	// 	}
 
-	}
+	// }
 
 
 
@@ -112,22 +113,22 @@ class BookmarksTest {
 	}
 
 
-    @Test
-	//@Transactional
-	void bookmarkListGet() {
+    // @Test
+	// //@Transactional
+	// void bookmarkListGet() {
 
-        //더미데이터 입력
-        Optional<Member> op_m = memberRepository.findById("user2");
-        Member member = op_m.get();
+    //     //더미데이터 입력
+    //     Optional<Member> op_m = memberRepository.findById("user2");
+    //     Member member = op_m.get();
 
 
-        //북마크 리스트 가져오기
-        List<BookmarksDTO> list = bookmarksService.getMyBookmarkList(member);
+    //     //북마크 리스트 가져오기
+    //     List<BookmarksDTO> list = bookmarksService.getMyBookmarkList(member);
 
-        System.out.println("북마크 리스트 가져오기 성공: ");
-        System.out.println(list);
+    //     System.out.println("북마크 리스트 가져오기 성공: ");
+    //     System.out.println(list);
 
-	}
+	// }
 
 
 

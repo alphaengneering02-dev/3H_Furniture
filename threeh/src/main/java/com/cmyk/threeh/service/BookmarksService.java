@@ -74,15 +74,9 @@ public class BookmarksService {
 
     //북마크 조회
     //북마크 1개 가져오기 (다른 서비스들과의 연동을 위해 Bookmarks 형태로 반환)
-	public Bookmarks getBookmark(Member member, ItemResponseDTO itemResDto) {
+	public Bookmarks getBookmark(Member member, Item item) {
 		
 		try {
-            //ItemResponseDTO ---> Item 엔티티
-            Long itemId = itemResDto.getItemId();
-            Optional<Item> op_i = itemRepository.findById(itemId);
-            Item item = op_i.get();
-            
-
             //1개 조회 실행
 			Optional<Bookmarks> op = bookmarksRepository.findByMemberAndItem(member, item);
 		
