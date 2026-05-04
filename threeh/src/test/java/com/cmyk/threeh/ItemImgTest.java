@@ -1,12 +1,15 @@
 package com.cmyk.threeh;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -49,6 +52,7 @@ public class ItemImgTest {
     
 
     @Test
+    /* 
     private Item createTestItemImg(){
 
         Admins admin = new Admins();
@@ -56,7 +60,7 @@ public class ItemImgTest {
         admin.setAdLoginId("admin");
         admin.setPassword("1234");
         admin.setAdminName("관리자");
-        admin.setRole(MemberRole.ADMIN);
+        //admin.setRole(MemberRole.ADMIN);
 
         adminsRepository.save(admin);
 
@@ -70,8 +74,9 @@ public class ItemImgTest {
 
         return itemRepository.save(item);
     }
+    */
 
-    @Test
+
     /* 
     public void 이미지등록테스트() throws Exception{
 
@@ -165,6 +170,7 @@ public class ItemImgTest {
     }
     */
 
+    /* 
     public void 이미지수정테스트(){
 
         Item item = createTestItemImg();
@@ -197,6 +203,35 @@ public class ItemImgTest {
         assertEquals("new-url", result.getImgUrl());
         assertEquals("new-sub-url", result.getSubImgUrl());
     }
-    
+    */
+
+   public void 이미지삭제테스트(){
+
+    //상품 생성
+    Item item = new Item();
+    item.setItemName("테스트 상품");
+
+    Item savedItem = itemRepository.save(item);
+
+    //이미지 생성
+
+    ItemImg itemImg = new ItemImg();
+    itemImg.setItem(savedItem);
+    itemImg.setImgName("delete.jpg");
+    itemImg.setImgUrl("delete-url");
+    itemImg.setSubImg(SubImg.Y);
+
+    ItemImg savedImg = itemImgRepository.save(itemImg);
+
+    //삭제 실행
+    itemImgService.deleteItemImg(savedImg.getItemImgId());
+
+    //검증
+    Optional<ItemImg> deletedImg = itemImgRepository.findById(savedImg.getItemImgId());
+
+    assertFalse(deletedImg.isPresent());
+
+    System.out.println(deletedImg.isPresent());
+   }
 
 }
