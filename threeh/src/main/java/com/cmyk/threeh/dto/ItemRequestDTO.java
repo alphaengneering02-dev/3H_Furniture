@@ -11,9 +11,6 @@ import lombok.Setter;
 @Builder
 public class ItemRequestDTO {
 
-@NotNull
-private Long adminId;
-
 private String category;
 private String itemName;
 private String itemDetail;
