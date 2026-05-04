@@ -20,7 +20,11 @@ import com.cmyk.threeh.domain.Bookmarks;
 import com.cmyk.threeh.domain.Item;
 import com.cmyk.threeh.domain.Member;
 import com.cmyk.threeh.dto.BookmarksDTO;
+import com.cmyk.threeh.dto.MemberDTO;
+import com.cmyk.threeh.global.error.CustomException;
+import com.cmyk.threeh.global.error.ErrorCode;
 import com.cmyk.threeh.repository.ItemRepository;
+import com.cmyk.threeh.repository.MemberRepository;
 import com.cmyk.threeh.service.BookmarksService;
 import com.cmyk.threeh.service.ItemService;
 import com.cmyk.threeh.service.MemberService;
@@ -33,6 +37,7 @@ import lombok.RequiredArgsConstructor;
 public class BookmarkController {
 
     private final MemberService memberService;
+    private final MemberRepository memberRepository;
     private final ItemRepository itemRepository;
     private final ItemService itemService;
     private final BookmarksService bookmarksService;
@@ -42,27 +47,17 @@ public class BookmarkController {
     //북마크 토글(추가/삭제)
     @PreAuthorize("isAuthenticated")
     @PostMapping("/toggle")
-	public ResponseEntity<?> toggle(@RequestBody BookmarksDTO dto) {
+	public BookmarksDTO toggle(@RequestBody BookmarksDTO dto) {
 
-		try {
-			int result = bookmarksService.toggle(dto);
+		int result = bookmarksService.toggle(dto);
 
-            if(result == -1) {  //1. 에러 case
-                Map<String, String> errorMap = new HashMap<>();
-                errorMap.put("BOOKMARK_FAILED", "북마크에 실패하였습니다.");
-                return ResponseEntity.badRequest().body(errorMap);
-            } else if(result == 1) {  //2. 추가 case
-                return ResponseEntity.ok().body("북마크 추가가 완료되었습니다."); // 성공 응답
-            } else {  //3. 삭제 case
-                return ResponseEntity.ok().body("북마크 삭제가 완료되었습니다."); // 성공 응답
-            }
-		} catch (DataIntegrityViolationException e) {  //데이터 무결성 제약조건 위반
-			Map<String, String> errorMap = new HashMap<>();
-            errorMap.put("BOOKMARK_FOUND", "이미 존재하는 북마크입니다.");
-            return ResponseEntity.badRequest().body(errorMap);
-		} catch (Exception e) {
-			return ResponseEntity.internalServerError().body("서버 오류가 발생했습니다(북마크 실패).");
-		}
+        if(result == -1) {  //1. 에러 case
+            throw new CustomException(ErrorCode.BOOKMARK_NOT_FOUND);
+        } else if(result == 1) {  //2. 추가 case
+            return dto;
+        } else {  //3. 삭제 case
+            return null;
+        }
 		
 	}
 
@@ -70,41 +65,38 @@ public class BookmarkController {
 
     //북마크 조회
     //북마크 1개 가져오기
-    @GetMapping("/info/{bookmakrId}?id={id}&itemId={itemId}")
-    public ResponseEntity<?> getBookmark(Model model, @PathVariable("bookmakrId") Long bookmakrId, @PathVariable("id") String id, @PathVariable("itemId") Long itemId){
+    @GetMapping("/{bookmakrId}?id={id}&itemId={itemId}")
+    public BookmarksDTO getBookmark(Model model, @PathVariable("bookmakrId") Long bookmakrId, @PathVariable("id") String id, @PathVariable("itemId") Long itemId){
 
-        try {
-            Member member = memberService.getUser(id);
-            Optional<Item> op_i  = itemRepository.findById(itemId);
-            Item item = op_i.get();
-            
+        Member member = memberService.getUser(id);
+        Long memberId = member.getMemberId();
 
-			Bookmarks bookmark = bookmarksService.getBookmark(member, item);
+        //Bookmarks 엔티티 ---> Bookmarks dto
+        Bookmarks entity = bookmarksService.getBookmark(memberId, itemId);
+        BookmarksDTO dto = new BookmarksDTO();
 
-            model.addAttribute("bookmark", bookmark);
-            return ResponseEntity.ok().body("해당 북마크가 조회되었습니다"); // 성공 응답
-		} catch (Exception e) {
-			return ResponseEntity.internalServerError().body("서버 오류가 발생했습니다(북마크 조회 실패).");
-		}
+        dto.setBookmakrId(entity.getBookmakrId());
+        dto.setMemberId(entity.getMember().getMemberId());
+        dto.setItemId(entity.getItem().getItemId());
+        dto.setCreatedAt(entity.getCreatedAt());
+        dto.setType(entity.getType());
+
+        return dto;
 
     }
 
 
 
     //북마크 리스트 가져오기
-    @GetMapping("/info/{id}")
-    public ResponseEntity<?> getMyBookmarkList(Model model, @PathVariable("id") String id){
+    @GetMapping("/{id}")
+    public List<BookmarksDTO> getMyBookmarkList(Model model, @PathVariable("id") String id){
 
-        try {
-            Member member = memberService.getUser(id);
+        Member member = memberService.getUser(id);
+        Long memberId = member.getMemberId();
 
-			List<BookmarksDTO> bookmarkList = bookmarksService.getMyBookmarkList(member);
+        List<BookmarksDTO> bookmarkList = bookmarksService.getMyBookmarkList(memberId);
 
-            model.addAttribute("bookmarkList", bookmarkList);
-            return ResponseEntity.ok().body("회원의 북마크 리스트가 조회되었습니다"); // 성공 응답
-		} catch (Exception e) {
-			return ResponseEntity.internalServerError().body("서버 오류가 발생했습니다(회원의 북마크 리스트 조회 실패).");
-		}
+        return bookmarkList;
 
     }
 

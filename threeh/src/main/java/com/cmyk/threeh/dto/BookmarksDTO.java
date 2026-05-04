@@ -18,9 +18,9 @@ public class BookmarksDTO {
 
     private Long bookmakrId;
 
-    private Member member;
+    private Long memberId;
 
-    private Item item;
+    private Long itemId;
 
     private LocalDateTime createdAt;
 

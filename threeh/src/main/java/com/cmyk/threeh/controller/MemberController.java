@@ -21,17 +21,20 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.cmyk.threeh.domain.Member;
 import com.cmyk.threeh.dto.MemberDTO;
 import com.cmyk.threeh.form.LoginForm;
 import com.cmyk.threeh.form.SignupUpdateForm;
+import com.cmyk.threeh.global.error.CustomException;
+import com.cmyk.threeh.global.error.ErrorCode;
 import com.cmyk.threeh.service.MemberService;
 
 import lombok.RequiredArgsConstructor;
 
-@Controller
+@RestController
 @RequestMapping("/member")
 @RequiredArgsConstructor
 public class MemberController {
@@ -42,11 +45,10 @@ public class MemberController {
     //로그인
     @GetMapping("/login")
     public String login(LoginForm loginForm) {
-        // return "forward:/login.js";
-        return "Test";
+        return "forward:/Login.js";
     }
 
-    //로그인 처리(POST): spring security가 자동으로 수행하므로, 따로 맵핑할 필요가 없다.
+    //로그인 처리(POST)
     @PostMapping("/login")
 	public ResponseEntity<?> login(@Valid @RequestBody LoginForm loginForm, BindingResult bindingResult) {  //RequestBody: 클라이언트 -> 서버로 넘어오는 요청본문(json 데이터가 담김) 
 
@@ -78,7 +80,7 @@ public class MemberController {
     //회원가입
     @GetMapping("/signup")
     public String signup(SignupUpdateForm suform) {
-        return "forward:/signup.js";
+        return "forward:/Signup.js";
     }
 
 
@@ -108,7 +110,10 @@ public class MemberController {
 		//회원가입 실행
 		try {
 			memberService.create(suform);
-            return ResponseEntity.ok().body("회원가입이 완료되었습니다."); // 성공 응답
+            return ResponseEntity.ok().body(
+                "회원가입이 완료되었습니다."
+                + suform
+            ); // 성공 응답
 		} catch (DataIntegrityViolationException e) {  //데이터 무결성 제약조건 위반
 			Map<String, String> errorMap = new HashMap<>();
             errorMap.put("MEMBER_FOUND", "이미 존재하는 회원입니다.");
@@ -122,30 +127,25 @@ public class MemberController {
     
 
     //회원 조회(가져오기)
-    @GetMapping("/info/{id}")
-    public ResponseEntity<?> getMember(Model model, @PathVariable("id") String id){  //Model=파라미터/어트리뷰트
+    @GetMapping("/{id}")
+    public MemberDTO getMember(@PathVariable("id") String id){
 
-        try {
-			Member entity = memberService.getUser(id);
-            MemberDTO dto = new MemberDTO();
+        //Member 엔티티 ---> Member dto
+        Member entity = memberService.getUser(id);
+        MemberDTO dto = new MemberDTO();
 
-            //Member 엔티티 ---> Member dto
-            dto.setMemberId(entity.getMemberId());
-            dto.setId(entity.getId());
-            dto.setPassword(entity.getPassword());
-            dto.setName(entity.getName());
-            dto.setEmail(entity.getEmail());
-            dto.setPhone(entity.getPhone());
-            dto.setRole(entity.getRole());
-            dto.setRegNo(entity.getRegNo());
-            dto.setCreatedAt(entity.getCreatedAt());
-            dto.setUpdatedAt(entity.getUpdatedAt());
+        dto.setMemberId(entity.getMemberId());
+        dto.setId(entity.getId());
+        dto.setPassword(entity.getPassword());
+        dto.setName(entity.getName());
+        dto.setEmail(entity.getEmail());
+        dto.setPhone(entity.getPhone());
+        dto.setRole(entity.getRole());
+        dto.setRegNo(entity.getRegNo());
+        dto.setCreatedAt(entity.getCreatedAt());
+        dto.setUpdatedAt(entity.getUpdatedAt());
 
-            model.addAttribute("member", dto);
-            return ResponseEntity.ok().body("회원정보가 조회되었습니다"); // 성공 응답
-		} catch (Exception e) {
-			return ResponseEntity.internalServerError().body("서버 오류가 발생했습니다(회원조회 실패).");
-		}
+        return dto;
 
     }
 
@@ -153,38 +153,32 @@ public class MemberController {
     //회원수정
     @PreAuthorize("isAuthenticated")
     @GetMapping("/update/{id}")
-    public ResponseEntity<?> update(Model model, SignupUpdateForm suform, @PathVariable("id") String id, Principal principal) {
+    public SignupUpdateForm update(SignupUpdateForm suform, @PathVariable("id") String id, Principal principal) {
 
-        try {
-            Member member = memberService.getUser(id);
-            
-            //현재 로그인한 회원과 수정할 회원이 불일치할 경우
-            if(!member.getId() .equals(principal.getName())) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "회원정보가 일치하지 않습니다.");
-                // throw new CustomException(ErrorCode.);
-            }
-            
-            
-            //수정할 회원정보를 폼에 채워서 보냄
-            suform.setMemberId(member.getMemberId());  //readOnly
-            suform.setId(member.getId());
-            suform.setPassword1(member.getPassword());
-            suform.setName(member.getName());
-            suform.setEmail(member.getEmail());
-            suform.setPhone(member.getPhone());
-            suform.setRole(member.getRole());  //readOnly
-            suform.setRegNo(member.getRegNo());
-            suform.setCreatedAt(member.getCreatedAt());  //readOnly
-            suform.setUpdatedAt(member.getUpdatedAt());  //readOnly
+        Member member = memberService.getUser(id);
         
-            model.addAttribute("suform", suform);
-            return ResponseEntity.ok().body("회원정보가 조회되었습니다"); // 성공 응답
-        } catch (Exception e) {
-			return ResponseEntity.internalServerError().body("서버 오류가 발생했습니다(회원조회 실패).");
-		}
+        //현재 로그인한 회원과 수정할 회원이 불일치할 경우
+        if(!member.getId() .equals(principal.getName())) {
+            throw new CustomException(ErrorCode.MEMBER_NOT_FOUND);
+            // throw new CustomException(ErrorCode.);
+        }
+        
+        
+        //수정할 회원정보를 폼에 채워서 보냄
+        suform.setMemberId(member.getMemberId());  //readOnly
+        suform.setId(member.getId());
+        suform.setPassword1(member.getPassword());
+        suform.setName(member.getName());
+        suform.setEmail(member.getEmail());
+        suform.setPhone(member.getPhone());
+        suform.setRole(member.getRole());  //readOnly
+        suform.setRegNo(member.getRegNo());
+        suform.setCreatedAt(member.getCreatedAt());  //readOnly
+        suform.setUpdatedAt(member.getUpdatedAt());  //readOnly
+    
+        return suform;  //수정 전의 회원정보
 
     }
-
 
 
     @PutMapping("/update/{id}")
@@ -213,7 +207,10 @@ public class MemberController {
 		//회원수정 실행
 		try {
 			memberService.update(null, suform);
-            return ResponseEntity.ok().body("회원정보 수정이 완료되었습니다.");
+            return ResponseEntity.ok().body(
+                "회원수정이 완료되었습니다."
+                + suform
+            );  //수정 후의 회원정보
         //데이터 무결성 제약조건 X
         } catch (DataIntegrityViolationException e) {  //데이터 무결성 제약조건 위반
 			Map<String, String> errorMap = new HashMap<>();
@@ -229,15 +226,10 @@ public class MemberController {
 
     //회원삭제
     @PreAuthorize("isAuthenticated")
-    @DeleteMapping("/del/{id}")
-    public ResponseEntity<?> deleteItem(@PathVariable("id") String id){
+    @DeleteMapping("/delete/{id}")
+    public void deleteItem(@PathVariable("id") String id){
 
-		try {
-			memberService.delete(id);
-            return ResponseEntity.ok().body("회원정보 삭제가 완료되었습니다.");
-		} catch (Exception e) {
-			return ResponseEntity.internalServerError().body("서버 오류가 발생했습니다(회원삭제 실패).");
-		}
+		memberService.delete(id);
         
     }
     

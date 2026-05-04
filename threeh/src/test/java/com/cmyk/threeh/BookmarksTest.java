@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import com.cmyk.threeh.repository.BookmarksRepository;
 import com.cmyk.threeh.repository.ItemRepository;
 import com.cmyk.threeh.repository.MemberRepository;
 import com.cmyk.threeh.service.BookmarksService;
+import com.cmyk.threeh.service.MemberService;
 
 @SpringBootTest
 class BookmarksTest {
@@ -31,10 +33,8 @@ class BookmarksTest {
 
 	@Autowired
 	private MemberRepository memberRepository;
-    @Autowired
-	private ItemRepository itemRepository;
-    @Autowired
-	private BookmarksRepository bookmarksRepository;
+	@Autowired
+	private MemberService memberService;
 	@Autowired
 	private BookmarksService bookmarksService;
 
@@ -43,15 +43,14 @@ class BookmarksTest {
 	// //@Transactional
 	// void bookmarksToggle() {
 
-    //     //더미데이터 입력
-    //     Optional<Member> op_m = memberRepository.findById("user2");
-    //     Optional<Item> op_i = itemRepository.findById(Long.valueOf(1));
-    //     Member member = op_m.get();
-    //     Item item = op_i.get();
+    //     //북마크할 회원, 아이템 입력
+    //     Member member = memberService.getUser("user2");
+    //     Long memberId = member.getMemberId();
+    //     Long itemId = Long.valueOf(3);
 
     //     BookmarksDTO dto = new BookmarksDTO();
-    //     dto.setMember(member);
-    //     dto.setItem(item);
+    //     dto.setMemberId(memberId);
+    //     dto.setItemId(itemId);
     //     dto.setType("상품");
 
 
@@ -66,18 +65,12 @@ class BookmarksTest {
 	// 	}
 
 
-    //     Optional<Bookmarks> op_b = bookmarksRepository.findByMemberAndItem(member, item);
-    //     Bookmarks bookmark = op_b.get();
-
 	// 	if(toggleFlag==0) {
 	// 		System.out.println("북마크 삭제 성공: " + toggleFlag);
-    //         System.out.printf(
-    //             "%d, %s, %s, %s, %s\n",
-    //             bookmark.getBookmakrId(), bookmark.getMember().getId(), bookmark.getItem().getItemId(), bookmark.getCreatedAt(), bookmark.getType()
-    //         );
 	// 		return;
 	// 	}
 	// 	if(toggleFlag==1) {
+    //         Bookmarks bookmark = bookmarksService.getBookmark(memberId, itemId);
 	// 		System.out.println("북마크 추가 성공: " + toggleFlag);
     //         System.out.printf(
     //             "%d, %s, %s, %s, %s\n",
@@ -90,18 +83,18 @@ class BookmarksTest {
 
 
     @Test
-	//@Transactional
+	@Transactional
 	void bookmarkGet() {
 
-        //더미데이터 입력
-        Optional<Member> op_m = memberRepository.findById("user2");
-        Optional<Item> op_i = itemRepository.findById(Long.valueOf(1));
-        Member member = op_m.get();
-        Item item = op_i.get();
+        //북마크한 회원, 아이템 입력
+        Member member = memberService.getUser("user2");
+        Long memberId = member.getMemberId();
+        Long itemId = Long.valueOf(1);
+        
 
 
         //북마크 1개 가져오기
-		Bookmarks bookmark = bookmarksService.getBookmark(member, item);
+		Bookmarks bookmark = bookmarksService.getBookmark(memberId, itemId);
 	
 		System.out.println("북마크 1개 가져오기 성공: ");
 		System.out.printf(
@@ -112,22 +105,28 @@ class BookmarksTest {
 	}
 
 
-    // @Test
-	// //@Transactional
-	// void bookmarkListGet() {
+    @Test
+	@Transactional
+	void bookmarkListGet() {
 
-    //     //더미데이터 입력
-    //     Optional<Member> op_m = memberRepository.findById("user2");
-    //     Member member = op_m.get();
+        //북마크한 회원 입력
+        Optional<Member> op_m = memberRepository.findById("user2");
+        Member member = op_m.get();
+        Long memberId = member.getMemberId();
 
 
-    //     //북마크 리스트 가져오기
-    //     List<BookmarksDTO> list = bookmarksService.getMyBookmarkList(member);
+        //북마크 리스트 가져오기
+        List<BookmarksDTO> list = bookmarksService.getMyBookmarkList(memberId);
 
-    //     System.out.println("북마크 리스트 가져오기 성공: ");
-    //     System.out.println(list);
+        System.out.println("북마크 리스트 가져오기 성공: ");
+        for (BookmarksDTO bookmark : list) {
+            System.out.printf(
+                "%d, %s, %s, %s, %s\n",
+                bookmark.getBookmakrId(), bookmark.getMemberId(), bookmark.getItemId(), bookmark.getCreatedAt(), bookmark.getType()
+            );
+        }
 
-	// }
+	}
 
 
 

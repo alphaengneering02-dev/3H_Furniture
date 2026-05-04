@@ -5,23 +5,26 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.cmyk.threeh.domain.Bookmarks;
-import com.cmyk.threeh.domain.Item;
-import com.cmyk.threeh.domain.Member;
 
 
 public interface BookmarksRepository extends JpaRepository<Bookmarks, Long> {
 
     //북마크 1개 가져오기 
-    //특정 Member(사용자)와 ItemId(상품) 조합으로 북마크 객체(Bookmarks)를 찾아 반환
-    Optional<Bookmarks> findByMemberAndItem(Member Member, Item item);
+    //특정 memberId(사용자)와 ItemId(상품) 조합으로 북마크 객체(Bookmarks)를 찾아 반환
+    @Query("SELECT b FROM Bookmarks b WHERE b.member.memberId = :memberId AND b.item.itemId = :itemId")
+    Optional<Bookmarks> findByMemberIdAndItemId(@Param("memberId") Long memberId, @Param("itemId") Long itemId);
 
     //북마크 리스트 가져오기
-    List<Bookmarks> findByMember(Member Member);
+    @Query("SELECT b FROM Bookmarks b WHERE b.member.memberId = :memberId")
+    List<Bookmarks> findByMemberId(@Param("memberId") Long memberId);
 
     //중복체크
-    boolean existsByMemberAndItem(Member Member, Item item);
+    @Query("SELECT COUNT(b) > 0 FROM Bookmarks b WHERE b.member.memberId = :memberId AND b.item.itemId = :itemId")
+    boolean existsByMemberIdAndItemId(@Param("memberId") Long memberId, @Param("memberId")Long itemId);
 
     
 }

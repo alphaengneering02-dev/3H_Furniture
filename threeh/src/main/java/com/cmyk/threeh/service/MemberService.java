@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.cmyk.threeh.domain.Member;
 import com.cmyk.threeh.dto.MemberDTO;
@@ -18,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class MemberService {
     
     private final MemberRepository memberRepository;
@@ -26,6 +28,7 @@ public class MemberService {
 
 	//<계정 관리>
     //회원가입
+	@Transactional
     public boolean create(SignupUpdateForm form) {
 		
 		//회원이 입력한 정보
@@ -41,8 +44,8 @@ public class MemberService {
 		//중복체크
 		boolean isExistId = memberRepository.existsById(id);
 		boolean isExistEmail = memberRepository.existsByEmail(email);
-		boolean isExistPhone = memberRepository.existsById(phone);
-		boolean isExistRegNo = memberRepository.existsById(regNo);
+		boolean isExistPhone = memberRepository.existsByPhone(phone);
+		boolean isExistRegNo = memberRepository.existsByRegNo(regNo);
 
 		if (isExistId) throw new CustomException(ErrorCode.MEMBER_FOUND);
 		if (isExistEmail) throw new CustomException(ErrorCode.EMAIL_IS_EXIST);
@@ -97,6 +100,7 @@ public class MemberService {
 
 
 	//회원정보 수정
+	@Transactional
 	public boolean update(Member member, SignupUpdateForm form) {
 
 		member.setPassword(passwordEncoder.encode(form.getPassword1()));
@@ -113,9 +117,14 @@ public class MemberService {
 
 
 	//회원 탈퇴
+	@Transactional
 	public boolean delete(String id) {
 		
-		Member member = getUser(id);
+		Optional<Member> op = memberRepository.findById(id);
+		if(!op.isPresent()) {
+			throw new CustomException(ErrorCode.MEMBER_NOT_FOUND);
+		}
+		Member member = op.get();
 
 		memberRepository.delete(member);
 		return true;
@@ -126,7 +135,12 @@ public class MemberService {
 	//회원 role 가져오기
 	public String checkMemberRole(String id) {
 
-		Member member = getUser(id);
+		Optional<Member> op = memberRepository.findById(id);
+		if(!op.isPresent()) {
+			throw new CustomException(ErrorCode.MEMBER_NOT_FOUND);
+		}
+		Member member = op.get();
+
         String UserRole = member.getRole().getKey();
 		String result = null;
 
@@ -191,15 +205,19 @@ public class MemberService {
 
 
 	//비밀번호 재설정
+	@Transactional
 	public boolean changeUserPassword(String id, String oldPassword, String newPassword) {
 		
-		Member member = null;
+		Optional<Member> op = memberRepository.findById(id);
+		if(!op.isPresent()) {
+			throw new CustomException(ErrorCode.MEMBER_NOT_FOUND);
+		}
+		Member member = op.get();
 
 		//1. 로그인 상태인지 검사한다.
 		// (세션에 유저 정보가 올라가 있으면, 로그인 상태)
 
 		//2. 회원가입이 되어있는 상태인지 검사한다. (세션 유저 정보에서 가져옴)
-		member = getUser(id);
 		if(member==null) {
 			throw new CustomException(ErrorCode.MEMBER_NOT_FOUND);
 		}
