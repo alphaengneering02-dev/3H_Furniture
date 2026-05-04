@@ -34,6 +34,7 @@ public class SecurityConfig {
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
 		http
+		.csrf().disable()
 		// 인가(접근 권한) 설정
 		.authorizeRequests()
             .antMatchers("/api/v1/**").hasRole(MemberRole.USER.name())  ///api/v1로 시작하는 모든 API 요청은 ROLE_USER (일반 고객)만 접속 가능
