@@ -1,51 +1,68 @@
 package com.cmyk.threeh.controller;
 
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView; 
-import lombok.RequiredArgsConstructor;
-import com.cmyk.threeh.domain.Admins;
-import com.cmyk.threeh.dto.AdminsDTO;
-import com.cmyk.threeh.service.AdminsService;
+import com.cmyk.threeh.service.ItemService;
 
-@RestController
-@RequestMapping("/admin") 
-@RequiredArgsConstructor
+import java.util.List;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.cmyk.threeh.dto.ItemRequestDTO;
+import com.cmyk.threeh.dto.ItemResponseDTO;
+import com.cmyk.threeh.dto.ItemUpdateRequestDTO;
+
+
+@Controller
 public class AdminsController {
 
-    private final AdminsService adminsService;
+    private final ItemService itemService;
 
-   /* 
-    @GetMapping("/dashboard")
-    public ModelAndView adminDashboardPage() {      
-        return new ModelAndView("forward:/index.html");
-    }*/
-
-        @GetMapping("/dashboard")
-        public String dashboard() {
-            return "123";
-        }
-
-    // 상품 등록 페이지 진입 (리액트 라우팅 연결)
-    @GetMapping("/additems")
-    public ModelAndView addProductPage() {
-        return new ModelAndView("forward:/index.html");
+    AdminsController(ItemService itemService) {
+        this.itemService = itemService;
     }
 
-    // 상품 수정 페이지 진입 (ID를 받아 해당 상품 수정 화면으로)
-    @GetMapping("/edititems/{itemId}")
-    public ModelAndView editProductPage(@PathVariable Long itemId) {
-        return new ModelAndView("forward:/index.html");
+    // 관리자 메인
+    @GetMapping("/admins")
+    public String admin() {
+        return "forward:/index.html";
     }
 
-    // 기존 등록 API
-    @PostMapping
-    public Admins create(@RequestBody AdminsDTO dto) {
-        return adminsService.createAdmin(dto);
+    // 1. 상품 등록
+    @PostMapping("/products")
+    public ItemResponseDTO create(@RequestBody ItemRequestDTO dto) {
+        return itemService.createItems(dto, 1L);
     }
 
-    // 기존 조회 API
-    @GetMapping("/{id}")
-    public Admins get(@PathVariable Long id) {
-        return adminsService.getAdmin(id);
+    // 2. 상품 수정
+    @PutMapping("/products/{id}")
+    public ItemResponseDTO update(
+            @PathVariable Long itemId,
+            @RequestBody ItemUpdateRequestDTO dto
+    ) {
+        return itemService.updateItem(itemId, 1L, dto);
+    }
+
+    // 3. 상품 단건 조회
+    @GetMapping("/products/{id}")
+    public ItemResponseDTO getOne(@PathVariable Long itemId) {
+        return itemService.getItem(itemId);
+    }
+
+    // 4. 상품 목록 조회
+    @GetMapping("/products")
+    public List<ItemResponseDTO> getAll() {
+        return itemService.getAllItems();
+    }
+
+    // 5. 상품 삭제
+    @DeleteMapping("/products/{id}")
+    public void delete(@PathVariable Long itemId) {
+        itemService.deleteItem(itemId, 1L);
     }
 }

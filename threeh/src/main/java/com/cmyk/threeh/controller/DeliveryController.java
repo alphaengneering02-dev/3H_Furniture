@@ -1,33 +1,60 @@
 package com.cmyk.threeh.controller;
 
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView; // 추가 필요
+import java.util.List;
+
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+
 import com.cmyk.threeh.domain.Delivery;
 import com.cmyk.threeh.dto.DeliveryDTO;
 import com.cmyk.threeh.service.DeliveryService;
 
 @RestController
-@RequestMapping("/delivery")
+@RequestMapping("/admin/delivery")
 @RequiredArgsConstructor
 public class DeliveryController {
 
     private final DeliveryService deliveryService;
 
-    @GetMapping("/register")
-    public ModelAndView registerPage() {
-        return new ModelAndView("forward:/index.html");
-    }
-
-    // 기존 생성 로직 (JSON 데이터 처리)
-    @PostMapping
+    // 1. 배송 등록 (CREATE)
+    @PostMapping("/")
     public Delivery create(@RequestBody DeliveryDTO dto) {
         return deliveryService.createDelivery(dto);
     }
 
-    // 기존 조회 로직
+    // 2. 전체 조회 (READ ALL)
+    @GetMapping("/list")
+    public List<Delivery> getAll() {
+        return deliveryService.getAllDeliveries();
+    }
+
+    // 3. 단건 조회 (READ ONE)
     @GetMapping("/{id}")
-    public Delivery get(@PathVariable Long id) {
+    public Delivery getOne(@PathVariable Long id) {
         return deliveryService.getDelivery(id);
+    }
+
+    // 4. 대기 목록
+    @GetMapping("/waiting")
+    public List<Delivery> getWaiting() {
+        return deliveryService.getWaitingDeliveries();
+    }
+
+    // 5. 완료 목록
+    @GetMapping("/completed")
+    public List<Delivery> getCompleted() {
+        return deliveryService.getCompletedDeliveries();
+    }
+
+    //수정
+    @PutMapping("/{deliveryid}")
+    public Delivery update(@PathVariable Long id, @RequestBody DeliveryDTO dto) {
+    return deliveryService.updateDelivery(id, dto);
+}
+
+    // 6. 삭제 (DELETE)
+    @DeleteMapping("/companies/{deliveryid}")
+    public void delete(@PathVariable Long id) {
+        deliveryService.deleteDelivery(id);
     }
 }

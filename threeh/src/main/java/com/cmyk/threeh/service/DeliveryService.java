@@ -63,6 +63,30 @@ public class DeliveryService {
         return deliveryRepository.findByStatus(DeliveryStatus.COMPLETED);
     }
 
+    //수정
+    public Delivery updateDelivery(Long id, DeliveryDTO dto) {
+
+    Delivery delivery = deliveryRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("해당 배송업체가 존재하지 않습니다. id=" + id));
+
+    Admins admin = adminsRepository.findById(dto.getAdminId())
+            .orElseThrow(() -> new RuntimeException("관리자 정보가 없습니다."));
+
+    delivery.setAdmin(admin);
+    delivery.setCompanyName(dto.getCompanyName());
+    delivery.setBusinessName(dto.getBusinessName());
+    delivery.setBusinessPhone(dto.getBusinessPhone());
+    delivery.setBusinessNo(dto.getBusinessNo());
+    delivery.setBusinessAddr(dto.getBusinessAddr());
+    delivery.setDeliveryName(dto.getDeliveryName());
+    delivery.setDeliveryPhone(dto.getDeliveryPhone());
+    delivery.setDeliveryCarNo(dto.getDeliveryCarNo());
+
+    return deliveryRepository.save(delivery);
+}
+
+
+
     // 삭제
     public void deleteDelivery(Long id) {
         // 1. 존재하는지 확인
