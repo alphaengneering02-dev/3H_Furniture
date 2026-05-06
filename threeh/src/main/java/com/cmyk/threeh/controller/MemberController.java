@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,6 +38,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/member")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000")  //프론트엔드(3000번 포트)의 접근을 허락함
 public class MemberController {
 
     private final MemberService memberService;
@@ -77,6 +79,7 @@ public class MemberController {
     //로그아웃 처리(GET): spring security가 자동으로 수행하므로, 따로 맵핑할 필요가 없다.
 
     
+
     //회원가입
     @GetMapping("/signup")
     public String signup(SignupUpdateForm suform) {
@@ -110,15 +113,17 @@ public class MemberController {
 		//회원가입 실행
 		try {
 			memberService.create(suform);
-            return ResponseEntity.ok().body(
-                "회원가입이 완료되었습니다."
-                + suform
-            ); // 성공 응답
+            return ResponseEntity.ok().body(suform); // 성공 응답
 		} catch (DataIntegrityViolationException e) {  //데이터 무결성 제약조건 위반
 			Map<String, String> errorMap = new HashMap<>();
             errorMap.put("MEMBER_FOUND", "이미 존재하는 회원입니다.");
             return ResponseEntity.badRequest().body(errorMap);
-		} catch (Exception e) {
+        } catch (CustomException e) {
+            // 에러 코드에 따라 적절한 메시지를 맵에 담아 보냄 (예: ErrorCode.MEMBER_FOUND -> "id", "이미 존재하는 아이디입니다.")
+            Map<String, String> errorMap = new HashMap<>();
+            errorMap.put("CustomException", e.getErrorCode().getMessage());
+            return ResponseEntity.badRequest().body(errorMap);
+        } catch (Exception e) {
 			return ResponseEntity.internalServerError().body("서버 오류가 발생했습니다(회원가입 실패).");
 		}
 		
@@ -151,7 +156,7 @@ public class MemberController {
 
 
     //회원수정
-    @PreAuthorize("isAuthenticated")
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/update/{id}")
     public SignupUpdateForm update(SignupUpdateForm suform, @PathVariable("id") String id, Principal principal) {
 
@@ -181,6 +186,7 @@ public class MemberController {
     }
 
 
+    @PreAuthorize("isAuthenticated()")
     @PutMapping("/update/{id}")
     public ResponseEntity<?> update(@Valid @RequestBody SignupUpdateForm suform, BindingResult bindingResult) {
 
@@ -207,10 +213,7 @@ public class MemberController {
 		//회원수정 실행
 		try {
 			memberService.update(null, suform);
-            return ResponseEntity.ok().body(
-                "회원수정이 완료되었습니다."
-                + suform
-            );  //수정 후의 회원정보
+            return ResponseEntity.ok().body(suform);  //수정 후의 회원정보
         //데이터 무결성 제약조건 X
         } catch (DataIntegrityViolationException e) {  //데이터 무결성 제약조건 위반
 			Map<String, String> errorMap = new HashMap<>();
@@ -225,19 +228,12 @@ public class MemberController {
 
 
     //회원삭제
-    @PreAuthorize("isAuthenticated")
+    @PreAuthorize("isAuthenticated()")
     @DeleteMapping("/delete/{id}")
     public void deleteItem(@PathVariable("id") String id){
 
 		memberService.delete(id);
         
     }
-    
-
-
-    // ModelAndView mav = new ModelAndView();
-    // mav.setViewName();
-    // return mav;
-
 
 }

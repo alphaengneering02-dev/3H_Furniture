@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,6 +35,7 @@ import lombok.RequiredArgsConstructor;
 @Controller
 @RequestMapping("/bookmark")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000")  //프론트엔드(3000번 포트)의 접근을 허락함
 public class BookmarkController {
 
     private final MemberService memberService;
@@ -45,7 +47,7 @@ public class BookmarkController {
 
 
     //북마크 토글(추가/삭제)
-    @PreAuthorize("isAuthenticated")
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/toggle")
 	public BookmarksDTO toggle(@RequestBody BookmarksDTO dto) {
 

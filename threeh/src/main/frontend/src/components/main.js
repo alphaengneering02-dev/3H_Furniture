@@ -1,7 +1,7 @@
 import React from 'react';
-import Header from './header';
+import Header from './Header';
 
-const main = () => {
+const Main = () => {
     return (
         <div>
             {/* Header 영역 */}
@@ -143,4 +143,4 @@ const main = () => {
     );
 };
 
-export default main;
+export default Main;

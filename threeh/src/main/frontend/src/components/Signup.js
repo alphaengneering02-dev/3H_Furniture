@@ -2,6 +2,8 @@ import React from 'react';
 
 // 회원가입 선택 페이지
 const Signup = () => {
+
+
     return (
         <div>
             Signup 페이지
@@ -33,8 +35,6 @@ const Signup = () => {
 
             <p>이미 쇼핑몰 회원이세요? 로그인</p>
 
-
-            
         </div>
     );
 };

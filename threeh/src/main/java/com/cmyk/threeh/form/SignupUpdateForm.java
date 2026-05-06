@@ -10,6 +10,7 @@ import javax.validation.constraints.Size;
 import com.cmyk.threeh.enums.MemberRole;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 public class SignupUpdateForm {
@@ -20,33 +21,33 @@ public class SignupUpdateForm {
 	@NotBlank(message = "아이디는 필수항목입니다.")
     private String id;
 
-    @Size(min = 6, max = 30, message = "비밀번호의 길이가 맞지 않습니다.")
+    @Size(min = 3, max = 30, message = "비밀번호의 길이가 맞지 않습니다.")
 	@NotBlank(message = "비밀번호는 필수항목입니다.")
     private String password1;
 
     //비밀번호 재확인
-    @Size(min = 6, max = 30, message = "비밀번호 재확인의 길이가 맞지 않습니다.")
+    @Size(min = 3, max = 30, message = "비밀번호 재확인의 길이가 맞지 않습니다.")
 	@NotBlank(message = "비밀번호 재확인은 필수항목입니다.")
     private String password2;
 
-	@NotBlank(message = "이름은 필수항목입니다.")
+	@NotBlank(message = "이름 또는 회사명은 필수항목입니다.")
     private String name;
 
     @NotBlank(message = "이메일은 필수항목입니다.")
     @Email(
-        regexp = "^[a-zA-Z0-9_-]+@[a-zA-Z0-9]+\\.[a-zA-Z]{2,6}$",
+        regexp = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$",
         message = "이메일 형식이 유효하지 않습니다."
     )
     private String email;
 
-    @NotBlank(message = "이메일은 필수항목입니다.")
+    @NotBlank(message = "전화번호 또는 사업장 전화번호는 필수항목입니다.")
     private String phone;
 
     private MemberRole role;
 
     @NotBlank(message = "주민등록번호는 필수항목입니다.")
     @Pattern(
-        regexp = "/^d{2}([0]\\d|[1][0-2])([0][1-9]|[1-2]\\d|[3][0-1])[-]*[1-4]\\d{6}$/",
+        regexp = "^\\d{6}-[1-4]\\d{6}$",
         message = "주민등록번호 형식이 유효하지 않습니다."
     )
     private String regNo;
