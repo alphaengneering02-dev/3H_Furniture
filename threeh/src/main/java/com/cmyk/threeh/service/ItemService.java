@@ -25,11 +25,12 @@ public class ItemService {
     
     private final ItemRepository itemRepository;
     private final AdminsRepository adminsRepository;
-    //상품등록(관리자 검증 필요)
+    
+    //상품등록(관리자 검증 필요->관리자(admin)만 가능)
 
-    public ItemResponseDTO createItems(ItemRequestDTO dto,Long adminId){
+    public ItemResponseDTO createItems(ItemRequestDTO dto, String adLoginId){
 
-        Admins admin = adminsRepository.findById(adminId)
+        Admins admin = adminsRepository.findByAdLoginId(adLoginId)
             .orElseThrow(()->new IllegalArgumentException("존재하지 않는 관리자입니다."));
 
         Item item = new Item();
@@ -62,7 +63,7 @@ public class ItemService {
 
     }
 
-    //상품 전체 조회
+    //상품 전체 조회(일반회원,관리자 모두 가능)
 
     public List<ItemResponseDTO> getAllItems(){
 
@@ -78,7 +79,7 @@ public class ItemService {
 
     }
 
-    //상품 상세 조회
+    //상품 상세 조회(일반회원,관리자 모두 가능)
 
     public ItemResponseDTO getItem(Long itemId){
 
@@ -97,15 +98,15 @@ public class ItemService {
     }
 
 
-    //상품수정 (Item.java에서 만들어놓은 validatePrice(),validateStock()사용)
+    //상품수정 (Item.java에서 만들어놓은 validatePrice(),validateStock()사용. 그리고 관리자(admin)만 가능)
 
     public ItemResponseDTO updateItem(
 
         Long itemId,
-        Long adminId,
+        String adLoginId,
         ItemUpdateRequestDTO dto
     ){
-        Admins admin = adminsRepository.findById(adminId)
+        Admins admin = adminsRepository.findByAdLoginId(adLoginId)
             .orElseThrow(()-> new IllegalArgumentException("존재하지 않는 관리자입니다."));
 
         Item item = itemRepository.findById(itemId)
@@ -138,11 +139,11 @@ public class ItemService {
     }
 
 
-    //상품삭제
+    //상품삭제(관리자(admin)만 가능)
 
-    public void deleteItem(Long itemId, Long adminId){
+    public void deleteItem(Long itemId, String adLoginId){
 
-        Admins admin = adminsRepository.findById(adminId)
+        Admins admin = adminsRepository.findByAdLoginId(adLoginId)
             .orElseThrow(()-> new IllegalArgumentException("존재하지 않는 관리자입니다."));
 
         Item item = itemRepository.findById(itemId)

@@ -15,6 +15,7 @@ public class ItemUpdateRequestDTO {
 
     private String category;
     private String itemName;
+    private String adLoginId;
     private String itemDetail;
     private String itemColor;
     private int price;

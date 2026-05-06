@@ -33,6 +33,7 @@ public class AdminsController {
         return "forward:/index.html";
     }
 
+    /* 
     // 1. 상품 등록
     @PostMapping("/products")
     public ItemResponseDTO create(@RequestBody ItemRequestDTO dto) {
@@ -65,4 +66,6 @@ public class AdminsController {
     public void delete(@PathVariable Long itemId) {
         itemService.deleteItem(itemId, 1L);
     }
+
+    */
 }
