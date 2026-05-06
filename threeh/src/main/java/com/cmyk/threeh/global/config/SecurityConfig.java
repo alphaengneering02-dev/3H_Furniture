@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -23,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)  //로그아웃 상태면, login_form으로 이동시킴
+@EnableMethodSecurity(prePostEnabled = true)   //로그아웃 상태면, login_form으로 이동시킴
 public class SecurityConfig {
 
 	private final MemberSecurityService memberSecurityService;
@@ -37,6 +37,7 @@ public class SecurityConfig {
 		.csrf().disable()
 		// 인가(접근 권한) 설정
 		.authorizeRequests()
+			.antMatchers("/admin/**").hasRole("ADMIN")
             .antMatchers("/api/v1/**").hasRole(MemberRole.USER.name())  ///api/v1로 시작하는 모든 API 요청은 ROLE_USER (일반 고객)만 접속 가능
             .antMatchers("/**").permitAll()  // 모든 인증되지 않은 접속 요청을 허락함
 		.and()
