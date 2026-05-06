@@ -54,15 +54,17 @@ const Signup_site = () => {
         } catch (error) {
             //백엔드에서 온 Validation 에러 처리
             alert("testA")
+            let validationErrors = null;
             if (error.response && error.response.data) {
-                const validationErrors = error.response.data; //예: {id: "아이디는 필수입니다."}
+                validationErrors = error.response.data; //예: {id: "아이디는 필수입니다."}
                 Object.keys(validationErrors).forEach(  //validationErrors를 error 객체로 변환
                     key => {setError(key, {message: validationErrors[key]});
                 });
+                
             }
-            alert("testB")
 
-            console.error("전송 실패!", error);
+            console.error("전송 실패!", validationErrors)
+            
         }
 
     }
@@ -146,7 +148,7 @@ const Signup_site = () => {
                     </div>
                     @
                     <div>
-                        <input type='text' value={emailSite} id='emailSite' name='emailSite' onChange={changeEmailSite} placeholder='사이트'/>
+                        <input type='text' value={emailSite} id='emailSite' name='emailSite' onChange={changeEmailSite} placeholder='사이트' readOnly/>
                     </div>
                     
                     <select onChange={changeEmailSite}>
@@ -163,6 +165,13 @@ const Signup_site = () => {
                 <div>
                     <input type='text' {...register('regNo')} placeholder='주민등록번호'/>
                     {errors.regNo && <p>{errors.regNo.message}</p>}
+                </div>
+
+
+                {/* 기타 에러 메세지 */}
+                <div>
+                    <input type='text' id='errorMsg' name='errorMsg' placeholder='기타 에러가 있을 경우 여기에 보여집니다.' readOnly/>
+                    {errors.errorMsg && <p>{errors.errorMsg.message}</p>}
                 </div>
             </form>
 

@@ -43,6 +43,22 @@ public class MemberController {
 
     private final MemberService memberService;
 
+
+    // (+) 에러 코드에 따라, 리액트의 어떤 필드에 에러를 보여줄지 매핑하는 유틸 메서드
+    private String determineField(ErrorCode errorCode) {
+        switch (errorCode) {
+            case MEMBER_FOUND: return "id";
+            case PASSWORD_NOT_SAME: return "password";
+            case EMAIL_IS_EXIST: return "email";
+            case PHONE_IS_EXIST: return "phone";
+            case REGNO_IS_EXIST: return "regNo";
+            case INPUT_NOT_CORRECT: return "errorMsg";
+            case SOME_COLUMN_IS_NULL: return "errorMsg";
+            
+            default: return "global";
+        }
+    }
+
     
     //로그인
     @GetMapping("/login")
@@ -114,15 +130,19 @@ public class MemberController {
 		try {
 			memberService.create(suform);
             return ResponseEntity.ok().body(suform); // 성공 응답
+
 		} catch (DataIntegrityViolationException e) {  //데이터 무결성 제약조건 위반
 			Map<String, String> errorMap = new HashMap<>();
             errorMap.put("MEMBER_FOUND", "이미 존재하는 회원입니다.");
             return ResponseEntity.badRequest().body(errorMap);
-        } catch (CustomException e) {
-            // 에러 코드에 따라 적절한 메시지를 맵에 담아 보냄 (예: ErrorCode.MEMBER_FOUND -> "id", "이미 존재하는 아이디입니다.")
+
+        } catch (CustomException e) {  //중복 에러 등 커스텀 예외 처리
             Map<String, String> errorMap = new HashMap<>();
-            errorMap.put("CustomException", e.getErrorCode().getMessage());
+            String field = determineField(e.getErrorCode());
+            String message = e.getErrorCode().getMessage();
+            errorMap.put(field, message);  //예: ErrorCode.MEMBER_FOUND -> "id", "이미 존재하는 아이디입니다."
             return ResponseEntity.badRequest().body(errorMap);
+            
         } catch (Exception e) {
 			return ResponseEntity.internalServerError().body("서버 오류가 발생했습니다(회원가입 실패).");
 		}
@@ -215,10 +235,6 @@ public class MemberController {
 			memberService.update(null, suform);
             return ResponseEntity.ok().body(suform);  //수정 후의 회원정보
         //데이터 무결성 제약조건 X
-        } catch (DataIntegrityViolationException e) {  //데이터 무결성 제약조건 위반
-			Map<String, String> errorMap = new HashMap<>();
-            errorMap.put("MEMBER_FOUND", "이미 존재하는 회원입니다.");
-            return ResponseEntity.badRequest().body(errorMap);
 		} catch (Exception e) {
 			return ResponseEntity.internalServerError().body("서버 오류가 발생했습니다(회원가입 실패).");
 		}
