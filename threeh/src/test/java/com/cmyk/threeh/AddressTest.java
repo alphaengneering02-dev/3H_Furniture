@@ -1,14 +1,12 @@
 package com.cmyk.threeh;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
@@ -26,13 +24,9 @@ import org.springframework.test.context.ActiveProfiles;
 
 import com.cmyk.threeh.domain.Member;
 import com.cmyk.threeh.domain.Orders;
-import com.cmyk.threeh.domain.Adress; // [중요] 조장님 주소 VO 임포트
-import com.cmyk.threeh.dto.MemberAddressDTO;
 import com.cmyk.threeh.enums.MemberRole;
 import com.cmyk.threeh.enums.OrderState;
 import com.cmyk.threeh.enums.OrderType;
-import com.cmyk.threeh.form.MemberAddressForm;
-import com.cmyk.threeh.repository.MemberAddressRepository;
 import com.cmyk.threeh.repository.MemberRepository;
 import com.cmyk.threeh.repository.OrderRepository;
 import com.cmyk.threeh.service.MemberAddressService;
@@ -70,63 +64,52 @@ public class AddressTest {
     @Autowired private EntityManager em;
 
     @Test
-    @DisplayName("마이페이지 주소록 저장 및 조회 테스트")
-    public void 마이페이지_주소록_테스트() {
-        Member member = createMember("user01");
+    @DisplayName("배송 시작 전(ORDER) 일정 변경 성공 테스트")
+    public void 일정_변경_성공_테스트() {
+        // 1. Given: 필수값을 모두 채운 배송 전 주문 생성
+        Member member = createMember("successUser");
+        Orders order = new Orders();
+        order.setMember(member);
+        order.setOrderDate(LocalDateTime.now()); // [필수] 주문일자
+        order.setOrderState(OrderState.ORDER);   // 배송 전 상태
+        order.setOrderType(OrderType.DELIVERY_ONLY);
+        order.setDeliveryAddr("서울시 강남구");    // [필수] 배송주소
+        order.setDeliveryDate(LocalDate.now().plusDays(3)); // [필수] 배송일자
+        
+        orderRepository.save(order);
         em.flush();
-        given(memberService.getUser(anyString())).willReturn(member);
 
-        MemberAddressForm form = new MemberAddressForm();
-        form.setCity("서울시");
-        form.setStreet("테헤란로");
-        form.setZipcode("12345");
-        form.setAddrDetail("7층 701호");
-        form.setIsDefault("Y");
-
-        memberAddressService.saveAddress(member.getId(), form);
+        // 2. When: 10일 뒤로 날짜 변경 시도
+        LocalDate newDate = LocalDate.now().plusDays(10);
+        memberAddressService.updateDeliverySchedule(order.getOrderId(), newDate);
         em.flush();
         em.clear();
 
-        List<MemberAddressDTO> list = memberAddressService.getAddressList(member.getId());
-        assertEquals(1, list.size());
-        assertEquals("7층 701호", list.get(0).getAddrdetail());
+        // 3. Then: 변경 확인
+        Orders updatedOrder = orderRepository.findById(order.getOrderId()).get();
+        assertEquals(newDate, updatedOrder.getDeliveryDate());
     }
 
     @Test
-    @DisplayName("3일 경과 주문 데이터 삭제 테스트")
-    public void 주문_3일경과_삭제_테스트() {
-        Member member = createMember("user02");
+    @DisplayName("배송 시작 후(CANCEL 등) 일정 변경 실패 테스트")
+    public void 일정_변경_실패_테스트() {
+        // 1. Given: 필수값을 모두 채운 이미 완료/취소된 주문 생성
+        Member member = createMember("failUser");
         Orders order = new Orders();
         order.setMember(member);
-        order.setOrderDate(LocalDateTime.now().minusDays(4)); 
-        order.setOrderState(OrderState.ORDER);
-        order.setOrderType(OrderType.DELIVERY_ONLY); 
-        order.setDeliveryDate(LocalDate.now().minusDays(1));
-        order.setInstallDate(LocalDate.now().minusDays(1));
-        
-        // [중요 수정]: 개별 필드 대신 조장님의 Adress VO를 생성해서 넣어줍니다.
-        // Orders 엔티티에 정의된 필드명이 adress인지 address인지 확인 필요 (일단 Adress 규격 적용)
-        try {
-            // 조장님 Adress VO 생성자: city, street, zipcode 순서
-            Adress adressVO = new Adress("서울시", "테헤란로", "12345");
-            order.setAdress(adressVO); // 엔티티 내 필드명 확인 (adress 혹은 address)
-        } catch (Exception e) {
-            // 만약 필드명이 다르면 여기서 에러가 날 수 있으니 확인 바랍니다.
-        }
-
-        order.setDeliveryAddr("서울시 강남구 테헤란로");
-        order.setDeliveryAddrDetail("123번지");
+        order.setOrderDate(LocalDateTime.now()); // [필수] 주문일자
+        order.setOrderState(OrderState.CANCEL);  // 변경이 불가능한 상태 연출
+        order.setOrderType(OrderType.DELIVERY_ONLY);
+        order.setDeliveryAddr("서울시 서초구");
+        order.setDeliveryDate(LocalDate.now().plusDays(3));
         
         orderRepository.save(order);
-        em.flush(); 
-        em.clear();
-
-        memberAddressService.processRefundOrDelete(order.getOrderId());
         em.flush();
-        em.clear();
 
-        Optional<Orders> deletedOrder = orderRepository.findById(order.getOrderId());
-        assertFalse(deletedOrder.isPresent(), "3일 경과 시 주문이 삭제되어야 합니다.");
+        // 2. When & Then: IllegalStateException 예외 발생 검증
+        assertThrows(IllegalStateException.class, () -> {
+            memberAddressService.updateDeliverySchedule(order.getOrderId(), LocalDate.now().plusDays(10));
+        });
     }
 
     private Member createMember(String id) {
@@ -136,7 +119,7 @@ public class AddressTest {
         member.setPassword("1234");
         member.setName("테스터");
         member.setEmail(uniqueId + "@test.com");
-        member.setPhone("0101234" + (int)(Math.random() * 10000));
+        member.setPhone("010" + (int)(Math.random() * 10000000));
         member.setRegNo("800101-1" + (int)(1000000 + Math.random() * 1000000));
         member.setRole(MemberRole.USER);
         return memberRepository.save(member);

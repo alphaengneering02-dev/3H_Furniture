@@ -1,5 +1,6 @@
 package com.cmyk.threeh.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -111,5 +112,23 @@ public class MemberAddressService {
                     // 필요 시 여기에 필드 매핑 추가
                     return dto;
                 }).orElse(null);
+            }
+
+    //배송/설치 일정 변경 처리
+    @Transactional
+    public void updateDeliverySchedule(Long orderId, LocalDate newDate) {
+        Orders order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("주문 내역이 없습니다."));
+
+        // 조장님의 OrderState가 'ORDER'(배송전)일 때만 수정 가능
+        // 만약 배송중, 배송완료 상태라면 수정 불가 처리
+        if (order.getOrderState() == OrderState.ORDER) {
+            order.setDeliveryDate(newDate);
+            order.setInstallDate(newDate); // 설치일도 배송일과 동일하게 변경
+        } else {
+            throw new IllegalStateException("배송이 이미 시작되어 일정을 변경할 수 없습니다.");
+        }
     }
-}
+
+    }
+
