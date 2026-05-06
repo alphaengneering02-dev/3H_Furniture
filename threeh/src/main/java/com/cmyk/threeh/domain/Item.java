@@ -16,6 +16,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.cmyk.threeh.dto.ItemRequestDTO;
+import com.cmyk.threeh.dto.ItemUpdateRequestDTO;
 import com.cmyk.threeh.enums.ItemSellStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -92,30 +94,35 @@ public class Item {
     }
 
     // 상품 수정 메서드
-    public void updateItem(
+    public void update(ItemUpdateRequestDTO dto){
 
-        String category,
-        String itemName,
-        String itemDetail,
-        String itemColor,
-        int price,
-        int discountPrice,
-        String currency,
-        int stock
-    ){
+     if(dto.getItemName() !=null) this.itemName = dto.getItemName();
+     if(dto.getItemDetail() !=null)this.itemDetail = dto.getItemDetail();
+     if(dto.getItemColor() !=null)this.itemColor = dto.getItemColor();
+     
+     if(dto.getPrice() !=null){
+        validatePrice(dto.getPrice());
+        this.price =dto.getPrice();
+     }
 
-        validatePrice(price);
-        validateStock (stock);
+     if(dto.getDiscountPrice() !=null){
+        validateDiscount(dto.getDiscountPrice());
+        this.discountPrice = dto.getDiscountPrice();
 
-        this.category = category;
-        this.itemName = itemName;
-        this.itemDetail = itemDetail;
-        this.itemColor = itemColor;
-        this.price = price;
-        this.discountPrice = discountPrice;
-        this.currency = currency;
-        this.stock = stock;
+     }
 
+     if(dto.getStock() !=null){
+        validateStock(dto.getStock());
+        this.stock = dto.getStock();
+     }
+    
+    }
+
+    //수정 검증 로직
+    private void validate(){
+        validatePrice(this.price);
+        validateStock(this.stock);
+        validateDiscount(this.discountPrice);
     }
 
     //재고 감소 메서드(10개중 3개 주문되면 잔여 7개)
@@ -157,7 +164,7 @@ public class Item {
 
     //할인 적용 메서드
 
-    public void applyDiscount(int discountPrice){
+    public void validateDiscount(int discountPrice){
 
         if(discountPrice < 0 ){
             throw new IllegalArgumentException("할인 가격은 음수일 수 없습니다.");
@@ -165,9 +172,6 @@ public class Item {
         if(discountPrice > this.price){
             throw new IllegalArgumentException("할인 가격이 원가보다 클 수 없습니다.");
         }
-
-        this.discountPrice = discountPrice;
-
     }
 
     //최종 판매가 메서드
@@ -175,6 +179,28 @@ public class Item {
 
         return this.price -this.discountPrice;
         
+    }
+
+    //상품생성 메서드
+    
+    public static Item create(ItemRequestDTO dto, Admins admin){
+        Item item = new Item();
+
+        item.admin = admin;
+        item.category = dto.getCategory();
+        item.itemName = dto.getItemName();
+        item.itemDetail = dto.getItemDetail();
+        item.itemColor = dto.getItemColor();
+
+        item.price = dto.getPrice();
+        item.discountPrice = dto.getDiscountPrice() !=null? dto.getDiscountPrice() : 0;
+        item.currency = dto.getCurrency() !=null? dto.getCurrency():"KRW";
+        item.stock = dto.getStock();
+
+        item.validate();
+
+        return item;
+
     }
 
 }

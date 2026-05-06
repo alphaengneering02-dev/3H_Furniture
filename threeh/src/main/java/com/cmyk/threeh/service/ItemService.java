@@ -4,8 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.cmyk.threeh.domain.Admins;
 import com.cmyk.threeh.domain.Item;
@@ -31,56 +30,29 @@ public class ItemService {
     public ItemResponseDTO createItems(ItemRequestDTO dto, String adLoginId){
 
         Admins admin = adminsRepository.findByAdLoginId(adLoginId)
-            .orElseThrow(()->new IllegalArgumentException("존재하지 않는 관리자입니다."));
-
-        Item item = new Item();
-
-        item.setAdmin(admin);
-        item.setCategory(dto.getCategory());
-        item.setItemName(dto.getItemName());
-        item.setItemDetail(dto.getItemDetail());
-        item.setItemColor(dto.getItemColor());
-        item.setPrice(dto.getPrice());
-        item.setDiscountPrice(dto.getDiscountPrice());
-        item.setCurrency(dto.getCurrency());
-        item.setStock(dto.getStock());
+        .orElseThrow(()->new CustomException(ErrorCode.ADMIN_NOT_FOUND));
+        Item item = Item.create(dto, admin);
 
         Item savedItem = itemRepository.save(item);
 
-
-        return ItemResponseDTO.builder()
-            .itemId(savedItem.getItemId())
-            .adminId(savedItem.getAdmin().getAdminId())
-            .itemName(savedItem.getItemName())
-            .itemDetail(savedItem.getItemDetail())
-            .category(savedItem.getCategory())
-            .itemColor(savedItem.getItemColor())
-            .price(savedItem.getPrice())
-            .discountPrice(savedItem.getDiscountPrice())
-            .currency(savedItem.getCurrency())
-            .stock(item.getStock())
-            .build();
-
+        return ItemResponseDTO.from(savedItem);
     }
 
     //상품 전체 조회(일반회원,관리자 모두 가능)
 
+    @Transactional(readOnly = true)
     public List<ItemResponseDTO> getAllItems(){
 
        return itemRepository.findAll()
         .stream()
-        .map(item->ItemResponseDTO.builder()
-            .itemId(item.getItemId())
-            .itemName(item.getItemName())
-            .price(item.getPrice())
-            .stock(item.getStock())
-            .build())
-            .collect(Collectors.toList());
+        .map(ItemResponseDTO::from)
+        .collect(Collectors.toList());
 
     }
 
     //상품 상세 조회(일반회원,관리자 모두 가능)
 
+    @Transactional(readOnly = true)
     public ItemResponseDTO getItem(Long itemId){
 
         Item item = itemRepository.findById((itemId))
@@ -88,70 +60,52 @@ public class ItemService {
             new CustomException(ErrorCode.ITEM_NOT_FOUND)); 
 
 
-        return ItemResponseDTO.builder()
-            .itemId(item.getItemId())
-            .itemName(item.getItemName())
-            .itemDetail(item.getItemDetail())
-            .price(item.getPrice())
-            .stock(item.getStock())
-            .build();
+        return ItemResponseDTO.from(item);
     }
 
 
-    //상품수정 (Item.java에서 만들어놓은 validatePrice(),validateStock()사용. 그리고 관리자(admin)만 가능)
+    //상품수정 (엔티티 내부 로직 사용)
+    //JPA dirty checking 자동 반영되니까 SAVE필요없음. 단 트랜젝션 어노테이션이 있어야 변경 반영이 됌.
 
+    @Transactional
     public ItemResponseDTO updateItem(
 
         Long itemId,
         String adLoginId,
         ItemUpdateRequestDTO dto
+
     ){
         Admins admin = adminsRepository.findByAdLoginId(adLoginId)
-            .orElseThrow(()-> new IllegalArgumentException("존재하지 않는 관리자입니다."));
+            .orElseThrow(()-> new CustomException(ErrorCode.NO_PERMISSION));
 
         Item item = itemRepository.findById(itemId)
             .orElseThrow(()->
             new CustomException(ErrorCode.ITEM_NOT_FOUND)); 
 
          if(!item.getAdmin().getAdminId().equals(admin.getAdminId())){
-            throw new IllegalArgumentException("수정 권한이 없습니다.")
-         ;}
+            throw new CustomException(ErrorCode.NO_PERMISSION);
+         }
+          
+        item.update(dto);
 
-        item.updateItem(
-            item.getCategory(),
-            dto.getItemName(),
-            dto.getItemDetail(),
-            item.getItemColor(),
-            dto.getPrice(),
-            item.getDiscountPrice(),
-            item.getCurrency(),
-            dto.getStock()
-        );
+        return ItemResponseDTO.from(item);
 
-        Item updatedItem = itemRepository.save(item);
-
-        return ItemResponseDTO.builder()
-            .itemId(updatedItem.getItemId())
-            .itemName(updatedItem.getItemName())
-            .price(updatedItem.getPrice())
-            .stock(updatedItem.getStock())
-            .build();
     }
-
 
     //상품삭제(관리자(admin)만 가능)
 
+    @Transactional
     public void deleteItem(Long itemId, String adLoginId){
 
         Admins admin = adminsRepository.findByAdLoginId(adLoginId)
-            .orElseThrow(()-> new IllegalArgumentException("존재하지 않는 관리자입니다."));
+            .orElseThrow(()-> new CustomException(ErrorCode.NO_PERMISSION));
 
         Item item = itemRepository.findById(itemId)
             .orElseThrow(()->
             new CustomException(ErrorCode.ITEM_NOT_FOUND)); 
 
         if(!item.getAdmin().getAdminId().equals(admin.getAdminId())){
-            throw new IllegalArgumentException("삭제 권한이 없습니다.");
+            throw new CustomException(ErrorCode.NO_PERMISSION);
         }
             itemRepository.delete(item);
     }

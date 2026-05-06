@@ -33,7 +33,13 @@ public enum ErrorCode {
     ITEM_NOT_FOUND(404,"상품을 찾을 수 없습니다."),
 
     //이미지
-    ITEMIMG_NOT_FOUND(404,"상품 이미지가 없습니다.");
+    ITEMIMG_NOT_FOUND(404,"상품 이미지가 없습니다."),
+
+    //권한없음
+    NO_PERMISSION(404,"관리자 권한이 없습니다."),
+
+    //관리자 찾을 수 없음
+    ADMIN_NOT_FOUND(404,"존재하지 않는 관리자 입니다.");
 
     private final int status;
     private final String message;
