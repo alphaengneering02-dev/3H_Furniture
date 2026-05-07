@@ -32,18 +32,18 @@ public class ItemServiceTest {
     void createItemTest() {
 
         ItemRequestDTO dto = ItemRequestDTO.builder()
-                .category("table")
+                .itemCategory("table")
                 .itemName("테이블")
-                .price(340000)
-                .stock(3)
-                .discountPrice(0)
-                .currency("KRW")
+                .itemPrice(340000)
+                .itemStock(3)
+                .itemDiscountPrice(0)
+                .itemPriceCurrency("KRW")
                 .build();
 
         ItemResponseDTO result = itemService.createItems(dto, "admin1");
 
         assertEquals("테이블",result.getItemName());
-        assertEquals(340000, result.getPrice());
+        assertEquals(340000, result.getItemPrice());
     }
 
     // 2. 생성 실패
@@ -63,8 +63,8 @@ public class ItemServiceTest {
 
         ItemRequestDTO dto = ItemRequestDTO.builder()
                 .itemName("상품")
-                .price(1000)
-                .stock(10)
+                .itemPrice(1000)
+                .itemStock(10)
                 .build();
 
         ItemResponseDTO saved = itemService.createItems(dto, "admin1");
@@ -92,8 +92,8 @@ public class ItemServiceTest {
 
         ItemRequestDTO dto = ItemRequestDTO.builder()
                 .itemName("상품")
-                .price(1000)
-                .stock(10)
+                .itemPrice(1000)
+                .itemStock(10)
                 .build();
 
         ItemResponseDTO saved = itemService.createItems(dto, "admin1");
