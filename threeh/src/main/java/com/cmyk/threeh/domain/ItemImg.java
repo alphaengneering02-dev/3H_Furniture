@@ -23,31 +23,31 @@ import lombok.Setter;
 @Setter
 @Entity
 @NoArgsConstructor
-@Table(name = "item_img")
+@Table(name = "ITEM_IMG")
 public class ItemImg {
 
    @Id
    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "itemImgs_seq")
    @SequenceGenerator(name = "itemImgs_seq",sequenceName = "ITEMIMGS_SEQ",allocationSize=1)
-   @Column(name="itemImg_id")
+   @Column(name="ITEMIMG_ID")
    private long itemImgId;
 
    @ManyToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "item_id",nullable = false)
+   @JoinColumn(name = "ITEM_ID",nullable = false)
    private Item item;
 
-   @Column(name = "img_name",nullable = false,length = 255)
+   @Column(name = "ITEM_IMG_NAME",nullable = false,length = 255)
    private String itemImgName;
 
-   @Column(name ="img_url",nullable = false,length = 500)
+   @Column(name ="ITEM_IMG_URL",nullable = false,length = 500)
    private String itemImgUrl;
    
-   @Column(name = "sub_img_url",nullable = true, length = 500)
+   @Column(name = "ITEM_SUB_IMG_URL",nullable = true, length = 500)
    private String itemSubImgUrl;
 
    @Enumerated(EnumType.STRING)
-   @Column(name = "subimg_yn",nullable = false, length = 1)
-   private SubImg itemSubImg = SubImg.N;
+   @Column(name = "SUBIMG_YN",nullable = false, length = 1)
+   private SubImg thumbnailYn = SubImg.N;
    //대표이미지는 1개, 일반 이미지는 여러개니까 기본값이 N이 더 안전
 
 }

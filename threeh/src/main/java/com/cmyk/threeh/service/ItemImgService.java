@@ -34,10 +34,10 @@ public class ItemImgService {
 
         return ItemImgResponseDTO.builder()
             .itemImgId(itemImg.getItemImgId())
-            .imgName(itemImg.getItemImgName())
-            .imgUrl(itemImg.getItemImgUrl())
-            .subImgUrl(itemImg.getItemSubImgUrl())
-            .subImg(itemImg.getItemSubImg())
+            .itemImgName(itemImg.getItemImgName())
+            .itemImgUrl(itemImg.getItemImgUrl())
+            .itemSubImgUrl(itemImg.getItemSubImgUrl())
+            .SubImg(itemImg.getThumbnailYn())
             .build();
     }
 
@@ -78,10 +78,10 @@ public class ItemImgService {
         
         ItemImg itemImg = new ItemImg();
         itemImg.setItem(item);
-        itemImg.setItemImgName(dto.getImgName());
-        itemImg.setItemImgUrl(dto.getImgUrl());
-        itemImg.setItemSubImgUrl(dto.getSubImgUrl());
-        itemImg.setItemSubImg(dto.getSubImg() !=null? dto.getSubImg() : SubImg.N);
+        itemImg.setItemImgName(dto.getItemImgName());
+        itemImg.setItemImgUrl(dto.getItemImgUrl());
+        itemImg.setItemSubImgUrl(dto.getItemSubImgUrl());
+        itemImg.setThumbnailYn(dto.getThumbnailYn() !=null? dto.getThumbnailYn() : SubImg.N);
 
         ItemImg savedImg = itemImgRepository.save(itemImg);
 
@@ -115,9 +115,9 @@ public class ItemImgService {
         //이미지 존재 확인
         validateImgIs(itemImg,admin);
         
-        itemImg.setItemImgName(dto.getImgName());
-        itemImg.setItemImgUrl(dto.getImgUrl());
-        itemImg.setItemSubImgUrl(dto.getSubImgUrl());
+        itemImg.setItemImgName(dto.getItemImgName());
+        itemImg.setItemImgUrl(dto.getItemImgUrl());
+        itemImg.setItemSubImgUrl(dto.getItemSubImgUrl());
 
         return toDto(itemImg);
     }

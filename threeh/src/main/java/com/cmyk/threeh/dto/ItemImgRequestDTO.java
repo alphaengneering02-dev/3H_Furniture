@@ -16,13 +16,13 @@ public class ItemImgRequestDTO {
     @NotNull
     private Long itemId;
     
-    private String imgName;
+    private String itemImgName;
 
-    private String imgUrl;
+    private String itemImgUrl;
     
-    private String subImgUrl;
+    private String itemSubImgUrl;
     
-    private SubImg subImg;
+    private SubImg thumbnailYn;
 
 }
 
