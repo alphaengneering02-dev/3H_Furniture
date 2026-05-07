@@ -34,31 +34,31 @@ public class PaymentContoller {
 
     }
 
-    // @GetMapping("/payment/success")
-    // public ResponseEntity paymentSuccess(
-    //     @RequestParam String paymentKey,
-    //     @RequestParam String orderId,
-    //     @RequestParam Long amount,
-    //     @AuthenticationPrincipal User user){
+    @GetMapping("/toss/success")
+    public ResponseEntity paymentSuccess(
+        @RequestParam String paymentKey,
+        @RequestParam String orderId,
+        @RequestParam Long amount,
+        @AuthenticationPrincipal User user){
 
-    //         PaymentResponseDTO responseDTO = tossPaymentService.confirmPayment(paymentKey, orderId, amount, user.getUsername());
+            PaymentResponseDTO responseDTO = tossPaymentService.confirmPayment(paymentKey, orderId, amount);
             
-    //         return ResponseEntity.ok().body(responseDTO);
-    //     }
+            return ResponseEntity.ok().body(responseDTO);
+        }
     
 
-    // @GetMapping("/paymet/fail")
-    // public ResponseEntity paymentFail(
-    //     @RequestParam String code, 
-    //     @RequestParam String message,
-    //     @RequestParam String orderId) {
+    @GetMapping("/paymet/fail")
+    public ResponseEntity paymentFail(
+        @RequestParam String code, 
+        @RequestParam String message,
+        @RequestParam String orderId) {
 
 
             
-    //         tossPaymentService.failPayment(code, message, orderId);
+            //tossPaymentService.failPayment(code, message, orderId);
 
 
-    //         return ResponseEntity.ok().body(message);
-    //     }
+            return ResponseEntity.ok().body(message);
+        }
         
 }

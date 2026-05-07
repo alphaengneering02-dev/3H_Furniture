@@ -1,11 +1,15 @@
 package com.cmyk.threeh.service;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cmyk.threeh.domain.Member;
 import com.cmyk.threeh.domain.Payment;
+import com.cmyk.threeh.dto.PaymentDTO;
 import com.cmyk.threeh.dto.PaymentResponseDTO;
+import com.cmyk.threeh.enums.PayType;
 import com.cmyk.threeh.global.error.CustomException;
 import com.cmyk.threeh.global.error.ErrorCode;
 import com.cmyk.threeh.repository.PaymentRepository;
@@ -40,6 +44,11 @@ public class TossPaymentService {
 
         return  payment.toPaymentResponseDTO();
     }
+
+    // @Transactional
+    // public  PaymentSuccess(String paymentKey, String orderId, Long amount) {
+
+    // }
 
     /**
      * 
