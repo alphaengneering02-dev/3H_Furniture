@@ -8,14 +8,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
-
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import com.cmyk.threeh.controller.ItemController;
 import com.cmyk.threeh.dto.ItemRequestDTO;
 import com.cmyk.threeh.dto.ItemResponseDTO;
 import com.cmyk.threeh.service.ItemService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.cmyk.threeh.service.ItemService;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
