@@ -4,7 +4,7 @@ import DaumPostCode from 'react-daum-postcode';
 function AdrdressInput(props) {
     const [zipCode, setZipcode] = useState('');
     const [address, setAddress] = useState('');
-    const [isOpne, setIsOpen] = useState('false');
+    const [isOpne, setIsOpen] = useState(false);
     const [detailedAddress, setDetailedAddress] = useState('');
 
     const completeHandler = (data) => {
@@ -34,10 +34,7 @@ function AdrdressInput(props) {
 
     return (
         <div>
-            <div>
-                <strong>address</strong>
-            </div>
-
+            
             <div>
                 <div>
                     <div>{zipCode}</div>
@@ -57,6 +54,7 @@ function AdrdressInput(props) {
                     </div>
                 )}
                 <div>{address}</div>
+                상세주소
                 <input
                  value={detailedAddress}
                  onChange={inputChangeHandler}

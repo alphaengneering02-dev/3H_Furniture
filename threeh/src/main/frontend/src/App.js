@@ -8,6 +8,7 @@ import Order from './components/Order';
 import Main from './components/Main';
 
 
+
 function App() {
   return (
     <div className="App">
@@ -16,9 +17,9 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path = "/" element={<Main/>} />
-          <Route path = "/order/:itemId" element={<Order/>} />
           <Route path = "/singup" element={<Signup/>} />
           <Route path = "/singup_site" element={ <Signup_site/>} />
+          <Route path = "/order/:itemId" element={<Order/>} />
         </Routes>      
       </BrowserRouter>
 

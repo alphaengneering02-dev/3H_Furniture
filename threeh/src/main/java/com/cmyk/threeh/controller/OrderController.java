@@ -23,6 +23,7 @@ import com.cmyk.threeh.domain.Member;
 import com.cmyk.threeh.domain.MemberAddress;
 import com.cmyk.threeh.domain.OrderItem;
 import com.cmyk.threeh.domain.Orders;
+import com.cmyk.threeh.dto.ItemImgResponseDTO;
 import com.cmyk.threeh.dto.ItemResponseDTO;
 import com.cmyk.threeh.dto.MemberAddressDTO;
 import com.cmyk.threeh.dto.OrderFormDTO;
@@ -31,6 +32,7 @@ import com.cmyk.threeh.dto.OrderResponseDTO;
 import com.cmyk.threeh.global.error.CustomException;
 import com.cmyk.threeh.global.error.ErrorCode;
 import com.cmyk.threeh.repository.OrderRepository;
+import com.cmyk.threeh.service.ItemImgService;
 import com.cmyk.threeh.service.ItemService;
 import com.cmyk.threeh.service.MemberAddressService;
 import com.cmyk.threeh.service.MemberService;
@@ -48,12 +50,14 @@ public class OrderController {
     private final MemberService memberService;
     private final MemberAddressService memberAddressService;
     private final OrderRepository orderRepository;
+    private final ItemImgService itemImgService;
 
     //주문 화면 들어올시
     @GetMapping("/{itemId}")
     public ResponseEntity getOrder(@PathVariable Long itemId, @AuthenticationPrincipal User user){
 
         ItemResponseDTO item = itemService.getItem(itemId);
+        ItemImgResponseDTO itemImage = itemImgService.getMainImg(itemId);
         Member member = memberService.findMember(user.getUsername());
 
         //기본주소지 조회
@@ -65,11 +69,12 @@ public class OrderController {
             .itemDetail(item.getItemDetail())
             .price(item.getItemPrice())
             .stock(item.getItemStock())
+            .itemIamge(itemImage.getItemImgUrl())
             .memberName(member.getName())
             .email(member.getEmail())
             .phone(member.getPhone())
             .defaultAddr(defaultAddress != null ? defaultAddress.getAddr() : null)
-            .defualtAddrDetail(defaultAddress != null ? defaultAddress.getAddrdetail() : null)
+            .defaultAddrDetail(defaultAddress != null ? defaultAddress.getAddrdetail() : null)
             .defaultZipCode(defaultAddress != null ? defaultAddress.getZipcode() : null)
             .isDefault(defaultAddress != null ? defaultAddress.getIsdefault() : "N")
             .build();

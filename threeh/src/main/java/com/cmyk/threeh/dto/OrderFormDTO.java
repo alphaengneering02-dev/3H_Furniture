@@ -11,11 +11,12 @@ public class OrderFormDTO {
     private String itemDetail;
     private int price;
     private int stock;
+    private String itemIamge;
     private String memberName;
     private String email;
     private String phone;
     private String defaultAddr;
-    private String defualtAddrDetail;
+    private String defaultAddrDetail;
     private String defaultZipCode;
     private String isDefault;
 }
