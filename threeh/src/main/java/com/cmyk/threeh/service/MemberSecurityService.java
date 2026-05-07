@@ -42,6 +42,10 @@ public class MemberSecurityService implements UserDetailsService, OAuth2UserServ
 	@Override
 	public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
 		
+		System.out.println("로그인 시도 ID: [" + id + "]");
+		System.out.println("DB 전체 회원 수: " + memberRepository.count());
+		memberRepository.findAll().forEach(m -> System.out.println("DB에 있는 아이디: [" + m.getId() + "]"));
+		
 		// 엔티티의 컬럼명 id를 기준으로 회원을 찾습니다.
 		Optional<Member> searchMember = memberRepository.findById(id);
 		

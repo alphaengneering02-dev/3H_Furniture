@@ -38,7 +38,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/member")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000")  //프론트엔드(3000번 포트)의 접근을 허락함
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")  //프론트엔드(3000번 포트)의 접근을 허락함
 public class MemberController {
 
     private final MemberService memberService;
@@ -60,6 +60,7 @@ public class MemberController {
     }
 
     
+    /*
     //로그인 처리(POST)
     @PostMapping("/login")
 	public ResponseEntity<?> login(@Valid @RequestBody LoginForm loginForm, BindingResult bindingResult) {  //RequestBody: 클라이언트 -> 서버로 넘어오는 요청본문(json 데이터가 담김) 
@@ -82,8 +83,9 @@ public class MemberController {
 		} catch (Exception e) {
 			return ResponseEntity.internalServerError().body("서버 오류가 발생했습니다(로그인 실패).");
 		}
-		
+        
 	}
+    */
 
 
     //로그아웃 처리(GET): spring security가 자동으로 수행하므로, 따로 맵핑할 필요가 없다.
