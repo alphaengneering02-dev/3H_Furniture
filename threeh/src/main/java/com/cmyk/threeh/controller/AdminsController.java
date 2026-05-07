@@ -29,11 +29,6 @@ public class AdminsController {
     private final DeliveryService deliveryService;
     private final AdminsService adminsService; // 추가
 
-    // 🔥 관리자 조회 API
-    @GetMapping("/info")
-    public List<Admins> getAllAdmins() {
-        return adminsService.getAllAdmins();
-    }
 
     // 1. 배송 등록 (CREATE)
     @PostMapping("/delivery")
