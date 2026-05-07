@@ -61,14 +61,14 @@ public class ItemControllerTest {
         +"}";*/ 
 
    ItemRequestDTO dto = ItemRequestDTO.builder()
-    .category("table")
+    .itemCategory("table")
     .itemName("테이블")
     .itemDetail("설명")
     .itemColor("black")
-    .price(500000)
-    .discountPrice(50000)
-    .currency("KRW")
-    .stock(3)
+    .itemPrice(500000)
+    .itemDiscountPrice(50000)
+    .itemPriceCurrency("KRW")
+    .itemStock(3)
     .build();
 
     String json = objectMapper.writeValueAsString(dto);
@@ -79,8 +79,8 @@ public class ItemControllerTest {
             ItemResponseDTO.builder()
             .itemId(1L)
             .itemName("테이블")
-            .price(500000)
-            .stock(3)
+            .itemPrice(500000)
+            .itemStock(3)
             .build()
         );
 
@@ -105,8 +105,8 @@ public class ItemControllerTest {
         list.add(ItemResponseDTO.builder()
         .itemId(1L)
         .itemName("테이블")
-        .price(500000)
-        .stock(3)
+        .itemPrice(500000)
+        .itemStock(3)
         .build());
 
         when(itemService.getAllItems()).thenReturn(list);
@@ -127,15 +127,15 @@ public class ItemControllerTest {
             ItemResponseDTO.builder()
             .itemId(1L)
             .itemName("테이블")
-            .price(500000)
-            .stock(3)
+            .itemPrice(500000)
+            .itemStock(3)
             .build()
           );
 
-          mockMvc.perform(get("/products/1"))
+          mockMvc.perform(get("/items/1"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.itemName").value("테이블"))
-            .andExpect(jsonPath("$.price").value(500000));
+            .andExpect(jsonPath("$.itemPrice").value(500000));
 
     }
 
@@ -158,8 +158,8 @@ public class ItemControllerTest {
             
             String json ="{"
             +"\"itemName\":\"수정된 테이블\","
-            +"\"price\":600000,"
-            +"\"stock\":5"
+            +"\"itemPrice\":600000,"
+            +"\"itemStock\":5"
             +"}";
 
             when(itemService.updateItem(any(), any(), any()))
@@ -167,17 +167,17 @@ public class ItemControllerTest {
                 ItemResponseDTO.builder()
                     .itemId(1L)
                     .itemName("수정된 테이블")
-                    .price(600000)
-                    .stock(5)
+                    .itemPrice(600000)
+                    .itemStock(5)
                     .build()
             );
 
-            mockMvc.perform(put("/products/1")
+            mockMvc.perform(put("/items/1")
                     .contentType("application/json")
                     .content(json))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.itemName").value("수정된 테이블"))
-                .andExpect(jsonPath("$.price").value(600000));
+                .andExpect(jsonPath("$.itemPrice").value(600000));
 
         }
 
@@ -186,7 +186,7 @@ public class ItemControllerTest {
 
         doNothing().when(itemService).deleteItem(any(), any());
 
-        mockMvc.perform(delete("/products/1"))
+        mockMvc.perform(delete("/items/1"))
             .andExpect(status().isOk());
     }
 
