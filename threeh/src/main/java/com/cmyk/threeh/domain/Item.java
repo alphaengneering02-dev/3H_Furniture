@@ -43,7 +43,7 @@ public class Item {
     private Admins admin;
 
     @Column(nullable = false,length = 100)
-    private String category;
+    private String itemCategory;
 
     @Column(nullable = false, length = 255)
     private String itemName;
@@ -59,16 +59,16 @@ public class Item {
     private String itemColor;
 
     @Column(nullable = false)
-    private int price;
+    private int itemPrice;
 
     @Column(nullable = true)
-    private int discountPrice = 0;
+    private int itemDiscountPrice = 0;
 
     @Column(nullable = false, length = 10)
-    private String currency = "KRW";
+    private String itemPriceCurrency = "KRW";
 
     @Column(nullable = false)
-    private int stock;
+    private int itemStock;
 
     @JsonIgnore
     @OneToMany(mappedBy = "item")
@@ -94,35 +94,35 @@ public class Item {
     }
 
     // 상품 수정 메서드
-    public void update(ItemUpdateRequestDTO dto){
+    public void itemUpdate(ItemUpdateRequestDTO dto){
 
      if(dto.getItemName() !=null) this.itemName = dto.getItemName();
      if(dto.getItemDetail() !=null)this.itemDetail = dto.getItemDetail();
      if(dto.getItemColor() !=null)this.itemColor = dto.getItemColor();
      
-     if(dto.getPrice() !=null){
-        validatePrice(dto.getPrice());
-        this.price =dto.getPrice();
+     if(dto.getItemPrice() !=null){
+        validatePrice(dto.getItemPrice());
+        this.itemPrice =dto.getItemPrice();
      }
 
-     if(dto.getDiscountPrice() !=null){
-        validateDiscount(dto.getDiscountPrice());
-        this.discountPrice = dto.getDiscountPrice();
+     if(dto.getItemDiscountPrice() !=null){
+        validateDiscountPrice(dto.getItemDiscountPrice());
+        this.itemDiscountPrice = dto.getItemDiscountPrice();
 
      }
 
-     if(dto.getStock() !=null){
-        validateStock(dto.getStock());
-        this.stock = dto.getStock();
+     if(dto.getItemStock() !=null){
+        validateStock(dto.getItemStock());
+        this.itemStock = dto.getItemStock();
      }
     
     }
 
-    //수정 검증 로직
-    private void validate(){
-        validatePrice(this.price);
-        validateStock(this.stock);
-        validateDiscount(this.discountPrice);
+    //수정 검증 메서드
+    private void validateItemUpdate(){
+        validatePrice(this.itemPrice);
+        validateStock(this.itemStock);
+        validateDiscountPrice(this.itemDiscountPrice);
     }
 
     //재고 감소 메서드(10개중 3개 주문되면 잔여 7개)
@@ -132,10 +132,10 @@ public class Item {
         if(quantity <=0){
             throw new IllegalArgumentException("수량은 1개 이상이어야 합니다.");
         }
-        if(this.stock<quantity){
+        if(this.itemStock<quantity){
             throw new IllegalArgumentException("재고가 부족합니다.");
         }
-        this.stock -=quantity;
+        this.itemStock -=quantity;
     }
 
 
@@ -147,7 +147,7 @@ public class Item {
         if(quantity <=0){
             throw new IllegalArgumentException("수량은 1개 이상이어야 합니다.");
         }
-        this.stock += quantity;
+        this.itemStock += quantity;
 
     }
 
@@ -164,40 +164,40 @@ public class Item {
 
     //할인 적용 메서드
 
-    public void validateDiscount(int discountPrice){
+    public void validateDiscountPrice(int itemDiscounttPrice){
 
-        if(discountPrice < 0 ){
+        if(itemDiscounttPrice < 0 ){
             throw new IllegalArgumentException("할인 가격은 음수일 수 없습니다.");
         }
-        if(discountPrice > this.price){
+        if(itemDiscounttPrice > this.itemPrice){
             throw new IllegalArgumentException("할인 가격이 원가보다 클 수 없습니다.");
         }
     }
 
-    //최종 판매가 메서드
-    public int getFinalPrice(){
+    //최종 판매 가격 메서드
+    public int getItemFinalPrice(){
 
-        return this.price -this.discountPrice;
+        return this.itemPrice -this.itemDiscountPrice;
         
     }
 
-    //상품생성 메서드
+    //상품 생성 메서드
     
     public static Item create(ItemRequestDTO dto, Admins admin){
         Item item = new Item();
 
         item.admin = admin;
-        item.category = dto.getCategory();
+        item.itemCategory = dto.getItemCategory();
         item.itemName = dto.getItemName();
         item.itemDetail = dto.getItemDetail();
         item.itemColor = dto.getItemColor();
 
-        item.price = dto.getPrice();
-        item.discountPrice = dto.getDiscountPrice() !=null? dto.getDiscountPrice() : 0;
-        item.currency = dto.getCurrency() !=null? dto.getCurrency():"KRW";
-        item.stock = dto.getStock();
+        item.itemPrice = dto.getItemPrice();
+        item.itemDiscountPrice = dto.getItemDiscountPrice() !=null? dto.getItemDiscountPrice() : 0;
+        item.itemPriceCurrency = dto.getItemPriceCurrency() !=null? dto.getItemPriceCurrency():"KRW";
+        item.itemStock = dto.getItemStock();
 
-        item.validate();
+        item.validateItemUpdate();
 
         return item;
 

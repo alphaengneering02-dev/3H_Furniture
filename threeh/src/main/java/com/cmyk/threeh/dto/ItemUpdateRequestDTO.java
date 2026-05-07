@@ -16,7 +16,7 @@ import lombok.Setter;
 public class ItemUpdateRequestDTO {
     //상품 수정할 때 수정이 가능한 값만 다루는 DTO
 
-    private String category;
+    private String itemCategory;
 
     private String itemName;
 
@@ -25,9 +25,9 @@ public class ItemUpdateRequestDTO {
     private String itemDetail;
     private String itemColor;
     
-    private Integer price;
-    private Integer discountPrice;
-    private Integer stock;
+    private Integer itemPrice;
+    private Integer itemDiscountPrice;
+    private Integer itemStock;
 
 }
 

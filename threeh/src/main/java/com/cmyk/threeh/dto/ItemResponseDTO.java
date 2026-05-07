@@ -1,7 +1,5 @@
 package com.cmyk.threeh.dto;
 
-import javax.validation.constraints.NotNull;
-
 import com.cmyk.threeh.domain.Item;
 
 import lombok.AllArgsConstructor;
@@ -20,15 +18,15 @@ public class ItemResponseDTO {
 private Long itemId;
 private Long adminId;
 
-private String category;
+private String itemCategory;
 private String itemName;
 private String itemDetail;
 private String itemColor;
-private Integer price;
-private Integer discountPrice;
-private String currency;
-private Integer stock; 
-private Integer finalPrice;
+private Integer itemPrice;
+private Integer itemDiscountPrice;
+private String itemPriceCurrency;
+private Integer itemStock; 
+private Integer itemFinalPrice;
 
 
 //상품 조회시 DTO
@@ -38,15 +36,15 @@ private Integer finalPrice;
         return ItemResponseDTO.builder()
         .itemId(item.getItemId())
         .adminId(item.getAdmin().getAdminId())
-        .category(item.getCategory())
+        .itemCategory(item.getItemCategory())
         .itemName(item.getItemName())
         .itemDetail(item.getItemDetail())
         .itemColor(item.getItemColor())
-        .price(item.getPrice())
-        .discountPrice(item.getDiscountPrice())
-        .finalPrice(item.getFinalPrice())
-        .currency(item.getCurrency())
-        .stock(item.getStock())
+        .itemPrice(item.getItemPrice())
+        .itemDiscountPrice(item.getItemDiscountPrice())
+        .itemFinalPrice(item.getItemFinalPrice())
+        .itemPriceCurrency(item.getItemPriceCurrency())
+        .itemStock(item.getItemStock())
         .build();
     }
 }

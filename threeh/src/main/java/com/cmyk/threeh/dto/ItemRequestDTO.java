@@ -19,7 +19,7 @@ public class ItemRequestDTO {
 //상품 생성시 (Request)
 
 @NotBlank
-private String category;
+private String itemCategory;
 
 @NotBlank
 private String itemName;
@@ -28,14 +28,15 @@ private String itemDetail;
 private String itemColor;
 
 @NotNull
-private Integer price;
+private Integer itemPrice;
 
-private Integer discountPrice;
+private Integer itemDiscountPrice;
 
-private String currency;
+private String itemPriceCurrency;
 
 @NotNull
-private Integer stock;
+private Integer itemStock;
+
 
 }
 

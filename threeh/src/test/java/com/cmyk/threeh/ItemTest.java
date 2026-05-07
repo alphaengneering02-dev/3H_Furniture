@@ -481,22 +481,22 @@ public class ItemTest {
         Item item1 = new Item();
 
         item1.setAdmin(admin);
-        item1.setCategory("거실");
+        item1.setItemCategory("거실");
         item1.setItemName("소파");
-        item1.setPrice(300000);
-        item1.setCurrency("KRW");
-        item1.setStock(3);
+        item1.setItemPrice(300000);
+        item1.setItemPriceCurrency("KRW");
+        item1.setItemStock(3);
 
         itemRepository.save(item1);
 
         Item item2 = new Item();
         
         item2.setAdmin(admin);
-        item2.setCategory("침실");
+        item2.setItemCategory("침실");
         item2.setItemName("일룸침대");
-        item2.setPrice(200000);
-        item2.setCurrency("KRW");
-        item2.setStock(5);
+        item2.setItemPrice(200000);
+        item2.setItemPriceCurrency("KRW");
+        item2.setItemStock(5);
 
         itemRepository.save(item2);
 

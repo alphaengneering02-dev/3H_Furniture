@@ -86,7 +86,7 @@ public class ItemService {
             throw new CustomException(ErrorCode.NO_PERMISSION);
          }
           
-        item.update(dto);
+        item.itemUpdate(dto);
 
         return ItemResponseDTO.from(item);
 

@@ -1,6 +1,7 @@
 package com.cmyk.threeh.controller;
 
 import java.security.Principal;
+import java.util.NoSuchElementException;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -72,6 +73,13 @@ public class MemberAddressController {
     public String addressList(Principal principal, Model model) {
         String userid = (principal != null) ? principal.getName() : "testuser01";
         model.addAttribute("addressList", memberAddressService.getAddressList(userid));
+        
+        //기본 주소지 NUll값 알림문
+        try {
+            memberAddressService.getDefaultAddressForOrder(userid);
+        }catch (NoSuchElementException e) {
+            model.addAttribute("msg",e.getLocalizedMessage());
+        }
         return "mypage/address_list";
     }
 
