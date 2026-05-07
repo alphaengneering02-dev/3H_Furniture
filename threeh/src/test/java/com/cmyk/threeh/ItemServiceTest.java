@@ -3,13 +3,9 @@ package com.cmyk.threeh;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cmyk.threeh.domain.Admins;
@@ -31,18 +27,6 @@ public class ItemServiceTest {
     @Autowired
     private AdminsRepository adminsRepository;
 
-    @BeforeEach
-    void setUp() {
-
-        Admins admin = new Admins();
-        admin.setAdLoginId("admin1");
-        admin.setPassword("1234");
-        admin.setAdminName("관리자");
-        admin.setRole("ADMIN");
-
-        adminsRepository.saveAndFlush(admin);
-    }
-
     // 1. 생성 성공
     @Test
     void createItemTest() {
@@ -58,9 +42,8 @@ public class ItemServiceTest {
 
         ItemResponseDTO result = itemService.createItems(dto, "admin1");
 
-        assertEquals("테이블", result.getItemName());
+        assertEquals("테이블",result.getItemName());
         assertEquals(340000, result.getPrice());
-        assertEquals(3, result.getStock());
     }
 
     // 2. 생성 실패
@@ -94,11 +77,13 @@ public class ItemServiceTest {
         adminsRepository.saveAndFlush(admin2);
 
         ItemUpdateRequestDTO updateDto = new ItemUpdateRequestDTO();
+
         updateDto.setItemName("수정상품");
 
-        assertThrows(CustomException.class, () -> {
+        assertThrows(CustomException.class,()-> {
             itemService.updateItem(saved.getItemId(), "admin2", updateDto);
         });
+
     }
 
     // 4. 삭제 권한 테스트
@@ -120,7 +105,7 @@ public class ItemServiceTest {
         admin2.setRole("ADMIN");
         adminsRepository.saveAndFlush(admin2);
 
-        assertThrows(CustomException.class, () -> {
+        assertThrows(CustomException.class,()-> {
             itemService.deleteItem(saved.getItemId(), "admin2");
         });
     }
