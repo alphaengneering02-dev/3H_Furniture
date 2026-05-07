@@ -1,7 +1,6 @@
 //<Spring Security - 로그인한 개별 사용자의 정보를 담는 객체 클래스>
 package com.cmyk.threeh.domain;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -9,18 +8,13 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.cmyk.threeh.dto.SessionMember;
-
-public class CustomMemberDetails implements UserDetails, Serializable {
-
-    private static final long serialVersionUID = 1L;
-
+public class CustomMemberDetails implements UserDetails {
 
     //생성자
-    private final SessionMember sessionMember;
+    private final Member member;
 
     public CustomMemberDetails(Member member) {
-        this.sessionMember = new SessionMember(member);
+        this.member = member;
     }
 
 
@@ -28,7 +22,7 @@ public class CustomMemberDetails implements UserDetails, Serializable {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> authorities = new ArrayList<>();  //시큐리티의 권한 목록을 가져옴
-        authorities.add(new SimpleGrantedAuthority(sessionMember.getRole().getKey()));
+        authorities.add(new SimpleGrantedAuthority(member.getRole().getKey()));
 
         return authorities;
     }
@@ -37,14 +31,14 @@ public class CustomMemberDetails implements UserDetails, Serializable {
     // 비밀번호 반환
     @Override
     public String getPassword() {
-        return sessionMember.getPassword();
+        return member.getPassword();
     }
 
 
     // 로그인 아이디 반환 (엔티티의 PK인 memberId가 아니라, 로그인용 id)
     @Override
     public String getUsername() {
-        return sessionMember.getId();
+        return member.getId();
     }
 
 
@@ -60,8 +54,8 @@ public class CustomMemberDetails implements UserDetails, Serializable {
 
 
     // Controller 등에서 원본 Member 객체가 필요할 때 꺼내 쓰기 위한 메서드
-    public SessionMember getSessionMember() {
-        return sessionMember;
+    public Member getMember() {
+        return member;
     }
 
     
