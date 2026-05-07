@@ -7,7 +7,7 @@ import static org.mockito.BDDMockito.given;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
@@ -22,8 +22,11 @@ import org.springframework.context.annotation.Import;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.test.context.ActiveProfiles;
 
+import com.cmyk.threeh.domain.Adress;
 import com.cmyk.threeh.domain.Member;
+import com.cmyk.threeh.domain.MemberAddress;
 import com.cmyk.threeh.domain.Orders;
+import com.cmyk.threeh.dto.MemberAddressDTO;
 import com.cmyk.threeh.enums.MemberRole;
 import com.cmyk.threeh.enums.OrderState;
 import com.cmyk.threeh.enums.OrderType;
@@ -56,7 +59,7 @@ public class AddressTest {
     }
 
     @MockBean private ClientRegistrationRepository clientRegistrationRepository;
-    @MockBean private MemberService memberService;
+    @MockBean private MemberService memberService; 
 
     @Autowired private MemberAddressService memberAddressService;
     @Autowired private MemberRepository memberRepository;
@@ -64,41 +67,76 @@ public class AddressTest {
     @Autowired private EntityManager em;
 
     @Test
+    @DisplayName("기본 배송지 자동 연동 성공 테스트")
+    public void 기본_배송지_연동_성공() {
+        // 1. Given
+        Member member = createMember("userY");
+        given(memberService.getUser(anyString())).willReturn(member);
+
+        MemberAddress addr = new MemberAddress();
+        addr.setMember(member);
+        addr.setAddr("서울시 강남구 테헤란로");
+        addr.setAddrDetail("101호");
+        addr.setIsDefault("Y");
+        
+        // [해결] ORA-01400 에러 방지: 필수값인 Adress VO를 채워줌 (city, street, zipcode)
+        addr.setAdressl(new Adress("서울시", "테헤란로", "12345")); 
+        
+        em.persist(addr);
+        em.flush();
+        em.clear();
+
+        // 2. When
+        MemberAddressDTO result = memberAddressService.getDefaultAddressForOrder(member.getId());
+
+        // 3. Then
+        assertEquals("서울시 강남구 테헤란로", result.getAddr());
+        assertEquals("101호", result.getAddrdetail());
+    }
+
+    @Test
+    @DisplayName("기본 배송지 없을 때 NoSuchElementException 발생 테스트")
+    public void 기본_배송지_부재_예외_테스트() {
+        Member member = createMember("userN");
+        given(memberService.getUser(anyString())).willReturn(member);
+
+        assertThrows(NoSuchElementException.class, () -> {
+            memberAddressService.getDefaultAddressForOrder(member.getId());
+        });
+    }
+
+    @Test
     @DisplayName("배송 시작 전(ORDER) 일정 변경 성공 테스트")
     public void 일정_변경_성공_테스트() {
-        // 1. Given: 필수값을 모두 채운 배송 전 주문 생성
-        Member member = createMember("successUser");
+        Member member = createMember("orderUser");
         Orders order = new Orders();
         order.setMember(member);
-        order.setOrderDate(LocalDateTime.now()); // [필수] 주문일자
-        order.setOrderState(OrderState.ORDER);   // 배송 전 상태
+        order.setOrderDate(LocalDateTime.now());
+        order.setOrderState(OrderState.ORDER);
         order.setOrderType(OrderType.DELIVERY_ONLY);
-        order.setDeliveryAddr("서울시 강남구");    // [필수] 배송주소
-        order.setDeliveryDate(LocalDate.now().plusDays(3)); // [필수] 배송일자
+        order.setDeliveryAddr("서울시 강남구");
+        order.setDeliveryDate(LocalDate.now().plusDays(3));
         
         orderRepository.save(order);
         em.flush();
 
-        // 2. When: 10일 뒤로 날짜 변경 시도
         LocalDate newDate = LocalDate.now().plusDays(10);
         memberAddressService.updateDeliverySchedule(order.getOrderId(), newDate);
         em.flush();
         em.clear();
 
-        // 3. Then: 변경 확인
         Orders updatedOrder = orderRepository.findById(order.getOrderId()).get();
         assertEquals(newDate, updatedOrder.getDeliveryDate());
     }
 
     @Test
-    @DisplayName("배송 시작 후(CANCEL 등) 일정 변경 실패 테스트")
+    @DisplayName("배송 시작 후 일정 변경 실패 테스트 (IllegalStateException)")
     public void 일정_변경_실패_테스트() {
-        // 1. Given: 필수값을 모두 채운 이미 완료/취소된 주문 생성
-        Member member = createMember("failUser");
+        Member member = createMember("cancelUser");
         Orders order = new Orders();
         order.setMember(member);
-        order.setOrderDate(LocalDateTime.now()); // [필수] 주문일자
-        order.setOrderState(OrderState.CANCEL);  // 변경이 불가능한 상태 연출
+        order.setOrderDate(LocalDateTime.now());
+        order.setOrderState(OrderState.CANCEL);
         order.setOrderType(OrderType.DELIVERY_ONLY);
         order.setDeliveryAddr("서울시 서초구");
         order.setDeliveryDate(LocalDate.now().plusDays(3));
@@ -106,7 +144,6 @@ public class AddressTest {
         orderRepository.save(order);
         em.flush();
 
-        // 2. When & Then: IllegalStateException 예외 발생 검증
         assertThrows(IllegalStateException.class, () -> {
             memberAddressService.updateDeliverySchedule(order.getOrderId(), LocalDate.now().plusDays(10));
         });

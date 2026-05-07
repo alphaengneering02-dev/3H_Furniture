@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
+
 import javax.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -109,9 +111,22 @@ public class MemberAddressService {
         return memberAddressRepository.findByMember_MemberIdAndIsDefault(member.getMemberId(), "Y")
                 .map(addr -> {
                     MemberAddressDTO dto = new MemberAddressDTO();
-                    // 필요 시 여기에 필드 매핑 추가
+                    
+                    //식별 ID 및 회원 ID
+                    dto.setAddrid(addr.getAddrId());
+                    dto.setMemberid(member.getMemberId());
+
+                    //주소 문자열 및 상세 정보
+                    dto.setAddr(addr.getAddr());
+                    dto.setAddrdetail(addr.getAddrDetail());
+                    dto.setIsdefault(addr.getIsDefault());
+                    //필요시 추가 매핑
+                    //dto.setAddressName(addr.getAddressName());
+                    //dto.setReceiverName(addr.getReceiverName());
+                    //dto.setReceiverPhone(addr.getReceiverPhone());
+
                     return dto;
-                }).orElse(null);
+                }).orElseThrow(() -> new NoSuchElementException("기본 주소지를 설정해주세요"));
             }
 
     //배송/설치 일정 변경 처리
