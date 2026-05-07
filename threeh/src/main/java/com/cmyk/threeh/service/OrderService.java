@@ -60,7 +60,7 @@ public class OrderService {
             .map(dto -> {
                 Item item = itemRepository.findById(dto.getItemId())
                     .orElseThrow(()-> new CustomException(ErrorCode.ITEM_NOT_FOUND));
-                return OrderItem.creaOrderItem(item, item.getPrice(), dto.getCount());
+                return OrderItem.creaOrderItem(item, item.getItemPrice(), dto.getCount());
             })
             .collect(Collectors.toList());
 

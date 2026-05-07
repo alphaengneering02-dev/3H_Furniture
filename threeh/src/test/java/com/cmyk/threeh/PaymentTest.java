@@ -132,10 +132,10 @@ public class PaymentTest {
         Item item = new Item();
         item.setItemDetail("이가구가 짱");
         item.setItemName(name);
-        item.setPrice(price);
-        item.setStock(stock);                          // ← 추가
-        item.setCategory("가구");                      // ← 추가
-        item.setCurrency("KRW");                       // ← 추가
+        item.setItemPrice(price);
+        item.setItemStock(stock);                          // ← 추가
+        item.setItemCategory("가구");                      // ← 추가
+        item.setItemPriceCurrency("KRW");                       // ← 추가
         item.setItemSellStatus(ItemSellStatus.SELL);
          item.setAdmin(savedAdmins);
         item.setAdmin(savedAdmins);

@@ -1,4 +1,5 @@
 import React from 'react';
+import AdrdressInput from './AdrdressInput';
 
 function OrderInfo(props) {
     return (
@@ -8,16 +9,18 @@ function OrderInfo(props) {
 
                 <div>
                     <label>
-                        <input type='radio' id='install' name='deliveryType'>배송 및 설치</input>
+                        <input type='radio' id='install' name='deliveryType' value={"배송 및 설치"}/>
                     </label>
 
                     <label>
-                        <input type='radio' id='delivery' name='deliveryType'>배송만</input>
+                        <input type='radio' id='delivery' name='deliveryType' value={"배송만"}/>
                     </label>
                 </div>
 
                 <label>우편번호 입력</label>
-                우편번호 입력해서 주소지 받아오는 프로그램
+                <div>
+                    <AdrdressInput/>
+                </div>
 
             </div>
         </div>

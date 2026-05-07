@@ -8,7 +8,7 @@ import lombok.Getter;
 public class OrderFormDTO {
     private Long itemId;
     private String itemName;
-    private String itmeDetail;
+    private String itemDetail;
     private int price;
     private int stock;
     private String memberName;

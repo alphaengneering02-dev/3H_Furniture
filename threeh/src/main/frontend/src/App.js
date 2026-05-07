@@ -5,7 +5,8 @@ import Signup from './components/Signup';
 import Signup_site from './components/Signup_site';
 import ChangePw from './components/ChangePW';
 import Order from './components/Order';
-import Main from './components/main';
+import Main from './components/Main';
+
 
 function App() {
   return (

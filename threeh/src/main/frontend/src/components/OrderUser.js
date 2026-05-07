@@ -15,12 +15,25 @@ function OrderUser({ itemId }) {
     return (
         <div>
 
-            <label>이름</label>
 
             <div>
+                <label>이름</label>
+
                 <input type='text' placeholder='이름'
                 value={member ? member.memberName : ''}
                 readOnly/>
+            </div>
+
+            <div>
+                <label>전화번호</label>
+
+                <input type='text'
+                value={member? member.phone : ''}
+                />
+            </div>
+
+            <div>
+                <label>배송 설치 날짜</label>
             </div>
             
             

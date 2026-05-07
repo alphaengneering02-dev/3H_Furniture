@@ -51,7 +51,6 @@ public class OrderController {
 
     //주문 화면 들어올시
     @GetMapping("/{itemId}")
-    
     public ResponseEntity getOrder(@PathVariable Long itemId, @AuthenticationPrincipal User user){
 
         ItemResponseDTO item = itemService.getItem(itemId);
@@ -63,9 +62,9 @@ public class OrderController {
         OrderFormDTO orderFormDTO = OrderFormDTO.builder()
             .itemId(item.getItemId())
             .itemName(member.getName())
-            .itmeDetail(item.getItemDetail())
-            .price(item.getPrice())
-            .stock(item.getStock())
+            .itemDetail(item.getItemDetail())
+            .price(item.getItemPrice())
+            .stock(item.getItemStock())
             .memberName(member.getName())
             .email(member.getEmail())
             .phone(member.getPhone())
