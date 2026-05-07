@@ -23,7 +23,7 @@ public class ItemImgResponseDTO {
     private String itemImgName;
     private String itemImgUrl;
     private String itemSubImgUrl;
-    private SubImg SubImg;
+    private SubImg thumbnailYn;
 
 }
 //이미지 조회 응답용 DTO

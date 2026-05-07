@@ -37,7 +37,7 @@ public class ItemImgService {
             .itemImgName(itemImg.getItemImgName())
             .itemImgUrl(itemImg.getItemImgUrl())
             .itemSubImgUrl(itemImg.getItemSubImgUrl())
-            .SubImg(itemImg.getThumbnailYn())
+            .thumbnailYn(itemImg.getThumbnailYn())
             .build();
     }
 
