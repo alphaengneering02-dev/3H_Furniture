@@ -13,6 +13,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestPropertySource;
 
 import com.cmyk.threeh.domain.Admins;
@@ -20,6 +21,7 @@ import com.cmyk.threeh.domain.Item;
 import com.cmyk.threeh.domain.ItemImg;
 import com.cmyk.threeh.dto.ItemImgRequestDTO;
 import com.cmyk.threeh.dto.ItemImgResponseDTO;
+import com.cmyk.threeh.enums.ItemSellStatus;
 import com.cmyk.threeh.enums.MemberRole;
 import com.cmyk.threeh.enums.SubImg;
 import com.cmyk.threeh.repository.AdminsRepository;
@@ -49,10 +51,8 @@ public class ItemImgTest {
     @Autowired AdminsService adminsService;
     @Autowired AdminsRepository adminsRepository;
 
-    
+    @Autowired ItemImgRequestDTO itemImgRequestDTO;
 
-    @Test
-    /* 
     private Item createTestItemImg(){
 
         Admins admin = new Admins();
@@ -66,59 +66,57 @@ public class ItemImgTest {
 
         Item item = new Item();
         item.setAdmin(admin);
-        item.setCategory("거실");
+        item.setItemCategory("거실");
         item.setItemName("소파");
-        item.setPrice(300000);
-        item.setCurrency("KRW");
-        item.setStock(5);
+        item.setItemPrice(300000);
+        item.setItemPriceCurrency("KRW");
+        item.setItemStock(5);
+        item.setItemSellStatus(ItemSellStatus.SELL);
 
         return itemRepository.save(item);
     }
-    */
 
-
-    /* 
+    @Test
+    @WithMockUser(username = "admin", roles = "ADMIN")
     public void 이미지등록테스트() throws Exception{
 
         //이미지 저장되는지 테스트
 
-        Item item = createTestItem();
+        Item item = createTestItemImg();
 
         ItemImgRequestDTO dto = new ItemImgRequestDTO();
 
         dto.setItemId(item.getItemId());
-        dto.setImgName("t1.jpg");
-        dto.setImgUrl("C:/VSCode/3H_Furniture/threeh/src/main/resources/static/static/images/t1.jpg");
+        dto.setItemImgName("t1.jpg");
+        dto.setItemImgUrl("C:/VSCode/3H_Furniture/threeh/src/main/resources/static/static/images/t1.jpg");
 
         ItemImgResponseDTO result = itemImgService.createItemImg(dto);
 
         assertNotNull(result);
-        assertEquals("t1.jpg", result.getImgName());
+        assertEquals("t1.jpg", result.getItemImgName());
 
         System.out.println("이미지 등록 테스트 성공!!");
         
     }
-    */
-
-    /* 
+    @Test
     public void 상품별이미지조회테스트(){
 
         Item item = createTestItemImg();
 
         ItemImg img1 = new ItemImg();
         img1.setItem(item);
-        img1.setImgName("t1.jpg");
-        img1.setImgUrl("/static/static/images/t1.jpg");
-        img1.setSubImg(SubImg.Y);
+        img1.setItemImgName("t1.jpg");
+        img1.setItemImgUrl("/static/static/images/t1.jpg");
+        img1.setThumbnailYn(SubImg.Y);
 
         itemImgRepository.save(img1);
 
         ItemImg img2 = new ItemImg();
 
         img2.setItem(item);
-        img2.setImgName("t1_1.jpg");
-        img2.setImgUrl("/static/static/images/t1.jpg");
-        img2.setSubImg(SubImg.N);
+        img2.setItemImgName("t1_1.jpg");
+        img2.setItemImgUrl("/static/static/images/t1.jpg");
+        img2.setThumbnailYn(SubImg.N);
 
         itemImgRepository.save(img2);
         
@@ -130,9 +128,8 @@ public class ItemImgTest {
         System.out.println("상품별 이미지 조회 테스트 성공!");
 
     }
-    */
 
-    /* 
+    @Test
     public void 대표이미지조회테스트(){
 
         Item item = createTestItemImg();
@@ -142,9 +139,9 @@ public class ItemImgTest {
         ItemImg img1 = new ItemImg();
 
         img1.setItem(savedItem);
-        img1.setImgName("detailImg");
-        img1.setImgUrl("/static/static/images/t1_1.jpg");
-        img1.setSubImg(SubImg.N);
+        img1.setItemImgName("detailImg");
+        img1.setItemImgUrl("/static/static/images/t1_1.jpg");
+        img1.setThumbnailYn(SubImg.N);
 
         itemImgRepository.save(img1);
 
@@ -152,9 +149,9 @@ public class ItemImgTest {
         ItemImg mainImg = new ItemImg();
 
         mainImg.setItem(savedItem);
-        mainImg.setImgName("mainImg");
-        mainImg.setImgUrl("/static/static/images/t1.jpg");
-        mainImg.setSubImg(SubImg.Y);
+        mainImg.setItemImgName("mainImg");
+        mainImg.setItemImgUrl("/static/static/images/t1.jpg");
+        mainImg.setThumbnailYn(SubImg.Y);
 
         itemImgRepository.save(mainImg);
 
@@ -162,15 +159,15 @@ public class ItemImgTest {
         ItemImgResponseDTO result = itemImgService.getMainImg(savedItem.getItemId());
 
         //검증
-        assertEquals("mainImg", result.getImgName());
-        assertEquals("/static/static/images/t1.jpg", result.getImgUrl());
-        assertEquals(SubImg.Y, result.getSubImg());
+        assertEquals("mainImg", result.getItemImgName());
+        assertEquals("/static/static/images/t1.jpg", result.getItemImgUrl());
+        assertEquals(SubImg.Y, result.getThumbnailYn());
        
         System.out.println("대표 이미지 조회 테스트 성공!");
     }
-    */
-
-    /* 
+ 
+    @Test
+    @WithMockUser(username = "admin", roles = "ADMIN")
     public void 이미지수정테스트(){
 
         Item item = createTestItemImg();
@@ -180,18 +177,18 @@ public class ItemImgTest {
         //이미지 생성
         ItemImg itemImg = new ItemImg();
         itemImg.setItem(savedItem);
-        itemImg.setImgName("old.jpg");
-        itemImg.setImgUrl("old-url");
-        itemImg.setSubImgUrl("old-sub-url");
-        itemImg.setSubImg(SubImg.Y);
+        itemImg.setItemImgName("old.jpg");
+        itemImg.setItemImgUrl("old-url");
+        itemImg.setItemSubImgUrl("old-sub-url");
+        itemImg.setThumbnailYn(SubImg.Y);
 
         ItemImg savedImg = itemImgRepository.save(itemImg);
 
         //수정 DTO
         ItemImgRequestDTO updateDto = ItemImgRequestDTO.builder()
-            .imgName("new.jpg")
-            .imgUrl("new-url")
-            .subImgUrl("new-sub-url")
+            .itemImgName("new.jpg")
+            .itemImgUrl("new-url")
+            .itemSubImgUrl("new-sub-url")
             .build();
 
         //수정 실행
@@ -199,12 +196,13 @@ public class ItemImgTest {
 
         //검증
 
-        assertEquals("new.jpg", result.getImgName());
-        assertEquals("new-url", result.getImgUrl());
-        assertEquals("new-sub-url", result.getSubImgUrl());
+        assertEquals("new.jpg", result.getItemImgName());
+        assertEquals("new-url", result.getItemImgUrl());
+        assertEquals("new-sub-url", result.getItemSubImgUrl());
     }
-    */
 
+    @Test
+    @WithMockUser(username = "admin", roles = "ADMIN")
    public void 이미지삭제테스트(){
 
     //상품 생성

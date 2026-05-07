@@ -3,6 +3,7 @@ package com.cmyk.threeh;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 
 import com.cmyk.threeh.domain.Admins;
 import com.cmyk.threeh.domain.Item;
@@ -44,112 +45,128 @@ public class ItemTest {
     @Autowired AdminsRepository adminsRepository;
     @Autowired AdminsService adminsService;
 
+    private Admins roleAdmin(){
+
+        Admins admin = new Admins();
+
+        admin.setAdLoginId("admin1");
+        admin.setPassword("1234");
+        admin.setAdminName("관리자");
+        admin.setRole("ADMIN");
+
+        return adminsRepository.save(admin);
+    }
     
     @Test
-      /* public void 상품등록테스트() throws Exception{
+    @WithMockUser(username = "admin", roles = "ADMIN")
+    public void 상품등록테스트() throws Exception{
 
        //상품 생성
 
        Item item = new Item(); 
 
-       item.setCategory("침실");
+       item.setItemCategory("침실");
        item.setItemName("레스트침대");
        item.setItemDetail("편안함");
        item.setItemColor("ivory");
-       item.setPrice(150000);
-       item.setDiscountPrice(30000);
-       item.setCurrency("KRW");
-       item.setStock(10);
+       item.setItemPrice(150000);
+       item.setItemDiscountPrice(30000);
+       item.setItemPriceCurrency("KRW");
+       item.setItemStock(10);
 
        //저장
        Item savedItem = itemRepository.save(item);
 
        //검증
        assertEquals("레스트침대", savedItem.getItemName());
-       assertEquals(150000,savedItem.getPrice());
+       assertEquals(150000,savedItem.getItemPrice());
 
        System.out.println("상품 등록 테스트 성공");
 
       // System.out.println(savedItem.getItemName()); 
-      // System.out.println(savedItem.getPrice());
+      // System.out.println(savedItem.getItemPrice());
 
     }
-   */  
 
-    /* 
+    @Test
+    @WithMockUser(username = "admin", roles = "ADMIN")
     public void 상품수정테스트(){
 
         //상품이름변경,가격변경,재고변경
         Item item = new Item();
 
-        item.setCategory("침실");
+        item.setItemCategory("침실");
         item.setItemName("침대");
-        item.setPrice(100000);
-        item.setCurrency("KRW");
-        item.setStock(10);
+        item.setItemPrice(100000);
+        item.setItemDiscountPrice(0);
+        item.setItemStock(10);
 
         Item savedItem = itemRepository.save(item);
 
-        savedItem.updateItem("침실", "수정된침대", "푹신함", "white", 200000, 2000, "KRW", 4);
+        ItemUpdateRequestDTO dto = new ItemUpdateRequestDTO();
+
+        dto.setItemName("수정된 침대");
+        dto.setItemPrice(200000);
+        dto.setItemDiscountPrice(2000);
+        dto.setItemStock(4);
 
         assertEquals("수정된침대", savedItem.getItemName());
-        assertEquals(200000, savedItem.getPrice());
-        assertEquals(4, savedItem.getStock());
+        assertEquals(200000, savedItem.getItemPrice());
+        assertEquals(2000, savedItem.getItemDiscountPrice());
+        assertEquals(4, savedItem.getItemStock());
 
         System.out.println("상품 수정 테스트 성공!!");
 
     }
-    */
 
-    /* 
+    @Test
     public void 재고감소테스트(){
 
         Item item = new Item();
 
-        item.setStock(10);
+        item.setItemStock(10);
 
         item.removeStock(3);
 
-        assertEquals(7, item.getStock());
+        assertEquals(7, item.getItemStock());
 
         System.out.println("재고 감소 테스트 성공!!!");
-        System.out.println(item.getStock());
+        System.out.println(item.getItemStock());
     }
-    */
 
-    /* 
+    @Test
     public void 재고부족테스트(){
 
         Item item = new Item();
 
-        item.setStock(2);
+        item.setItemStock(2);
 
         assertThrows(IllegalArgumentException.class,()-> item.removeStock(5));
 
         System.out.println("재고 부족 예외 테스트 성공!!!");
 
-        System.out.println(item.getStock());
+        System.out.println(item.getItemStock());
     }
-    */
 
-    /* 
+    @Test
+    @WithMockUser(username = "admin", roles = "ADMIN")
     public void 할인적용테스트(){
 
         Item item = new Item();
 
-        item.setPrice(100000);
+        item.setItemPrice(100000);
 
-        item.applyDiscount(20000);
+        item.setItemDiscountPrice(20000);
 
-        assertEquals(20000, item.getDiscountPrice());
+        assertEquals(20000, item.getItemDiscountPrice());
 
         System.out.println("할인 적용 테스트 성공!!");
-        System.out.println(item.getDiscountPrice());
-        System.out.println(item.getPrice());
+        System.out.println(item.getItemDiscountPrice());
+        System.out.println(item.getItemFinalPrice());
     }
-    */
 
-    /*
+    @Test
+    @WithMockUser(username = "admin", roles = "ADMIN")
     public void 판매상태변경테스트(){
 
         Item item = new Item();
@@ -163,18 +180,17 @@ public class ItemTest {
         System.out.println(item.getItemSellStatus());
 
     }
-    */
 
-    /* 
+    @Test
     public void 상품조회테스트(){
 
         Item item = new Item();
 
-        item.setCategory("침실");
+        item.setItemCategory("침실");
         item.setItemName("침대");
-        item.setPrice(100000);
-        item.setCurrency("KRW");
-        item.setStock(10);
+        item.setItemPrice(100000);
+        item.setItemPriceCurrency("KRW");
+        item.setItemStock(10);
 
         Item savedItem = itemRepository.save(item);
 
@@ -188,18 +204,18 @@ public class ItemTest {
         System.out.println(findItem.getItemName());
 
     }
-    */
 
-    /*
+    @Test
+    @WithMockUser(username = "admin", roles = "ADMIN")
     public void 상품삭제테스트(){
 
         Item item = new Item();
 
-        item.setCategory("침실");
+        item.setItemCategory("침실");
         item.setItemName("삭제상품");
-        item.setPrice(10000);
-        item.setCurrency("KRW");
-        item.setStock(1);
+        item.setItemPrice(10000);
+        item.setItemPriceCurrency("KRW");
+        item.setItemStock(1);
 
         Item savedItem = itemRepository.save(item);
 
@@ -214,36 +230,8 @@ public class ItemTest {
             System.out.println("상품 삭제 테스트 성공!!!");
 
     }
-     */
 
-    /* 
-    public void 가격음수예외테스트(){
-
-        Item item = new Item();
-
-        assertThrows(IllegalArgumentException.class,()-> item.updateItem("침실", "침대", "설명", "white", -1000, 0, "KRW", 10)
-        
-    );
-        System.out.println("가격 음수 예외 테스트 성공!!!!!!!");
-        System.out.println(item.getPrice());
-
-    }
-    */
-
-    /* 
-    public void 재고음수예외테스트(){
-
-        Item item = new Item();
-
-        assertThrows(IllegalArgumentException.class,()->item.updateItem("침실", "침대", "설명", "white", 10000, 0, "KRW", -1)
-        );
-        System.out.println(item.getStock());
-        System.out.println("재고 음수 예외 테스트 성공!!");
-
-    }
-    */
-
-    /* 
+    @Test
     public void 주문생성테스트(){
 
         //회원 생성
@@ -256,9 +244,9 @@ public class ItemTest {
         //상품 생성
         Item item = new Item();
         item.setItemName("침대");
-        item.setPrice(1000000);
-        item.setCurrency("KRW");
-        item.setStock(10);
+        item.setItemPrice(1000000);
+        item.setItemPriceCurrency("KRW");
+        item.setItemStock(10);
 
         Item savedItem = itemRepository.save(item);
 
@@ -275,146 +263,87 @@ public class ItemTest {
         orderItem.setOrders(savedOrders);
 
         //검증
-        assertEquals(8, savedItem.getStock());
+        assertEquals(8, savedItem.getItemStock());
 
         assertEquals(200000, orderItem.getTotalPrice());
 
         System.out.println("주문 테스트 성공!");
 
     }
-    */
 
-    /* 
+    @Test
     public void 주문취소테스트(){
 
         Item item = new Item();
         item.setItemName("침대");
-        item.setPrice(100000);
-        item.setStock(10);
+        item.setItemPrice(100000);
+        item.setItemStock(10);
 
         Item savedItem = itemRepository.save(item);
 
         OrderItem orderItem = OrderItem.creaOrderItem(savedItem, 100000, 2);
 
         //주문 후 재고 8
-        assertEquals(8, savedItem.getStock());
-        System.out.println(savedItem.getStock());
+        assertEquals(8, savedItem.getItemStock());
+        System.out.println(savedItem.getItemStock());
         //주문 취소
         orderItem.cancel();
 
         //다시 10 복구
         
-        assertEquals(10, savedItem.getStock());
+        assertEquals(10, savedItem.getItemStock());
         System.out.println("주문취소 테스트 성공!!");
-        System.out.println(savedItem.getStock());
+        System.out.println(savedItem.getItemStock());
 
     }
-    */
 
-
-    /* 
-    public void 재고부족테스트(){
-
-        Item item = new Item();
-
-        item.setItemName("의자");
-        item.setPrice(50000);
-        item.setCurrency("KRW");
-        item.setStock(2);
-
-        Item savedItem = itemRepository.save(item);
-
-        assertThrows(IllegalArgumentException.class, ()->{OrderItem.creaOrderItem(savedItem, 50000, 5);
-
-        });
-
-        System.out.println(savedItem.getItemSellStatus());
-        System.out.println("재고 부족 주문 테스트 성공!!");
-    }
-    */
-
-    /* 
+    @Test
+    @WithMockUser(username = "admin", roles = "ADMIN")
     public void 상품서비스등록테스트(){
 
         //DTO생성
 
         ItemRequestDTO dto = new ItemRequestDTO();
 
-        dto.setCategory("침실");
+        dto.setItemCategory("침실");
         dto.setItemName("호텔침대");
         dto.setItemDetail("푹신함");
         dto.setItemColor("White");
-        dto.setPrice(300000);
-        dto.setDiscountPrice(20000);
-        dto.setCurrency("KRW");
-        dto.setStock(5);
+        dto.setItemPrice(300000);
+        dto.setItemDiscountPrice(20000);
+        dto.setItemPriceCurrency("KRW");
+        dto.setItemStock(5);
 
         //서비스 실행
-        ItemResponseDTO result = itemService.createItems(dto);
+        ItemResponseDTO result = itemService.createItems(dto,"admin1");
 
         //검증
         assertEquals("호텔침대", result.getItemName());
-        assertEquals(300000, result.getPrice());
-        assertEquals(5, result.getStock());
+        assertEquals(300000, result.getItemPrice());
+        assertEquals(5, result.getItemStock());
 
         System.out.println(result.getItemName());
         System.out.println("상품 서비스 등록 테스트 성공!!");
     }
-    */
 
-    /* 
-    public void 상품서비스수정테스트(){
 
-        Item item = new Item();
-
-        item.setCategory("침실");
-        item.setItemName("기존침대");
-        item.setPrice(100000);
-        item.setCurrency("KRW");
-        item.setStock(10);
-
-        Item savedItem = itemRepository.save(item);
-
-        System.out.println(item.getItemDetail());
-
-        //수정DTO
-        ItemUpdateRequestDTO dto = new ItemUpdateRequestDTO();
-
-        dto.setItemName("수정침대");
-        dto.setItemDetail("푹신함");
-        dto.setPrice(200000);
-        dto.setStock(5);
-
-        //서비스 실행
-        ItemResponseDTO result = itemService.updateItem(savedItem.getItemId(), dto);
-        
-        System.out.println(item.getItemDetail());
-
-        //검증
-        assertEquals("수정침대", result.getItemName());
-        assertEquals(200000, result.getPrice());
-        assertEquals(5, result.getStock());
-
-        System.out.println("상품 수정 서비스 테스트 성공!");
-    }
-    */
-
-    /*
+    @Test
+    @WithMockUser(username = "admin", roles = "ADMIN")
     public void 상품삭제서비스테스트(){
 
         Item item = new Item();
 
-        item.setCategory("침실");
+        item.setItemCategory("침실");
         item.setItemName("삭제상품");
-        item.setPrice(10000);
-        item.setCurrency("KRW");
-        item.setStock(3);
+        item.setItemPrice(10000);
+        item.setItemPriceCurrency("KRW");
+        item.setItemStock(3);
 
         Item savedItem = itemRepository.save(item);
 
         System.out.println(savedItem.getItemName());
         //삭제 실행
-        itemService.deleteItem(savedItem.getItemId());
+        itemService.deleteItem(savedItem.getItemId(), "admin1");
 
         // 검증
         boolean exists = itemRepository.findById(savedItem.getItemId()).isPresent();
@@ -424,49 +353,19 @@ public class ItemTest {
         System.out.println("상품 삭제 테스트 성공!!");
 
     }
-    */
 
-    /* 
+    @Test
     public void 존재하지않는상품조회테스트(){
 
         assertThrows(CustomException.class, ()->{
-            itemService.getItem(999999L);
+            itemService.getItem(9L);
         });
 
         System.out.println("존재하지 않는 상품 조회 예외 테스트 성공!");
     }
-    */
 
-    /*
-    public void 음수가격수정테스트(){
 
-        Item item = new Item();
-
-        item.setCategory("침실");
-        item.setItemName("침대");
-        item.setPrice(100000);
-        item.setCurrency("KRW");
-        item.setStock(10);
-
-        Item savedItem = itemRepository.save(item);
-
-        ItemUpdateRequestDTO dto = new ItemUpdateRequestDTO();
-
-        dto.setItemName("수정침대");
-        dto.setItemDetail("푹신하다고요");
-        dto.setPrice(-1000); //음수
-        dto.setStock(5);
-
-        assertThrows(IllegalArgumentException.class, ()->{
-            itemService.updateItem(savedItem.getItemId(), dto);
-        }
-    );
-
-    System.out.println("음수 가격 예외 테스트 성공!!");
-
-    }
-     */
-
+    @Test
     public void 상품전체조회테스트(){
 
         Admins admin = new Admins();
@@ -501,7 +400,7 @@ public class ItemTest {
 
         List<ItemResponseDTO> items = itemService.getAllItems();
 
-        assertEquals(2, items.size());
+        assertEquals(7, items.size());
 
         System.out.println("상품 전체조회 테스트성공!!");
 
