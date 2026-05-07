@@ -177,7 +177,7 @@ public class Item {
     //최종 판매 가격 메서드
     public int getItemFinalPrice(){
 
-        return this.itemPrice -this.itemDiscountPrice;
+        return this.itemPrice -(this.itemDiscountPrice !=null? this.itemDiscountPrice:0);
         
     }
 

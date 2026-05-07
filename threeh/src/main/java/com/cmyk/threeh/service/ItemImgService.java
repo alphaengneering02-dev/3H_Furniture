@@ -148,7 +148,7 @@ public class ItemImgService {
     public ItemImgResponseDTO getMainImg(Long itemId) {
 
         ItemImg itemImg = itemImgRepository
-            .findByItem_ItemIdAndSubImg(itemId, SubImg.Y)
+            .findByItem_ItemIdAndThumbnailYn(itemId, SubImg.Y)
             .orElseThrow(() ->
                 new CustomException(ErrorCode.ITEMIMG_NOT_FOUND));
 

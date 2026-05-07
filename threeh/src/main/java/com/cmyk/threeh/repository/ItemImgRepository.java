@@ -14,10 +14,9 @@ public interface ItemImgRepository extends JpaRepository<ItemImg,Long>{
     List<ItemImg> findByItem_ItemId(Long itemId);
     
     //대표 이미지 조회
-    Optional<ItemImg> findByItem_ItemIdAndSubImg(
-
+    Optional<ItemImg> findByItem_ItemIdAndThumbnailYn(
         Long itemId,
-        SubImg subImg
+        SubImg suthumbnailYn
     );
 
 }
