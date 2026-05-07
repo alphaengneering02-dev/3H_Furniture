@@ -17,4 +17,5 @@ public class OrderFormDTO {
     private String defaultAddr;
     private String defualtAddrDetail;
     private String defaultZipCode;
+    private String isDefault;
 }

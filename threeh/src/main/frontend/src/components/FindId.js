@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import FindId_result from './FindId_result';
-import { Link, Route, Switch } from "react-router-dom/cjs/react-router-dom";
+import { Link, Route, Switch } from "react-router-dom";
 
 const FindId = () => {
 
