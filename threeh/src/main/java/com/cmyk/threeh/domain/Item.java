@@ -35,40 +35,40 @@ public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "items_seq")
     @SequenceGenerator(name = "items_seq",sequenceName = "ITEMS_SEQ",allocationSize=1)
-    @Column(name="item_id")
+    @Column(name="ITEM_ID")
     private Long itemId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "admin_id", nullable = false)
+    @JoinColumn(name = "ADMIN_ID", nullable = false)
     private Admins admin;
 
-    @Column(nullable = false,length = 100)
+    @Column(name="ITEM_CATEGORY",nullable = false,length = 100)
     private String itemCategory;
 
-    @Column(nullable = false, length = 255)
+    @Column(name = "ITEM_NAME", nullable = false, length = 255)
     private String itemName;
 
-    @Column(nullable = true, length = 255)
+    @Column(name="ITEM_DETAIL", nullable = true, length = 255)
     private String itemDetail;
 
     @Enumerated(EnumType.STRING)
-    @Column( name="item_sell_status", nullable = false, length = 50)
+    @Column( name="ITEM_SELL_STATUS", nullable = false, length = 50)
     private ItemSellStatus itemSellStatus = ItemSellStatus.SELL;
 
-    @Column(nullable=true, length =50 )
+    @Column(name="ITEM_COLOR",nullable=true, length =50 )
     private String itemColor;
 
-    @Column(nullable = false)
-    private int itemPrice;
+    @Column(name="ITEM_PRICE",nullable = false)
+    private Integer itemPrice;
 
-    @Column(nullable = true)
-    private int itemDiscountPrice = 0;
+    @Column(name="ITEM_DISCOUNT_PRICE",nullable = true)
+    private Integer itemDiscountPrice = 0;
 
-    @Column(nullable = false, length = 10)
+    @Column(name="ITEM_PRICE_CURRENCY",nullable = false, length = 10)
     private String itemPriceCurrency = "KRW";
 
-    @Column(nullable = false)
-    private int itemStock;
+    @Column(name="ITEM_STOCK",nullable = false)
+    private Integer itemStock;
 
     @JsonIgnore
     @OneToMany(mappedBy = "item")
@@ -118,8 +118,8 @@ public class Item {
     
     }
 
-    //수정 검증 메서드
-    private void validateItemUpdate(){
+    //생성,수정 검증 메서드
+    private void validateItem(){
         validatePrice(this.itemPrice);
         validateStock(this.itemStock);
         validateDiscountPrice(this.itemDiscountPrice);
@@ -197,7 +197,7 @@ public class Item {
         item.itemPriceCurrency = dto.getItemPriceCurrency() !=null? dto.getItemPriceCurrency():"KRW";
         item.itemStock = dto.getItemStock();
 
-        item.validateItemUpdate();
+        item.validateItem();
 
         return item;
 
