@@ -34,19 +34,22 @@ public class SecurityConfig {
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
 		http
-		.csrf().disable()
 		// 인가(접근 권한) 설정
+		.csrf().disable()
+
 		.authorizeRequests()
 			.antMatchers("/admin/**").hasRole("ADMIN")
-            .antMatchers("/api/v1/**").hasRole(MemberRole.USER.name())  ///api/v1로 시작하는 모든 API 요청은 ROLE_USER (일반 고객)만 접속 가능
+            .antMatchers("/api/v1/**").hasRole("USER")  ///api/v1로 시작하는 모든 API 요청은 ROLE_USER (일반 고객)만 접속 가능
             .antMatchers("/**").permitAll()  // 모든 인증되지 않은 접속 요청을 허락함
 		.and()
 
-		// 기본 폼 로그인 설정
+		// 커스텀 로그인 페이지 설정
 		.formLogin()
-			.loginPage("/login")
-			.defaultSuccessUrl("/")  //로그인 페이지 지정, 로그인 정보는 Cookie에 저장됨
-		.and()
+			.loginPage("/member/login")  // 1. 우리가 만든 로그인 페이지 컨트롤러 주소
+			.loginProcessingUrl("/member/login") // 2. <form action="/member/login">과 일치시켜야 함 (POST 요청을 가로챔)
+			.defaultSuccessUrl("/", true) // 3. 성공 시 이동할 주소 (메인 페이지)                
+			.permitAll()
+		.and()  // >> 로그인 성공 시, Cookie에 정보가 저장됨
 
         // OAuth2 로그인 설정
         .oauth2Login()
@@ -62,6 +65,7 @@ public class SecurityConfig {
 			.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
 			.logoutSuccessUrl("/")
 			.invalidateHttpSession(true)
+			.deleteCookies("JSESSIONID")
 		;
 		
 		return http.build();

@@ -60,12 +60,6 @@ public class MemberController {
     }
 
     
-    //로그인
-    @GetMapping("/login")
-    public String login(LoginForm loginForm) {
-        return "forward:/Login.js";
-    }
-
     //로그인 처리(POST)
     @PostMapping("/login")
 	public ResponseEntity<?> login(@Valid @RequestBody LoginForm loginForm, BindingResult bindingResult) {  //RequestBody: 클라이언트 -> 서버로 넘어오는 요청본문(json 데이터가 담김) 
@@ -97,12 +91,6 @@ public class MemberController {
     
 
     //회원가입
-    @GetMapping("/signup")
-    public String signup(SignupUpdateForm suform) {
-        return "forward:/Signup.js";
-    }
-
-
     @PostMapping("/signup")
 	public ResponseEntity<?> signup(@Valid @RequestBody SignupUpdateForm suform, BindingResult bindingResult) {
 
@@ -137,10 +125,11 @@ public class MemberController {
             return ResponseEntity.badRequest().body(errorMap);
 
         } catch (CustomException e) {  //중복 에러 등 커스텀 예외 처리
+            // 에러 코드에 따라 적절한 메시지를 맵에 담아 보냄 (예: ErrorCode.MEMBER_FOUND -> "id", "이미 존재하는 아이디입니다.")
             Map<String, String> errorMap = new HashMap<>();
             String field = determineField(e.getErrorCode());
             String message = e.getErrorCode().getMessage();
-            errorMap.put(field, message);  //예: ErrorCode.MEMBER_FOUND -> "id", "이미 존재하는 아이디입니다."
+            errorMap.put(field, message);
             return ResponseEntity.badRequest().body(errorMap);
             
         } catch (Exception e) {
