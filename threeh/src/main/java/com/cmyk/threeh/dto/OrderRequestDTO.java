@@ -1,6 +1,7 @@
 package com.cmyk.threeh.dto;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -18,7 +19,7 @@ public class OrderRequestDTO {
     private Long memberId;
     private Long deliveryId;
     private OrderType orderType;
-    private LocalDate deliveryDate;
+    private LocalDateTime deliveryDate;
     private LocalDate installDate;
     private String deliveryAddr;
     private String deliveryAddrDetail;
