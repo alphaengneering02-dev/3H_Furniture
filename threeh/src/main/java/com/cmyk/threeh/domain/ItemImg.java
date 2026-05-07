@@ -37,17 +37,17 @@ public class ItemImg {
    private Item item;
 
    @Column(name = "img_name",nullable = false,length = 255)
-   private String imgName;
+   private String itemImgName;
 
    @Column(name ="img_url",nullable = false,length = 500)
-   private String imgUrl;
+   private String itemImgUrl;
    
    @Column(name = "sub_img_url",nullable = true, length = 500)
-   private String subImgUrl;
+   private String itemSubImgUrl;
 
    @Enumerated(EnumType.STRING)
    @Column(name = "subimg_yn",nullable = false, length = 1)
-   private SubImg subImg = SubImg.N;
+   private SubImg itemSubImg = SubImg.N;
    //대표이미지는 1개, 일반 이미지는 여러개니까 기본값이 N이 더 안전
 
 }

@@ -34,10 +34,10 @@ public class ItemImgService {
 
         return ItemImgResponseDTO.builder()
             .itemImgId(itemImg.getItemImgId())
-            .imgName(itemImg.getImgName())
-            .imgUrl(itemImg.getImgUrl())
-            .subImgUrl(itemImg.getSubImgUrl())
-            .subImg(itemImg.getSubImg())
+            .imgName(itemImg.getItemImgName())
+            .imgUrl(itemImg.getItemImgUrl())
+            .subImgUrl(itemImg.getItemSubImgUrl())
+            .subImg(itemImg.getItemSubImg())
             .build();
     }
 
@@ -78,10 +78,10 @@ public class ItemImgService {
         
         ItemImg itemImg = new ItemImg();
         itemImg.setItem(item);
-        itemImg.setImgName(dto.getImgName());
-        itemImg.setImgUrl(dto.getImgUrl());
-        itemImg.setSubImgUrl(dto.getSubImgUrl());
-        itemImg.setSubImg(dto.getSubImg() !=null? dto.getSubImg() : SubImg.N);
+        itemImg.setItemImgName(dto.getImgName());
+        itemImg.setItemImgUrl(dto.getImgUrl());
+        itemImg.setItemSubImgUrl(dto.getSubImgUrl());
+        itemImg.setItemSubImg(dto.getSubImg() !=null? dto.getSubImg() : SubImg.N);
 
         ItemImg savedImg = itemImgRepository.save(itemImg);
 
@@ -115,9 +115,9 @@ public class ItemImgService {
         //이미지 존재 확인
         validateImgIs(itemImg,admin);
         
-        itemImg.setImgName(dto.getImgName());
-        itemImg.setImgUrl(dto.getImgUrl());
-        itemImg.setSubImgUrl(dto.getSubImgUrl());
+        itemImg.setItemImgName(dto.getImgName());
+        itemImg.setItemImgUrl(dto.getImgUrl());
+        itemImg.setItemSubImgUrl(dto.getSubImgUrl());
 
         return toDto(itemImg);
     }

@@ -187,15 +187,15 @@ public class Item {
         Item item = new Item();
 
         item.admin = admin;
-        item.itemCategory = dto.getCategory();
+        item.itemCategory = dto.getItemCategory();
         item.itemName = dto.getItemName();
         item.itemDetail = dto.getItemDetail();
         item.itemColor = dto.getItemColor();
 
-        item.itemPrice = dto.getPrice();
-        item.itemDiscountPrice = dto.getDiscountPrice() !=null? dto.getDiscountPrice() : 0;
-        item.itemPriceCurrency = dto.getCurrency() !=null? dto.getCurrency():"KRW";
-        item.itemStock = dto.getStock();
+        item.itemPrice = dto.getItemPrice();
+        item.itemDiscountPrice = dto.getItemDiscountPrice() !=null? dto.getItemDiscountPrice() : 0;
+        item.itemPriceCurrency = dto.getItemPriceCurrency() !=null? dto.getItemPriceCurrency():"KRW";
+        item.itemStock = dto.getItemStock();
 
         item.validateItemUpdate();
 

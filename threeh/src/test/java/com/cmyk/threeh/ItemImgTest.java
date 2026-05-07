@@ -217,9 +217,9 @@ public class ItemImgTest {
 
     ItemImg itemImg = new ItemImg();
     itemImg.setItem(savedItem);
-    itemImg.setImgName("delete.jpg");
-    itemImg.setImgUrl("delete-url");
-    itemImg.setSubImg(SubImg.Y);
+    itemImg.setItemImgName("delete.jpg");
+    itemImg.setItemImgUrl("delete-url");
+    itemImg.setItemSubImg(SubImg.Y);
 
     ItemImg savedImg = itemImgRepository.save(itemImg);
 
