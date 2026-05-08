@@ -67,6 +67,7 @@ public class Orders {
     @Column(name = "order_state", nullable = false)
     private OrderState orderState = OrderState.ORDER;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "order_type", nullable = false, length = 50)
     private OrderType orderType;
 

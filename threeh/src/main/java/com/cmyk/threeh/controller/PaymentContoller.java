@@ -35,20 +35,20 @@ public class PaymentContoller {
 
     }
 
-    // @GetMapping("/toss/success")
-    // public ResponseEntity paymentSuccess(
-    //     @RequestParam String paymentKey,
-    //     @RequestParam String orderId,
-    //     @RequestParam Long amount,
-    //     @AuthenticationPrincipal User user){
+    @GetMapping("/toss/success")
+    public ResponseEntity paymentSuccess(
+        @RequestParam String paymentKey,
+        @RequestParam String orderId,
+        @RequestParam Long amount,
+        @AuthenticationPrincipal User user){
 
-    //         Payment payment = verifyPayment(orderId, amount);
+           
 
-    //         // PaymentResponseDTO PaymentResDto = tossPaymentService.tossPaymentSuccess(paymentKey, orderId, amount);
+            PaymentResponseDTO PaymentResDto = tossPaymentService.tossPayment(paymentKey, orderId, amount);
 
             
-    //         return ResponseEntity.ok().body(PaymentResDto);
-    //     }
+            return ResponseEntity.ok().body(PaymentResDto);
+        }
     
 
     @GetMapping("/paymet/fail")
