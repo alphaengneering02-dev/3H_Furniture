@@ -6,6 +6,9 @@ import Signup_site from '../components/member/Signup_site';
 import Order from '../components/Order/Order';
 import Item from '../components/item/Item';
 import Mypage from '../components/mypage/Mypage';
+import AdminDashboard from '../components/admin/AdminDashboard';
+import AddProduct from '../components/admin/AddProduct';
+import AddDelivery from '../components/admin/AddDelivery';
 
 
 const Router = () => {
@@ -19,6 +22,9 @@ const Router = () => {
                 <Route path="/order/:itemId" element={<Order/>} />
                 <Route path="/item" element={<Item/>} />
                 <Route path="/mypage" element={<Mypage/>} />
+                <Route path="/admin" element={<AdminDashboard/>} />
+                <Route path="/admin/AP" element={<AddProduct/>} />
+                <Route path="/admin/AD" element={<AddDelivery/>} />
             </Routes>
         </BrowserRouter>
     );

@@ -19,10 +19,12 @@ import javax.persistence.SequenceGenerator;
 
 import com.cmyk.threeh.enums.MemberRole;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
-@Data
+@Getter 
+@Setter
 public class Member {
     
     @Id
@@ -70,8 +72,8 @@ public class Member {
 	private List<MemberAddress> memberAddressList;
 
     //Review 테이블
-	@OneToOne(mappedBy = "member", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-	private Review review;
+	@OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private List<Review> reviewList;
     
     //Article 테이블
 	// @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
@@ -86,8 +88,8 @@ public class Member {
 	private List<Orders> ordersList;
     
     //Payment 테이블
-	// @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-	// private List<Payment> paymentList;
+	@OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+	private List<Payment> paymentList;
 
 
     

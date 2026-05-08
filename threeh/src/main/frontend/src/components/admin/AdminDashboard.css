@@ -1,0 +1,91 @@
+.dashboard-container {
+    display: flex;
+    padding: 20px;
+}
+
+.side-box {
+    width: 220px;
+    min-height: 900px;
+    border: 2px solid black;
+    padding: 20px;
+    margin-right: 20px;
+}
+
+.date-text {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.time-text {
+    font-size: 40px;
+    font-weight: bold;
+    color: #1a73e8;
+}
+
+.memo-textarea {
+    width: 100%;
+    height: 150px;
+    margin-top: 20px;
+    border: 2px solid #555;
+    border-radius: 10px;
+    padding: 10px;
+    resize: none;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.memo-editor {
+    width: 100%;
+    min-height: 150px;
+    margin-top: 20px;
+    border: 2px solid #555;
+    border-radius: 10px;
+    padding: 10px;
+    font-size: 14px;
+    box-sizing: border-box;
+    outline: none;
+}
+
+.save-btn {
+    margin-top: 10px;
+    width: 100%;
+    height: 40px;
+    cursor: pointer;
+}
+
+.main-content {
+    flex: 1;
+}
+
+.button-group {
+    margin-bottom: 10px;
+}
+
+.button-group button {
+    margin-right: 5px;
+}
+
+.content-box {
+    width: 800px;
+    border: 2px solid black;
+    margin-top: 1cm;
+    padding: 16px;
+}
+
+.table-style {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table-style th {
+    border: 1px solid #ddd;
+    padding: 10px;
+    background-color: #f4f4f4;
+}
+
+.table-style td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}

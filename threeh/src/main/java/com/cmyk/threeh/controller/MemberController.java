@@ -27,7 +27,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.cmyk.threeh.domain.Member;
 import com.cmyk.threeh.dto.MemberDTO;
-import com.cmyk.threeh.form.LoginForm;
 import com.cmyk.threeh.form.SignupUpdateForm;
 import com.cmyk.threeh.global.error.CustomException;
 import com.cmyk.threeh.global.error.ErrorCode;
@@ -38,7 +37,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/member")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000")  //프론트엔드(3000번 포트)의 접근을 허락함
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")  //프론트엔드(3000번 포트)의 접근을 허락함
 public class MemberController {
 
     private final MemberService memberService;
@@ -60,30 +59,7 @@ public class MemberController {
     }
 
     
-    //로그인 처리(POST)
-    @PostMapping("/login")
-	public ResponseEntity<?> login(@Valid @RequestBody LoginForm loginForm, BindingResult bindingResult) {  //RequestBody: 클라이언트 -> 서버로 넘어오는 요청본문(json 데이터가 담김) 
-
-        //백엔드 - 에러 메세지를 JSON 형태로 반환
-		
-		//입력값 에러 검사 (@Valid)
-        if(bindingResult.hasErrors()) {
-            Map<String, String> errorMap = new HashMap<>();  // 발생한 모든 필드 에러를 Map에 담음 (예: {"email": "이메일 형식이 아닙니다"})
-            for (FieldError error : bindingResult.getFieldErrors()) {
-                errorMap.put(error.getField(), error.getDefaultMessage());
-            }
-            return ResponseEntity.badRequest().body(errorMap); // 400 상태코드+에러 객체 반환
-        }
-		
-		
-		//로그인 실행
-		try {
-            return ResponseEntity.ok().body("로그인에 성공했습니다."); // 성공 응답
-		} catch (Exception e) {
-			return ResponseEntity.internalServerError().body("서버 오류가 발생했습니다(로그인 실패).");
-		}
-		
-	}
+    
 
 
     //로그아웃 처리(GET): spring security가 자동으로 수행하므로, 따로 맵핑할 필요가 없다.
