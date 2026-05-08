@@ -17,6 +17,7 @@ import com.cmyk.threeh.domain.Member;
 import com.cmyk.threeh.domain.Payment;
 import com.cmyk.threeh.dto.PaymentDTO;
 import com.cmyk.threeh.dto.PaymentResponseDTO;
+import com.cmyk.threeh.dto.PaymentSuccessDTO;
 import com.cmyk.threeh.global.config.TossPaymentsConfig;
 import com.cmyk.threeh.global.error.CustomException;
 import com.cmyk.threeh.global.error.ErrorCode;
@@ -55,7 +56,15 @@ public class TossPaymentService {
         return  payment.toPaymentResponseDTO();
     }
 
-   
+    @Transactional
+    public PaymentSuccessDTO tossPaymentSuccess(String paymentKey, String orderId, Long amount){
+        Payment payment = verifyPayment(orderId, amount);
+        PaymentSuccessDTO result = requestPaymentAccept(paymentKey, orderId, amount);
+
+        payment.setPaymentKey(paymentKey);
+        payment.setPaySuccessYN(true);
+        return result;
+    }
 
     public Payment verifyPayment(String orderId, Long amount){
         Payment payment = paymentRepository.findByOrderId(orderId).orElseThrow(()-> {
@@ -69,20 +78,20 @@ public class TossPaymentService {
         return payment;
     }
 
-    public PaymentDTO requestPaymentAccept(String paymentKey, String orderid, Long amount) {
+    public PaymentSuccessDTO requestPaymentAccept(String paymentKey, String orderid, Long amount) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers =  getHeaders();
         JSONObject params = new JSONObject();
         params.put("orderId", orderid);
         params.put("amount", amount);
 
-        PaymentDTO result = null;
+        PaymentSuccessDTO result = null;
 
         try {
             result = restTemplate.postForObject(TossPaymentsConfig.URL + paymentKey,
 
                 new HttpEntity<>(params, headers),
-                PaymentDTO.class
+                PaymentSuccessDTO.class
             );
         } catch (Exception e) {
             throw new RuntimeException(e.toString());
