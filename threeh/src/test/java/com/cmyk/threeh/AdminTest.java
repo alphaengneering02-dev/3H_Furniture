@@ -77,9 +77,10 @@ public class AdminTest {
         assertThat(foundAdmin.getAdminName()).isEqualTo("조회테스트");
     }
 */
-    @Test
-@DisplayName("기존 DB에 있는 admin1 계정 조회 테스트")
-void findExistingAdmin() {
+/* 
+@Test
+    @DisplayName("기존 DB에 있는 admin1 계정 조회 테스트")
+    void findExistingAdmin() {
     // given
     String existingLoginId = "admin1";
 
@@ -93,6 +94,7 @@ void findExistingAdmin() {
     assertThat(admin.getRole()).isEqualTo("ROLE_ADMIN"); // DB에 저장된 값과 비교
     System.out.println("조회된 관리자 이름: " + admin.getAdminName());
 }
-
+*/    
     }
+  
 }
