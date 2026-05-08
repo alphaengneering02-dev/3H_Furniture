@@ -1,4 +1,4 @@
-import { Router } from 'react-router-dom';
+import Router from './router/Router';
 import './App.css';
 
 
