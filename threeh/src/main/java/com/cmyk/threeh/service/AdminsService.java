@@ -2,6 +2,7 @@ package com.cmyk.threeh.service;
 
 
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +18,7 @@ import com.cmyk.threeh.repository.AdminsRepository;
 @Transactional(readOnly = true)
 public class AdminsService {
 
+    private final PasswordEncoder passwordEncoder;
     private final AdminsRepository adminsRepository;
 
     // 관리자 등록
@@ -25,8 +27,12 @@ public class AdminsService {
 
         Admins admin = new Admins();
         admin.setAdLoginId(dto.getAdLoginId());
-        admin.setPassword(dto.getPassword());
+        admin.setPassword(passwordEncoder.encode(dto.getPassword()));
         admin.setAdminName(dto.getAdminName());
+        //권한 고정 (보안 강화: 외부 입력값과 상관없이 ADMIN으로 고정)
+        // 일반 사용자가 실수로 관리자가 되는 것 방지
+        admin.setRole(MemberRole.ADMIN.name());
+        
 /* 테스트 확인용 
         if (dto.getRole() != null) {
             admin.setRole(dto.getRole());
