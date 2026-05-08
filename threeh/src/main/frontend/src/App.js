@@ -1,8 +1,5 @@
 import { Router } from 'react-router-dom';
 import './App.css';
-import Mypage from './components/Mypage';
-
-
 
 
 function App() {
