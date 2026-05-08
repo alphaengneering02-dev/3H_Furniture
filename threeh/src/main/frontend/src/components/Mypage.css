@@ -1,0 +1,249 @@
+/* 글로벌 모던 인테리어 레이아웃 설정 */
+.mypage-grid-container {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    grid-template-rows: auto 1fr auto;
+    gap: 35px; /* 💡 여백을 넓혀 시각적 숨통 확보 */
+    max-width: 1200px;
+    margin: 50px auto;
+    padding: 0 20px;
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    box-sizing: border-box;
+    background-color: #fbfaf6; 
+}
+
+/* 1. 브랜드 로고 박스 (타이포그래피 강조) */
+.mypage-logo-box {
+    background-color: #ffffff;
+    border: 2px solid #111111;
+    color: #111111;
+    padding: 24px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 4px; /* 💡 자간을 넓혀 잡지 로고 느낌 연출 */
+    border-radius: 6px;
+    cursor: pointer;
+    box-shadow: 4px 4px 0px #111111;
+    transition: all 0.2s ease;
+}
+.mypage-logo-box:hover {
+    background-color: #eadecc; 
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0px #111111;
+}
+
+/* 2. 상단 헤더 영역 (미니멀 정돈) */
+.mypage-header-box {
+    background-color: #eadecc; 
+    padding: 24px 40px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #111111; 
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    border-radius: 6px;
+    box-shadow: 4px 4px 0px #111111;
+}
+.mypage-header-box span {
+    margin-left: 35px;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: all 0.2s;
+}
+.mypage-header-box span:hover {
+    opacity: 1;
+}
+/* 💡 헤더의 MYPAGE 단어 밑에 청록색 포인트 라인 가동 */
+.mypage-header-box span.active-header {
+    opacity: 1;
+    border-bottom: 2px solid #00796b; 
+    padding-bottom: 2px;
+}
+
+/* 3. 왼쪽 사이드바 메뉴 카드 박스 (회색 상자) */
+.mypage-sidebar {
+    background-color: #f1f3f5;  
+    padding: 35px 20px;
+    border-radius: 6px;       
+    display: flex;
+    flex-direction: column;
+    gap: 15px; 
+    height: fit-content;
+}
+
+/* 사이드바 메뉴 버튼 (배경 화이트 + 2px 연한 베이지 테두리 + 4px 블랙 대각선 그림자) */
+.sidebar-menu-btn {
+    width: 100%;
+    padding: 18px 20px;
+    background-color: #ffffff;   
+    border: 2px solid #eadecc;   
+    border-radius: 6px;
+    text-align: left;
+    font-size: 13px;
+    font-weight: 700;            
+    color: #0d2c54; /* 💡 딥 네이비 블루 */
+    cursor: pointer;
+    position: relative;
+    box-sizing: border-box;
+    box-shadow: 4px 4px 0px #111111; 
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.sidebar-menu-btn span {
+    font-size: 11px;
+    color: #1a5b8c;             
+    display: block;
+    margin-top: 5px;
+    font-weight: 500;
+    letter-spacing: -0.2px;
+}
+.sidebar-menu-btn:hover {
+    background-color: #eadecc;   
+    color: #111111;              
+    border-color: #111111;
+    transform: translate(2px, 2px); 
+    box-shadow: 2px 2px 0px #111111; 
+}
+.sidebar-menu-btn:hover span {
+    color: #333333;
+}
+
+/* 4. 오른쪽 메인 콘텐츠 2단 분할 구조 */
+.mypage-right-content {
+    display: grid;
+    grid-template-columns: 220px 1fr; /* 💡 프로필 영역을 살짝 줄여 여백 미학 강조 */
+    gap: 35px;
+    align-items: start;
+}
+
+/* 5. 웰컴 프로필 모던 카드 (회색 상자) */
+.mypage-profile-card {
+    background-color: #f1f3f5;  
+    padding: 40px 20px;
+    border-radius: 6px;        
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+}
+/* 💡 밋밋하던 공간에 청록색 한 방을 포인트로 주입 */
+.profile-avatar-circle {
+    width: 70px;
+    height: 70px;
+    background-color: #e0f2f1; /* 💡 싱그러운 연청록색 배경 포인트 */
+    border: 2px solid #111111; 
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    margin-bottom: 18px;
+    color: #004d40;
+}
+.profile-title-text {
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 2px; /* 💡 웰컴 자간을 넓혀 이국적인 무드 생성 */
+    color: #111111;
+}
+
+/* 6. 종합 데이터 대시보드 메인 본체 박스 */
+.mypage-info-card {
+    background-color: #ffffff;
+    padding: 45px; /* 💡 내부 여백을 넓혀 고가의 갤러리 룩 연출 */
+    border-radius: 6px;
+    border: 2px solid #eadecc; 
+    box-shadow: 4px 4px 0px #111111; 
+    min-height: 550px;
+    box-sizing: border-box;
+}
+
+/* 메인 카드 타이틀: 선명한 블랙 폰트 */
+.info-section-title {
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    color: #111111; 
+    margin-top: 0;
+    margin-bottom: 20px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #111111; 
+}
+
+/* 회원정보 영역 & 배송지 관리 영역 감싸는 내장 박스 (회색 상자) */
+.info-data-block-gray {
+    background-color: #f1f3f5;  
+    padding: 24px 30px; /* 💡 가로 여백 확장 */
+    border-radius: 6px;       
+    margin-bottom: 40px;       
+}
+
+.info-data-row {
+    margin-bottom: 16px;
+    font-size: 14px;
+    color: #111111; 
+    display: flex;
+    align-items: center;
+    letter-spacing: -0.2px; /* 💡 한글 가독성 고도화 */
+}
+.info-data-row:last-child {
+    margin-bottom: 0; 
+}
+.info-data-row strong {
+    color: #111111;
+    width: 120px;
+    font-weight: 700;
+}
+
+/* 회색 블록 내부에서 데이터 가독성을 높여주는 화이트 입체 카드 */
+.sub-data-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    background-color: #ffffff; 
+    border-radius: 6px;
+    margin-bottom: 12px;
+    font-size: 13px;
+    color: #111111; 
+    border: 2px solid #111111; 
+    box-shadow: 3px 3px 0px #111111; 
+}
+
+/* 기능별 제어 서브 단추들 */
+.mypage-action-btn {
+    padding: 8px 16px;
+    background-color: #ffffff;
+    border: 2px solid #111111;
+    color: #111111;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 2px 2px 0px #111111;
+    transition: all 0.1s ease;
+}
+.mypage-action-btn:hover {
+    background-color: #eadecc; 
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0px #111111;
+}
+
+/* 7. 하단 전체 와이드 푸터 구획 (연한 베이지 + 그림자 유지) */
+.mypage-footer-box {
+    grid-column: span 2;
+    background-color: #eadecc; 
+    color: #111111; 
+    padding: 35px;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 500;
+    border-radius: 6px;
+    margin-top: 35px;
+    line-height: 2;
+    letter-spacing: 0.5px;
+    box-shadow: 4px 4px 0px #111111; 
+}
