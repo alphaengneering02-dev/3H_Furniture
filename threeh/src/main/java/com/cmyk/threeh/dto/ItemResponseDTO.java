@@ -1,6 +1,7 @@
 package com.cmyk.threeh.dto;
 
 import com.cmyk.threeh.domain.Item;
+import com.cmyk.threeh.domain.ItemImg;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,6 +29,8 @@ private String itemPriceCurrency;
 private Integer itemStock; 
 private Integer itemFinalPrice;
 
+private String itemImgUrl;
+
 
 //상품 조회시 DTO
 
@@ -44,6 +47,12 @@ private Integer itemFinalPrice;
         .itemFinalPrice(item.getItemFinalPrice())
         .itemPriceCurrency(item.getItemPriceCurrency())
         .itemStock(item.getItemStock())
+        .itemImgUrl(
+            item.getItemImgList().stream()
+                .findFirst()
+                .map(ItemImg::getItemImgUrl)
+                .orElse(null)
+        )
         .build();
     }
 }

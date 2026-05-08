@@ -5,13 +5,13 @@ import axios from "axios";
 function Item(){
 
     
-    const [item, setItem] = useState([]);
+    const [items, setItems] = useState([]);
 
     useEffect(()=> {
         axios.get("/item")
             .then((response) => {
                 console.log(response.data);
-                setItem(response.data);
+                setItems(response.data);
             })
             .catch((error)=>{
                 console.error("뭐 잘못했나봐..",error);
@@ -23,11 +23,13 @@ function Item(){
         <div>
             
             <h1>상품 목록</h1>
-            {item.length === 0 ? (
+            {items.length === 0 ? (
                 <p>상품이 없습니다.</p>
             ):(
-                item.map((item) => (
+                items.map((item) => (
                     <div key={item.itemId}>
+
+                        <img src={item.itemImgUrl} alt={item.itemName} width={200} />
                         
                         <h2>{item.itemName}</h2>
 
@@ -36,8 +38,8 @@ function Item(){
                         <p>상품 색상: {item.itemColor}</p>
                         <p>상품 가격: {item.itemPrice}</p>
                         <p>상품 할인가격: {item.itemDiscountPrice}</p>
-                        <p>상품 최종가격: {item.itemDiscountPrice}</p>
-                        <p>상품 재고: {item.itemDiscountPrice}</p>
+                        <p>상품 최종가격: {item.itemFinalPrice}</p>
+                        <p>상품 재고: {item.itemStock}</p>
 
                     </div>
                 ))

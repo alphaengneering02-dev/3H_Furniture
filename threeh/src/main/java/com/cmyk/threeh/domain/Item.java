@@ -19,6 +19,7 @@ import javax.persistence.Table;
 import com.cmyk.threeh.dto.ItemRequestDTO;
 import com.cmyk.threeh.dto.ItemUpdateRequestDTO;
 import com.cmyk.threeh.enums.ItemSellStatus;
+import com.cmyk.threeh.domain.ItemImg;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
@@ -28,18 +29,18 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "item")
+@Table(name = "Item")
 @NoArgsConstructor
 public class Item {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "items_seq")
-    @SequenceGenerator(name = "items_seq",sequenceName = "ITEMS_SEQ",allocationSize=1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "ITEM_SEQ")
+    @SequenceGenerator(name = "ITEM_SEQ",sequenceName = "ITEMS_SEQ",allocationSize=1)
     @Column(name="ITEM_ID")
     private Long itemId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ADMIN_ID", nullable = false)
+    @JoinColumn(name = "admin_id")
     private Admins admin;
 
     @Column(name="ITEM_CATEGORY",nullable = false,length = 100)
@@ -71,9 +72,12 @@ public class Item {
     private Integer itemStock;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "item")
+    @OneToMany(mappedBy = "ITEM")
     private List<Bookmarks> bookmarksList;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "ITEM")
+    private List<ItemImg> itemImgList;
 
     //재고 검증 메서드 
 
