@@ -8,7 +8,7 @@ function Item(){
     const [item, setItem] = useState([]);
 
     useEffect(()=> {
-        axios.get("http://localhost:3000/item")
+        axios.get("/item")
             .then((response) => {
                 console.log(response.data);
                 setItem(response.data);

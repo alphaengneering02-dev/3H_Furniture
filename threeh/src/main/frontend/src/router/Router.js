@@ -3,7 +3,7 @@ import Main from '../components/Main';
 import Signup from '../components/Signup';
 import Signup_site from '../components/Signup_site';
 import Order from '../components/Order/Order';
-import Item from '../components/item/item';
+import Item from '../components/item/Item';
 
 const Router = () => {
     return (
