@@ -36,13 +36,13 @@ public class AdminsController {
         return deliveryService.createDelivery(dto);
     }
 
-/* 
+
     // 2. 전체 조회 (READ ALL)
     @GetMapping("/list")
     public List<Delivery> getAll() {
         return deliveryService.getAllDeliveries();
     }
-
+/* 
     // 3. 단건 조회 (READ ONE)
     @GetMapping("/{id}")
     public Delivery getOne(@PathVariable Long id) {
@@ -61,7 +61,7 @@ public class AdminsController {
         return deliveryService.getCompletedDeliveries();
     }
 */
-    //수정
+   //수정
     @PutMapping("/delivery/{deliveryid}")
     public Delivery update(@PathVariable("deliveryid") Long id, @RequestBody DeliveryDTO dto) {
     return deliveryService.updateDelivery(id, dto);
@@ -69,11 +69,11 @@ public class AdminsController {
 
     // 6. 삭제 (DELETE)
     @DeleteMapping("/delivery-companies/{deliveryid}")
-    public void delete(@PathVariable Long id) {
+    public void delete(@PathVariable("deliveryid") Long id) {
         deliveryService.deleteDelivery(id);
     }
      @GetMapping("/delivery/{id}")
-    public Delivery getOne(@PathVariable Long id) {
+    public Delivery getOne(@PathVariable("id") Long id) {
         return deliveryService.getDelivery(id);
     }
 

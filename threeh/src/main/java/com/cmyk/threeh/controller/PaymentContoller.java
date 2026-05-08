@@ -44,10 +44,10 @@ public class PaymentContoller {
 
            
 
-            PaymentResponseDTO PaymentResDto = tossPaymentService.tossPayment(paymentKey, orderId, amount);
+            
 
             
-            return ResponseEntity.ok().body(PaymentResDto);
+            return ResponseEntity.ok().body(tossPaymentService.tossPaymentSuccess(paymentKey, orderId, amount));
         }
     
 
