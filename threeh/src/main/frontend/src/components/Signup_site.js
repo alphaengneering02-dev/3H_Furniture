@@ -75,7 +75,7 @@ const Signup_site = () => {
 
 
 
-
+    /*
     //member 가져오기(response)
     const [data, setData] = useState({})
     const getData = async() => {
@@ -97,6 +97,7 @@ const Signup_site = () => {
     useEffect(() => {
         getData();
     }, [])
+    */
 
 
 
@@ -191,7 +192,8 @@ const Signup_site = () => {
 
 
             {/* =================================================== */}
-            {/* member 데이터 뿌려주기 */}
+            
+            {/* member 데이터 뿌려주기
             <h4>백엔드 서버에서 넘어온 member 데이터(response)</h4>
             <ul>
                 <li>memberId: {data.memberId}</li>
@@ -205,6 +207,7 @@ const Signup_site = () => {
                 <li>createdAt: {data.createdAt}</li>
                 <li>updatedAt: {data.updatedAt}</li>
             </ul>
+            */}
 
 
             
