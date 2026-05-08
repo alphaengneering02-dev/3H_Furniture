@@ -1,18 +1,27 @@
 package com.cmyk.threeh.service;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+import java.util.Collections;
+
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import com.cmyk.threeh.domain.Member;
 import com.cmyk.threeh.domain.Payment;
 import com.cmyk.threeh.dto.PaymentDTO;
 import com.cmyk.threeh.dto.PaymentResponseDTO;
-import com.cmyk.threeh.enums.PayType;
+import com.cmyk.threeh.global.config.TossPaymentsConfig;
 import com.cmyk.threeh.global.error.CustomException;
 import com.cmyk.threeh.global.error.ErrorCode;
 import com.cmyk.threeh.repository.PaymentRepository;
+import com.nimbusds.jose.shaded.json.JSONObject;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,6 +31,7 @@ public class TossPaymentService {
     
     private final MemberService memberService;
     private final PaymentRepository paymentRepository;
+    private final TossPaymentsConfig tossPaymentsConfig;
 
     public Payment requestPayment(Payment payment, String userEmail){
         Member member = memberService.findMember(userEmail); 
@@ -45,10 +55,55 @@ public class TossPaymentService {
         return  payment.toPaymentResponseDTO();
     }
 
-    // @Transactional
-    // public  PaymentSuccess(String paymentKey, String orderId, Long amount) {
+   
 
-    // }
+    public Payment verifyPayment(String orderId, Long amount){
+        Payment payment = paymentRepository.findByOrderId(orderId).orElseThrow(()-> {
+            throw new CustomException(ErrorCode.PAYMENT_NOT_FOUND);
+        });
+
+        if(!payment.getAmount().equals(amount)){
+            throw new CustomException(ErrorCode.PAYMENT_AMOUNT_EXP);
+        }
+
+        return payment;
+    }
+
+    public PaymentDTO requestPaymentAccept(String paymentKey, String orderid, Long amount) {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers =  getHeaders();
+        JSONObject params = new JSONObject();
+        params.put("orderId", orderid);
+        params.put("amount", amount);
+
+        PaymentDTO result = null;
+
+        try {
+            result = restTemplate.postForObject(TossPaymentsConfig.URL + paymentKey,
+
+                new HttpEntity<>(params, headers),
+                PaymentDTO.class
+            );
+        } catch (Exception e) {
+            throw new RuntimeException(e.toString());
+        }
+
+        return result;
+    }
+
+    private HttpHeaders getHeaders() {
+
+        HttpHeaders headers = new HttpHeaders();
+
+        String encodeAuthKey = new String(
+            Base64.getEncoder().encode((tossPaymentsConfig.getTestSecretKey() + ":").getBytes(StandardCharsets.UTF_8)));
+        
+        headers.setBasicAuth(encodeAuthKey);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+
+        return headers;
+    }
 
     /**
      * 

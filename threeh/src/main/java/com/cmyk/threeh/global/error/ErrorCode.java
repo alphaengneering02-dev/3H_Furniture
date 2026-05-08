@@ -28,6 +28,8 @@ public enum ErrorCode {
 
     //결제
     INVALID_PAYMENT_AMOUNT(400, "결제 금액이 너무 적습니다."),
+    PAYMENT_NOT_FOUND(404, "결제 정보를 불러오는데 실패했습니다."),
+    PAYMENT_AMOUNT_EXP(400, "결제 금액이 맞지 않습니다."),
 
     //상품 찾기
     ITEM_NOT_FOUND(404,"상품을 찾을 수 없습니다."),

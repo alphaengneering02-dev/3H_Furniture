@@ -4,36 +4,41 @@ import axios from 'axios';
 
 const Signup_site = () => {
 
-    //member 데이터 보내기(request)
-    const { register, handleSubmit, setError, formState: {errors} } = useForm();  //유효성 검사(validation) 활성화 : 각 입력 필드 등록, 폼 제출 함수 정의, 에러 객체, 외부 validation form 사용시 추가
 
-    /*
-    const [form, setForm] = useState({
-        id: "", password1: "", password2: "", name: "", phone: "", regNo: ""
-    })
-    const {id, password1, password2, name, phone, regNo} = form
+    //회원가입 member 보내기(request)
+    const { register, handleSubmit, setError, formState: {errors} } = useForm();  //유효성 검사(validation) 활성화 : 각 입력 필드 등록, 폼 제출 함수 정의, 에러 setter, validation 에러 객체
 
-    const changeInput = (evt) => {
-        const {value, name} = evt.target
-        setForm({
-            ...form,
-            [name]: value
-        })
-        //emailId, emailSite도 같이 변경됨
-    }
-     */
-
-    const [emailId, setEmailId] = useState("")
+    const [emailId, setEmailId] = useState("")  //입력값 상태
     const [emailSite, setEmailSite] = useState("")
+    const [isReadOnly, setIsReadOnly] = useState(true); // readOnly 상태
 
     const changeEmailId = (evt) => {setEmailId(evt.target.value)}
-    const changeEmailSite = (evt) => {setEmailSite(evt.target.value)}
+    const inputYourself = (evt) => {setEmailSite(evt.target.value)}
+
+    const changeEmailSite = (evt) => {
+        const value = evt.target.value;
+
+        if (value === "inputYourself") {  // '직접입력'을 선택한 경우
+            setIsReadOnly(false)
+            setEmailSite("")
+        } else {  // 나머지 특정 사이트를 선택한 경우
+            setIsReadOnly(true)
+            setEmailSite(value)
+        }
+    };
+
+
+    const [successSignup, setSuccessSignup] = useState({  //json 형태의 성공 메세지
+        status: false,
+        message: "회원가입에 실패하였습니다."
+    });
+
 
 
     const onSubmit = async(member) => {
         alert("test1")
 
-        //백엔드 서버로 전송할 데이터
+        //백엔드 서버로 전송할 데이터 (JSON 형태)
         const req = {
             ...member,
             email: `${emailId}@${emailSite}`  //emailId와 emailSite를 조합하여 email 변수 생성
@@ -43,27 +48,26 @@ const Signup_site = () => {
 
         //데이터 전송
         try {
-            alert("test3")
-            const res = await axios.post(`http://localhost:8080/member/signup`, req, {
-                headers: {
-                    'Content-Type': 'application/json' // 명시적으로 지정 (보통 axios가 자동으로 해줌)
-                }
-            });
-            console.log("전송 성공!", res);
-            alert("test4")
+            const res = await axios.post(`http://localhost:8080/member/signup`, req)
+            setSuccessSignup({
+                ...successSignup,
+                status: true,
+                message: "회원가입에 성공하였습니다. 메인페이지로 이동합니다."
+            })
+            console.log("member 데이터 전송 성공!", res)
         } catch (error) {
             //백엔드에서 온 Validation 에러 처리
-            alert("testA")
-            let validationErrors = null;
             if (error.response && error.response.data) {
-                validationErrors = error.response.data; //예: {id: "아이디는 필수입니다."}
+                const validationErrors = error.response.data; //예: {id: "아이디는 필수입니다."}
                 Object.keys(validationErrors).forEach(  //validationErrors를 error 객체로 변환
-                    key => {setError(key, {message: validationErrors[key]});
-                });
-                
+                    key => {setError(key, {message: validationErrors[key]})
+                })
+                console.error("member 데이터 전송 실패!", validationErrors)
+                return
             }
 
-            console.error("전송 실패!", validationErrors)
+            //기타 에러 처리
+            console.error("member 데이터 전송 실패!", error)
             
         }
 
@@ -71,11 +75,8 @@ const Signup_site = () => {
 
 
 
-
-
-
-
-    //member 데이터 가져오기(response)
+    /*
+    //member 가져오기(response)
     const [data, setData] = useState({})
     const getData = async() => {
         try {
@@ -86,8 +87,8 @@ const Signup_site = () => {
             
             return true
         } catch (error) {
-            console.error("사용자 데이터 가져오기 실패", error)
-            alert("사용자 데이터 가져오기 실패")
+            // console.error("member 데이터 가져오기 실패", error)
+            alert("member 데이터 가져오기 실패")
             return false
         }
     }
@@ -96,6 +97,7 @@ const Signup_site = () => {
     useEffect(() => {
         getData();
     }, [])
+    */
 
 
 
@@ -104,7 +106,7 @@ const Signup_site = () => {
         <div>
             Signup_site 페이지
             
-            <h1>로고</h1>
+            <h1>로고</h1>  {/* Link */}
 
             <h2>사이트 회원가입(request)</h2>
 
@@ -148,14 +150,13 @@ const Signup_site = () => {
                     </div>
                     @
                     <div>
-                        <input type='text' value={emailSite} id='emailSite' name='emailSite' onChange={changeEmailSite} placeholder='사이트' readOnly/>
+                        <input type='text' value={emailSite} id='emailSite' name='emailSite' onChange={inputYourself} placeholder='사이트' readOnly={isReadOnly}/>
                     </div>
                     
                     <select onChange={changeEmailSite}>
-                        <option disabled selected>사이트</option>
-                        <option value="gmail.com">gmail</option>
-                        <option value="naver.com">naver</option>
-                        <option>직접입력</option>
+                        <option id="gmail" name="gmail" value="gmail.com">gmail</option>
+                        <option id="naver" name="naver" value="naver.com">naver</option>
+                        <option value="inputYourself">직접입력</option>
                     </select>
 
                     {errors.email && <p>{errors.email.message}</p>}
@@ -166,14 +167,20 @@ const Signup_site = () => {
                     <input type='text' {...register('regNo')} placeholder='주민등록번호'/>
                     {errors.regNo && <p>{errors.regNo.message}</p>}
                 </div>
-
-
-                {/* 기타 에러 메세지 */}
-                <div>
-                    <input type='text' id='errorMsg' name='errorMsg' placeholder='기타 에러가 있을 경우 여기에 보여집니다.' readOnly/>
-                    {errors.errorMsg && <p>{errors.errorMsg.message}</p>}
-                </div>
             </form>
+            
+
+            {/* 기타 에러 메세지 */}
+            <div>
+                <p>기타 에러가 있을 경우 아래에 보여집니다.</p>
+                {errors.errorMsg && <p>{errors.errorMsg.message}</p>}
+            </div>
+            
+
+            {/* 회원가입 성공 메세지 */}
+            <div>
+                {successSignup.status===true && <p>{successSignup.message}</p>}
+            </div>
 
 
             
@@ -185,8 +192,9 @@ const Signup_site = () => {
 
 
             {/* =================================================== */}
-            {/* member 데이터 뿌려주기 */}
-            <h4>백엔드 서버에서 넘어온 데이터(response)</h4>
+            
+            {/* member 데이터 뿌려주기
+            <h4>백엔드 서버에서 넘어온 member 데이터(response)</h4>
             <ul>
                 <li>memberId: {data.memberId}</li>
                 <li>id: {data.id}</li>
@@ -199,6 +207,7 @@ const Signup_site = () => {
                 <li>createdAt: {data.createdAt}</li>
                 <li>updatedAt: {data.updatedAt}</li>
             </ul>
+            */}
 
 
             
