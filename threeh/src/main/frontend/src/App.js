@@ -1,5 +1,6 @@
 import Router from './router/Router';
 import './App.css';
+import Mypage from './components/Mypage';
 
 
 
@@ -7,6 +8,7 @@ import './App.css';
 function App() {
   return (
     <div className="App">
+
       <Router />
 
 

@@ -2,13 +2,13 @@ package com.cmyk.threeh.controller;
 
 import javax.servlet.http.HttpSession;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.http.ResponseEntity; // 추가
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.cmyk.threeh.dto.CartDTO;
 import com.cmyk.threeh.dto.SessionMember; 
@@ -16,7 +16,7 @@ import com.cmyk.threeh.service.CartService;
 
 import lombok.RequiredArgsConstructor;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/mypage")
 public class CartController {
@@ -25,44 +25,46 @@ public class CartController {
 
     // 장바구니 목록조회
     @GetMapping("/cart")
-    public String cartList(HttpSession session, Model model) {
+    public ResponseEntity<?> cartList(HttpSession session) { // Model 삭제, 리턴타입 변경
 
-        // 세션 키값 "member"로 로그인 여부 확인
         SessionMember member = (SessionMember) session.getAttribute("member");
 
         if(member == null) {
-            // 로그인 안 되어 있으면 로그인 페이지로 리다이렉트
-            return "redirect:/member/login"; 
+            // 리액트가 인지할 수 있도록 401 에러와 메시지 반환
+            return ResponseEntity.status(401).body("로그인이 필요합니다."); 
         }
 
-        // 서비스 내부에서 세션을 꺼내 쓰도록 수정했으므로 인자 없이 호출
         CartDTO cartDTO = cartService.getCartDto();
-        model.addAttribute("cart", cartDTO);
-
-        return "Cart";
+        
+        // JSP 파일명 대신, 긁어온 장바구니 데이터를 리액트로 다이렉트 전송
+        return ResponseEntity.ok(cartDTO); 
     }
 
     // 장바구니 상품 삭제
     @PostMapping("/cart/delete/{cartItemId}")
-    public String deleteCartItem(@PathVariable Long cartItemId, HttpSession session) {
+    public ResponseEntity<String> deleteCartItem(@PathVariable Long cartItemId, HttpSession session) {
         
-        // 권한 체크: 로그인 여부 확인
-        if(session.getAttribute("member") == null) return "redirect:/member/login";
+        if(session.getAttribute("member") == null) {
+            return ResponseEntity.status(401).body("로그인이 필요합니다.");
+        }
 
         cartService.deleteCartItem(cartItemId);
 
-        return "redirect:/mypage/cart";
+        // 리다이렉트 문자열 대신, 성공 메시지 반환
+        return ResponseEntity.ok("상품이 삭제되었습니다."); 
     }
 
     // 장바구니 수량 변경
     @PostMapping("/cart/update")
-    public String updateCount(@RequestParam Long cartItemId, @RequestParam int count, HttpSession session) {
+    public ResponseEntity<String> updateCount(@RequestParam Long cartItemId, @RequestParam int count, HttpSession session) {
 
-        // 권한 체크: 로그인 여부 확인
-        if(session.getAttribute("member") == null) return "redirect:/member/login";
+        if(session.getAttribute("member") == null) {
+            return ResponseEntity.status(401).body("로그인이 필요합니다.");
+        }
 
         cartService.updateCount(cartItemId, count);
 
-        return "redirect:/mypage/cart";
+        // 리다이렉트 문자열 대신, 성공 메시지 반환
+        return ResponseEntity.ok("수량이 변경되었습니다."); 
     }
 }
