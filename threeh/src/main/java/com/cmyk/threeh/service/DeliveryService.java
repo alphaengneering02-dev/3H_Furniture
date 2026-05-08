@@ -25,6 +25,21 @@ public class DeliveryService {
     public Delivery createDelivery(DeliveryDTO dto) {
         Delivery delivery = new Delivery();
 
+        // 1. 랜덤 ID 생성 및 세팅 (추가된 부분)
+    Long randomId;
+    do {
+        randomId = (long)(Math.random() * 90000000L) + 10000000L;
+    } while (deliveryRepository.existsById(randomId));
+    delivery.setDeliveryId(randomId);
+
+    if (deliveryRepository.existsByDeliveryPhone(dto.getDeliveryPhone())) {
+        throw new RuntimeException("이미 등록된 핸드폰 번호입니다: " + dto.getDeliveryPhone());
+    }
+    
+    if (deliveryRepository.existsByDeliveryCarNo(dto.getDeliveryCarNo())) {
+        throw new RuntimeException("이미 등록된 차량 번호입니다: " + dto.getDeliveryCarNo());
+    }
+
         Admins admin = adminsRepository.findById(dto.getAdminId()) 
         .orElseThrow(() -> new RuntimeException("관리자 정보가 없습니다. ID: " + dto.getAdminId()));
         delivery.setAdmin(admin); 
@@ -39,6 +54,7 @@ public class DeliveryService {
 
         return deliveryRepository.save(delivery);
     }
+
 
     //전체 조회
     @Transactional(readOnly = true)

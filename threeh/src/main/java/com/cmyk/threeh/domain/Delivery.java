@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.*;
 
 import com.cmyk.threeh.enums.DeliveryStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -23,6 +24,7 @@ public class Delivery {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "admin_id", nullable = true)
+    @JsonIgnore
     private Admins admin;
     
    @Embedded
