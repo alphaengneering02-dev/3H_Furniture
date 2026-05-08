@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.cmyk.threeh.domain.Admins;
 import com.cmyk.threeh.domain.Delivery;
 import com.cmyk.threeh.dto.DeliveryDTO;
+import com.cmyk.threeh.repository.AdminsRepository;
 import com.cmyk.threeh.service.AdminsService;
 import com.cmyk.threeh.service.DeliveryService;
 
@@ -27,7 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class AdminsController {
 
     private final DeliveryService deliveryService;
-    private final AdminsService adminsService; // 추가
+    private final AdminsService adminsService;
 
 
     // 1. 배송 등록 (CREATE)
@@ -76,5 +77,17 @@ public class AdminsController {
     public Delivery getOne(@PathVariable("id") Long id) {
         return deliveryService.getDelivery(id);
     }
+
+    //admin1 조회 확인용
+    @GetMapping("/me")
+    public Admins getAdminInfo() {
+        // 테스트를 위해 adLoginId가 "admin1"인 데이터를 강제로 찾아옵니다.
+        // (AdminsService에 findByAdLoginId가 없으면 AdminsRepository를 직접 주입받아 사용하거나, 
+        //  Service에 해당 메서드를 추가해야 합니다.)
+        return adminsService.getAdminByLoginId("admin1"); 
+    }
+
+
+
 
 }

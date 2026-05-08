@@ -9,8 +9,9 @@ wallet.path=C:/Users/human-23/Desktop/파이널프로젝트/Wallet_swDB
 # [추가] 토스 페이먼츠 설정 (테스트 시 필수)
 payment.toss.test_client_api_key=test_ck_4yKeq5bgrpKLdW2mBbdBVGX0lzW6
 payment.toss.test_secrete_api_key=test_sk_k_26DlbXAaV0dqqGlRkRXbVqY50Q9R
-payment.toss.success_url=http://localhost:8080/payment/toss/success
-payment.toss.fail_url=http://localhost:8080/payment/toss/fail
+payment.toss.success_url=http://localhost:3000/payment/toss/success
+payment.toss.fail_url=http://localhost:3000/payment/toss/fail
 
 # [추가] 기타 필수 설정
 spring.session.store-type=none
+spring.session.jdbc.platform=oracle

@@ -13,4 +13,5 @@ import java.util.List;
 public interface AdminsRepository extends JpaRepository<Admins,Long> {
    
     Optional<Admins> findByAdLoginId(String adLoginId);
+
 }

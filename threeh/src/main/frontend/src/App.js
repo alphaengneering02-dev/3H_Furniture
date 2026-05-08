@@ -1,6 +1,6 @@
 import Router from './router/Router';
 import './App.css';
-import Mypage from './components/Mypage';
+
 
 
 
