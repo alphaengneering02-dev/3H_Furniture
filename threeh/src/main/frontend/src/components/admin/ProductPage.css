@@ -1,0 +1,211 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background-color: #f5f1ea;
+    font-family: 'Pretendard', sans-serif;
+}
+
+/* 전체 */
+.product-page {
+    min-height: 100vh;
+    background-color: #f5f1ea;
+    padding: 50px 20px;
+}
+
+/* 컨테이너 */
+.product-container {
+    width: 100%;
+    max-width: 720px;
+    margin: 0 auto;
+}
+
+/* 제목 */
+.product-title {
+    font-size: 34px;
+    font-weight: 700;
+    color: #5f4a37;
+    margin-bottom: 35px;
+}
+
+/* form */
+.product-form {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+/* 카드 */
+.form-card {
+    background-color: #fffaf5;
+    border: 1px solid #e5d8c8;
+    border-radius: 18px;
+    padding: 24px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+}
+
+/* 라벨 */
+.form-label {
+    display: block;
+    margin-bottom: 10px;
+    color: #6d5744;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+/* input */
+.form-input {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #d9c9b8;
+    border-radius: 10px;
+    background-color: white;
+    font-size: 15px;
+    transition: 0.2s;
+}
+
+/* textarea */
+.form-textarea {
+    width: 100%;
+    min-height: 120px;
+    resize: vertical;
+    padding: 14px;
+    border: 1px solid #d9c9b8;
+    border-radius: 10px;
+    font-size: 15px;
+    transition: 0.2s;
+}
+
+/* focus */
+.form-input:focus,
+.form-textarea:focus {
+    outline: none;
+    border-color: #b69472;
+    box-shadow: 0 0 0 3px rgba(182,148,114,0.15);
+}
+
+/* margin */
+.margin-top {
+    margin-top: 18px;
+}
+
+/* 가격 */
+.price-box {
+    margin-top: 18px;
+    padding: 16px;
+    background-color: #f1e5d8;
+    border-radius: 12px;
+    color: #6b533e;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.price-value {
+    margin-left: 10px;
+    color: #8b5f3d;
+    font-size: 20px;
+}
+
+/* 색상 */
+.color-group {
+    display: flex;
+    gap: 10px;
+}
+
+/* 파일 */
+.file-input {
+    margin-top: 10px;
+}
+
+/* 미리보기 */
+.preview-container {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+.preview-box {
+    position: relative;
+}
+
+/* 이미지 */
+.preview-image {
+    width: 95px;
+    height: 95px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 2px solid #ddd;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.preview-image:hover {
+    transform: scale(1.03);
+}
+
+/* 메인 이미지 */
+.main-image {
+    border: 3px solid #b08968;
+}
+
+/* 삭제 버튼 */
+.remove-btn {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 24px;
+    height: 24px;
+    border: none;
+    border-radius: 50%;
+    background-color: #8b5f3d;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* 등록 버튼 */
+.submit-btn {
+    width: 100%;
+    padding: 18px;
+    border: none;
+    border-radius: 14px;
+    background-color: #b08968;
+    color: white;
+    font-size: 17px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.submit-btn:hover {
+    background-color: #9d7757;
+    transform: translateY(-1px);
+}
+
+/* 취소 버튼 */
+.cancel-wrap {
+    width: 100%;
+    max-width: 720px;
+    margin: 20px auto 0;
+}
+
+.cancel-btn {
+    width: 100%;
+    padding: 16px;
+    border: 1px solid #c8b29c;
+    border-radius: 14px;
+    background-color: white;
+    color: #7b624a;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.cancel-btn:hover {
+    background-color: #f3ebe2;
+}
