@@ -4,7 +4,7 @@ import FindId from './components/FindId';
 import Signup from './components/Signup';
 import Signup_site from './components/Signup_site';
 import ChangePw from './components/ChangePW';
-import Order from './components/Order';
+//import Order from './components/Order';
 
 import Login from './components/Login';
 import AddDelivery from './components/AddDelivery';
@@ -23,7 +23,7 @@ function App() {
         {/*  <Route path = "/" element={<Main/>} />*/}
           <Route path = "/singup" element={<Signup/>} />
           <Route path = "/singup_site" element={ <Signup_site/>} />
-          <Route path = "/order/:itemId" element={<Order/>} />
+          {/* <Route path = "/order/:itemId" element={<Order/>} />*/}
           <Route path = "/delivery" element={<AddDelivery/>} />
           <Route path = "/admin" element={<AdminDashboard/>} />
           <Route path = "/admin/pro" element={<AddProduct/>} />
@@ -32,7 +32,7 @@ function App() {
       {/* <Login/>
  <Signup_site/>*/}
 
-        <AdminDashboardCopy/>
+
      
 
     </div>
