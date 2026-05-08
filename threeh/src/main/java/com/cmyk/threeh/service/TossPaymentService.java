@@ -46,6 +46,23 @@ public class TossPaymentService {
     }
 
     // @Transactional
+    // public PaymentDTO tossPaymentSuccess(String paymentKey, String orderId, Long amount) {
+
+    //     //Payment payment = verifyPayment(orderId, amount);        
+    //     //PaymentDTO res = requestPaymentAccept(paymentKey, orderId, amount);
+
+    //     //payment.setPaymentKey(paymentKey);
+    //     //payment.setPaySuccessYN(true);
+        
+    //     //return res;
+
+    // }
+
+    // public Payment verifyPayment(Strin orderId, Long amount){
+    //     Payment payment = paymentRepository.findByOrderId(orderId)
+    // }
+
+    // @Transactional
     // public  PaymentSuccess(String paymentKey, String orderId, Long amount) {
 
     // }

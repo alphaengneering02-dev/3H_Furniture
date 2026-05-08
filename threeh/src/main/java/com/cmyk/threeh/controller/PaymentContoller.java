@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.cmyk.threeh.domain.Payment;
 import com.cmyk.threeh.dto.PaymentDTO;
 import com.cmyk.threeh.dto.PaymentResponseDTO;
 import com.cmyk.threeh.global.config.TossPaymentsConfig;
@@ -34,17 +35,20 @@ public class PaymentContoller {
 
     }
 
-    @GetMapping("/toss/success")
-    public ResponseEntity paymentSuccess(
-        @RequestParam String paymentKey,
-        @RequestParam String orderId,
-        @RequestParam Long amount,
-        @AuthenticationPrincipal User user){
+    // @GetMapping("/toss/success")
+    // public ResponseEntity paymentSuccess(
+    //     @RequestParam String paymentKey,
+    //     @RequestParam String orderId,
+    //     @RequestParam Long amount,
+    //     @AuthenticationPrincipal User user){
 
-            PaymentResponseDTO responseDTO = tossPaymentService.confirmPayment(paymentKey, orderId, amount);
+    //         Payment payment = verifyPayment(orderId, amount);
+
+    //         // PaymentResponseDTO PaymentResDto = tossPaymentService.tossPaymentSuccess(paymentKey, orderId, amount);
+
             
-            return ResponseEntity.ok().body(responseDTO);
-        }
+    //         return ResponseEntity.ok().body(PaymentResDto);
+    //     }
     
 
     @GetMapping("/paymet/fail")
