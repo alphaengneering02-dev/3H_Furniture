@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Main from '../components/main';
+import Main from '../components/main/Main';
 import Login from '../components/member/Login';
 import Signup from '../components/member/Signup';
 import Signup_site from '../components/member/Signup_site';
