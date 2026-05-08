@@ -1,4 +1,5 @@
 import './App.css';
+import Mypage from './components/Mypage';
 
 import Router from './router/Router';
 
@@ -8,7 +9,7 @@ function App() {
     <div className="App">
 
 
-      
+      <Mypage/>
       <Router />
 
     </div>
