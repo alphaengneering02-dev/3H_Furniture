@@ -27,9 +27,9 @@ import lombok.Setter;
 public class ItemImg {
 
    @Id
-   @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "itemImgs_seq")
-   @SequenceGenerator(name = "itemImgs_seq",sequenceName = "ITEMIMGS_SEQ",allocationSize=1)
-   @Column(name="ITEMIMG_ID")
+   @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "item_Img_seq")
+   @SequenceGenerator(name = "item_Img_seq",sequenceName = "ITEM_IMG_SEQ",allocationSize=1)
+   @Column(name="ITEM_IMG_ID")
    private long itemImgId;
 
    @ManyToOne(fetch = FetchType.LAZY)
