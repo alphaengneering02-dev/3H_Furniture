@@ -5,6 +5,7 @@ import Signup_site from './components/Signup_site';
 import Order from './components/Order';
 import Main from './components/Main';
 import Login from './components/Login';
+import Item from './components/item/Item';
 
 
 
@@ -18,12 +19,14 @@ function App() {
           <Route path = "/singup" element={<Signup/>} />
           <Route path = "/singup_site" element={ <Signup_site/>} />
           <Route path = "/order/:itemId" element={<Order/>} />
+          <Route path="/item" element={<Item/>}/>
         </Routes>      
       </BrowserRouter>
 
 
       <Login/>
       <Signup_site/>
+      <Item/>
      
 
     </div>
