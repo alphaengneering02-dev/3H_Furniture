@@ -35,7 +35,6 @@ private Integer itemFinalPrice;
 
         return ItemResponseDTO.builder()
         .itemId(item.getItemId())
-        .adminId(item.getAdmin().getAdminId())
         .itemCategory(item.getItemCategory())
         .itemName(item.getItemName())
         .itemDetail(item.getItemDetail())
