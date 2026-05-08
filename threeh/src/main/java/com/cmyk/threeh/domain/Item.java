@@ -40,7 +40,7 @@ public class Item {
     private Long itemId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ADMIN_ID", nullable = false)
+    @JoinColumn(name = "admin_id")
     private Admins admin;
 
     @Column(name="ITEM_CATEGORY",nullable = false,length = 100)
