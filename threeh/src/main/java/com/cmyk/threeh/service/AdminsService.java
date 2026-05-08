@@ -42,10 +42,18 @@ public class AdminsService {
 */
         return adminsRepository.save(admin);
     }
-
+/* 
     // 관리자 조회
     public Admins getAdmin(Long id) {
         return adminsRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Admin not found"));
     }
+*/
+
+    // AdminsService.java에 추가
+    public Admins getAdminByLoginId(String loginId) {
+        return adminsRepository.findByAdLoginId(loginId)
+                .orElseThrow(() -> new RuntimeException("해당 아이디의 관리자를 찾을 수 없습니다: " + loginId));
+    }
+
 }
