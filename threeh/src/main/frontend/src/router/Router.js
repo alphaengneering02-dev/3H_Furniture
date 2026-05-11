@@ -10,6 +10,7 @@ import AdminDashboard from '../components/admin/AdminDashboard';
 import AddProduct from '../components/admin/AddProduct';
 import AddDelivery from '../components/admin/AddDelivery';
 import ItemDetail from '../components/item/ItemDetail';
+import ItemCreate from '../components/item/ItemCreate';
 
 
 const Router = () => {
@@ -23,6 +24,7 @@ const Router = () => {
                 <Route path="/order/:itemId" element={<Order/>} />
                 <Route path="/item" element={<Item/>} />
                 <Route path="/item/:itemId" element={<ItemDetail/>} />
+                <Route path="/item/create" element={<ItemCreate/>} />
                 <Route path="/mypage" element={<Mypage/>} />
                 <Route path="/admin" element={<AdminDashboard/>} />
                 <Route path="/admin/AP" element={<AddProduct/>} />

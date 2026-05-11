@@ -1,5 +1,6 @@
 import React from "react";
 import {useEffect,useState} from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
 
 
@@ -31,7 +32,9 @@ function Item(){
                     <div key={item.itemId}>
                         <img src={`http://localhost:8080${item.itemImgUrl}`} alt={item.itemName} width="200"/>
                         
-                        <h2>{item.itemName}</h2>
+                        <Link to={`/item/${item.itemId}`}>
+                            <h2>{item.itemName}</h2>
+                        </Link>
 
                         <p>카테고리: {item.itemCategory}</p>
                         <p>상품 설명: {item.itemDetail}</p>

@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/admin/products")
+@RequestMapping("/admin/item")
 @PreAuthorize("hasRole('ADMIN')")
 public class ItemAdminController {
 
