@@ -7,6 +7,10 @@ import java.util.Collections;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -29,7 +33,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class TossPaymentService {
+public class TossPaymentService{
     
     private final MemberService memberService;
     private final PaymentRepository paymentRepository;
@@ -138,6 +142,22 @@ public class TossPaymentService {
         payment.setPaySuccessYN(false);
         payment.setFailReason(message);
 
+    }
+
+
+    
+    public Slice<Payment> findAllChargingHistroies(String username, Pageable pageable){
+        
+        return paymentRepository.findAllByMember_Email(username, 
+
+                PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
+                    
+                        Sort.Direction.DESC, "paymentId")
+            
+            
+            
+        );
+        
     }
 
 
