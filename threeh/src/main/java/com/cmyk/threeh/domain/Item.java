@@ -28,7 +28,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "item")
+@Table(name = "ITEM")
 @NoArgsConstructor
 public class Item {
 
@@ -74,6 +74,9 @@ public class Item {
     @OneToMany(mappedBy = "item")
     private List<Bookmarks> bookmarksList;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "item")
+    private List<ItemImg> itemImgList;
 
     //재고 검증 메서드 
 
