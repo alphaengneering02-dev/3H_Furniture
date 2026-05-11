@@ -1,5 +1,6 @@
 package com.cmyk.threeh.service;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -132,32 +133,46 @@ public class MemberService {
 	}
 
 
-	//회원 role 가져오기
-	public String checkMemberRole(String id) {
+	//로그인한 회원의 정보 가져오기
+	public Member getLoginUser(Principal principal) {
 
+		//로그인 정보에서 아이디 가져오기
+		String id = principal.getName();
+
+		//회원정보
+		Optional<Member> op = memberRepository.findById(id);
+		
+		if(!op.isPresent()) {
+			throw new CustomException(ErrorCode.MEMBER_NOT_FOUND);
+		}
+
+		return op.get();
+
+	}
+
+
+
+	//로그인한 회원의 role 가져오기
+	public String checkMemberRole(Principal principal) {
+
+		//로그인 정보에서 아이디 가져오기
+		String id = principal.getName();
+
+		//회원정보
 		Optional<Member> op = memberRepository.findById(id);
 		if(!op.isPresent()) {
 			throw new CustomException(ErrorCode.MEMBER_NOT_FOUND);
 		}
 		Member member = op.get();
 
+
+		//role 꺼내기 (ROLE_ADMIN, ROLE_USER)
         String UserRole = member.getRole().getKey();
-		String result = null;
-
-		switch (UserRole) {
-			case "ROLE_ADMIN":
-				result = "관리자";
-				break;
-
-			case "ROLE_USER":
-				result = "일반 고객";
-				break;
-		
-			default:
-				throw new CustomException(ErrorCode.SOME_COLUMN_IS_NULL);  //회원정보에 누락된 항목 있음
+		if(!UserRole.isEmpty()) {
+			throw new CustomException(ErrorCode.SOME_COLUMN_IS_NULL);
 		}
 
-        return result;
+        return UserRole;
     }
 	
 
@@ -214,25 +229,22 @@ public class MemberService {
 		}
 		Member member = op.get();
 
-		//1. 로그인 상태인지 검사한다.
-		// (세션에 유저 정보가 올라가 있으면, 로그인 상태)
-
-		//2. 회원가입이 되어있는 상태인지 검사한다. (세션 유저 정보에서 가져옴)
+		//1. 회원가입이 되어있는 상태인지 검사한다. (세션 유저 정보에서 가져옴)
 		if(member==null) {
 			throw new CustomException(ErrorCode.MEMBER_NOT_FOUND);
 		}
 
-		//3. 기존 pw가 현재 사용자의 pw와 일치하는지 검사한다.
+		//2. 기존 pw가 현재 사용자의 pw와 일치하는지 검사한다.
 		if (!passwordEncoder.matches(oldPassword, member.getPassword())) {
 			//일치하지 않는다면, 오류를 발생시킨다.
 			throw new CustomException(ErrorCode.PASSWORD_NOT_SAME);
 		}
 
-		//4. 일치한다면, 새로운 pw를 암호화하여 변경한다.
+		//3. 일치한다면, 새로운 pw를 암호화하여 변경한다.
 		String encodedNewPassword = passwordEncoder.encode(newPassword);
 		member.setPassword(encodedNewPassword);
 
-		//5. DB 저장
+		//4. DB 저장
 		memberRepository.save(member);
 
 		return true;
