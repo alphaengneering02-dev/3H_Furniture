@@ -29,7 +29,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "Item")
+@Table(name = "ITEM")
 @NoArgsConstructor
 public class Item {
 
@@ -76,7 +76,7 @@ public class Item {
     private List<Bookmarks> bookmarksList;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "ITEM")
+    @OneToMany(mappedBy = "item")
     private List<ItemImg> itemImgList;
 
     //재고 검증 메서드 
