@@ -77,7 +77,7 @@ public class AdminTest {
         assertThat(foundAdmin.getAdminName()).isEqualTo("조회테스트");
         */
     }
-*/
+
 /* 
 @Test
     @DisplayName("기존 DB에 있는 admin1 계정 조회 테스트")
@@ -98,4 +98,4 @@ public class AdminTest {
 */    
     }
   
-}
+
