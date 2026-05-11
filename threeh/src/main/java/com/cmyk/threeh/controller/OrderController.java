@@ -1,10 +1,13 @@
 package com.cmyk.threeh.controller;
 
 import java.security.Principal;
+import java.text.Collator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.management.RuntimeErrorException;
 import javax.transaction.Transactional;
+
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.method.P;
@@ -18,8 +21,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cmyk.threeh.domain.CartItem;
 import com.cmyk.threeh.domain.Item;
 import com.cmyk.threeh.domain.Member;
 import com.cmyk.threeh.domain.MemberAddress;
@@ -33,6 +38,7 @@ import com.cmyk.threeh.dto.OrderRequestDTO;
 import com.cmyk.threeh.dto.OrderResponseDTO;
 import com.cmyk.threeh.global.error.CustomException;
 import com.cmyk.threeh.global.error.ErrorCode;
+import com.cmyk.threeh.repository.CartItemRepository;
 import com.cmyk.threeh.repository.OrderRepository;
 import com.cmyk.threeh.service.ItemImgService;
 import com.cmyk.threeh.service.ItemService;
@@ -53,6 +59,7 @@ public class OrderController {
     private final MemberAddressService memberAddressService;
     private final OrderRepository orderRepository;
     private final ItemImgService itemImgService;
+    private final CartItemRepository cartItemRepository;
 
     //주문 화면 들어올시
     @GetMapping("/{itemId}")
@@ -95,6 +102,47 @@ public class OrderController {
 
         return ResponseEntity.ok().body(orderFormDTO);
     }
+
+    /** 장바구니로 올시 */
+    @PostMapping("/form")
+    public ResponseEntity getOrderForm(@RequestBody List<Long> cartItemIds, Principal principal){
+
+        Member member = memberService.getUser(principal.getName());
+        MemberAddressDTO defaultAddress = memberAddressService.getDefaultAddressForOrder(member.getId());
+
+        List<OrderFormDTO.OrderItemInfo> items = cartItemIds.stream()
+        .map(cartItemId -> {
+            CartItem cartItem = cartItemRepository.findById(cartItemId)
+                .orElseThrow(() -> new CustomException(ErrorCode.ITEM_NOT_FOUND));
+            
+            ItemImgResponseDTO itemImage = itemImgService.getMainImg(cartItem.getItem().getItemId());
+            
+            return OrderFormDTO.OrderItemInfo.builder()
+                .itemId(cartItem.getItem().getItemId())
+                .itemName(cartItem.getItem().getItemName())
+                .itemDetail(cartItem.getItem().getItemDetail())
+                .price(cartItem.getItem().getItemPrice())
+                .count(cartItem.getCount())
+                .itemImage(itemImage.getItemImgUrl())
+                .build();
+        })
+        .collect(Collectors.toList());
+
+        OrderFormDTO orderFormDTO = OrderFormDTO.builder()
+            .items(items)
+            .memberName(member.getName())
+            .email(member.getEmail())
+            .phone(member.getPhone())
+            .defaultAddr(defaultAddress != null ? defaultAddress.getAddr() : null)
+            .defaultAddrDetail(defaultAddress != null ? defaultAddress.getAddrdetail() : null)
+            .defaultZipCode(defaultAddress != null ? defaultAddress.getZipcode() : null)
+            .isDefault(defaultAddress != null ? defaultAddress.getIsdefault() : "N")
+            .build();
+
+            return ResponseEntity.ok().body(orderFormDTO);
+    }
+
+
 
     //주문 생성
     @PostMapping
