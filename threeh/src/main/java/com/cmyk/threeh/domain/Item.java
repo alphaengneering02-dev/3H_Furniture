@@ -72,7 +72,7 @@ public class Item {
     private Integer itemStock;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "ITEM")
+    @OneToMany(mappedBy = "item")
     private List<Bookmarks> bookmarksList;
 
     @JsonIgnore
