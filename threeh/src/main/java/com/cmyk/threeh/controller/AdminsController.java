@@ -44,7 +44,6 @@ public ResponseEntity<?> addDelivery(@RequestBody DeliveryDTO dto) {
     return ResponseEntity.ok("성공");
 }
 
-
     // 
      @GetMapping("/list")
     public List<Delivery> getAllDeliveries() {
