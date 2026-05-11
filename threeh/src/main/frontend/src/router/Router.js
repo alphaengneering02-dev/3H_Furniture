@@ -12,6 +12,7 @@ import AddDelivery from '../components/admin/AddDelivery';
 import PaymentSuccess from '../components/payment/PaymentSuccess';
 import OrderComplete from '../components/Order/OrderComplete';
 import ItemDetail from '../components/item/ItemDetail';
+import Cart from '../components/mypage/Cart';
 
 
 const Router = () => {
@@ -31,6 +32,7 @@ const Router = () => {
                 <Route path="/admin/AD" element={<AddDelivery/>} />
                 <Route path="/payment/toss/success" element={<PaymentSuccess/>} />
                 <Route path='/order/complete' element={<OrderComplete/>} />
+                <Route path='/cart' element={<Cart/>}/>
             </Routes>
         </BrowserRouter>
     );
