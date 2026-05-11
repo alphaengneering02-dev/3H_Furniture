@@ -1,7 +1,11 @@
 import axios from 'axios';
 import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom'
 
 const Login = () => {
+
+    const navigate = useNavigate();
+
     
     //로그인 member 보내기(request)
     // const { register, handleSubmit, setError, formState: {errors} } = useForm();  //유효성 검사(validation) 활성화 : 각 입력 필드 등록, 폼 제출 함수 정의, 에러 객체, 외부 validation form 사용시 추가
@@ -20,6 +24,15 @@ const Login = () => {
             [name]: value
         })
     }
+
+
+    //로그인 상태 유지 기능
+    const [isChecked, setIsChecked] = useState(false);
+
+    const changeChecked = (evt) => {
+        setIsChecked(!isChecked)
+        
+    };
 
 
     const [loginResultMsg, setLoginResultMsg] = useState("");
@@ -70,7 +83,7 @@ const Login = () => {
         <div>
             Login 페이지
             
-            <h1>로고</h1>  {/* Link */}
+            <h1> <Link to="/">로고</Link> </h1>
 
             <h2>회원 로그인</h2>
 
@@ -89,8 +102,11 @@ const Login = () => {
 
 
             <article>
-                <p> <input type='checkbox'/>로그인 상태 유지 </p>
-                <p> 아이디 찾기 | 비밀번호 찾기 </p>
+                <p> <input type='checkbox' checked={isChecked} onChange={changeChecked}/>로그인 상태 유지 </p>
+                <p> 
+                    <span onClick={() => navigate("/")}>아이디 찾기</span>
+                    <span onClick={() => navigate("/")}>비밀번호 찾기</span>
+                </p>
             </article>
 
 
@@ -115,7 +131,7 @@ const Login = () => {
 
             <article>
                 <p>계정이 없으신가요? 지금 바로 만들어 보세요.</p>
-                <button>회원가입</button>  {/* Link */}
+                <button onClick={() => navigate("/singup")}>회원가입</button>  {/* Link */}
             </article>
 
         </div>
