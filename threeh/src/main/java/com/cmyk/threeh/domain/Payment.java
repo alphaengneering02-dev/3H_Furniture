@@ -18,15 +18,18 @@ import javax.persistence.Table;
 import com.cmyk.threeh.dto.PaymentResponseDTO;
 import com.cmyk.threeh.enums.PayType;
 
-
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(indexes = {
     @Index(name = "idx_payment_member", columnList = "member_id"),
     @Index(name = "idx_payment_paymentKey", columnList = "payment_key"),

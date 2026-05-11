@@ -1,7 +1,7 @@
 import React from 'react';
 import AdrdressInput from './AdrdressInput';
 
-function OrderInfo(props) {
+function OrderInfo(orderType, setOrderType) {
     return (
         <div>
            <div>
@@ -9,11 +9,19 @@ function OrderInfo(props) {
 
                 <div>
                     <label>
-                        <input type='radio' id='install' name='deliveryType' value={"배송 및 설치"}/> 배송 및 설치
+                        <input type='radio' id='install' name='deliveryType' value={"DELIVERY_WITH_INSTALLATION"}
+                        checked={orderType === "DELIVERY_WITH_INSTALLATION"}
+                        onChange={(e) => setOrderType(e.target.value)}/> 배송 및 설치
                     </label>
 
                     <label>
-                        <input type='radio' id='delivery' name='deliveryType' value={"배송만"}/> 배송만
+                        <input 
+                        type='radio' 
+                        name='deliveryType' 
+                        value="DELIVERY_ONLY" 
+                        checked={orderType === "DELIVERY_ONLY"}
+                        onChange={(e) => setOrderType(e.target.value)}
+                    /> 배송만
                     </label>
                 </div>
 
