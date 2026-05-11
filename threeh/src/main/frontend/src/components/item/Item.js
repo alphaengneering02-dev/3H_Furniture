@@ -30,7 +30,7 @@ function Item(){
             ):(
                 item.map((item) => (
                     <div key={item.itemId}>
-                        <img src={`http://localhost:8080${item.itemImgUrl}`} alt={item.itemName} width="200"/>
+                        <img src={`http://localhost:3000${item.itemImgUrl}`} alt={item.itemName} width="200"/>
                         
                         <Link to={`/item/${item.itemId}`}>
                             <h2>{item.itemName}</h2>
