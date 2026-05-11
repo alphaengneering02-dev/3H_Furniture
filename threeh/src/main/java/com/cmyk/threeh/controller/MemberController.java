@@ -62,7 +62,7 @@ public class MemberController {
     
 
 
-    //로그아웃 처리(GET): spring security가 자동으로 수행하므로, 따로 맵핑할 필요가 없다.
+    //로그인(POST), 로그아웃 처리(GET): spring security가 자동으로 수행하므로, 따로 맵핑할 필요가 없다.
 
     
 
