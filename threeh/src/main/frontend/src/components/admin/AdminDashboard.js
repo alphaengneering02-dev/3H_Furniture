@@ -84,6 +84,29 @@ const AdminDashboard = () => {
         }
     };
 
+    const handleDeleteDelivery = async (deliveryId) => {
+        if (!window.confirm("정말 이 기사를 삭제하시겠습니까?")) return;
+
+        try {
+            await axios.delete(`/admin/delivery-companies/${deliveryId}`);
+            alert("삭제되었습니다.");
+            // 리스트 새로고침
+            fetchDeliveries(); 
+        } catch (error) {
+            console.error("삭제 실패:", error);
+            alert("삭제 중 오류가 발생했습니다.");
+        }
+    };
+
+    // 2. 기사 수정 페이지 이동 (또는 모달 호출)
+    const handleEditDelivery = (deliveryId) => {
+        // 상황에 맞게 구현: 페이지 이동 시 useNavigate() 사용
+        // window.location.href = `/admin/edit-delivery/${deliveryId}`; 
+        alert(`수정 페이지로 이동하거나 모달을 띄웁니다. ID: ${deliveryId}`);
+    };
+
+
+
     useEffect(() => {
         fetchDeliveries();
     }, []);
@@ -257,6 +280,7 @@ const AdminDashboard = () => {
                                 <th>기사명</th>
                                 <th>연락처</th>
                                 <th>상태</th>
+                                <th>관리</th>
                             </tr>
                         </thead>
 
@@ -288,6 +312,22 @@ const AdminDashboard = () => {
                                                 {item.status}
                                             </b>
                                         </td>
+
+                                        <td>
+                                        <button 
+                                            onClick={() => handleEditDelivery(item.deliveryId)}
+                                            style={{ marginRight: '5px', padding: '2px 8px', cursor: 'pointer' }}
+                                        >
+                                            수정
+                                        </button>
+                                        <button 
+                                            onClick={() => handleDeleteDelivery(item.deliveryId)}
+                                            style={{ padding: '2px 8px', color: 'red', cursor: 'pointer' }}
+                                        >
+                                            삭제
+                                        </button>
+                                    </td>
+                                    
                                     </tr>
                                 ))
                             )}

@@ -22,27 +22,29 @@ public class DeliveryService {
     private final AdminsRepository adminsRepository;
 
     // 생성
-    public Delivery createDelivery(DeliveryDTO dto) {
+       public Delivery createDelivery(DeliveryDTO dto) {
+        System.out.println("======> [시작] 기사 등록 프로세스");
         Delivery delivery = new Delivery();
 
-        // 1. 랜덤 ID 생성 및 세팅 (추가된 부분)
-    Long randomId;
-    do {
-        randomId = (long)(Math.random() * 90000000L) + 10000000L;
-    } while (deliveryRepository.existsById(randomId));
-    delivery.setDeliveryId(randomId);
+        // 1. 랜덤 ID 세팅 (임시)
+        delivery.setDeliveryId(System.currentTimeMillis() % 100000000L); 
 
-    if (deliveryRepository.existsByDeliveryPhone(dto.getDeliveryPhone())) {
-        throw new RuntimeException("이미 등록된 핸드폰 번호입니다: " + dto.getDeliveryPhone());
-    }
-    
-    if (deliveryRepository.existsByDeliveryCarNo(dto.getDeliveryCarNo())) {
-        throw new RuntimeException("이미 등록된 차량 번호입니다: " + dto.getDeliveryCarNo());
-    }
-
+        // 2. 관리자 조회 (중복 제거)
+        System.out.println("======> 관리자 조회 중... ID: " + dto.getAdminId());
         Admins admin = adminsRepository.findById(dto.getAdminId()) 
-        .orElseThrow(() -> new RuntimeException("관리자 정보가 없습니다. ID: " + dto.getAdminId()));
-        delivery.setAdmin(admin); 
+            .orElseThrow(() -> new RuntimeException("관리자 정보 없음: " + dto.getAdminId()));
+        delivery.setAdmin(admin);
+        System.out.println("======> 관리자 매칭 완료: " + admin.getAdLoginId());
+
+        // 3. 중복 체크
+        if (deliveryRepository.existsByDeliveryPhone(dto.getDeliveryPhone())) {
+            throw new RuntimeException("이미 등록된 핸드폰 번호입니다.");
+        }
+        if (deliveryRepository.existsByDeliveryCarNo(dto.getDeliveryCarNo())) {
+            throw new RuntimeException("이미 등록된 차량 번호입니다.");
+        }
+
+        // 4. 데이터 매핑
         delivery.setCompanyName(dto.getCompanyName());
         delivery.setBusinessName(dto.getBusinessName());
         delivery.setBusinessPhone(dto.getBusinessPhone());
@@ -51,10 +53,13 @@ public class DeliveryService {
         delivery.setDeliveryName(dto.getDeliveryName());
         delivery.setDeliveryPhone(dto.getDeliveryPhone());
         delivery.setDeliveryCarNo(dto.getDeliveryCarNo());
+        
+        // 상태값 초기화 (필요한 경우)
+        delivery.setStatus(DeliveryStatus.WAITING);
 
+        System.out.println("======> [완료] DB 저장 직전");
         return deliveryRepository.save(delivery);
     }
-
 
     //전체 조회
     @Transactional(readOnly = true)

@@ -13,6 +13,7 @@ import com.cmyk.threeh.service.DeliveryService;
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,13 +30,19 @@ public class AdminsController {
 
     private final DeliveryService deliveryService;
     private final AdminsService adminsService;
+    private final AdminsRepository adminsRepository;
 
 
-    // 1. 배송 등록 (CREATE)
     @PostMapping("/delivery")
-    public Delivery create(@RequestBody DeliveryDTO dto) {
-        return deliveryService.createDelivery(dto);
-    }
+public ResponseEntity<?> addDelivery(@RequestBody DeliveryDTO dto) {
+    System.out.println("======> 요청이 도착했습니다!");
+    System.out.println("전달받은 adminId: " + dto.getAdminId());
+    
+    deliveryService.createDelivery(dto);
+    
+    System.out.println("======> 저장 성공!");
+    return ResponseEntity.ok("성공");
+}
 
 
     // 
@@ -95,16 +102,11 @@ public class AdminsController {
         return deliveryService.getDelivery(id);
     }
 
-    //admin1 조회 확인용
-    @GetMapping("/me")
-    public Admins getAdminInfo() {
-        // 테스트를 위해 adLoginId가 "admin1"인 데이터를 강제로 찾아옵니다.
-        // (AdminsService에 findByAdLoginId가 없으면 AdminsRepository를 직접 주입받아 사용하거나, 
-        //  Service에 해당 메서드를 추가해야 합니다.)
-        return adminsService.getAdminByLoginId("admin1"); 
+   @GetMapping("/api/admins/find-id/{loginId}")
+    public ResponseEntity<Long> getAdminIdByLoginId(@PathVariable String loginId) {
+        Long adminId = adminsRepository.findByAdLoginId(loginId)
+                .orElseThrow(() -> new RuntimeException("Admin not found"))
+                .getAdminId();
+        return ResponseEntity.ok(adminId);
     }
-
-
-
-
 }
