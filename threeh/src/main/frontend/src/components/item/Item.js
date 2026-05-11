@@ -2,6 +2,7 @@ import React from "react";
 import {useEffect,useState} from "react";
 import axios from "axios";
 
+
 function Item(){
 
     
@@ -28,6 +29,7 @@ function Item(){
             ):(
                 item.map((item) => (
                     <div key={item.itemId}>
+                        <img src={`http://localhost:8080${item.itemImgUrl}`} alt={item.itemName} width="200"/>
                         
                         <h2>{item.itemName}</h2>
 

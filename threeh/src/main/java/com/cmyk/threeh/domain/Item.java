@@ -75,7 +75,7 @@ public class Item {
     private List<Bookmarks> bookmarksList;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "item")
+    @OneToMany(mappedBy = "item", fetch = FetchType.EAGER)
     private List<ItemImg> itemImgList;
 
     //재고 검증 메서드 

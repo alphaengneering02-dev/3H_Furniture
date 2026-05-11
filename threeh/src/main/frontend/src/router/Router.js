@@ -11,6 +11,7 @@ import AddProduct from '../components/admin/AddProduct';
 import AddDelivery from '../components/admin/AddDelivery';
 import PaymentSuccess from '../components/payment/PaymentSuccess';
 import OrderComplete from '../components/Order/OrderComplete';
+import ItemDetail from '../components/item/ItemDetail';
 
 
 const Router = () => {
@@ -23,6 +24,7 @@ const Router = () => {
                 <Route path="/singup_site" element={<Signup_site/>} />
                 <Route path="/order/:itemId" element={<Order/>} />
                 <Route path="/item" element={<Item/>} />
+                <Route path="/item/:itemId" element={<ItemDetail/>} />
                 <Route path="/mypage" element={<Mypage/>} />
                 <Route path="/admin" element={<AdminDashboard/>} />
                 <Route path="/admin/AP" element={<AddProduct/>} />
