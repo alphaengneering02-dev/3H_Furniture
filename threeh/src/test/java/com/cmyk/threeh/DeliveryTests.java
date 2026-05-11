@@ -52,11 +52,12 @@ class DeliveryTests {
         System.setProperty("wallet.path", "D:/Wallet_swDB");
     }
 
-    @BeforeEach
+   @BeforeEach
     void init() {
-        // 매 테스트 시작 전 공통 관리자 생성
-        sharedAdminId = createTemporaryAdmin();
-    }
+    sharedAdminId = adminsRepository.findByAdLoginId("admin1")
+            .orElseThrow(() -> new RuntimeException("admin1 없음"))
+            .getAdminId();
+        }
 
     // 공통으로 사용할 임시 관리자 생성 메서드 (코드 중복 방지)
    private Long createTemporaryAdmin() { 
