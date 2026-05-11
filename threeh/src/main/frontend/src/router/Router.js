@@ -9,6 +9,8 @@ import Mypage from '../components/mypage/Mypage';
 import AdminDashboard from '../components/admin/AdminDashboard';
 import AddProduct from '../components/admin/AddProduct';
 import AddDelivery from '../components/admin/AddDelivery';
+import PaymentSuccess from '../components/payment/PaymentSuccess';
+import OrderComplete from '../components/Order/OrderComplete';
 import ItemDetail from '../components/item/ItemDetail';
 import ItemCreate from '../components/item/ItemCreate';
 
@@ -29,6 +31,8 @@ const Router = () => {
                 <Route path="/admin" element={<AdminDashboard/>} />
                 <Route path="/admin/AP" element={<AddProduct/>} />
                 <Route path="/admin/AD" element={<AddDelivery/>} />
+                <Route path="/payment/toss/success" element={<PaymentSuccess/>} />
+                <Route path='/order/complete' element={<OrderComplete/>} />
             </Routes>
         </BrowserRouter>
     );

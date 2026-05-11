@@ -26,7 +26,7 @@ public class OrderRequestDTO {
     private String zipCode;
     private List<OrderItemDTO> orderitems;
 
-    private LocalTime requesTime;
+    private LocalTime requestTime;
     private String requestMessage;
 
     @Getter

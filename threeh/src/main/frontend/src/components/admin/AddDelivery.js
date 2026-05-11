@@ -1,16 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import axios from 'axios';
-import './AddDelivery.css';
+
 
 const AddDelivery = () => {
 
     const [formData, setFormData] = useState({
-        adminId: 1,
+        adminId: null,
         companyName: '',
         deliveryName: '',
         deliveryPhone: '',
         deliveryCarNo: '',
-        businessNo: '',
+        businessNo1: '', 
+        businessNo2: '', 
+        businessNo3: '', 
         businessName: '',
         businessPhone: '',
         businessAddr: '',
@@ -18,6 +20,28 @@ const AddDelivery = () => {
         phoneMiddle: '',
         phoneLast: ''
     });
+
+    // 1. 페이지 로드 시 관리자(admin1)의 고유 ID(Long)를 가져옴
+    useEffect(() => {
+    // ---------------- [임시 로그인 코드 시작] ----------------
+    // 실제 로그인이 완성되기 전까지만 사용
+    localStorage.setItem('memberId', '1'); 
+    localStorage.setItem('role', 'ADMIN');
+    // ---------------- [임시 로그인 코드 끝] ----------------
+
+    const savedMemberId = localStorage.getItem('memberId');
+    const savedRole = localStorage.getItem('role');
+
+    if (savedRole === 'ADMIN') {
+        setFormData(prev => ({
+            ...prev,
+            adminId: parseInt(savedMemberId)
+        }));
+    } else {
+        alert("관리자 권한이 없습니다.");
+        // navigate('/login'); // 나중에 로그인 생기면 활성화
+    }
+}, []);
 
     // 입력값 변경
     const handleChange = (e) => {
@@ -35,21 +59,38 @@ const AddDelivery = () => {
 
         e.preventDefault();
 
+        const requestData = {
+            adminId: formData.adminId,
+            companyName: formData.companyName,
+            businessName: formData.businessName,
+            businessNo: `${formData.businessNo1}-${formData.businessNo2}-${formData.businessNo3}`,
+            businessPhone: formData.businessPhone, // 입력받은 값 그대로 전송
+            businessAddr: formData.businessAddr,   // 입력받은 값 그대로 전송
+            deliveryName: formData.deliveryName,
+            deliveryPhone: `${formData.phonePrefix}-${formData.phoneMiddle}-${formData.phoneLast}`,
+            deliveryCarNo: formData.deliveryCarNo,
+            status: 'WAITING'
+        };
+
+
+
+        if (!formData.adminId) {
+        alert("관리자 정보를 불러오는 중입니다. 잠시 후 다시 시도해주세요.");
+        return;
+    }
+
         try {
 
-            const fullPhone =
-                `${formData.phonePrefix}-${formData.phoneMiddle}-${formData.phoneLast}`;
+    const fullBusinessNo = `${formData.businessNo1}-${formData.businessNo2}-${formData.businessNo3}`;
+        const fullDeliveryPhone = `${formData.phonePrefix}-${formData.phoneMiddle}-${formData.phoneLast}`;
+    const requestData = {
+        ...formData,
+        deliveryPhone: fullDeliveryPhone,
+        businessNo: fullBusinessNo // 합쳐진 번호를 할당
+    };
 
-            const requestData = {
-                ...formData,
-                deliveryPhone: fullPhone
-            };
-
-            const response = await axios.post(
-                '/api/delivery/register',
-                requestData
-            );
-
+    const response = await axios.post('/admin/delivery', requestData);
+            
             if (response.status === 200) {
 
                 alert("✅ 기사 등록이 완료되었습니다!");
@@ -241,22 +282,71 @@ const AddDelivery = () => {
                     </div>
 
                     {/* 사업자번호 */}
-                    <div className="form-card">
+<div className="form-card">
+    <label className="form-label">사업자 번호</label>
+    <div className="phone-group"> {/* 기존 CSS 재활용 */}
+        <input
+            type="text"
+            name="businessNo1"
+            value={formData.businessNo1}
+            onChange={handleChange}
+            maxLength={3}
+            placeholder="3자리"
+            className="phone-input"
+            required
+        />
+        <span className="phone-dash">-</span>
+        <input
+            type="text"
+            name="businessNo2"
+            value={formData.businessNo2}
+            onChange={handleChange}
+            maxLength={2}
+            placeholder="2자리"
+            className="phone-input"
+            required
+        />
+        <span className="phone-dash">-</span>
+        <input
+            type="text"
+            name="businessNo3"
+            value={formData.businessNo3}
+            onChange={handleChange}
+            maxLength={5}
+            placeholder="5자리"
+            className="phone-input"
+            required
+        />
+    </div>
+</div>
 
-                        <label className="form-label">
-                            사업자 번호
-                        </label>
+            <div className="form-card">
+                    <label className="form-label">업체 전화번호</label>
+                    <input 
+                        type="text" 
+                        name="businessPhone" 
+                        value={formData.businessPhone}
+                        onChange={handleChange} 
+                        className="form-input"
+                        placeholder="예: 02-123-4567"
+                        required 
+                    />
+                </div>
+            
+            <div className="form-card">
+                    <label className="form-label">사업자 주소</label>
+                    <input 
+                        type="text" 
+                        name="businessAddr" 
+                        value={formData.businessAddr}
+                        onChange={handleChange} 
+                        className="form-input"
+                        placeholder="사업장 전체 주소를 입력하세요"
+                        required 
+                    />
+                </div>
 
-                        <input
-                            type="text"
-                            name="businessNo"
-                            value={formData.businessNo}
-                            onChange={handleChange}
-                            className="form-input"
-                            required
-                        />
 
-                    </div>
 
                     {/* 사업주 이름 */}
                     <div className="form-card">

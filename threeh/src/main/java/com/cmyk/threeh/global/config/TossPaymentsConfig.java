@@ -22,6 +22,6 @@ public class TossPaymentsConfig {
     @Value("${payment.toss.fail_url}")
     private String failUrl;
 
-    public static final String URL = "https://api.tosspayments.com/v1/payements";
+    public static final String URL = "https://api.tosspayments.com/v1/payments";
 
 }

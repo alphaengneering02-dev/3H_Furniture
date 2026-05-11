@@ -17,14 +17,20 @@ import com.cmyk.threeh.domain.Item;
 import com.cmyk.threeh.domain.Member;
 import com.cmyk.threeh.domain.OrderItem;
 import com.cmyk.threeh.domain.Orders;
+import com.cmyk.threeh.domain.Payment;
 import com.cmyk.threeh.dto.OrderRequestDTO;
 import com.cmyk.threeh.dto.OrderResponseDTO;
+import com.cmyk.threeh.dto.PaymentResponseDTO;
+import com.cmyk.threeh.dto.PaymentSuccessDTO;
+import com.cmyk.threeh.enums.DeliveryStatus;
+import com.cmyk.threeh.enums.OrderState;
 import com.cmyk.threeh.enums.OrderType;
 import com.cmyk.threeh.global.error.CustomException;
 import com.cmyk.threeh.global.error.ErrorCode;
 import com.cmyk.threeh.repository.ItemRepository;
 import com.cmyk.threeh.repository.MemberRepository;
 import com.cmyk.threeh.repository.OrderRepository;
+import com.cmyk.threeh.repository.PaymentRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -36,6 +42,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final MemberRepository memberRepository;
     private final ItemRepository itemRepository;
+    private final PaymentRepository paymentRepository;
 
     /*
     주문 저장
@@ -53,7 +60,7 @@ public class OrderService {
 
         Adress address = new Adress(city, street, zipCode);
         Delivery delivery = new Delivery();
-        //delivery.setAddress(address);
+        delivery.setSavedAddress(address);
 
 
         List<OrderItem> oderitemList = orderItems.stream()
@@ -66,9 +73,11 @@ public class OrderService {
 
         //주문 정보 생성
         Orders order = Orders.createOrder(member, delivery, oderitemList.toArray(new OrderItem[0]));
+        order.setOrderState(OrderState.ORDER);
         order.setOrderType(orderType);
         order.setDeliveryDate(LocalDate.now().plusDays(3));
         order.setInstallDate(order.getDeliveryDate());
+
 
         orderRepository.save(order);
 
@@ -82,26 +91,27 @@ public class OrderService {
         Orders orders = orderRepository.findById(orderId)
             .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
 
-
+        orders.setOrderState(OrderState.CANCEL);
         orders.cancel();
     }
 
+
+    /**
+     * 
+     * 회원 주문 상품 정보 조회
+     * 
+     */
     @Transactional()
     public List<OrderResponseDTO> getOrdersBymember (String memberId){
 
+        
         List<Orders> orders = orderRepository.findByMemberId(memberId);
 
+        
+
         return orders.stream()
-            .map(order -> OrderResponseDTO.builder()
-            .orderId(order.getOrderId())
-            .memberName(order.getMember().getName())
-            .orderSate(order.getOrderState().getMessage())
-            .orderType(order.getOrderType())
-            .orderDate(order.getOrderDate())
-            .deliveryDate(order.getDeliveryDate())
-            .build()
-        )
-        .collect(java.util.stream.Collectors.toList());
+            .map(OrderResponseDTO::from)
+            .collect(Collectors.toList());
     }
 
 
@@ -120,11 +130,13 @@ public class OrderService {
             .findFirst()
             .orElseThrow(()-> new CustomException(ErrorCode.ITEMIMG_NOT_FOUND));
 
+        
 
         orderItem.cancel();
         order.getOrderItems().remove(orderItem);
 
         if(order.getOrderItems().isEmpty()){
+            order.setOrderState(OrderState.CANCEL);
             order.cancel();
         }
     }
@@ -148,11 +160,36 @@ public class OrderService {
         });
 
         if(order.getOrderItems().isEmpty()){
+            order.setOrderState(OrderState.CANCEL);
             order.cancel();
         }
+
         
         
         
+        
+    }
+
+
+    @Transactional
+    public void completeOrder(Long orderId) {
+        Orders order = orderRepository.findById(orderId)
+            .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
+
+        order.complete();
+    } 
+
+    
+    /**
+     * 구매 완료 내역 조회
+     */
+    @Transactional PaymentResponseDTO getPaymentResult(String orderId) {
+        Payment payment = paymentRepository.findByOrderId(orderId)
+            .orElseThrow(()-> new CustomException(ErrorCode.PAYMENT_NOT_FOUND));
+
+            
+
+            return payment.toPaymentResponseDTO();
     }
 
 }

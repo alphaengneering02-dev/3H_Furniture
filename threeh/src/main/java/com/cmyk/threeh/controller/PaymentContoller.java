@@ -9,15 +9,19 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.cmyk.threeh.domain.Payment;
 import com.cmyk.threeh.dto.PaymentDTO;
+import com.cmyk.threeh.dto.PaymentFailDTO;
 import com.cmyk.threeh.dto.PaymentResponseDTO;
 import com.cmyk.threeh.global.config.TossPaymentsConfig;
 import com.cmyk.threeh.service.TossPaymentService;
 
-@Controller
+@RestController
+@RequestMapping("/payment")
 public class PaymentContoller {
 
     @Autowired TossPaymentService tossPaymentService;
@@ -51,7 +55,7 @@ public class PaymentContoller {
         }
     
 
-    @GetMapping("/paymet/fail")
+    @GetMapping("/payment/fail")
     public ResponseEntity paymentFail(
         @RequestParam String code, 
         @RequestParam String message,
@@ -59,10 +63,16 @@ public class PaymentContoller {
 
 
             
-            //tossPaymentService.failPayment(code, message, orderId);
+            tossPaymentService.tossPaymentFail(code, message, orderId);
 
 
-            return ResponseEntity.ok().body(message);
+            return ResponseEntity.ok().body(
+                PaymentFailDTO.builder()
+                    .erroCode(code)
+                    .erroMessage(message)
+                    .orderId(orderId)
+                    .build()
+            );
         }
         
 }
