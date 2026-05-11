@@ -44,7 +44,6 @@ const Login = () => {
 
         //데이터 전송
         try {
-            alert("test1")
             const res = await axios.post(`http://localhost:8080/member/login`, params, {
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 withCredentials: true // 세션 쿠키를 유지하기 위해 필요합니다.
@@ -95,7 +94,7 @@ const Login = () => {
             </article>
 
 
-            {/* 로그인 성공 메세지 */}
+            {/* 로그인 성공/실패 메세지 */}
             <div>
                 {loginResultMsg && <p>{loginResultMsg}</p>}
             </div>
