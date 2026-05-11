@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios';
 
-import './Mypage.css';
+
 
 
 //초기 데이터 로드
