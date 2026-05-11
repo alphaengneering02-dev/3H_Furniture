@@ -75,6 +75,7 @@ public class AdminTest {
         assertThat(foundAdmin.getAdminId()).isEqualTo(savedAdmin.getAdminId());
         assertThat(foundAdmin.getAdLoginId()).isEqualTo(loginId);
         assertThat(foundAdmin.getAdminName()).isEqualTo("조회테스트");
+        */
     }
 */
 /* 

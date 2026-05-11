@@ -19,7 +19,6 @@ import javax.persistence.Table;
 import com.cmyk.threeh.dto.ItemRequestDTO;
 import com.cmyk.threeh.dto.ItemUpdateRequestDTO;
 import com.cmyk.threeh.enums.ItemSellStatus;
-import com.cmyk.threeh.domain.ItemImg;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
@@ -34,13 +33,13 @@ import lombok.Setter;
 public class Item {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "ITEM_SEQ")
-    @SequenceGenerator(name = "ITEM_SEQ",sequenceName = "ITEMS_SEQ",allocationSize=1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "items_seq")
+    @SequenceGenerator(name = "items_seq",sequenceName = "ITEMS_SEQ",allocationSize=1)
     @Column(name="ITEM_ID")
     private Long itemId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "admin_id")
+    @JoinColumn(name = "ADMIN_ID", nullable = false)
     private Admins admin;
 
     @Column(name="ITEM_CATEGORY",nullable = false,length = 100)
