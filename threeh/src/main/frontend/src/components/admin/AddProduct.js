@@ -2,7 +2,7 @@ import React from 'react';
 import ItemProduct from './ItemProduct';
 import axios from 'axios';
 
-import './ProductPage.css';
+
 
 const AddProduct = () => {
 

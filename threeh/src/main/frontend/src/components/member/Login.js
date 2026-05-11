@@ -22,62 +22,44 @@ const Login = () => {
     }
 
 
-    const [successLogin, setSuccessLogin] = useState({  //json 형태의 성공 메세지
-        status: false,
-        message: "로그인에 실패하였습니다."
-    });
-
-
-
+    const [loginResultMsg, setLoginResultMsg] = useState("");
 
 
 
     //제출
-    const onSubmit = async() => {
+    const onSubmit = async(evt) => {
+
+        //브라우저의 기본 폼 제출(새로고침) 방지
+        evt.preventDefault();
+
 
         //백엔드 서버로 전송할 데이터 (Form data 형태)
-        // const formData = new FormData();
-        // formData.append(id, form[id])
-        // formData.append(password, form[password])
         const params = new URLSearchParams();
         params.append('id', form.id);
         params.append('password', form.password);  //예: id=user2&password=a123 형태의 Form Data
         
 
-        // console.log("서버로 보내는 데이터: " + formData)
         console.log("서버로 보내는 데이터: " + params.toString())
 
 
         //데이터 전송
         try {
-            alert("test1")
             const res = await axios.post(`http://localhost:8080/member/login`, params, {
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 withCredentials: true // 세션 쿠키를 유지하기 위해 필요합니다.
             })
 
-            setSuccessLogin({
-                ...successLogin,
-                status: true,
-                message: "로그인에 성공하였습니다. 메인페이지로 이동합니다."
-            })
+            setLoginResultMsg(res.data.message);  //"message": "로그인에 성공하였습니다"
             console.log("member 데이터 전송 성공!", res)
         } catch (error) {
-            /*
-            //백엔드에서 온 Validation 에러 처리
+            //백엔드의 LoginFailHandler가 보낸 JSON 응답을 받음
             if (error.response && error.response.data) {
-                const validationErrors = error.response.data; //예: {id: "아이디는 필수입니다."}
-                Object.keys(validationErrors).forEach(  //validationErrors를 error 객체로 변환
-                    key => {setError(key, {message: validationErrors[key]})
-                })
-                console.error("member 데이터 전송 실패!", validationErrors)
-                return
+                setLoginResultMsg(error.response.data.message);  //"잠긴 계정입니다.", "비밀번호가 만료되었습니다." 등의 텍스트
+            } else {
+                setLoginResultMsg("서버와 연결할 수 없습니다.");
             }
-            */
 
-            //기타 에러 처리
             console.error("member 데이터 전송 실패!", error)
-            
         }
 
     }
@@ -103,9 +85,6 @@ const Login = () => {
                 <div>
                     <input type='password' value={password} id='password' name='password' placeholder='비밀번호'/>
                 </div>
-
-                {/* csrf 토큰 */}
-                <input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }"></input>
             </form>
 
 
@@ -115,10 +94,10 @@ const Login = () => {
             </article>
 
 
-            {/* 로그인 성공 메세지 */}
-            {/* <div>
-                {successLogin.status===true && <p>{successLogin.message}</p>}
-            </div> */}
+            {/* 로그인 성공/실패 메세지 */}
+            <div>
+                {loginResultMsg && <p>{loginResultMsg}</p>}
+            </div>
 
 
             <button onClick={onSubmit}>로그인</button>
@@ -139,7 +118,6 @@ const Login = () => {
                 <button>회원가입</button>  {/* Link */}
             </article>
 
-            
         </div>
     );
 };
