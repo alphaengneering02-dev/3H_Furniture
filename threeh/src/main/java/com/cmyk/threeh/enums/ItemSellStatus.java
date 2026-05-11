@@ -7,6 +7,9 @@ import lombok.Getter;
 public enum ItemSellStatus {
 
     SELL,
-    NotInStock;
+    READY,
+    NON_SELL;
+
+
     
 }
