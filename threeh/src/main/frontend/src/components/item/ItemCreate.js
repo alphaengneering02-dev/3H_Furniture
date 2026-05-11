@@ -6,8 +6,7 @@ const ItemCreate = () => {
 
     const navigate = useNavigate();
 
-    //상품 입력
-
+    //상품 정보 입력
     const[item,setItem] = useState({
         itemCategory:"카테고리 선택",
         itemName:"",
@@ -20,7 +19,8 @@ const ItemCreate = () => {
         itemStock:"",
     });
 
-
+    const [mainImgFile,setMainImgFile] = useState(null);
+    const [subImgFiles,setSubImgFiles] = useState([]);
 
     //상품 입력값 변경
     const handleItemChange=(e)=>{
@@ -36,34 +36,8 @@ const ItemCreate = () => {
         });
     };
 
-    //이미지 상태(메인이미지)
-    const[mainImg,setMainImg] =useState({
-        itemImgName: "",
-        itemImgUrl: "",
-    });    
 
-    //메인이미지 입력값 변경
-
-    const handleMainImgChange=(e)=>{
-        const{name,value}=e.target;
-
-        setMainImg({
-            ...mainImg,
-            [name]:value,
-        });
-    };
-    
-    //이미지 상태 (서브 이미지)
-    const[subImgs, setSubImgs] = useState([""]);
-
-    //서브이미지 입력값 변경
-    const handleSubImgChange = (index, value) => {
-        const newSubImgs = [...subImgs];
-        newSubImgs[index] = value;
-        setSubImgs(newSubImgs);
-    }
-
-    const addSubImgInput = () =>{
+    /*const addSubImgInput = () =>{
         if(subImgs.length >=10){
             alert("서브 이미지는 최대 10장까지 등록할 수 있습니다.");
             return;
@@ -75,89 +49,89 @@ const ItemCreate = () => {
         const newSubImgs = subImgs.filter((_,i)=> i !==index);
         setSubImgs(newSubImgs);
     }
+    <input type="file" multiple/>이 여러 파일 선택들 자동 지원함.
+    */
+
+    const uploadImage = async (itemId,file,thumbnailYn,token) => {
+        const formData = new FormData();
+
+        formData.append("itemId",itemId);
+        formData.append("file",file);
+        formData.append("thumbnailYn",thumbnailYn);
+
+        await axios.post(
+            "http://localhost:8080/itemImgs/uploadItemImg",
+            formData,
+            {
+                headers:{
+                    Authorization:  `Bearer ${token}`,
+                    "Content-Type":"multipart/form-data",
+                },
+            }
+        );
+    };
+
 
     //상품등록
 
     const handleItemSubmit =async(e)=>{
         e.preventDefault();
     
-
-    //할인 가격 검증
-    if(
-        Number(item.itemDiscountPrice||0)>
-        Number(item.itemPrice)
-    ){
-        alert("할인 가격은 원가보다 클 수 없습니다.");
-        return;
-    }
-
-    try{
-        const token = localStorage.getItem("token");
-
-    //상품 데이터
-        const itemPayload = {
-            itemCategory: item.itemCategory,
-            itemName: item.itemName,
-            itemDetail: item.itemDetail,
-            itemColor: item.itemColor,
-            itemPrice: item.itemPrice,
-            itemDiscountPrice:Number(item.itemDiscountPrice||0),
-            itemSellStatus: item.itemSellStatus,
-            itemPriceCurrency: item.itemPriceCurrency||"KRW",
-            itemStock: Number(item.itemStock),
-        };
-
-    //상품 등록
-
-    const itemRes = await axios.post(
-       "http://localhost:8080/admin/item",
-        itemPayload,
-        {
-            headers:{
-                Authorization: `Bearer ${token}`,
-            },
+        if(!mainImgFile){
+            alert("대표 이미지를 선택해주세요.");
+            return;
         }
-    );
 
-    //생성된 상품 ID
-    const createdItemId = itemRes.data.itemId;
+        if(Number(item.itemDiscountPrice || 0)>Number(item.itemPrice)){
+            alert("할인 가격은 원가보다 클 수 없습니다.");
+            return;
+        }
 
-    //이미지 데이터
+        try{
+            const token = localStorage.getItem("token");
 
-    const imgPayload = {
-        itemId: createdItemId,
-        itemImgName: mainImg.itemImgName,
-        itemImgUrl: mainImg.itemImgUrl,
-        itemSubImgUrl: mainImg.itemSubImgUrl,
-        thumbnailYn: mainImg.thumbnailYn,
+            const itemPayload = {
+                itemCategory: item.itemCategory,
+                itemName: item.itemName,
+                itemDetail: item.itemDetail,
+                itemColor: item.itemColor,
+                itemPrice:Number(item.itemPrice),
+                itemDiscountPrice: Number(item.itemDiscountPrice || 0),
+                itemPriceCurrency: item.itemPriceCurrency || "KRW",
+                itemSellStatus: item.itemSellStatus,
+                itemStock: Number(item.itemStock),
+            };
+
+            const itemRes = await axios.post(
+                "http://localhost:8080/admin/item",
+                itemPayload,
+                {
+                    headers:{
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
+            const createdItemId = itemRes.data.itemId;
+
+            await uploadImage(createdItemId, mainImgFile,"Y",token);
+
+            for(const file of subImgFiles){
+                await uploadImage(createdItemId,file,"N",token);
+            }
+
+            alert("상품 등록 완료");
+
+            navigate("/item");
+        } catch(error){
+            console.error(error);
+
+            if(error.response){
+                console.log(error.response.data);
+            }
+            alert("상품등록 실패");
+        }
     };
-
-    //이미지 등록
-
-    await axios.post(
-        "http//localhost:8080/itemImgs/createItemImg",
-        imgPayload,
-        {
-            headers:{
-                Authorization:`Bearer ${token}`,
-            },
-        }
-    );
-
-    alert("상품 등록 완료");
-
-    navigate("/item");
-    }catch(error){
-        console.error(error);
-
-        if(error.response){
-            console.log(error.response.data);
-        }
-
-        alert("상품등록 실패");
-    }
-
-}
 
     return (
         <div>
@@ -167,7 +141,7 @@ const ItemCreate = () => {
                 {/*카테고리*/}
                 <div>
                     <label>카테고리</label>
-                    <select type='text' name="itemCategory" value={item.itemCategory} onChange={handleItemChange} required>
+                    <select  name="itemCategory" value={item.itemCategory} onChange={handleItemChange} required>
                     <option value="거실">거실</option>    
                     <option value="욕실">욕실</option>    
                     <option value="주방">주방</option>    
@@ -185,6 +159,7 @@ const ItemCreate = () => {
                 <div>
                     <label>상품 설명</label>
                     <textarea name="itemDetail" value={item.itemDetail} onChange={handleItemChange} maxLength={255}/>
+                    <p>{item.itemDetail.length}/255</p>
                 </div>
 
                 {/*상품 색상*/}
@@ -229,33 +204,30 @@ const ItemCreate = () => {
                 <hr/>
                 <h3>상품 이미지</h3>
 
-                {/*이미지 이름*/}
+                {/*대표 이미지 */}
+
                 <div>
-                    <label>이미지 이름</label>
-                    <input type="text" name="itemImgName" value={mainImg.itemImgName} onChange={handleMainImgChange} required/>
+                <label>대표 이미지</label>
+                <input type="file" accept="image/*" onChange={(e) => setMainImgFile(e.target.files[0])} required/>
                 </div>
+                
+                {/*서브 이미지*/}
 
-                {/*대표 이미지 URL*/}
                 <div>
-                    <label>대표 이미지 URL</label>
-                    <input type="text" name="itemImgUrl" value={mainImg.itemImgUrl} onChange={handleMainImgChange} required/>
-                </div>
+                    <label>서브 이미지</label>
+                    <input type="file" accept="image/*" multiple onChange={(e)=>{
+                        const files = Array.from(e.target.files);
 
-                {/*서브 이미지 URL*/}
-                <div>
-                    <label>서브 이미지 URL</label>
-                    <input type="text" name="itemSubImgUrl" value={subImgs.itemSubImgUrl} onChange={handleSubImgChange}/>
-                </div>
+                        if(files.length>10){
+                            alert("서브 이미지는 최대 10장까지 등록할 수 있습니다.");
+                        e.target.value ="";
+                        return;
+                        }
 
-                {/*대표 이미지 여부*/}
-                <div>
-                    <label>대표 이미지 여부</label>
-
-                    <select name="thumbnailYn" value={mainImg.thumbnailYn}
-                    onChange={handleMainImgChange}>
-                        <option value="Y">Y</option>
-                        <option value="N">N</option>
-                    </select>
+                        setSubImgFiles(files);
+                    }}
+                    />
+                    <p>{subImgFiles.length}/10</p>
                 </div>
 
                 <button type="submit">

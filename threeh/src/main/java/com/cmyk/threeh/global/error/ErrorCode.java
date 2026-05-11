@@ -41,7 +41,10 @@ public enum ErrorCode {
     NO_PERMISSION(404,"관리자 권한이 없습니다."),
 
     //관리자 찾을 수 없음
-    ADMIN_NOT_FOUND(404,"존재하지 않는 관리자 입니다.");
+    ADMIN_NOT_FOUND(404,"존재하지 않는 관리자 입니다."),
+
+    //이미지 파일 없음
+    NO_IMGFILE(404,"파일이 존재하지 않습니다.");
 
     private final int status;
     private final String message;
