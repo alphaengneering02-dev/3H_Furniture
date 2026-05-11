@@ -18,6 +18,7 @@ import com.cmyk.threeh.domain.Payment;
 import com.cmyk.threeh.dto.PaymentDTO;
 import com.cmyk.threeh.dto.PaymentResponseDTO;
 import com.cmyk.threeh.dto.PaymentSuccessDTO;
+import com.cmyk.threeh.enums.PaymentState;
 import com.cmyk.threeh.global.config.TossPaymentsConfig;
 import com.cmyk.threeh.global.error.CustomException;
 import com.cmyk.threeh.global.error.ErrorCode;
@@ -75,6 +76,8 @@ public class TossPaymentService {
             throw new CustomException(ErrorCode.PAYMENT_AMOUNT_EXP);
         }
 
+       
+
         return payment;
     }
 
@@ -96,6 +99,8 @@ public class TossPaymentService {
         } catch (Exception e) {
             throw new RuntimeException(e.toString());
         }
+
+        
 
         return result;
     }
@@ -123,4 +128,19 @@ public class TossPaymentService {
     /**
      * 결제 취소 로직
      */
+
+    @Transactional
+    public void tossPaymentFail(String code, String message, String orderId){
+        Payment payment = paymentRepository.findByOrderId(orderId).orElseThrow(()-> {
+            throw new CustomException(ErrorCode.PAYMENT_NOT_FOUND);
+        });
+
+        payment.setPaySuccessYN(false);
+        payment.setFailReason(message);
+
+    }
+
+
+    
+
 }

@@ -169,6 +169,13 @@ public class Orders {
 
     this.setOrderState(newState);
   }
+
+  public void complete() {
+    if(delivery.getStatus() != DeliveryStatus.COMPLETED){
+        throw new CustomException(ErrorCode.ORDER_CANCEL_FAIL);
+    }
+    this.setOrderState(OrderState.PURCHASED);
+  }
   
 
 }

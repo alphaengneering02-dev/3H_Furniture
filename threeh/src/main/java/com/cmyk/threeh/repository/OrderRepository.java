@@ -8,6 +8,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import com.cmyk.threeh.domain.OrderItem;
 import com.cmyk.threeh.domain.Orders;
 
 
@@ -16,5 +17,7 @@ import com.cmyk.threeh.domain.Orders;
 public interface OrderRepository extends JpaRepository<Orders, Long>{
 
     List<Orders> findByMemberId(String memberId);
+
+    List<OrderItem> findByOrderItems(String orderId);
    
 }
