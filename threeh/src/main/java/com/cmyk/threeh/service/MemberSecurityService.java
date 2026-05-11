@@ -34,6 +34,9 @@ public class MemberSecurityService implements UserDetailsService, OAuth2UserServ
     
     private final MemberRepository memberRepository;
     private final HttpSession httpSession;
+	
+	//세션 만료시간(초 단위, 기본값 10분)
+	public int expiredTime=600;
 
     
 	
@@ -61,6 +64,14 @@ public class MemberSecurityService implements UserDetailsService, OAuth2UserServ
 
         //세션에 사용자 정보를 올림
 		httpSession.setAttribute("member", new SessionMember(member));
+		httpSession.setMaxInactiveInterval(expiredTime);  //세션 만료시간
+
+		System.out.println("[세션에 올라간 회원정보]"  + "\n"
+			+ "sessindId: " + httpSession.getId() + "\n"
+			+ "만료시간: " + httpSession.getMaxInactiveInterval() + "\n"
+			+ "생성시간: " + httpSession.getCreationTime() + "\n"
+			+ "마지막 접속시간: " + httpSession.getLastAccessedTime()
+		);
 		
 
        // 찾은 엔티티를 CustomUserDetails에 담아서 시큐리티에 넘겨줍니다.
