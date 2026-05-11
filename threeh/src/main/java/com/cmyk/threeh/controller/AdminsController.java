@@ -38,17 +38,28 @@ public class AdminsController {
     }
 
 
-    // 2. 전체 조회 (READ ALL)
-    @GetMapping("/list")
-    public List<Delivery> getAll() {
-        return deliveryService.getAllDeliveries();
-    }
-
+    // 
      @GetMapping("/list")
     public List<Delivery> getAllDeliveries() {
-        return deliveryService.getAllDeliveries();
-    }
 
+    try {
+
+        System.out.println("=== /admin/list 호출됨 ===");
+
+        List<Delivery> list = deliveryService.getAllDeliveries();
+
+        System.out.println("조회 건수: " + list.size());
+
+        return list;
+
+    } catch (Exception e) {
+
+        System.out.println("🔥 에러 발생!");
+        e.printStackTrace();
+
+        throw e;
+    }
+}
 /* 
     // 3. 단건 조회 (READ ONE)
     @GetMapping("/{id}")
