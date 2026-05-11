@@ -79,7 +79,7 @@ public class OrderController {
 
         OrderFormDTO orderFormDTO = OrderFormDTO.builder()
             .itemId(item.getItemId())
-            .itemName(member.getName())
+            .itemName(item.getItemName())
             .itemDetail(item.getItemDetail())
             .price(item.getItemPrice())
             .stock(item.getItemStock())

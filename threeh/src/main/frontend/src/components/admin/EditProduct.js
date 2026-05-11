@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ItemProduct from './ItemProduct';
 import axios from 'axios';
-import './ProductPage.css';
+
 
 const EditProduct = ({ itemId }) => {
 
