@@ -3,6 +3,8 @@ package com.cmyk.threeh.dto;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import com.cmyk.threeh.enums.ItemSellStatus;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -33,6 +35,8 @@ private Integer itemPrice;
 private Integer itemDiscountPrice;
 
 private String itemPriceCurrency;
+
+private ItemSellStatus itemSellStatus;
 
 @NotNull
 private Integer itemStock;

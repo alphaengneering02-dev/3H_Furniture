@@ -171,9 +171,9 @@ public class ItemTest {
 
         Item item = new Item();
 
-        item.changeSellStatus(ItemSellStatus.NotInStock);
+        item.changeSellStatus(ItemSellStatus.NON_SELL);
 
-        assertEquals(ItemSellStatus.NotInStock, item.getItemSellStatus());
+        assertEquals(ItemSellStatus.NON_SELL, item.getItemSellStatus());
 
         System.out.println("판매 상태 변경 테스트 성공!!");
 
