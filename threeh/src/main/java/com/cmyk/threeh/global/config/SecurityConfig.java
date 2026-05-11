@@ -19,6 +19,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.cmyk.threeh.enums.MemberRole;
+import com.cmyk.threeh.service.LoginFailHandler;
 import com.cmyk.threeh.service.MemberSecurityService;
 
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 
 	private final MemberSecurityService memberSecurityService;
+	private final LoginFailHandler loginFailHandler;  //로그인 에러 핸들러 주입
 
 
 
@@ -53,7 +55,7 @@ public class SecurityConfig {
 			// .loginPage("/member/login")  // 1. 우리가 만든 로그인 페이지 컨트롤러 주소
 			
 			// 2. React가 로그인 데이터를 POST로 보낼 주소 (Security가 가로챕니다!)
-			.loginProcessingUrl("/member/login") 
+			.loginProcessingUrl("/member/login")  //"/api/v1/login"
 			.usernameParameter("id") // 리액트에서 보내는 필드명과 일치시킴
     		.passwordParameter("password")
 
@@ -64,16 +66,16 @@ public class SecurityConfig {
 			// 2. 로그인 성공 시 실행될 동작 (JSON 반환)
 			.successHandler((request, response, authentication) -> {
 				response.setStatus(HttpStatus.OK.value()); // 200 상태 코드
-				response.setContentType("application/json;charset=UTF-8");
-				response.getWriter().write("{\"status\": true, \"message\": \"로그인에 성공하였습니다.\"}");
+				response.setContentType("application/json;charset=UTF-8");  //"React에게 보낼 응답은 HTML이 아니라 JSON 형식의 데이터이고, UTF-8로 인코딩함"
+				response.getWriter().write("{"   //JSON 데이터를 문자열로 직접 작성 (res.data로 호출함)
+				+ "\"status\": true,"
+				+ "\"message\": \"로그인에 성공하였습니다.\""
+				+ "\"id\":" + authentication.getName()
+				+ "}");
 			})
 			
 			// 3. 로그인 실패 시 실행될 동작 (JSON 반환)
-			.failureHandler((request, response, exception) -> {
-				response.setStatus(HttpStatus.UNAUTHORIZED.value()); // 401 상태 코드
-				response.setContentType("application/json;charset=UTF-8");
-				response.getWriter().write("{\"status\": false, \"message\": \"아이디 또는 비밀번호가 틀렸습니다.\"}");
-			})
+			.failureHandler(loginFailHandler)  //에러 처리 핸들러 객체를 넣어줌
 
 
 			.permitAll()

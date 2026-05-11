@@ -168,7 +168,7 @@ public class MemberService {
 
 		//role 꺼내기 (ROLE_ADMIN, ROLE_USER)
         String UserRole = member.getRole().getKey();
-		if(!UserRole.isEmpty()) {
+		if(UserRole.isEmpty()) {
 			throw new CustomException(ErrorCode.SOME_COLUMN_IS_NULL);
 		}
 
