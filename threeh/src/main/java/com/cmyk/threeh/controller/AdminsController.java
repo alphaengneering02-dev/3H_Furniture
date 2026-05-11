@@ -12,6 +12,7 @@ import com.cmyk.threeh.service.AdminsService;
 import com.cmyk.threeh.service.DeliveryService;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -108,4 +109,28 @@ public ResponseEntity<?> addDelivery(@RequestBody DeliveryDTO dto) {
                 .getAdminId();
         return ResponseEntity.ok(adminId);
     }
+
+    // 배송 기사 배정 API
+@PostMapping("/orders/{orderId}/assign")
+public ResponseEntity<?> assignOrderToDelivery(
+        @PathVariable("orderId") Long orderId, 
+        @RequestBody Map<String, Long> payload) {
+    
+    // JSON 보디에서 deliveryId 추출
+    Long deliveryId = payload.get("deliveryId");
+    
+    if (deliveryId == null) {
+        return ResponseEntity.badRequest().body("기사 ID가 누락되었습니다.");
+    }
+
+    try {
+        // 배정 로직 실행
+        adminsService.assignOrder(orderId, deliveryId);
+        return ResponseEntity.ok("배정이 완료되었습니다.");
+    } catch (Exception e) {
+        return ResponseEntity.internalServerError().body("배정 중 오류: " + e.getMessage());
+    }
+}
+
+
 }

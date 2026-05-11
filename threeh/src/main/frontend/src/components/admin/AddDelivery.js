@@ -56,72 +56,48 @@ const AddDelivery = () => {
 
     // 등록
     const handleSubmit = async (e) => {
+       e.preventDefault();
 
-        e.preventDefault();
+       if (!formData.adminId) {
+        alert("관리자 정보를 불러오는 중입니다. 잠시 후 다시 시도해주세요.");
+        return;
+    }
 
-        const requestData = {
+    const fullBusinessNo = `${formData.businessNo1}-${formData.businessNo2}-${formData.businessNo3}`;
+    const fullDeliveryPhone = `${formData.phonePrefix}-${formData.phoneMiddle}-${formData.phoneLast}`;
+
+    const finalRequestData = {
+
             adminId: formData.adminId,
             companyName: formData.companyName,
             businessName: formData.businessName,
             businessNo: `${formData.businessNo1}-${formData.businessNo2}-${formData.businessNo3}`,
-            businessPhone: formData.businessPhone, // 입력받은 값 그대로 전송
-            businessAddr: formData.businessAddr,   // 입력받은 값 그대로 전송
+            businessPhone: formData.businessPhone, 
+            businessAddr: formData.businessAddr,   
             deliveryName: formData.deliveryName,
             deliveryPhone: `${formData.phonePrefix}-${formData.phoneMiddle}-${formData.phoneLast}`,
             deliveryCarNo: formData.deliveryCarNo,
             status: 'WAITING'
         };
 
-
-
-        if (!formData.adminId) {
-        alert("관리자 정보를 불러오는 중입니다. 잠시 후 다시 시도해주세요.");
-        return;
-    }
-
         try {
 
-    const fullBusinessNo = `${formData.businessNo1}-${formData.businessNo2}-${formData.businessNo3}`;
-        const fullDeliveryPhone = `${formData.phonePrefix}-${formData.phoneMiddle}-${formData.phoneLast}`;
-    const requestData = {
-        ...formData,
-        deliveryPhone: fullDeliveryPhone,
-        businessNo: fullBusinessNo // 합쳐진 번호를 할당
-    };
-
-    const response = await axios.post('/admin/delivery', requestData);
-            
-            if (response.status === 200) {
-
-                alert("✅ 기사 등록이 완료되었습니다!");
-            }
-
-        } catch (error) {
-
-            if (
-                error.response &&
-                error.response.data
-            ) {
-
-                const {
-                    status,
-                    message
-                } = error.response.data;
-
-                console.error(
-                    `에러 발생 [${status}]: ${message}`
-                );
-
-                alert(`❌ 등록 실패: ${message}`);
-
-            } else {
-
-                alert(
-                    "서버와 통신 중 문제가 발생했습니다."
-                );
-            }
+    const response = await axios.post('/admin/delivery', finalRequestData);
+        
+        if (response.status === 200) {
+            alert("✅ 기사 등록이 완료되었습니다!");
         }
-    };
+    } catch (error) {
+        // 에러 처리 로직 (기존 유지)
+        if (error.response && error.response.data) {
+            const { status, message } = error.response.data;
+            console.error(`에러 발생 [${status}]: ${message}`);
+            alert(`❌ 등록 실패: ${message}`);
+        } else {
+            alert("서버와 통신 중 문제가 발생했습니다.");
+        }
+    }
+};
 
     return (
 
