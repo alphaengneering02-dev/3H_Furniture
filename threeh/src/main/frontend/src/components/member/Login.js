@@ -116,9 +116,9 @@ const Login = () => {
 
 
             {/* 로그인 성공 메세지 */}
-            <div>
+            {/* <div>
                 {successLogin.status===true && <p>{successLogin.message}</p>}
-            </div>
+            </div> */}
 
 
             <button onClick={onSubmit}>로그인</button>

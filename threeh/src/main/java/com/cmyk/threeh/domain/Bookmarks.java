@@ -35,9 +35,9 @@ public class Bookmarks {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Member member;
 
-    //ITEM_ID (외래키)
+    //item_id (외래키)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ITEM_ID", nullable = false)
+    @JoinColumn(name = "item_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Item item;
 
