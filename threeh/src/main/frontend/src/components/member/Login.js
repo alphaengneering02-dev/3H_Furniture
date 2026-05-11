@@ -64,6 +64,9 @@ const Login = () => {
 
             setLoginResultMsg(res.data.message);  //"message": "로그인에 성공하였습니다"
             console.log("member 데이터 전송 성공!", res)
+
+            //메인으로 리다이렉트
+            navigate("/")
         } catch (error) {
             //백엔드의 LoginFailHandler가 보낸 JSON 응답을 받음
             if (error.response && error.response.data) {
@@ -122,7 +125,7 @@ const Login = () => {
             
             {/* oauth2 소셜 로그인 */}
             <div>
-                <p> 구글 </p>  {/* <Link to="/oauth2/authorization/google"></Link> */}
+                <p> <Link to="http://localhost:8080/oauth2/authorization/google">구글</Link> </p>
                 <p> 네이버 </p>  {/* <Link to="/oauth2/authorization/kakao"></Link> */}
                 <p> 카카오 </p>  {/* <Link to="/oauth2/authorization/naver"></Link> */}
             </div>

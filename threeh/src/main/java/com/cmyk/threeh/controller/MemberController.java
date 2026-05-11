@@ -51,17 +51,14 @@ public class MemberController {
             case EMAIL_IS_EXIST: return "email";
             case PHONE_IS_EXIST: return "phone";
             case REGNO_IS_EXIST: return "regNo";
-            case INPUT_NOT_CORRECT: return "errorMsg";
-            case SOME_COLUMN_IS_NULL: return "errorMsg";
+            case INPUT_NOT_CORRECT: return "others";
+            case SOME_COLUMN_IS_NULL: return "others";
             
             default: return "global";
         }
     }
 
     
-    
-
-
     //로그인(POST), 로그아웃 처리(GET): spring security가 자동으로 수행하므로, 따로 맵핑할 필요가 없다.
 
     
@@ -71,10 +68,13 @@ public class MemberController {
 	public ResponseEntity<?> signup(@Valid @RequestBody SignupUpdateForm suform, BindingResult bindingResult) {
 
         //백엔드 - 에러 메세지를 JSON 형태로 반환
+        Map<String, String> errorMap = new HashMap<>();  // 발생한 모든 필드 에러를 Map에 담음 (예: {"email": "이메일 형식이 아닙니다"})
+        String field;
+        String message;
+
 		
 		//입력값 에러 검사 (@Valid)
         if(bindingResult.hasErrors()) {
-            Map<String, String> errorMap = new HashMap<>();  // 발생한 모든 필드 에러를 Map에 담음 (예: {"email": "이메일 형식이 아닙니다"})
             for (FieldError error : bindingResult.getFieldErrors()) {  //필드마다 에러 처리
                 errorMap.put(error.getField(), error.getDefaultMessage());  //필드명, 에러 메세지
             }
@@ -84,8 +84,9 @@ public class MemberController {
 		
 		//비밀번호 불일치 검사
         if(!suform.getPassword1().equals(suform.getPassword2())) {
-            Map<String, String> errorMap = new HashMap<>();
-            errorMap.put("PASSWORD_NOT_SAME", "비밀번호가 일치하지 않습니다.");
+            field = "password2";
+            message = ErrorCode.PASSWORD_NOT_SAME.getMessage();
+            errorMap.put(field, message);
             return ResponseEntity.badRequest().body(errorMap);
         }
 		
@@ -96,20 +97,23 @@ public class MemberController {
             return ResponseEntity.ok().body(suform); // 성공 응답
 
 		} catch (DataIntegrityViolationException e) {  //데이터 무결성 제약조건 위반
-			Map<String, String> errorMap = new HashMap<>();
-            errorMap.put("MEMBER_FOUND", "이미 존재하는 회원입니다.");
+            field = "id";
+            message = ErrorCode.MEMBER_FOUND.getMessage();
+            errorMap.put(field, message);
             return ResponseEntity.badRequest().body(errorMap);
 
         } catch (CustomException e) {  //중복 에러 등 커스텀 예외 처리
             // 에러 코드에 따라 적절한 메시지를 맵에 담아 보냄 (예: ErrorCode.MEMBER_FOUND -> "id", "이미 존재하는 아이디입니다.")
-            Map<String, String> errorMap = new HashMap<>();
-            String field = determineField(e.getErrorCode());
-            String message = e.getErrorCode().getMessage();
+            field = determineField(e.getErrorCode());
+            message = e.getErrorCode().getMessage();
             errorMap.put(field, message);
             return ResponseEntity.badRequest().body(errorMap);
             
         } catch (Exception e) {
-			return ResponseEntity.internalServerError().body("서버 오류가 발생했습니다(회원가입 실패).");
+            field = "global";
+            message = "서버 오류가 발생했습니다(회원가입 실패).";
+            errorMap.put(field, message);
+			return ResponseEntity.internalServerError().body(errorMap);
 		}
 		
 	}
@@ -176,10 +180,13 @@ public class MemberController {
     public ResponseEntity<?> update(@Valid @RequestBody SignupUpdateForm suform, BindingResult bindingResult) {
 
         //백엔드 - 에러 메세지를 JSON 형태로 반환
+        Map<String, String> errorMap = new HashMap<>();
+        String field;
+        String message;
+
 		
 		//입력값 에러 검사 (@Valid)
         if(bindingResult.hasErrors()) {
-            Map<String, String> errorMap = new HashMap<>();
             for (FieldError error : bindingResult.getFieldErrors()) {
                 errorMap.put(error.getField(), error.getDefaultMessage());
             }
@@ -189,8 +196,9 @@ public class MemberController {
 
 		//비밀번호 불일치 검사
         if(!suform.getPassword1().equals(suform.getPassword2())) {
-            Map<String, String> errorMap = new HashMap<>();
-            errorMap.put("PASSWORD_NOT_SAME", "비밀번호가 일치하지 않습니다.");
+            field = "password2";
+            message = ErrorCode.PASSWORD_NOT_SAME.getMessage();
+            errorMap.put(field, message);
             return ResponseEntity.badRequest().body(errorMap);
         }
 		
@@ -201,7 +209,10 @@ public class MemberController {
             return ResponseEntity.ok().body(suform);  //수정 후의 회원정보
         //데이터 무결성 제약조건 X
 		} catch (Exception e) {
-			return ResponseEntity.internalServerError().body("서버 오류가 발생했습니다(회원가입 실패).");
+			field = "global";
+            message = "서버 오류가 발생했습니다(회원가입 실패).";
+            errorMap.put(field, message);
+			return ResponseEntity.internalServerError().body(errorMap);
 		}
 		
 	}

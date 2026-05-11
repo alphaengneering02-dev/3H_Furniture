@@ -47,7 +47,7 @@ public class SignupUpdateForm {
 
     @NotBlank(message = "주민등록번호는 필수항목입니다.")
     @Pattern(
-        regexp = "^\\d{6}-[1-4]\\d{6}$",
+        regexp = "^\\d{6}-[1-4]\\d{6}$",  //주민등록번호 뒷자리는 1~4 사이의 숫자로 시작해야함.
         message = "주민등록번호 형식이 유효하지 않습니다."
     )
     private String regNo;
