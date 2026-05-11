@@ -72,7 +72,7 @@ class DeliveryTests {
     Admins savedAdmin = adminsRepository.saveAndFlush(admin);
     return savedAdmin.getAdminId();
 }
-/* 등록
+ //등록
 
     @Test
 @DisplayName("배송 업체 등록 및 조회 테스트")
@@ -114,7 +114,7 @@ void deliverySaveAndFindTest() {
     // 상태 재검증
     assertThat(found.getStatus()).isEqualTo(DeliveryStatus.WAITING);
 }
-  */   
+
 
 /* 수정
 @Test

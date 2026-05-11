@@ -43,6 +43,12 @@ public class AdminsController {
     public List<Delivery> getAll() {
         return deliveryService.getAllDeliveries();
     }
+
+     @GetMapping("/list")
+    public List<Delivery> getAllDeliveries() {
+        return deliveryService.getAllDeliveries();
+    }
+
 /* 
     // 3. 단건 조회 (READ ONE)
     @GetMapping("/{id}")
