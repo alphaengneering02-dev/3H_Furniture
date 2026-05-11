@@ -126,7 +126,7 @@ public class MemberAddressService {
                     //dto.setReceiverPhone(addr.getReceiverPhone());
 
                     return dto;
-                }).orElseThrow(() -> new NoSuchElementException("기본 주소지를 설정해주세요"));
+                }).orElse(null);
             }
 
     //배송/설치 일정 변경 처리

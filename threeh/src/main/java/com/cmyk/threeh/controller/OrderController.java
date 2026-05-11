@@ -1,7 +1,9 @@
 package com.cmyk.threeh.controller;
 
+import java.security.Principal;
 import java.util.List;
 
+import javax.management.RuntimeErrorException;
 import javax.transaction.Transactional;
 
 import org.springframework.http.ResponseEntity;
@@ -54,11 +56,23 @@ public class OrderController {
 
     //주문 화면 들어올시
     @GetMapping("/{itemId}")
-    public ResponseEntity getOrder(@PathVariable Long itemId, @AuthenticationPrincipal User user){
+    public ResponseEntity getOrder(@PathVariable Long itemId, Principal principal){
 
         ItemResponseDTO item = itemService.getItem(itemId);
         ItemImgResponseDTO itemImage = itemImgService.getMainImg(itemId);
-        Member member = memberService.findMember(user.getUsername());
+
+        /**
+         * member 로그인 없이 테스트
+         */
+         
+        Member member = memberService.getUser(principal.getName());
+
+       
+        try {
+            itemImage = itemImgService.getMainImg(itemId);
+        } catch (Exception e) {
+          throw new RuntimeException(e.getMessage());
+        }
 
         //기본주소지 조회
         MemberAddressDTO defaultAddress = memberAddressService.getDefaultAddressForOrder(member.getId());
@@ -85,13 +99,14 @@ public class OrderController {
     //주문 생성
     @PostMapping
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity orderCreate(@RequestBody OrderRequestDTO dto, @AuthenticationPrincipal User user){
+    public ResponseEntity orderCreate(@RequestBody OrderRequestDTO dto, @AuthenticationPrincipal User user) throws Exception{
 
         //상품 조회
         List<OrderRequestDTO.OrderItemDTO> orderItems = dto.getOrderitems();
 
         //주문생성
 
+        try {
         Long orderId = orderService.order(
             dto.getMemberId(),
             orderItems,
@@ -102,6 +117,10 @@ public class OrderController {
         );
 
         return ResponseEntity.ok().body(orderId);
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
 

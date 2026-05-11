@@ -1,6 +1,8 @@
 package com.cmyk.threeh.dto;
 
 
+import com.cmyk.threeh.enums.PayType;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

@@ -12,15 +12,26 @@ function OrderItemInfo( { orderData }) {
    
        const hadlePayment = () => {
            const tossPayment = window.TossPayments(clientKey);
+
+           sessionStorage.setItem("pendingOrder", JSON.stringify({
+                
+                memberId: orderData?.memberId,
+                orderItems: [{ itemId: orderData?.itemId, count: 1}],
+                deliveryAddr: orderData?.deliveryAddr,
+                deliveryAddrDeatil : orderData?.defaultAddr,
+                zipcode: orderData?.defaultZipCode,
+                orderType: "ONLINE"
+
+           }));
    
            tossPayment.requestPayment('CARD', {
-               amount: 50000 ,//orderData?.price,
+               amount: orderData?.price,
                orderId: 'bec1d544-2a34-4f44-ada0-c5213d8fd8dd',
-               orderName: '상품결제', //orderData?.itemName,
-               customerName : '첫번째', //orderData?.memberName,
-               customerEmail: 'test@emial', //orderData?.email,
-               successUrl: "http://localhost:8080/payment/toss/success",
-               failUrl: 'http://localhost:8080/payment/toss/fail'
+               orderName: orderData?.itemName,
+               customerName : orderData?.memberName,
+               customerEmail: orderData?.email,
+               successUrl: "http://localhost:3000/payment/toss/success",
+               failUrl: 'http://localhost:3000/payment/toss/fail'
            });
        };
 
@@ -30,7 +41,7 @@ function OrderItemInfo( { orderData }) {
 
                 <div>
                     <img src={orderData?.itemIamge} />
-                    <p>{orderData?.itemIamge}</p>
+                    
                     <p>{orderData?.itemName}</p>
                     <p>{orderData?.price}</p>
                     <p>{orderData?.itemDetail}</p>
