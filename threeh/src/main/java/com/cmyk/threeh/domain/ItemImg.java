@@ -28,7 +28,7 @@ public class ItemImg {
 
    @Id
    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "ITEM_IMG_SEQ")
-   @SequenceGenerator(name = "ITEM_IMG_SEG",sequenceName = "ITEM_IMG_SEQ",allocationSize=1)
+   @SequenceGenerator(name = "ITEM_IMG_SEQ",sequenceName = "ITEM_IMG_SEQ",allocationSize=1)
    @Column(name="ITEM_IMG_ID")
    private long itemImgId;
 
