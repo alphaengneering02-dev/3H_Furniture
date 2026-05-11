@@ -1,6 +1,7 @@
 //<사용자 정보 entity>
 package com.cmyk.threeh.domain;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -25,7 +26,7 @@ import lombok.Setter;
 @Entity
 @Getter 
 @Setter
-public class Member {
+public class Member implements Serializable {
     
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "member_seq")
