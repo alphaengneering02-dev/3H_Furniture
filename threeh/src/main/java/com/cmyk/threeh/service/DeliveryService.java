@@ -26,15 +26,11 @@ public class DeliveryService {
         System.out.println("======> [시작] 기사 등록 프로세스");
         Delivery delivery = new Delivery();
 
-        // 1. 랜덤 ID 세팅 (임시)
-        delivery.setDeliveryId(System.currentTimeMillis() % 100000000L); 
-
-        // 2. 관리자 조회 (중복 제거)
-        System.out.println("======> 관리자 조회 중... ID: " + dto.getAdminId());
-        Admins admin = adminsRepository.findById(dto.getAdminId()) 
-            .orElseThrow(() -> new RuntimeException("관리자 정보 없음: " + dto.getAdminId()));
+        if (dto.getAdminId() != null) {
+        Admins admin = adminsRepository.findById(dto.getAdminId())
+                .orElseThrow(() -> new RuntimeException("관리자 정보가 없습니다."));
         delivery.setAdmin(admin);
-        System.out.println("======> 관리자 매칭 완료: " + admin.getAdLoginId());
+    }
 
         // 3. 중복 체크
         if (deliveryRepository.existsByDeliveryPhone(dto.getDeliveryPhone())) {

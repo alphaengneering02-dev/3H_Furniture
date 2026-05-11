@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 
@@ -6,6 +7,7 @@ const AdminDashboard = () => {
 
     const [memo1, setMemo1] = useState('');
     const memoRef = useRef(null);
+    const navigate = useNavigate();
 
     const saveMemo = () => {
         localStorage.setItem("memo_textarea", memo1);
@@ -100,11 +102,8 @@ const AdminDashboard = () => {
 
     // 2. 기사 수정 페이지 이동 (또는 모달 호출)
     const handleEditDelivery = (deliveryId) => {
-        // 상황에 맞게 구현: 페이지 이동 시 useNavigate() 사용
-        // window.location.href = `/admin/edit-delivery/${deliveryId}`; 
-        alert(`수정 페이지로 이동하거나 모달을 띄웁니다. ID: ${deliveryId}`);
+        navigate(`/admin/delivery/${deliveryId}`);
     };
-
 
 
     useEffect(() => {
@@ -327,7 +326,7 @@ const AdminDashboard = () => {
                                             삭제
                                         </button>
                                     </td>
-                                    
+
                                     </tr>
                                 ))
                             )}

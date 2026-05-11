@@ -3,6 +3,8 @@ import Main from '../components/main/Main';
 import Login from '../components/member/Login';
 import Signup from '../components/member/Signup';
 import Signup_site from '../components/member/Signup_site';
+import FindId from '../components/member/FindId';
+import ChangePW from '../components/member/ChangePW';
 import Order from '../components/Order/Order';
 import Item from '../components/item/Item';
 import Mypage from '../components/mypage/Mypage';
@@ -14,6 +16,7 @@ import OrderComplete from '../components/Order/OrderComplete';
 import ItemDetail from '../components/item/ItemDetail';
 import Cart from '../components/mypage/Cart';
 import ItemCreate from '../components/item/ItemCreate';
+import EditDelivery from '../components/admin/EditDelivery';
 
 
 const Router = () => {
@@ -24,6 +27,8 @@ const Router = () => {
                 <Route path="/login" element={<Login/>} />
                 <Route path="/singup" element={<Signup/>} />
                 <Route path="/singup_site" element={<Signup_site/>} />
+                <Route path="/findId" element={<FindId/>} />
+                <Route path="/ChangePw" element={<ChangePW/>} />
                 <Route path="/order/:itemId" element={<Order/>} />
                 <Route path="/item" element={<Item/>} />
                 <Route path="/item/:itemId" element={<ItemDetail/>} />
@@ -31,7 +36,8 @@ const Router = () => {
                 <Route path="/mypage" element={<Mypage/>} />
                 <Route path="/admin" element={<AdminDashboard/>} />
                 <Route path="/admin/AP" element={<AddProduct/>} />
-                <Route path="/admin/AD" element={<AddDelivery/>} />
+                <Route path="/admin/delivery" element={<AddDelivery/>} />
+                <Route path="/admin/delivery/:deliveryId" element={<EditDelivery/>} />
                 <Route path="/payment/toss/success" element={<PaymentSuccess/>} />
                 <Route path='/order/complete' element={<OrderComplete/>} />
                 <Route path='/cart' element={<Cart/>}/>
