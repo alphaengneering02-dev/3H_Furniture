@@ -18,6 +18,7 @@ import lombok.Setter;
 public class OrderRequestDTO {
     private Long memberId;
     private Long deliveryId;
+    private String memberName;
     private OrderType orderType;
     private LocalDateTime deliveryDate;
     private LocalDate installDate;
@@ -34,6 +35,7 @@ public class OrderRequestDTO {
     @Setter
     public static class OrderItemDTO {
         private Long itemId;
+        private String ItemName;
         private int count;
     }
 }

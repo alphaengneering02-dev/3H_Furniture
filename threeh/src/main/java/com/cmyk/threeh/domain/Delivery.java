@@ -33,28 +33,28 @@ public class Delivery {
     @OneToOne(mappedBy = "delivery")
     private Orders orders;
 
-    @Column(name = "COMPANY_NAME", nullable = false)
+    @Column(name = "COMPANY_NAME", nullable = true)
     private String companyName;
 
-    @Column(name = "BUSINESS_NAME", nullable = false)
+    @Column(name = "BUSINESS_NAME", nullable = true)
     private String businessName;
 
-    @Column(name = "BUSINESS_PHONE", nullable = false)
+    @Column(name = "BUSINESS_PHONE", nullable = true)
     private String businessPhone;
 
-    @Column(name = "BUSINESS_NO", nullable = false)
+    @Column(name = "BUSINESS_NO", nullable = true)
     private String businessNo;
 
-    @Column(name = "BUSINESS_ADDR", nullable = false)
+    @Column(name = "BUSINESS_ADDR", nullable = true)
     private String businessAddr;
 
-    @Column(name = "DELIVERY_NAME", nullable = false)
+    @Column(name = "DELIVERY_NAME", nullable = true)
     private String deliveryName;
 
-    @Column(name = "DELIVERY_PHONE", nullable = false)
+    @Column(name = "DELIVERY_PHONE", nullable = true)
     private String deliveryPhone;
 
-    @Column(name = "DELIVERY_CARNO", nullable = false)
+    @Column(name = "DELIVERY_CARNO", nullable = true)
     private String deliveryCarNo;
 
 

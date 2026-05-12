@@ -1,7 +1,7 @@
 package com.cmyk.threeh.service;
 
-
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,50 +34,53 @@ import com.cmyk.threeh.repository.PaymentRepository;
 
 import lombok.RequiredArgsConstructor;
 
-
 @Service
 @RequiredArgsConstructor
 public class OrderService {
-    
+
     private final OrderRepository orderRepository;
     private final MemberRepository memberRepository;
     private final ItemRepository itemRepository;
     private final PaymentRepository paymentRepository;
 
     /*
-    주문 저장
-        @param memberId, itemId, count
-        @return Long
+     * 주문 저장
+     * 
+     * @param memberId, itemId, count
+     * 
+     * @return Long
      */
 
     @Transactional
-    public Long order(Long memberId, List<OrderRequestDTO.OrderItemDTO> orderItems, String city, String street, String zipCode, OrderType orderType){
+    public Long order(Long memberId, List<OrderRequestDTO.OrderItemDTO> orderItems, String city, String street,
+            String zipCode, OrderType orderType) {
 
-        //엔티티 조회
+        // 엔티티 조회
         Member member = memberRepository.findById(memberId)
-        .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
 
-
+        String memberName = member.getName();
         Adress address = new Adress(city, street, zipCode);
         Delivery delivery = new Delivery();
         delivery.setSavedAddress(address);
 
-
         List<OrderItem> oderitemList = orderItems.stream()
-            .map(dto -> {
-                Item item = itemRepository.findById(dto.getItemId())
-                    .orElseThrow(()-> new CustomException(ErrorCode.ITEM_NOT_FOUND));
-                return OrderItem.creaOrderItem(item, item.getItemPrice(), dto.getCount());
-            })
-            .collect(Collectors.toList());
+                .map(dto -> {
+                    Item item = itemRepository.findById(dto.getItemId())
+                            .orElseThrow(() -> new CustomException(ErrorCode.ITEM_NOT_FOUND));
+                    return OrderItem.creaOrderItem(item, item.getItemPrice(), dto.getCount());
+                })
+                .collect(Collectors.toList());
 
-        //주문 정보 생성
+        // 주문 정보 생성
         Orders order = Orders.createOrder(member, delivery, oderitemList.toArray(new OrderItem[0]));
         order.setOrderState(OrderState.ORDER);
         order.setOrderType(orderType);
         order.setDeliveryDate(LocalDate.now().plusDays(3));
         order.setInstallDate(order.getDeliveryDate());
-
+        order.setDeliveryAddr(city);
+        order.setDeliveryAddrDetail(street);
+        order.setOrderDate(LocalDateTime.now());
 
         orderRepository.save(order);
 
@@ -86,15 +89,14 @@ public class OrderService {
     }
 
     @Transactional
-    public void cancelOrder(Long orderId){
+    public void cancelOrder(Long orderId) {
 
         Orders orders = orderRepository.findById(orderId)
-            .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
 
         orders.setOrderState(OrderState.CANCEL);
         orders.cancel();
     }
-
 
     /**
      * 
@@ -102,40 +104,35 @@ public class OrderService {
      * 
      */
     @Transactional()
-    public List<OrderResponseDTO> getOrdersBymember (String memberId){
+    public List<OrderResponseDTO> getOrdersBymember(String memberId) {
 
-        
         List<Orders> orders = orderRepository.findByMemberId(memberId);
 
-        
-
         return orders.stream()
-            .map(OrderResponseDTO::from)
-            .collect(Collectors.toList());
+                .map(OrderResponseDTO::from)
+                .collect(Collectors.toList());
     }
-
 
     /**
      * 단품 취소
+     * 
      * @param user
      * @return
      */
     @Transactional
     public void cancelOrder(Long orderId, Long itemId) {
         Orders order = orderRepository.findById(orderId)
-                .orElseThrow(()-> new CustomException(ErrorCode.ORDER_NOT_FOUND));
-        
-        OrderItem orderItem = order.getOrderItems().stream()
-            .filter(oi -> oi.getItem().getItemId().equals(itemId))
-            .findFirst()
-            .orElseThrow(()-> new CustomException(ErrorCode.ITEMIMG_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
 
-        
+        OrderItem orderItem = order.getOrderItems().stream()
+                .filter(oi -> oi.getItem().getItemId().equals(itemId))
+                .findFirst()
+                .orElseThrow(() -> new CustomException(ErrorCode.ITEMIMG_NOT_FOUND));
 
         orderItem.cancel();
         order.getOrderItems().remove(orderItem);
 
-        if(order.getOrderItems().isEmpty()){
+        if (order.getOrderItems().isEmpty()) {
             order.setOrderState(OrderState.CANCEL);
             order.cancel();
         }
@@ -145,51 +142,44 @@ public class OrderService {
      * 다중 취소 기능
      */
     @Transactional
-    public void cancelOrderItems(@AuthenticationPrincipal User user, Long orderId, List<Long> itemIds){
+    public void cancelOrderItems(@AuthenticationPrincipal User user, Long orderId, List<Long> itemIds) {
         Orders order = orderRepository.findById(orderId)
-            .orElseThrow(()-> new CustomException(ErrorCode.ORDER_NOT_FOUND));
-        
+                .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
+
         itemIds.forEach(itemId -> {
             OrderItem orderItem = order.getOrderItems().stream()
-                .filter(oi -> oi.getItem().getItemId().equals(itemId))
-                .findFirst()
-                .orElseThrow(()-> new CustomException(ErrorCode.ITEM_NOT_FOUND));
-                
-                orderItem.cancel();
-                order.getOrderItems().remove(orderItem);
+                    .filter(oi -> oi.getItem().getItemId().equals(itemId))
+                    .findFirst()
+                    .orElseThrow(() -> new CustomException(ErrorCode.ITEM_NOT_FOUND));
+
+            orderItem.cancel();
+            order.getOrderItems().remove(orderItem);
         });
 
-        if(order.getOrderItems().isEmpty()){
+        if (order.getOrderItems().isEmpty()) {
             order.setOrderState(OrderState.CANCEL);
             order.cancel();
         }
 
-        
-        
-        
-        
     }
-
 
     @Transactional
     public void completeOrder(Long orderId) {
         Orders order = orderRepository.findById(orderId)
-            .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
 
         order.complete();
-    } 
+    }
 
-    
     /**
      * 구매 완료 내역 조회
      */
-    @Transactional PaymentResponseDTO getPaymentResult(String orderId) {
+    @Transactional
+    PaymentResponseDTO getPaymentResult(String orderId) {
         Payment payment = paymentRepository.findByOrderId(orderId)
-            .orElseThrow(()-> new CustomException(ErrorCode.PAYMENT_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.PAYMENT_NOT_FOUND));
 
-            
-
-            return payment.toPaymentResponseDTO();
+        return payment.toPaymentResponseDTO();
     }
 
 }

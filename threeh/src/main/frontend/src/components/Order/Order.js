@@ -26,7 +26,7 @@ function Order(props) {
 
         
 
-        axios.get(`/order/${itemId}`)
+        axios.get(`/api/order/${itemId}`)
         .then(res => {
             console.log(res);
             setOrderData(res.data);
