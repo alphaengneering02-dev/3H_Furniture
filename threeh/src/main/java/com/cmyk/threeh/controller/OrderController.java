@@ -155,7 +155,7 @@ public class OrderController {
     public ResponseEntity orderCreate(@RequestBody OrderRequestDTO dto, Principal principal) throws Exception{
 
         //상품 조회
-        List<OrderRequestDTO.OrderItemDTO> orderItems = dto.getOrderitems();
+        List<OrderRequestDTO.OrderItemDTO> orderItems = dto.getOrderItems();
 
         //주문생성
 
