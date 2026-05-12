@@ -1,15 +1,18 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import axios from 'axios';
 
 
 const AdminDashboard = () => {
 
     const [memo1, setMemo1] = useState('');
-    const memoRef = useRef(null);
-    const navigate = useNavigate();
+    const [currentTime, setCurrentTime] = useState(new Date());
     const [selectedDrivers, setSelectedDrivers] = useState({});
 
+
+     const memoRef = useRef(null);
+    const navigate = useNavigate();
     const saveMemo = () => {
         localStorage.setItem("memo_textarea", memo1);
         localStorage.setItem("memo_editor", memoRef.current.innerHTML);
@@ -35,7 +38,7 @@ const AdminDashboard = () => {
         }
     };
 
-    const [currentTime, setCurrentTime] = useState(new Date());
+    
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -145,7 +148,6 @@ const handleAssignDriver = async (orderId) => {
         
         alert("배송 배정이 완료되었습니다.");
         fetchDeliveries(); // 기사 상태 갱신
-        // 주문 목록 재호출 로직 추가 권장 (예: fetchOrders())
     } catch (error) {
         console.error("배정 실패:", error);
         alert("배정 중 오류가 발생했습니다.");
@@ -220,8 +222,11 @@ const handleAssignDriver = async (orderId) => {
                 <h1>Admin Dashboard</h1>
 
                 <div className="button-group">
-                    <button>상품 등록</button>
-                    <button>상품 수정</button>
+                    <Link to="/item/create">
+                    <button>상품 추가</button>
+                    </Link>
+                    <button>상품 수정/삭제</button>
+                    <p>수정 삭제는 어드민만 볼 수 있는 상품리스트를 만들어서 이동?</p>
                 </div>
 
                 {/* 주문 목록 */}
@@ -302,7 +307,12 @@ const handleAssignDriver = async (orderId) => {
 
   {/* 기사 리스트 */}
                 <div>
-                    <h3>기사 리스트</h3><button>추가</button>
+                    <h3>기사 리스트</h3>
+                    <Link to="/admin/delivery">
+                        <button>추가</button>
+                    </Link>
+
+                    <button>전체 추가</button>
 
                     <table style={{ width: "100%", borderCollapse: "collapse" }}>
                         <thead>
