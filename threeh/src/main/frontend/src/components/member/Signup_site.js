@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
@@ -89,7 +89,7 @@ const Signup_site = () => {
         })
     }
 
-    
+
 
     return (
         <div>

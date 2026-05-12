@@ -31,6 +31,7 @@ public class Delivery {
     private Adress savedAddress;
 
     @OneToOne(mappedBy = "delivery")
+    @JsonIgnore
     private Orders orders;
 
     @Column(name = "COMPANY_NAME", nullable = true)

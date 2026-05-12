@@ -17,6 +17,7 @@ import Cart from '../components/mypage/Cart';
 import ItemCreate from '../components/item/ItemCreate';
 import EditDelivery from '../components/admin/EditDelivery';
 import ItemUpdate from '../components/item/ItemUpdate';
+import OAuth2Success from '../components/member/OAuth2Success';
 
 
 const Router = () => {
@@ -25,6 +26,7 @@ const Router = () => {
             <Routes>
                 <Route path="/" element={<Main/>} />
                 <Route path="/login" element={<Login/>} />
+                <Route path="/oauth/success" element={<OAuth2Success/>} />
                 <Route path="/signup" element={<Signup/>} />
                 <Route path="/signup_site" element={<Signup_site/>} />
                 <Route path="/findId" element={<FindId/>} />
