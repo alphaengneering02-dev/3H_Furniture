@@ -26,7 +26,7 @@ public class Admins {
             name = "admin_seq",
             sequenceName = "ADMIN_SEQ",
             allocationSize = 1)
-    @Column(name = "ADMIN_ID", nullable = false)
+    @Column(name = "ADMIN_ID", nullable = true) //not null
     private Long adminId;   
 
     @OneToMany(mappedBy = "admin", cascade = CascadeType.ALL)
