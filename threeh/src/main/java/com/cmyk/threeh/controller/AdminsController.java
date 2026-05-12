@@ -8,11 +8,11 @@ import com.cmyk.threeh.dto.SessionMember;
 import com.cmyk.threeh.domain.Admins;
 import com.cmyk.threeh.domain.Delivery;
 import com.cmyk.threeh.dto.AdminLoginDTO;
+import com.cmyk.threeh.dto.AdminsDTO;
 import com.cmyk.threeh.dto.DeliveryDTO;
 import com.cmyk.threeh.repository.AdminsRepository;
 import com.cmyk.threeh.service.AdminsService;
 import com.cmyk.threeh.service.DeliveryService;
-import com.cmyk.threeh.dto.SessionMember;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
@@ -53,30 +53,16 @@ public ResponseEntity<?> addDelivery(@RequestBody DeliveryDTO dto) {
 }
 
     // 
-    @GetMapping("/list")
-public List<Delivery> getAllDeliveries(HttpSession session) { // HttpSession 주입
-    try {
-        // 세션에서 로그인 정보 꺼내기
-        SessionMember user = (SessionMember) session.getAttribute("sessionMember");
-        
-        System.out.println("=== [/admin/list] API 호출됨 ===");
-        
-        if (user != null) {
-            // 관리자면 adminName, 일반유저면 name 출력
-            String userName = (user.getAdminId() != null) ? user.getAdminName() : user.getName();
-            System.out.println("👤 조회자: " + userName + " (" + user.getRole() + ")");
-        } else {
-            System.out.println("⚠️ 조회자: 로그인 정보 없음 (익명)");
-        }
-
-        List<Delivery> list = deliveryService.getAllDeliveries();
-        System.out.println("📦 조회 건수: " + list.size());
-        return list;
-
-    } catch (Exception e) {
-        System.out.println("🔥 에러 발생: " + e.getMessage());
-        throw e;
+   @GetMapping("/list")
+public List<Delivery> getAllDeliveries(HttpSession session) {
+    // 세션에서 꺼낼 때 'sessionMember' 키가 로그인 때 저장한 키와 같은지 확인
+    SessionMember user = (SessionMember) session.getAttribute("sessionMember");
+    
+    if (user != null) {
+        System.out.println("👤 조회자: " + user.getAdminName()); // 이제 admin1이 뜰 겁니다.
     }
+    
+    return deliveryService.getAllDeliveries(); 
 }
 /* 
     // 3. 단건 조회 (READ ONE)
@@ -114,17 +100,25 @@ public List<Delivery> getAllDeliveries(HttpSession session) { // HttpSession 주
     }
 
   @GetMapping("/{loginId}") 
-public ResponseEntity<Long> getAdminIdByLoginId(@PathVariable("loginId") String loginId) {
-    System.out.println("🔍 관리자 ID 조회 요청 - Login ID: " + loginId);
+public ResponseEntity<AdminsDTO> getAdminIdByLoginId(@PathVariable("loginId") String loginId) {
+    System.out.println("🔍 관리자 데이터 조회 요청 - Login ID: " + loginId);
     
-    Long adminId = adminsRepository.findByAdLoginId(loginId)
-            .orElseThrow(() -> new RuntimeException("Admin not found"))
-            .getAdminId();
-     
-      System.out.println(loginId);
-            System.out.println(adminId);
-    return ResponseEntity.ok(adminId);
-
+    // 1. DB에서 관리자 엔티티 조회
+    Admins admin = adminsRepository.findByAdLoginId(loginId)
+            .orElseThrow(() -> new RuntimeException("Admin not found"));
+    
+    // 2. AdminsDTO 객체 생성 및 데이터 복사 (비밀번호는 제외!)
+    AdminsDTO dto = new AdminsDTO();
+    dto.setAdminId(admin.getAdminId());
+    dto.setAdLoginId(admin.getAdLoginId());
+    dto.setAdminName(admin.getAdminName());
+    dto.setRole(admin.getRole());
+    
+    // 로그 출력
+    System.out.println("✅ 조회 성공 - Admin ID: " + dto.getAdminId() + ", Name: " + dto.getAdminName());
+    
+    // 3. DTO 객체 반환
+    return ResponseEntity.ok(dto);
 }
 
     // 배송 기사 배정 API

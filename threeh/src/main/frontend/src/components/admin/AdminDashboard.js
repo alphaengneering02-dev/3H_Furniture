@@ -111,16 +111,33 @@ const AdminDashboard = () => {
 
 
     useEffect(() => {
-        const savedAdminId = localStorage.getItem("adminId"); 
-    if (savedAdminId) {
-        setAdminId(savedAdminId);
-        console.log("=== AdminDashboard 진입 ==="); console.log("localStorage memberId:", localStorage.getItem("memberId")); console.log("localStorage role:", localStorage.getItem("role"));
-        console.log("현재 로그인된 관리자 ID:", savedAdminId);
+        const savedUser = sessionStorage.getItem("user");
+    
+    if (savedUser) {
+        const userObj = JSON.parse(savedUser);
+        
+        // 2. 만료 시간 체크 (선택 사항이지만 안전함)
+        const now = new Date().getTime();
+        if (userObj.expiry && now > userObj.expiry) {
+            alert("세션이 만료되었습니다. 다시 로그인해주세요.");
+            sessionStorage.removeItem("user");
+            navigate("/login");
+            return;
+        }
+
+        // 3. 관리자 이름 또는 ID 설정
+        // 백엔드 AdminsDTO의 필드명인 adminName 또는 adLoginId를 사용합니다.
+        setAdminId(userObj.adminName || userObj.adLoginId || '관리자');
+        
+        console.log("=== AdminDashboard 진입 ===");
+        console.log("접속자 정보:", userObj);
     } else {
-        console.log("현재 로그인 정보가 없습니다.");
+        console.log("로그인 정보가 없습니다. 로그인 페이지로 이동합니다.");
+        // navigate("/login"); // 로그인 안 되어있으면 튕겨내기
     }
+    
     fetchDeliveries();
-}, []);
+}, [navigate]);
 
     useEffect(() => {
         const savedTextarea = localStorage.getItem("memo_textarea");
