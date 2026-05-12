@@ -2,6 +2,8 @@
 package com.cmyk.threeh.service;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.servlet.http.HttpSession;
@@ -126,7 +128,6 @@ public class MemberSecurityService implements UserDetailsService, OAuth2UserServ
 		
 		System.out.println("필드명 확인: " + userNameAttributeName);  //PK 필드명 확인
 		
-		
 		//-------------------------------------------------------------
 		
 		//플랫폼에서 가져온 원시 사용자 데이터 get
@@ -137,16 +138,30 @@ public class MemberSecurityService implements UserDetailsService, OAuth2UserServ
 		
 
 		//원시 데이터(OAuth2DTO) -> 엔티티 Member에 넣음
-		Member authMember = saveOrUpdate(attributes);
+		Member authUser = saveOrUpdate(attributes);
 		
         
-        //세션에 사용자 정보를 올림
-		httpSession.setAttribute("member", new SessionMember(authMember));
+		//백엔드 http세션에 사용자 정보를 저장
+		//(* 프론트엔드 SessionStorage는 Login.js에서 저장)
+		httpSession.setAttribute("user", new SessionMember(authUser));
+		httpSession.setMaxInactiveInterval(expiredTime);  //세션 만료시간
+
+		System.out.println("[백엔드 http세션에 올라간 회원정보]"  + "\n"
+			+ "sessindId: " + httpSession.getId() + "\n"
+			+ "만료시간: " + httpSession.getMaxInactiveInterval() + "\n"
+			+ "생성시간: " + httpSession.getCreationTime() + "\n"
+			+ "마지막 접속시간: " + httpSession.getLastAccessedTime()
+		);
+
+
+		//프론트엔드 세션에 넘겨주기 위해, DB에 실제로 저장된 진짜 ID를 Map에 끼워 넣음
+		Map<String, Object> customAttributes = new HashMap<>(attributes.getAttributes());
+		customAttributes.put("db_id", authUser.getId());
 		
 
 		return new DefaultOAuth2User(
-            Collections.singleton(new SimpleGrantedAuthority(authMember.getRole().getKey())), 
-            attributes.getAttributes(), 
+            Collections.singleton(new SimpleGrantedAuthority(authUser.getRole().getKey())), 
+            customAttributes,  //원본 Map 대신, 진짜 ID가 포함된 새로운 Map을 시큐리티로 넘김(authentication)
             attributes.getNameAttributeKey());
 		
 	}
@@ -157,11 +172,11 @@ public class MemberSecurityService implements UserDetailsService, OAuth2UserServ
 	//최초 사용자 등록 or 사용자 정보 업데이트
 	private Member saveOrUpdate(OAuth2DTO attributes) {
 		
-		Member authMember = memberRepository.findByEmail(attributes.getEmail())
+		Member authUser = memberRepository.findByEmail(attributes.getEmail())
             .map(entity -> update(entity, attributes))  //과거의 정보, 새로운 정보
             .orElse(attributes.toEntity());
 		
-		return memberRepository.save(authMember);
+		return memberRepository.save(authUser);
 		
 	}
 

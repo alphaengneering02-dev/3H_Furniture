@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
@@ -54,7 +55,7 @@ public class SecurityConfig {
             .antMatchers("/**").permitAll()  // 모든 인증되지 않은 접속 요청을 허락함
 		.and()
 
-		
+
 		//[추가] 인증되지 않은 사용자가 접근했을 때, 리다이렉트 대신 401 에러(JSON)를 반환하도록 설정
 		.exceptionHandling()
 			.authenticationEntryPoint((request, response, authException) -> {
@@ -103,16 +104,17 @@ public class SecurityConfig {
                 .userService(memberSecurityService)
             .and()
 
-			// 2. 로그인 성공 시 실행될 동작 (JSON 반환)
-			.successHandler((request, response, authentication) -> {
-				response.setStatus(HttpStatus.OK.value()); // 200 상태 코드
-				response.setContentType("application/json;charset=UTF-8");  //"React에게 보낼 응답은 HTML이 아니라 JSON 형식의 데이터이고, UTF-8로 인코딩함"
-				response.getWriter().write("{"   //JSON 데이터를 문자열로 직접 작성 (res.data로 호출함)
-				+ "\"status\": true,"
-				+ "\"message\": \"로그인에 성공하였습니다.\""
-				+ "\"id\":" + authentication.getName()
-				+ "}");
-			})
+			// 2. 로그인 성공 시 실행될 동작 (JSON 반환 대신 프론트엔드(React)로 리다이렉트)
+            .successHandler((request, response, authentication) -> {
+				//인증 객체에서 OAuth2User를 꺼냅니다.
+				OAuth2User oauth2User = (OAuth2User)authentication.getPrincipal();
+
+				//OAuth2User에서 진짜 DB ID를 추출합니다.
+				String id = oauth2User.getAttribute("db_id");
+				
+                //추출한 DB ID를 프론트엔드로 넘겨줍니다.(OAuth2Success.js 컴포넌트)
+                response.sendRedirect("http://localhost:3000/oauth/success?id=" + id);
+            })
 			
 			// 3. 로그인 실패 시 실행될 동작 (JSON 반환)
 			.failureHandler(loginFailHandler)  //에러 처리 핸들러 객체를 넣어줌

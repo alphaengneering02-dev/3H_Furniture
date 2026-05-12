@@ -71,14 +71,29 @@ public class OAuth2DTO {
 	
 	//Kakao 사용자 데이터를 추출
 	private static OAuth2DTO ofKakao(String registrationId, String userNameAttributeName, Map<String, Object> attributes) {
+
+    String nickname = "";
+    String email = "";
 		
-		Map<String, Object> kakaoAccount = (Map<String, Object>)attributes.get("kakao_account");  //kakao_account 필드
-		Map<String, Object> kakaoProfile = (Map<String, Object>)kakaoAccount.get("profile");
-		
+    // 1. 카카오가 kakao_account(중첩) 형태로 데이터를 줄 때
+    if (attributes.containsKey("kakao_account")) {
+      Map<String, Object> kakaoAccount = (Map<String, Object>)attributes.get("kakao_account");  //kakao_account 필드
+      Map<String, Object> kakaoProfile = (Map<String, Object>)kakaoAccount.get("profile");
+
+      nickname = kakaoProfile != null ? (String)kakaoProfile.get("nickname") : "";
+      email = kakaoAccount != null ? (String)kakaoAccount.get("email") : "";
+    }
+
+    // 2. 카카오가 OIDC(평면) 형태로 데이터를 줄 때 (주석의 샘플 데이터 형태)
+    else {
+        nickname = (String)attributes.get("nickname");
+        email = (String)attributes.get("email");
+    }
+    		
 		return OAuth2DTO.builder()
             .registrationId(registrationId)
-            .name((String)kakaoProfile.get("nickname"))
-            .email("email")
+            .name(nickname)
+            .email("default")  //*이메일 : 카카오에서 제공하지 않음, 직접 입력해야함
             .attributes(attributes)  //사용자 정보
             .nameAttributeKey(userNameAttributeName)  //사용자 PK
             .build();
@@ -144,15 +159,26 @@ public class OAuth2DTO {
 
 [Kakao에서 제공하는 사용자 정보)]
 {
-  "aud": "${APP_KEY}",
-  "sub": "${USER_ID}",
-  "auth_time": 1661967952,
-  "iss": "https://kauth.kakao.com",
-  "exp": 1661967972,
-  "iat": 1661967952,
-  "nickname": "JordyTest",
-  "picture": "http://yyy.kakao.com/.../img_110x110.jpg",
-  "email": "jordy@kakao.com"
+  id=4891380236, 
+	connected_at=2026-05-12T02:48:09Z, 	
+  properties={
+		nickname=유소은,
+		profile_image=http://img1.kakaocdn.net/thumb/R640x640.q70/?fname=http://t1.kakaocdn.net/account_images/default_profile.jpeg,
+		thumbnail_image=http://img1.kakaocdn.net/thumb/R110x110.q70/?fname=http://t1.kakaocdn.net/account_images/default_profile.jpeg},
+		kakao_account={
+			profile_nickname_needs_agreement=false, 
+			profile_image_needs_agreement=false, 
+			profile={
+				nickname=유소은,
+        thumbnail_image_url=http://img1.kakaocdn.net/thumb/R110x110.q70/?fname=http://t1.kakaocdn.net/account_images/default_profile.jpeg,
+        profile_image_url=http://img1.kakaocdn.net/thumb/R640x640.q70/?fname=http://t1.kakaocdn.net/account_images/default_profile.jpeg, 
+				is_default_image=true, 
+				is_default_nickname=false
+			}, 
+			has_email=true, 
+			email_needs_agreement=true
+		}
+  }
 }
 
 
