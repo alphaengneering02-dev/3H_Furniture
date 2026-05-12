@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/admin/item")
-//@PreAuthorize("hasRole('ADMIN')") 로그인 구현될때까지 주석처리
+@PreAuthorize("hasRole('ADMIN')")
 public class ItemAdminController {
 
     private final ItemService itemService;
@@ -33,22 +33,16 @@ public class ItemAdminController {
         //System.out.println("itemName: " + dto.getItemName());
         //System.out.println("currency: " + dto.getCurrency());
 
-        //String adLoginId = authentication.getName(); (어드민 로그인 되면 주석 풀고 아래 코딩 지우기)
-        //로그인 구현 전 임시 관리자 아이디
-        String adLoginId = "admin1";
+        String adLoginId = authentication.getName();
         return itemService.createItems(dto,adLoginId);   
     }
-
 
     //상품 수정
 
      @PutMapping("/{itemId}")
     public ItemResponseDTO updateItem(@PathVariable Long itemId, @RequestBody ItemUpdateRequestDTO dto, Authentication authentication) {
         
-        //String adLoginId = authentication.getName();
-        //로그인 구현 전 임시 관리자 아이디
-        String adLoginId = "admin1";
-
+        String adLoginId = authentication.getName();
         return itemService.updateItem(itemId,adLoginId,dto);
     }
 
@@ -57,10 +51,7 @@ public class ItemAdminController {
       @DeleteMapping("/{itemId}")
     public void deleteItem(@PathVariable Long itemId, Authentication authentication){
 
-
-      //  String adLoginId= authentication.getName();
-      //로그인 구현 전 임시 관리자 아이디
-        String adLoginId = "admin1";  
+      String adLoginId= authentication.getName();
       itemService.deleteItem(itemId,adLoginId);
     }
 }
