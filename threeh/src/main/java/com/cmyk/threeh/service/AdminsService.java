@@ -31,7 +31,7 @@ public class AdminsService {
         admin.setAdminName(dto.getAdminName());
         //권한 고정 (보안 강화: 외부 입력값과 상관없이 ADMIN으로 고정)
         // 일반 사용자가 실수로 관리자가 되는 것 방지
-        admin.setRole(MemberRole.ADMIN.name());
+        admin.setRole(MemberRole.ADMIN);
         
 /* 테스트 확인용 
         if (dto.getRole() != null) {

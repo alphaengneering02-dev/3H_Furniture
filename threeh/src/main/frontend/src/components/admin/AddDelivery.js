@@ -260,7 +260,7 @@ const AddDelivery = () => {
                     {/* 사업자번호 */}
 <div className="form-card">
     <label className="form-label">사업자 번호</label>
-    <div className="phone-group"> {/* 기존 CSS 재활용 */}
+    <div className="phone-group"> 
         <input
             type="text"
             name="businessNo1"

@@ -18,12 +18,14 @@ import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
+import com.cmyk.threeh.domain.Admins;
 import com.cmyk.threeh.domain.CustomMemberDetails;
 import com.cmyk.threeh.domain.Member;
 import com.cmyk.threeh.dto.OAuth2DTO;
 import com.cmyk.threeh.dto.SessionMember;
 import com.cmyk.threeh.global.error.CustomException;
 import com.cmyk.threeh.global.error.ErrorCode;
+import com.cmyk.threeh.repository.AdminsRepository;
 import com.cmyk.threeh.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -32,6 +34,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MemberSecurityService implements UserDetailsService, OAuth2UserService<OAuth2UserRequest, OAuth2User> {
     
+    private final AdminsRepository adminsRepository;
     private final MemberRepository memberRepository;
     private final HttpSession httpSession;
 	
@@ -47,26 +50,48 @@ public class MemberSecurityService implements UserDetailsService, OAuth2UserServ
 
 		//디버깅 메세지
 		System.out.println("로그인 시도 ID: [" + id + "]");
-		System.out.println("DB 전체 회원 수: " + memberRepository.count());
-		memberRepository.findAll().forEach(m -> System.out.println("DB에 있는 아이디: [" + m.getId() + "]"));
+		System.out.println("DB 전체 회원 수(어드민+일반 멤버): " 
+			+ adminsRepository.count()
+			+ memberRepository.count()
+		);
+		System.out.println("DB에 있는 아이디: [");
+		adminsRepository.findAll().forEach(a -> System.out.println(a.getAdLoginId()));
+		memberRepository.findAll().forEach(m -> System.out.println(m.getId()));
+		System.out.println("]");
 
 		
-		// 엔티티의 컬럼명 id를 기준으로 회원을 찾습니다.
-		Optional<Member> searchMember = memberRepository.findById(id);
-		
-		//사용자명에 해당하는 데이터가 없을 경우
-		if(!searchMember.isPresent()) {
-			throw new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + id);
-		}
-		//사용자명에 해당하는 데이터가 있을 경우
-		Member member = searchMember.get();
+		// 엔티티의 컬럼명 id를 기준으로 회원을 찾습니다. (Admin, Member 테이블)
+		UserDetails userDetails;  //시큐리티에 반환할 CustomMemberDetails 객체
+		SessionMember user;  //세션에 담을 용도
+
+		// 1. 관리자(Admins) 테이블에서 먼저 조회
+        Optional<Admins> searchAdmin = adminsRepository.findByAdLoginId(id);
+        if (searchAdmin.isPresent()) {
+            Admins admins = searchAdmin.get();
+			user = new SessionMember(admins);
+			userDetails = new CustomMemberDetails(admins);
+
+        } else {
+            // 2. 관리자가 없다면 일반 멤버(Member) 테이블에서 조회
+            Optional<Member> searchMember = memberRepository.findById(id);
+            if (searchMember.isPresent()) {
+                Member member = searchMember.get();
+                user = new SessionMember(member);
+				userDetails = new CustomMemberDetails(member);
+
+            } else {
+                // 3. 두 테이블 모두 존재하지 않으면 예외 던지기
+                throw new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + id);
+            }
+        }
 
 
-        //세션에 사용자 정보를 올림
-		httpSession.setAttribute("member", new SessionMember(member));
+        //백엔드 http세션에 사용자 정보를 저장
+		//(* 프론트엔드 SessionStorage는 Login.js에서 저장)
+		httpSession.setAttribute("user", user);
 		httpSession.setMaxInactiveInterval(expiredTime);  //세션 만료시간
 
-		System.out.println("[세션에 올라간 회원정보]"  + "\n"
+		System.out.println("[백엔드 http세션에 올라간 회원정보]"  + "\n"
 			+ "sessindId: " + httpSession.getId() + "\n"
 			+ "만료시간: " + httpSession.getMaxInactiveInterval() + "\n"
 			+ "생성시간: " + httpSession.getCreationTime() + "\n"
@@ -75,7 +100,7 @@ public class MemberSecurityService implements UserDetailsService, OAuth2UserServ
 		
 
        // 찾은 엔티티를 CustomUserDetails에 담아서 시큐리티에 넘겨줍니다.
-        return new CustomMemberDetails(member);
+        return userDetails;
         
 	}
 

@@ -29,7 +29,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity(prePostEnabled = true)   //로그아웃 상태면, login_form으로 이동시킴
+//@EnableMethodSecurity(prePostEnabled = true)   //로그아웃 상태면, login_form으로 이동시킴
 public class SecurityConfig {
 
 	private final MemberSecurityService memberSecurityService;
@@ -50,15 +50,27 @@ public class SecurityConfig {
 			.antMatchers("/admin/**").permitAll()  //.antMatchers("/admin/**").hasRole("ADMIN")
 			.antMatchers("/itemImgs/**").permitAll()
 			.antMatchers("/upload/**").permitAll()
-            .antMatchers("/api/v1/**").hasRole("USER")  ///api/v1로 시작하는 모든 API 요청은 ROLE_USER (일반 고객)만 접속 가능
+            //.antMatchers("/api/v1/**").hasRole("USER")  ///api/v1로 시작하는 모든 API 요청은 ROLE_USER (일반 고객)만 접속 가능
             .antMatchers("/**").permitAll()  // 모든 인증되지 않은 접속 요청을 허락함
 		.and()
 
+		
+		//[추가] 인증되지 않은 사용자가 접근했을 때, 리다이렉트 대신 401 에러(JSON)를 반환하도록 설정
+		.exceptionHandling()
+			.authenticationEntryPoint((request, response, authException) -> {
+				response.setStatus(HttpStatus.UNAUTHORIZED.value()); // 401 상태 코드
+				response.setContentType("application/json;charset=UTF-8");
+				response.getWriter().write("{"
+					+ "\"status\": false,"
+					+ "\"message\": \"로그인이 필요한 서비스입니다.\""
+					+ "}");
+			})
+		.and()
+
+
 		// 커스텀 로그인 페이지 설정
 		.formLogin()
-			// .loginPage("/member/login")  // 1. 우리가 만든 로그인 페이지 컨트롤러 주소
-			
-			// 2. React가 로그인 데이터를 POST로 보낼 주소 (Security가 가로챕니다!)
+			// React가 로그인 데이터를 POST로 보낼 주소 (Security가 가로챕니다!)
 			.loginProcessingUrl("/member/login")  //"/api/v1/login"
 			.usernameParameter("id") // 리액트에서 보내는 필드명과 일치시킴
     		.passwordParameter("password")
