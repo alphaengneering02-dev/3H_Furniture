@@ -142,7 +142,7 @@ const ItemUpdate = () => {
             }
  
             if(newMainImgFile){
-                const oldMainImgs = setItemImgs.filter(
+                const oldMainImgs = itemImgs.filter(
                 (img) => img.thumbnailYn === "Y"
                 );
             
@@ -167,7 +167,7 @@ const ItemUpdate = () => {
             console.error(error);
 
             if(error.response){
-                console.log(error.resposne.data);
+                console.log(error.response.data);
             }
 
             alert("상품 수정 실패");
@@ -250,7 +250,7 @@ const ItemUpdate = () => {
             <hr/>
 
                 <h3>기존 이미지</h3>
-                {setItemImgs.map((img) => (
+                {itemImgs.map((img) => (
                     <div key={img.itemImgId}>
                         <img src={`http://localhost:8080${img.itemImgUrl}`}
                             alt={img.itemImgName} width="120"/>
@@ -277,9 +277,9 @@ const ItemUpdate = () => {
                 <div>
                     <label>새 서브 이미지</label>
                     <input type="file" accept="image/*" multiple onChange={(e)=> {
-                        const selectedFiles = Array.form(e.target.files);
+                        const selectedFiles = Array.from(e.target.files);
 
-                        const currentSubImgCount = setItemImgs.filter(
+                        const currentSubImgCount = itemImgs.filter(
                             (img) => img.thumbnailYn === "N"&&!deleteImgIds.includes(img.itemImgId)
                         ).length;
 
