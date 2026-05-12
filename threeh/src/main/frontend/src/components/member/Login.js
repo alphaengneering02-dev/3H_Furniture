@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom'
 
 const Login = () => {
@@ -55,15 +55,20 @@ const Login = () => {
         console.log("서버로 보내는 데이터: " + params.toString())
 
 
-        //데이터 전송
+        //데이터 전송 및 sessionStorage 저장
         try {
+            //데이터 전송
             const res = await axios.post(`http://localhost:8080/member/login`, params, {
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 withCredentials: true // 세션 쿠키를 유지하기 위해 필요합니다.
             })
 
             setLoginResultMsg(res.data.message);  //"message": "로그인에 성공하였습니다"
-            console.log("member 데이터 전송 성공!", res)
+            console.log("회원 데이터 전송 성공!", res)
+
+
+            //sessionStorage 저장
+            await setSession()
 
             //메인으로 리다이렉트
             navigate("/")
@@ -75,10 +80,50 @@ const Login = () => {
                 setLoginResultMsg("서버와 연결할 수 없습니다.");
             }
 
-            console.error("member 데이터 전송 실패!", error)
+            console.error("회원 데이터 전송 실패!", error)
         }
 
     }
+
+
+
+    //sessionStorage 저장
+    const setSession = async() => {
+        try {
+            //DB에서 아이디가 같은 회원 데이터 검색
+            let res;
+
+            if(form.id.indexOf("admin") != -1) {  //어드민 유저  **어드민 회원정보를 가져오는 코드가 만들어져야 함
+                res = await axios.get(`http://localhost:8080/admin/${form.id}`)
+            } else {  //일반 유저
+                res = await axios.get(`http://localhost:8080/member/${form.id}`)
+            }
+            
+            console.log("회원 데이터 가져오기 성공!", res.data)
+
+            
+            // 2. 프론트엔드 sessionStorage에 사용자 정보를 저장
+            //(* 백엔드 HttpSession은 MemberSecurityService.java에서 저장)
+            const now = new Date()
+            const expireTime = 600 * 1000  //세션 만료시간(밀리초 단위, 10분)
+
+            const user = {
+                ...res.data,
+                expiry: now.getTime() + expireTime
+            }
+            
+            sessionStorage.setItem("user", JSON.stringify(user))
+
+            console.log("[프론트엔드 sessionStorage에 올라간 회원정보]"  + "\n"
+            	+ sessionStorage.getItem("user")
+            )
+
+            // debugger;  //디버깅 모드 on
+        } catch (error) {
+            console.error("회원 데이터 가져오기 실패!", error)
+        }
+    }
+
 
 
 
@@ -91,15 +136,15 @@ const Login = () => {
             <h2>회원 로그인</h2>
 
 
-            <form onChange={changeInput}>
+            <form>
                 {/* 아이디 */}
                 <div>
-                    <input type='text' value={id} id='id' name='id' placeholder='아이디'/>
+                    <input type='text' value={id} id='id' name='id' placeholder='아이디' onChange={changeInput}/>
                 </div>
 
                 {/* 비밀번호 */}
                 <div>
-                    <input type='password' value={password} id='password' name='password' placeholder='비밀번호'/>
+                    <input type='password' value={password} id='password' name='password' placeholder='비밀번호' onChange={changeInput}/>
                 </div>
             </form>
 
@@ -126,8 +171,8 @@ const Login = () => {
             {/* oauth2 소셜 로그인 */}
             <div>
                 <p> <Link to="http://localhost:8080/oauth2/authorization/google">구글</Link> </p>
-                <p> 네이버 </p>  {/* <Link to="/oauth2/authorization/kakao"></Link> */}
-                <p> 카카오 </p>  {/* <Link to="/oauth2/authorization/naver"></Link> */}
+                <p> <Link to="http://localhost:8080/oauth2/authorization/kakao">네이버</Link> </p>
+                <p> <Link to="http://localhost:8080/oauth2/authorization/naver">카카오</Link> </p>  {/*  */}
             </div>
 
 

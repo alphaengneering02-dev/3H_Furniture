@@ -89,35 +89,7 @@ const Signup_site = () => {
         })
     }
 
-
-
-
-    /*
-    //member 가져오기(response)
-    const [data, setData] = useState({})
-    const getData = async() => {
-        try {
-            //DB에서 아이디가 같은 회원 데이터 검색
-            const res = await axios.get(`http://localhost:8080/member/user2`)
-            console.log(res.data)
-            setData(res.data)
-            
-            return true
-        } catch (error) {
-            // console.error("member 데이터 가져오기 실패", error)
-            alert("member 데이터 가져오기 실패")
-            return false
-        }
-    }
-
-
-    useEffect(() => {
-        getData();
-    }, [])
-    */
-
-
-
+    
 
     return (
         <div>

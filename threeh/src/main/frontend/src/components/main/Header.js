@@ -5,45 +5,45 @@ import { Link } from "react-router-dom";
 const Header = () => {
     return (
         <header>
-            <div class="inner">
+            <div className="inner">
                 {/* 상단 헤더 */}
-                <section class="topBox">
+                <section className="topBox">
                     {/* 좌측 영역 : sns 바로가기 */}
-                    <div class="left">
-                        <ul class="sns">
-                            <li> <Link to="#" target="_blank"><img src="" alt="sns 바로가기1"/></Link> </li>
-                            <li> <Link to="#" target="_blank"><img src="" alt="sns 바로가기2"/></Link> </li>
-                            <li> <Link to="#" target="_blank"><img src="" alt="sns 바로가기3"/></Link> </li>
+                    <div className="left">
+                        <ul className="sns">
+                            <li> <Link to="#" target="_blank"><img src={null} alt="sns 바로가기1"/></Link> </li>
+                            <li> <Link to="#" target="_blank"><img src={null} alt="sns 바로가기2"/></Link> </li>
+                            <li> <Link to="#" target="_blank"><img src={null} alt="sns 바로가기3"/></Link> </li>
                         </ul>   {/* sns 끝 */}
                     </div>
 
 
                     {/* <!-- 중앙 영역 : 로고와 통합검색창 --> */}
-                    <div class="center">
-                        <h1> <Link to="/"><img src="" alt="웹사이트 로고"/></Link> </h1>
+                    <div className="center">
+                        <h1> <Link to="/"><img src={null} alt="웹사이트 로고"/></Link> </h1>
 
-                        <div class="totalSearch">
+                        <div className="totalSearch">
                             <form action="" method="get">
-                                <button class="btnSearch" type="button"> <img src="" alt="검색하기"/> </button>
-                                <input class="inputSearch" type="text" placeholder="검색어를 입력하세요"/>
-                                <button class="hamSearch" type="button"> ▤ </button>
+                                <button className="btnSearch" type="button"> <img src={null} alt="검색하기"/> </button>
+                                <input className="inputSearch" type="text" placeholder="검색어를 입력하세요"/>
+                                <button className="hamSearch" type="button"> ▤ </button>
                             </form>
                         </div>
                     </div>
 
 
                     {/* <!-- 우측 영역 : 사용자 메뉴들(로그인, 회원가입) --> */}
-                    <div class="right">
-                        <ul class="userMenu">
+                    <div className="right">
+                        <ul className="userMenu">
                             <li>
                                 <Link to="/login">
-                                    <img src="" alt="로그인"/>
+                                    <img src={null} alt="로그인"/>
                                     <p>로그인</p>
                                 </Link>
                             </li>
                             <li>
                                 <Link to="/singup">
-                                    <img src="" alt="회원가입"/>
+                                    <img src={null} alt="회원가입"/>
                                     <p>회원가입</p>
                                 </Link>
                             </li>
@@ -54,8 +54,8 @@ const Header = () => {
 
 
                 {/* <!-- 하단 헤더: 네비게이션 바 --> */}
-                <section class="bottomBox">
-                    <nav class="GNB">
+                <section className="bottomBox">
+                    <nav className="GNB">
                         <ul>
                             {/* <!-- 메인메뉴1 --> */}
                             <li> <Link to="#">홈</Link> </li>
@@ -64,7 +64,7 @@ const Header = () => {
                             {/* <!-- 메인메뉴2 --> */}
                             <li>
                                 <Link to="#">거실</Link>
-                                <ul class="sub1">
+                                <ul className="sub1">
                                     <li> <Link to="#">서브메뉴1</Link> </li>
                                     <li> <Link to="#">서브메뉴2</Link> </li>
                                     <li> <Link to="#">서브메뉴3</Link> </li>
@@ -76,10 +76,10 @@ const Header = () => {
                             {/* <!-- 메인메뉴3 --> */}
                             <li>
                                 <Link to="#">침실</Link>
-                                <ul class="sub1">
+                                <ul className="sub1">
                                     <li>
                                         <Link to="#">서브메뉴1</Link>
-                                        <ul class="sub2">
+                                        <ul className="sub2">
                                             <li> <Link to="#">서브-서브메뉴1</Link> </li>
                                             <li> <Link to="#">서브-서브메뉴2</Link> </li>
                                             <li> <Link to="#">서브-서브메뉴3</Link> </li>
@@ -89,7 +89,7 @@ const Header = () => {
                                     
                                     <li>
                                         <Link to="#">서브메뉴2</Link>
-                                        <ul class="sub2">
+                                        <ul className="sub2">
                                             <li> <Link to="#">서브-서브메뉴1</Link> </li>
                                             <li> <Link to="#">서브-서브메뉴2</Link> </li>
                                             <li> <Link to="#">서브-서브메뉴3</Link> </li>
@@ -102,7 +102,7 @@ const Header = () => {
 
                         
                         {/* <!-- 배경색 박스 --> */}
-                        <div class="menuBg"></div>
+                        <div className="menuBg"></div>
                     </nav>
                 </section>
             </div>  {/* <!-- 헤더 이너 끝 --> */}

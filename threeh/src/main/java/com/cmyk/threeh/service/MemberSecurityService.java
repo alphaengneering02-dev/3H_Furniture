@@ -62,13 +62,13 @@ public class MemberSecurityService implements UserDetailsService, OAuth2UserServ
 		
 		// 엔티티의 컬럼명 id를 기준으로 회원을 찾습니다. (Admin, Member 테이블)
 		UserDetails userDetails;  //시큐리티에 반환할 CustomMemberDetails 객체
-		SessionMember sessionMember;  //세션에 담을 용도
+		SessionMember user;  //세션에 담을 용도
 
 		// 1. 관리자(Admins) 테이블에서 먼저 조회
         Optional<Admins> searchAdmin = adminsRepository.findByAdLoginId(id);
         if (searchAdmin.isPresent()) {
             Admins admins = searchAdmin.get();
-			sessionMember = new SessionMember(admins);
+			user = new SessionMember(admins);
 			userDetails = new CustomMemberDetails(admins);
 
         } else {
@@ -76,7 +76,7 @@ public class MemberSecurityService implements UserDetailsService, OAuth2UserServ
             Optional<Member> searchMember = memberRepository.findById(id);
             if (searchMember.isPresent()) {
                 Member member = searchMember.get();
-                sessionMember = new SessionMember(member);
+                user = new SessionMember(member);
 				userDetails = new CustomMemberDetails(member);
 
             } else {
@@ -86,11 +86,12 @@ public class MemberSecurityService implements UserDetailsService, OAuth2UserServ
         }
 
 
-        //세션에 사용자 정보를 올림
-		httpSession.setAttribute("sessionMember", sessionMember);
+        //백엔드 http세션에 사용자 정보를 저장
+		//(* 프론트엔드 SessionStorage는 Login.js에서 저장)
+		httpSession.setAttribute("user", user);
 		httpSession.setMaxInactiveInterval(expiredTime);  //세션 만료시간
 
-		System.out.println("[세션에 올라간 회원정보]"  + "\n"
+		System.out.println("[백엔드 http세션에 올라간 회원정보]"  + "\n"
 			+ "sessindId: " + httpSession.getId() + "\n"
 			+ "만료시간: " + httpSession.getMaxInactiveInterval() + "\n"
 			+ "생성시간: " + httpSession.getCreationTime() + "\n"
