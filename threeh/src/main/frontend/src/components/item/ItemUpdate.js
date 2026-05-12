@@ -7,6 +7,9 @@ const ItemUpdate = () => {
     const{itemId} = useParams();
     const navigate = useNavigate();
 
+    //세션유지용(어드민 구현 전)
+     const user = JSON.parse(sessionStorage.getItem("user"));
+
     const[item, setItem] = useState({
         itemCategory: "",
         itemName: "",
@@ -34,7 +37,8 @@ const ItemUpdate = () => {
     //수정할 아이템 가져오기
     const getItem = async()=>{
         try{
-            const res = await axios.get(`http://localhost:8080/item/${itemId}`);
+            const res = await axios.get(`http://localhost:8080/item/${itemId}`,
+            {withCredentials:true,});
 
             setItem({
                 itemCategory: res.data.itemCategory || "",
@@ -56,8 +60,7 @@ const ItemUpdate = () => {
     const getItemImgs =async() =>{
         try{
             const res = await axios.get(
-                `http://localhost:8080/itemImgs/${itemId}`
-            );
+                `http://localhost:8080/itemImgs/${itemId}`,{withCredentials:true,});
 
             setItemImgs(res.data);
         }catch(error){
@@ -81,8 +84,22 @@ const ItemUpdate = () => {
         });
     };
 
+    //상품삭제
+
+        const toggleDeleteImg = (itemImgId) => {
+        if(deleteImgIds.includes(itemImgId)){
+            setDeleteImgIds(
+                deleteImgIds.filter((id)=> id !== itemImgId)
+            );
+        }else{
+            setDeleteImgIds([
+                ...deleteImgIds,itemImgId
+            ]);
+        }
+    };
+
     //상품이미지 변경
-    const uploadImage = async (itemId, file, thumbnailYn, token) => {
+    const uploadImage = async (itemId, file, thumbnailYn) => {
         const formData = new FormData();
 
         formData.append("itemId",itemId);
@@ -94,16 +111,23 @@ const ItemUpdate = () => {
             formData,
             {
                 headers:{
-                    Authorization: `Bearer ${token}`,
                     "Content-Type": "multipart/form-data",
                 },
             }
         );
     };
 
-    //상품 할인가격 검증
+    //상품 변경사항 저장
     const handleUpdateSubmit  = async (e) => {
         e.preventDefault();
+
+        const user = JSON.parse(sessionStorage.getItem("user"));
+
+        if(!user){
+            alert("로그인이 필요합니다.");
+            navigate("/login");
+            return;
+        }
 
         if(Number(item.itemDiscountPrice || 0) > Number(item.itemPrice)) {
             alert("할인 가격은 원가보다 클 수 없습니다.");
@@ -128,17 +152,13 @@ const ItemUpdate = () => {
                 itemPayload,
                 {
                     headers:{
-                        Authorization: `Bearer ${token}`,
+                      withCredentials:true,
                     },
                 }
             );
 
             for(const itemImgId of deleteImgIds) {
-                await axios.delete(`http://localhost:8080/itemImgs/${itemImgId}`, {
-                    headers:{
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
+                await axios.delete(`http://localhost:8080/itemImgs/${itemImgId}`, {withCredentials:true,});
             }
  
             if(newMainImgFile){
@@ -148,11 +168,7 @@ const ItemUpdate = () => {
             
                 for(const img of oldMainImgs) {
 
-                    await axios.delete(`http://localhost:8080/itemImgs/${img.itemImgId}`, {
-                        headers:{
-                            Authorization: `Bearer ${token}`,
-                        },
-                    });
+                    await axios.delete(`http://localhost:8080/itemImgs/${img.itemImgId}`, {withCredentials:true,});
                 }
                 await uploadImage(itemId,newMainImgFile,"Y",token);
             }
@@ -174,22 +190,10 @@ const ItemUpdate = () => {
         }
     };
 
-    const toggleDeleteImg = (itemImgId) => {
-        if(deleteImgIds.includes(itemImgId)){
-            setDeleteImgIds(
-                deleteImgIds.filter((id)=> id !== itemImgId)
-            );
-        }else{
-            setDeleteImgIds([
-                ...deleteImgIds,itemImgId
-            ]);
-        }
-    };
-
-
     return (
         <div>
             <h2>상품 수정</h2>
+
             <form onSubmit={handleUpdateSubmit}>
                 <div>
                     <label>카테고리</label>
@@ -199,7 +203,6 @@ const ItemUpdate = () => {
                         onChange={handleItemChange}
                         required>
 
-
                     <option value="">카테고리 선택</option>
                     <option value="거실">거실</option>
                     <option value="욕실">욕실</option>
@@ -207,6 +210,7 @@ const ItemUpdate = () => {
                     <option value="침실">침실</option>
                     </select>
                 </div>
+
                 <div>
                     <label>상품명</label>
                     <input type="text"
@@ -225,31 +229,48 @@ const ItemUpdate = () => {
                     maxLength={255}
                     rows={5}
                     style={{resize:"none", width:"400px",height:"120px",}}/>
-                    <p>{item.itemDetail.length}/255</p>
+                
+                <p>{item.itemDetail.length}/255</p>
                 </div>
 
-            <div>
-                <label>상품 색상</label>
-                <input type="text" name="itemColor" value={item.itemColor} onChange={handleItemChange}/>
-            </div>
+                <div>
+                    <label>상품 색상</label>
+                    <input type="text" name="itemColor" value={item.itemColor} onChange={handleItemChange}/>
+                </div>
 
-            <div>
-                <label>가격</label>
-                <input type="number" name="itemPrice" value={item.itemPrice} onChange={handleItemChange} required/>
-            </div>
+                <div>
+                    <label>가격</label>
+                    <input type="number" name="itemPrice" value={item.itemPrice} onChange={handleItemChange} required/>
+                </div>
 
-            <div>
-                <label>할인 가격</label>
-                <input type="number" name="itemDiscountPrice" value={item.itemDiscountPrice} onChange={handleItemChange}/>
-            </div>
+                <div>
+                    <label>할인 가격</label>
+                    <input type="number" name="itemDiscountPrice" value={item.itemDiscountPrice} onChange={handleItemChange}/>
+                </div>
 
-            <div>
-                <label>상품 재고</label>
-                <input type="number" name="itemStock" value={item.itemStock} onChange={handleItemChange} required/>
-            </div>
-            <hr/>
+                <div>
+                    <label>상품 재고</label>
+                    <input type="number" name="itemStock" value={item.itemStock} onChange={handleItemChange} required/>
+                </div>
+                <div>
+                    <label>판매상태</label>
+                    <select name="itemSellStatus" value={item.itemSellStatus}
+                    onChange={handleItemChange} required>
+                        <option value="">판매 상태 선택</option>
+                        <option value="SELL">SELL</option>
+                        <option value="READY">READY</option>
+                        <option value="NON_SELL">NON_SELL</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label>통화</label>
+                    <input type="text" name="itemPriceCurrency" value={item.itemPriceCurrency} onChange={handleItemChange}/>
+                </div>
+                <hr/>
 
                 <h3>기존 이미지</h3>
+                
                 {itemImgs.map((img) => (
                     <div key={img.itemImgId}>
                         <img src={`http://localhost:8080${img.itemImgUrl}`}
@@ -275,36 +296,36 @@ const ItemUpdate = () => {
             </div>
 
                 <div>
-                    <label>새 서브 이미지</label>
-                    <input type="file" accept="image/*" multiple onChange={(e)=> {
-                        const selectedFiles = Array.from(e.target.files);
+                <label>새 서브 이미지</label>
+                <input type="file" accept="image/*" multiple onChange={(e)=> {
+                    const selectedFiles = Array.from(e.target.files);
 
-                        const currentSubImgCount = itemImgs.filter(
-                            (img) => img.thumbnailYn === "N"&&!deleteImgIds.includes(img.itemImgId)
-                        ).length;
+                    const currentSubImgCount = itemImgs.filter(
+                        (img) => img.thumbnailYn === "N"&&!deleteImgIds.includes(img.itemImgId)
+                    ).length;
 
-                        const totalSubImgCount = currentSubImgCount + newSubImgFiles.length + selectedFiles.length;
+                    const totalSubImgCount = currentSubImgCount + newSubImgFiles.length + selectedFiles.length;
 
-                        if(totalSubImgCount >10 ){
-                            alert("서브 이미지는 최대 10장까지 등록할 수 있습니다.");
-                            return;
-                        }
+                    if(totalSubImgCount >10 ){
+                        alert("서브 이미지는 최대 10장까지 등록할 수 있습니다.");
+                        return;
+                    }
 
-                        setNewSubImgFiles([...newSubImgFiles,...selectedFiles]);
-                        e.target.value = "";
-                    }}/>
+                    setNewSubImgFiles([...newSubImgFiles,...selectedFiles]);
+                    e.target.value = "";
+                }}/>
 
-                    <p>새 서브 이미지 {newSubImgFiles.length}장 선택</p>
-                    <ul>
-                        {newSubImgFiles.map((file,index)=>(
-                            <li key={index}>
-                                {file.name}
-                                <button type="button" onClick={()=>{
-                                    setNewSubImgFiles(newSubImgFiles.filter((_,i)=>i !==index));
-                                }}>
-                                삭제
-                                </button>
-                            </li>
+                <p>새 서브 이미지 {newSubImgFiles.length}장 선택</p>
+                <ul>
+                    {newSubImgFiles.map((file,index)=>(
+                        <li key={index}>
+                            {file.name}
+                            <button type="button" onClick={()=>{
+                                setNewSubImgFiles(newSubImgFiles.filter((_,i)=>i !==index));
+                            }}>
+                            삭제
+                            </button>
+                        </li>
                         ))}
                     </ul>
                 </div>
