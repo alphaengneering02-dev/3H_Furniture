@@ -1,5 +1,7 @@
+import axios from 'axios';
 import Router from './router/Router';
 
+axios.defaults.withCredentials = true;
 
 
 function App() {

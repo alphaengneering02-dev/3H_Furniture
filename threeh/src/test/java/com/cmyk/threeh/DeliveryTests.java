@@ -67,7 +67,6 @@ class DeliveryTests {
     admin.setPassword("1234");
     admin.setAdminName("임시관리자");
       
-    admin.setRole("ADMIN");
 
     Admins savedAdmin = adminsRepository.saveAndFlush(admin);
     return savedAdmin.getAdminId();

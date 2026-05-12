@@ -6,13 +6,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cmyk.threeh.domain.Admins;
 import com.cmyk.threeh.domain.Delivery;
+import com.cmyk.threeh.dto.AdminLoginDTO;
 import com.cmyk.threeh.dto.DeliveryDTO;
 import com.cmyk.threeh.repository.AdminsRepository;
 import com.cmyk.threeh.service.AdminsService;
 import com.cmyk.threeh.service.DeliveryService;
+import com.cmyk.threeh.dto.SessionMember;
+import org.springframework.http.HttpStatus;
 
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpSession;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -46,24 +51,28 @@ public ResponseEntity<?> addDelivery(@RequestBody DeliveryDTO dto) {
 }
 
     // 
-     @GetMapping("/list")
-    public List<Delivery> getAllDeliveries() {
-
+    @GetMapping("/list")
+public List<Delivery> getAllDeliveries(HttpSession session) { // HttpSession 주입
     try {
-
-        System.out.println("=== /admin/list 호출됨 ===");
+        // 세션에서 로그인 정보 꺼내기
+        SessionMember user = (SessionMember) session.getAttribute("sessionMember");
+        
+        System.out.println("=== [/admin/list] API 호출됨 ===");
+        
+        if (user != null) {
+            // 관리자면 adminName, 일반유저면 name 출력
+            String userName = (user.getAdminId() != null) ? user.getAdminName() : user.getName();
+            System.out.println("👤 조회자: " + userName + " (" + user.getRole() + ")");
+        } else {
+            System.out.println("⚠️ 조회자: 로그인 정보 없음 (익명)");
+        }
 
         List<Delivery> list = deliveryService.getAllDeliveries();
-
-        System.out.println("조회 건수: " + list.size());
-
+        System.out.println("📦 조회 건수: " + list.size());
         return list;
 
     } catch (Exception e) {
-
-        System.out.println("🔥 에러 발생!");
-        e.printStackTrace();
-
+        System.out.println("🔥 에러 발생: " + e.getMessage());
         throw e;
     }
 }
@@ -102,11 +111,14 @@ public ResponseEntity<?> addDelivery(@RequestBody DeliveryDTO dto) {
         return deliveryService.getDelivery(id);
     }
 
-   @GetMapping("/api/admins/find-id/{loginId}")
-    public ResponseEntity<Long> getAdminIdByLoginId(@PathVariable String loginId) {
+  @GetMapping("/api/admins/find-id/{loginId}")
+    public ResponseEntity<Long> getAdminIdByLoginId(@PathVariable("loginId") String loginId) {
+        System.out.println("🔍 관리자 ID 조회 요청 - Login ID: " + loginId);
+        
         Long adminId = adminsRepository.findByAdLoginId(loginId)
                 .orElseThrow(() -> new RuntimeException("Admin not found"))
                 .getAdminId();
+                
         return ResponseEntity.ok(adminId);
     }
 
@@ -131,6 +143,46 @@ public ResponseEntity<?> assignOrderToDelivery(
         return ResponseEntity.internalServerError().body("배정 중 오류: " + e.getMessage());
     }
 }
+ @PostMapping("/login")
+    public ResponseEntity<?> login(
+            @RequestBody AdminLoginDTO dto,
+            HttpSession session) {
+
+        // 관리자 조회
+        Admins admin = adminsService.login(
+                dto.getLoginId(),
+                dto.getPassword());
+
+        // 로그인 실패
+        if (admin == null) {
+            return ResponseEntity.badRequest()
+                    .body("아이디 또는 비밀번호가 틀렸습니다.");
+        }
+
+        // 🔥 세션 저장
+        session.setAttribute(
+                "sessionMember",
+                new SessionMember(admin));
+
+        return ResponseEntity.ok("로그인 성공");
+    }
+
+    @GetMapping("/me")
+public ResponseEntity<?> getMyInfo(HttpSession session) {
+
+    SessionMember user =
+            (SessionMember) session.getAttribute("sessionMember");
+
+    if (user == null) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body("로그인 안됨");
+    }
+
+    return ResponseEntity.ok(user);
+}
+
+
 
 
 }
+

@@ -2,17 +2,17 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Link } from "react-router-dom";
 import axios from 'axios';
+import AddCompany from './AddCompany';
 
 
 const AdminDashboard = () => {
 
     const [memo1, setMemo1] = useState('');
-    const [currentTime, setCurrentTime] = useState(new Date());
-    const [selectedDrivers, setSelectedDrivers] = useState({});
-
-
-     const memoRef = useRef(null);
+    const memoRef = useRef(null);
     const navigate = useNavigate();
+    const [selectedDrivers, setSelectedDrivers] = useState({});
+    const [adminId, setAdminId] = useState('관리자');
+
     const saveMemo = () => {
         localStorage.setItem("memo_textarea", memo1);
         localStorage.setItem("memo_editor", memoRef.current.innerHTML);
@@ -38,7 +38,7 @@ const AdminDashboard = () => {
         }
     };
 
-    
+    const [currentTime, setCurrentTime] = useState(new Date());
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -111,8 +111,16 @@ const AdminDashboard = () => {
 
 
     useEffect(() => {
-        fetchDeliveries();
-    }, []);
+        const savedAdminId = localStorage.getItem("adminId"); 
+    if (savedAdminId) {
+        setAdminId(savedAdminId);
+        console.log("=== AdminDashboard 진입 ==="); console.log("localStorage memberId:", localStorage.getItem("memberId")); console.log("localStorage role:", localStorage.getItem("role"));
+        console.log("현재 로그인된 관리자 ID:", savedAdminId);
+    } else {
+        console.log("현재 로그인 정보가 없습니다.");
+    }
+    fetchDeliveries();
+}, []);
 
     useEffect(() => {
         const savedTextarea = localStorage.getItem("memo_textarea");
@@ -131,6 +139,7 @@ const AdminDashboard = () => {
         [orderId]: deliveryId
     }));
 };
+
 
 const handleAssignDriver = async (orderId) => {
     const deliveryId = selectedDrivers[orderId];
@@ -185,6 +194,17 @@ const handleAssignDriver = async (orderId) => {
             {/* 왼쪽 */}
             <div className="side-box">
 
+                <div className="welcome-message" style={{ 
+                    marginBottom: '20px', 
+                    padding: '10px', 
+                    backgroundColor: '#f0f2f5', 
+                    borderRadius: '8px',
+                    fontWeight: 'bold',
+                    textAlign: 'center'
+                }}>
+                    <span>👤 {adminId}님 접속을 환영합니다.</span>
+                </div>
+
                 <div className="date-text">
                     {formatDate(currentTime)}
                 </div>
@@ -226,7 +246,7 @@ const handleAssignDriver = async (orderId) => {
                     <button>상품 추가</button>
                     </Link>
                     <button>상품 수정/삭제</button>
-                    <p>수정 삭제는 어드민만 볼 수 있는 상품리스트를 만들어서 이동?</p>
+                    <p>수정 삭제는 어드민만 볼 수 있는 상품리스트를 만들어서로 이동?</p>
                 </div>
 
                 {/* 주문 목록 */}
@@ -311,8 +331,11 @@ const handleAssignDriver = async (orderId) => {
                     <Link to="/admin/delivery">
                         <button>추가</button>
                     </Link>
+                   <div>
+    <h3>회사 기사 엑셀 등록</h3>
 
-                    <button>전체 추가</button>
+   <AddCompany onSuccess={fetchDeliveries} />
+</div>
 
                     <table style={{ width: "100%", borderCollapse: "collapse" }}>
                         <thead>
