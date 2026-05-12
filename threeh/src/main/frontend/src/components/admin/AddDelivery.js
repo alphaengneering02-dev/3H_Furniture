@@ -26,31 +26,35 @@ const AddDelivery = () => {
     });
 
     useEffect(() => {
-        const fetchAdminInfo = async () => {
-            try {
-                // 방법 1: 세션 기반인 경우 서버에 물어보기 (/admin/me는 이전 답변에서 만든 API)
-                const response = await axios.get('/admin/me');
-                if (response.data && response.data.adminId) {
-                    setFormData(prev => ({
-                        ...prev,
-                        adminId: response.data.adminId // 서버에서 받은 ID 세팅
-                    }));
-                }
-            } catch (error) {
-                console.error("관리자 정보를 가져오는데 실패했습니다.", error);
-                // 방법 2: 서버 API가 없다면 localStorage에서 시도
-                const savedId = localStorage.getItem("adminId");
-                if (savedId) {
-                    setFormData(prev => ({ ...prev, adminId: savedId }));
-                } else {
-                    alert("로그인 정보가 없습니다. 다시 로그인해주세요.");
-                    navigate("/login");
-                }
+    const fetchAdminInfo = async () => {
+        try {
+            // 1. 서버 세션 확인 (쿠키를 함께 보냄)
+            const response = await axios.get('/admin/me', { withCredentials: true });
+            
+            if (response.data && response.data.adminId) {
+                setFormData(prev => ({
+                    ...prev,
+                    adminId: response.data.adminId
+                }));
             }
-        };
+        } catch (error) {
+            console.error("세션이 만료되었거나 정보가 없습니다.", error);
+            
+            // 2. 서버 세션이 없으면 브라우저 저장소 확인
+            const savedUser = sessionStorage.getItem("user");
+            if (savedUser) {
+                const userObj = JSON.parse(savedUser);
+                setFormData(prev => ({ ...prev, adminId: userObj.adminId }));
+            } else {
+                // 3. 둘 다 없으면 로그인 페이지로 튕겨내기
+                alert("로그인 세션이 만료되었습니다.");
+                navigate("/login");
+            }
+        }
+    };
 
-        fetchAdminInfo();
-    }, [navigate]);
+    fetchAdminInfo();
+}, [navigate]);
 
 
     // 입력값 변경
