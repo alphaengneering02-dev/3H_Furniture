@@ -4,6 +4,7 @@ package com.cmyk.threeh.global.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -45,11 +46,11 @@ public class SecurityConfig {
 		.csrf().disable()  // 인가(접근 권한) 설정
 
 		.authorizeRequests()
-			//.antMatchers("/admin/**").hasRole("ADMIN")
-            .antMatchers("/api/v1/**").hasRole("USER")  ///api/v1로 시작하는 모든 API 요청은 ROLE_USER (일반 고객)만 접속 가능
+			.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+			.antMatchers("/admin/**").permitAll()  //.antMatchers("/admin/**").hasRole("ADMIN")
 			.antMatchers("/itemImgs/**").permitAll()
 			.antMatchers("/upload/**").permitAll()
-			.antMatchers("/**").permitAll()
+            .antMatchers("/api/v1/**").hasRole("USER")  ///api/v1로 시작하는 모든 API 요청은 ROLE_USER (일반 고객)만 접속 가능
             .antMatchers("/**").permitAll()  // 모든 인증되지 않은 접속 요청을 허락함
 		.and()
 
