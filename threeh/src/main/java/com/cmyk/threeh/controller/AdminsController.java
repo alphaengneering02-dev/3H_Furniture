@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cmyk.threeh.dto.SessionMember;
 import com.cmyk.threeh.domain.Admins;
 import com.cmyk.threeh.domain.Delivery;
 import com.cmyk.threeh.dto.AdminLoginDTO;
@@ -17,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.http.ResponseEntity;
@@ -111,16 +113,19 @@ public List<Delivery> getAllDeliveries(HttpSession session) { // HttpSession 주
         return deliveryService.getDelivery(id);
     }
 
-  @GetMapping("/api/admins/find-id/{loginId}")
-    public ResponseEntity<Long> getAdminIdByLoginId(@PathVariable("loginId") String loginId) {
-        System.out.println("🔍 관리자 ID 조회 요청 - Login ID: " + loginId);
-        
-        Long adminId = adminsRepository.findByAdLoginId(loginId)
-                .orElseThrow(() -> new RuntimeException("Admin not found"))
-                .getAdminId();
-                
-        return ResponseEntity.ok(adminId);
-    }
+  @GetMapping("/{loginId}") 
+public ResponseEntity<Long> getAdminIdByLoginId(@PathVariable("loginId") String loginId) {
+    System.out.println("🔍 관리자 ID 조회 요청 - Login ID: " + loginId);
+    
+    Long adminId = adminsRepository.findByAdLoginId(loginId)
+            .orElseThrow(() -> new RuntimeException("Admin not found"))
+            .getAdminId();
+     
+      System.out.println(loginId);
+            System.out.println(adminId);
+    return ResponseEntity.ok(adminId);
+
+}
 
     // 배송 기사 배정 API
 @PostMapping("/orders/{orderId}/assign")
@@ -144,40 +149,36 @@ public ResponseEntity<?> assignOrderToDelivery(
     }
 }
  @PostMapping("/login")
-    public ResponseEntity<?> login(
-            @RequestBody AdminLoginDTO dto,
-            HttpSession session) {
+public ResponseEntity<?> login(
+        @RequestBody AdminLoginDTO dto,
+        HttpServletRequest request) { // HttpSession 대신 HttpServletRequest 사용 권장
 
-        // 관리자 조회
-        Admins admin = adminsService.login(
-                dto.getLoginId(),
-                dto.getPassword());
+    Admins admin = adminsService.login(dto.getLoginId(), dto.getPassword());
 
-        // 로그인 실패
-        if (admin == null) {
-            return ResponseEntity.badRequest()
-                    .body("아이디 또는 비밀번호가 틀렸습니다.");
-        }
-
-        // 🔥 세션 저장
-        session.setAttribute(
-                "sessionMember",
-                new SessionMember(admin));
-
-        return ResponseEntity.ok("로그인 성공");
+    if (admin == null) {
+        return ResponseEntity.badRequest().body("아이디 또는 비밀번호가 틀렸습니다.");
     }
+
+    // 기존 세션이 있다면 무효화하고 새로 생성 (보안 및 꼬임 방지)
+    HttpSession session = request.getSession(true); 
+    session.setAttribute("sessionMember", new SessionMember(admin));
+
+    System.out.println("세션 생성됨: " + session.getId()); // ID를 로그로 찍어서 유지되는지 확인
+    return ResponseEntity.ok("로그인 성공");
+}
 
     @GetMapping("/me")
 public ResponseEntity<?> getMyInfo(HttpSession session) {
-
-    SessionMember user =
-            (SessionMember) session.getAttribute("sessionMember");
+    // 세션에서 정보 꺼내기
+    SessionMember user = (SessionMember) session.getAttribute("sessionMember");
 
     if (user == null) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body("로그인 안됨");
+        System.out.println("❌ [Admin/Me] 세션이 비어있습니다.");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인 안됨");
     }
 
+    // 관리자 세션인지 일반 멤버 세션인지 구분 로그
+    System.out.println("✅ [Admin/Me] 현재 접속자: " + user.getAdminName() + " (Role: " + user.getRole() + ")");
     return ResponseEntity.ok(user);
 }
 
