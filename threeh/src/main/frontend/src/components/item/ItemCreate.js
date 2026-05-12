@@ -216,18 +216,29 @@ const ItemCreate = () => {
                 <div>
                     <label>서브 이미지</label>
                     <input type="file" accept="image/*" multiple onChange={(e)=>{
-                        const files = Array.from(e.target.files);
+                        const selectedSubFiles = Array.from(e.target.files);
 
-                        if(files.length>10){
+                        const totalFiles = subImgFiles.length + selectedSubFiles.length;
+
+                        if(totalFiles>10){
                             alert("서브 이미지는 최대 10장까지 등록할 수 있습니다.");
                         e.target.value ="";
                         return;
                         }
 
-                        setSubImgFiles(files);
+                        setSubImgFiles([...subImgFiles, ...selectedSubFiles]);
+                        e.target.value ="";
                     }}
                     />
                     <p>{subImgFiles.length}/10</p>
+                    <ul>
+                        {subImgFiles.map((file,index)=>(
+                            <li key={index}>{file.name} <button type='button' onClick={()=> {
+                                const newFiles =subImgFiles.filter((_,i)=> i !== index);
+                                setSubImgFiles(newFiles);
+                            }}> 삭제 </button></li>
+                        ))}
+                    </ul>
                 </div>
 
                 <button type="submit">
