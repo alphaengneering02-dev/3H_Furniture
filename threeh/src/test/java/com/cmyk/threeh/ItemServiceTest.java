@@ -74,7 +74,7 @@ public class ItemServiceTest {
         admin2.setAdLoginId("admin2");
         admin2.setPassword("12345");
         admin2.setAdminName("관리자2");
-        admin2.setRole("ADMIN");
+        
         adminsRepository.saveAndFlush(admin2);
 
         ItemUpdateRequestDTO updateDto = new ItemUpdateRequestDTO();
