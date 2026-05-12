@@ -27,6 +27,7 @@ import com.cmyk.threeh.dto.PaymentResponseDTO;
 import com.cmyk.threeh.dto.SliceInfo;
 import com.cmyk.threeh.dto.SliceResponseDTO;
 import com.cmyk.threeh.global.config.TossPaymentsConfig;
+import com.cmyk.threeh.global.error.CustomException;
 import com.cmyk.threeh.service.PaymentMapper;
 import com.cmyk.threeh.service.TossPaymentService;
 
@@ -40,6 +41,12 @@ public class PaymentContoller {
     
     @PostMapping("/toss")
     public ResponseEntity requestTossPayment(Principal principal, @RequestBody PaymentDTO paymentDTO){
+
+
+        if(principal == null) {
+            return ResponseEntity.status(401).body("로그인이 필요합니다.");
+        }
+
         System.out.print("로그인 유저: "  + principal.getName());
         PaymentResponseDTO payemntResDTO = tossPaymentService.requestPayment(paymentDTO.toEntity(), principal.getName()).toPaymentResponseDTO();
 

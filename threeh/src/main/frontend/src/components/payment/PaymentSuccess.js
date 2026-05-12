@@ -13,26 +13,42 @@ function PaymentSuccess() {
     const amount = searchParams.get("amount");
 
     useEffect(() => {
+
+        let ignored = false;
+
         const confirmPayment = async () => {
             try {
+
+                if(ignored) return;
+
                 await axios.get(`/payment/toss/success`, {
                     params: { paymentKey, orderId, amount }
                 });
 
+                
+
                 const orderData = JSON.parse(sessionStorage.getItem("pendingOrder"));
                 console.log("orderData:", orderData);
+
+                console.log("memberId:", orderData?.memberId);
+                
                 await axios.post(`/order`, orderData);
 
                 sessionStorage.removeItem("pendingOrder");
                 setPayStatus("success");
 
             } catch (e) {
+                if(ignored) return;
                 console.log(e);
                 setPayStatus("fail");
             }
         };
 
         confirmPayment();
+
+        return () => {
+            ignored = true;
+        }
     }, []);
 
     if (payStatus === "loading") {

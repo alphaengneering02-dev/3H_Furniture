@@ -65,8 +65,17 @@ public class TossPaymentService{
     @Transactional
     public PaymentSuccessDTO tossPaymentSuccess(String paymentKey, String orderId, Long amount){
         Payment payment = verifyPayment(orderId, amount);
-        PaymentSuccessDTO result = requestPaymentAccept(paymentKey, orderId, amount);
 
+           if (payment.isPaySuccessYN()) {
+            return PaymentSuccessDTO.builder()
+                .paymentKey(payment.getPaymentKey())
+                .orderId(payment.getOrderId())
+                .orderName(payment.getOrderName())
+                .status("DONE") // 이미 완료된 상태
+                .build();
+            }
+
+        PaymentSuccessDTO result = requestPaymentAccept(paymentKey, orderId, amount);
         payment.setPaymentKey(paymentKey);
         payment.setPaySuccessYN(true);
         return result;

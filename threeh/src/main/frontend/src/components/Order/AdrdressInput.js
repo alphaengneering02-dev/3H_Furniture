@@ -1,16 +1,22 @@
 import React, { use, useState } from 'react';
 import DaumPostCode from 'react-daum-postcode';
 
-function AdrdressInput(props) {
-    const [zipCode, setZipcode] = useState('');
-    const [address, setAddress] = useState('');
+function AdrdressInput({ address, setAddress, zipCode, setZipcode, detailedAddress, setDetailedAddress }) {
+    
     const [isOpne, setIsOpen] = useState(false);
-    const [detailedAddress, setDetailedAddress] = useState('');
+    
 
     const completeHandler = (data) => {
+        console.log("카카오데이터", data);
+
+
         const { address, zipCode } = data;
-        setZipcode(zipCode);
-        setAddress(address);
+        setZipcode(data.zonecode);
+        setAddress(data.address);
+
+
+        console.log("zipCode:", zipCode);
+        console.log("address:", address);
     };
 
     const closeHandler = (state) => {

@@ -24,7 +24,7 @@ public class OrderRequestDTO {
     private String deliveryAddr;
     private String deliveryAddrDetail;
     private String zipCode;
-    private List<OrderItemDTO> orderitems;
+    private List<OrderItemDTO> orderItems;
 
     private LocalTime requestTime;
     private String requestMessage;
