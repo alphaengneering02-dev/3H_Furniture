@@ -144,7 +144,7 @@ public class ItemImgService {
 
             itemImg.setItem(item);
             itemImg.setItemImgName(originalFileName);
-            itemImg.setItemImgUrl(uploadPath + savedFileName);
+            itemImg.setItemImgUrl(uploadUrl + savedFileName);
             itemImg.setItemSubImgUrl(null);
             itemImg.setThumbnailYn(thumbnailYn !=null ? thumbnailYn : SubImg.N);
 

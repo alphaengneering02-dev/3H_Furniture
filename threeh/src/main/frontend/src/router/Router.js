@@ -17,6 +17,7 @@ import ItemDetail from '../components/item/ItemDetail';
 import Cart from '../components/mypage/Cart';
 import ItemCreate from '../components/item/ItemCreate';
 import EditDelivery from '../components/admin/EditDelivery';
+import ItemUpdate from '../components/item/ItemUpdate';
 
 
 const Router = () => {
@@ -33,6 +34,7 @@ const Router = () => {
                 <Route path="/item" element={<Item/>} />
                 <Route path="/item/:itemId" element={<ItemDetail/>} />
                 <Route path="/item/create" element={<ItemCreate/>} />
+                <Route path="/item/update/:itemId" element={<ItemUpdate/>} />
                 <Route path="/mypage" element={<Mypage/>} />
                 <Route path="/admin" element={<AdminDashboard/>} />
                 <Route path="/admin/delivery" element={<AddDelivery/>} />

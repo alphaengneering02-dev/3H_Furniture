@@ -6,12 +6,14 @@ import com.cmyk.threeh.dto.ItemResponseDTO;
 import com.cmyk.threeh.service.ItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/item")
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")  
 public class ItemController {
     
     private final ItemService itemService;
