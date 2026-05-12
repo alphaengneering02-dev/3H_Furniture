@@ -1,14 +1,18 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import axios from 'axios';
 
 
 const AdminDashboard = () => {
 
     const [memo1, setMemo1] = useState('');
-    const memoRef = useRef(null);
-    const navigate = useNavigate();
+    const [currentTime, setCurrentTime] = useState(new Date());
+    const [selectedDrivers, setSelectedDrivers] = useState({});
 
+
+     const memoRef = useRef(null);
+    const navigate = useNavigate();
     const saveMemo = () => {
         localStorage.setItem("memo_textarea", memo1);
         localStorage.setItem("memo_editor", memoRef.current.innerHTML);
@@ -34,7 +38,7 @@ const AdminDashboard = () => {
         }
     };
 
-    const [currentTime, setCurrentTime] = useState(new Date());
+    
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -121,6 +125,35 @@ const AdminDashboard = () => {
         }
     }, []);
 
+    const handleDriverSelect = (orderId, deliveryId) => {
+    setSelectedDrivers(prev => ({
+        ...prev,
+        [orderId]: deliveryId
+    }));
+};
+
+const handleAssignDriver = async (orderId) => {
+    const deliveryId = selectedDrivers[orderId];
+    if (!deliveryId) {
+        alert("기사를 선택해주세요.");
+        return;
+    }
+
+    try {
+        // 백엔드 API 호출 (예시: /admin/orders/assign)
+        await axios.post(`/admin/orders/${orderId}/assign`, {
+            deliveryId: deliveryId,
+            status: 'SHIPPING' // 배정 시 상태 변경
+        });
+        
+        alert("배송 배정이 완료되었습니다.");
+        fetchDeliveries(); // 기사 상태 갱신
+    } catch (error) {
+        console.error("배정 실패:", error);
+        alert("배정 중 오류가 발생했습니다.");
+    }
+};
+
     const renderItemName = (items) => {
         if (items.length === 0) return '';
 
@@ -189,8 +222,11 @@ const AdminDashboard = () => {
                 <h1>Admin Dashboard</h1>
 
                 <div className="button-group">
-                    <button>상품 등록</button>
-                    <button>상품 수정</button>
+                    <Link to="/item/create">
+                    <button>상품 추가</button>
+                    </Link>
+                    <button>상품 수정/삭제</button>
+                    <p>수정 삭제는 어드민만 볼 수 있는 상품리스트를 만들어서 이동?</p>
                 </div>
 
                 {/* 주문 목록 */}
@@ -272,6 +308,11 @@ const AdminDashboard = () => {
   {/* 기사 리스트 */}
                 <div>
                     <h3>기사 리스트</h3>
+                    <Link to="/admin/delivery">
+                        <button>추가</button>
+                    </Link>
+
+                    <button>전체 추가</button>
 
                     <table style={{ width: "100%", borderCollapse: "collapse" }}>
                         <thead>
@@ -461,6 +502,29 @@ const AdminDashboard = () => {
                                        <td>
                                        상품준비완료 기사님 배정중(WAITING)
                                     </td>
+                                    <td>
+    <select 
+        value={selectedDrivers[order.orderId] || ""} 
+        onChange={(e) => handleDriverSelect(order.orderId, e.target.value)}
+        style={{ marginRight: '10px' }}
+    >
+        <option value="">기사 선택</option>
+        {items
+            .filter(driver => driver.status === 'WAITING') // 활동 가능한 기사만
+            .map(driver => (
+                <option key={driver.deliveryId} value={driver.deliveryId}>
+                    {driver.deliveryName}
+                </option>
+            ))
+        }
+    </select>
+    <button 
+        onClick={() => handleAssignDriver(order.orderId)}
+        className="assign-btn"
+    >
+        배정하기
+    </button>
+</td>
                                  
 
                                     <td>
