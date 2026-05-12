@@ -35,7 +35,6 @@ const Router = () => {
                 <Route path="/item/create" element={<ItemCreate/>} />
                 <Route path="/mypage" element={<Mypage/>} />
                 <Route path="/admin" element={<AdminDashboard/>} />
-                <Route path="/admin/AP" element={<AddProduct/>} />
                 <Route path="/admin/delivery" element={<AddDelivery/>} />
                 <Route path="/admin/delivery/:deliveryId" element={<EditDelivery/>} />
                 <Route path="/payment/toss/success" element={<PaymentSuccess/>} />
