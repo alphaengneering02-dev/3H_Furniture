@@ -52,7 +52,7 @@ public class ItemTest {
         admin.setAdLoginId("admin1");
         admin.setPassword("1234");
         admin.setAdminName("관리자");
-        admin.setRole("ADMIN");
+        //admin.setRole("ADMIN");
 
         return adminsRepository.save(admin);
     }
