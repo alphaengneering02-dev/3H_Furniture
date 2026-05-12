@@ -52,7 +52,7 @@ function OrderItemInfo( { orderData, orderType, zipCode, address, deliveryDate, 
 
                 sessionStorage.setItem("pendingOrder", JSON.stringify({
                     memberId: user.memberId,
-                    orderItems: [{ itemId: orderData?.itemId, count: 1 }],
+                    orderItems: [{ itemId: orderData?.itemId, count:orderData?.stock }],
                     deliveryAddr: address,
                     deliveryAddrDetail: detailedAddress,
                     zipCode: zipCode,
