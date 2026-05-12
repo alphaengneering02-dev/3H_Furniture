@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 
-function OrderUser({ orderData }) {
+function OrderUser({ orderData, deliveryDate, setDeliveryDate }) {
 
-    const [deliveryDate, setDeliveryDate] = useState('');
+    
 
     return (
         <div>

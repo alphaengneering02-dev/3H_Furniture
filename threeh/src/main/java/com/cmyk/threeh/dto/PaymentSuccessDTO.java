@@ -1,8 +1,16 @@
 package com.cmyk.threeh.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Data
+@Builder
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class PaymentSuccessDTO {
     String mid; // 토스 아이디
     String version;

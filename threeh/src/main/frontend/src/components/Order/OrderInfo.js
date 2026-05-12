@@ -1,7 +1,7 @@
 import React from 'react';
 import AdrdressInput from './AdrdressInput';
 
-function OrderInfo(orderType, setOrderType) {
+function OrderInfo({orderType, setOrderType, zipcode, address, setZipcode, setAddress, detailedAddress, setDetailedAddress}) {
     return (
         <div>
            <div>
@@ -25,9 +25,15 @@ function OrderInfo(orderType, setOrderType) {
                     </label>
                 </div>
 
-                <label>우편번호 입력</label>
+                <label>주소 입력</label>
                 <div>
-                    <AdrdressInput/>
+                    <AdrdressInput 
+                        zipcode={zipcode}
+                        address={address}
+                        setZipcode={setZipcode}
+                        setAddress={setAddress}
+                        detailedAddress={detailedAddress}
+                        setDetailedAddress={setDetailedAddress}/>
                 </div>
 
             </div>

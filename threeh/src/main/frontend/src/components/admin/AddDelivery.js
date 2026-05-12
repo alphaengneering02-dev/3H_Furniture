@@ -1,9 +1,13 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 
 const AddDelivery = () => {
 
+
+    const navigate = useNavigate();
+    
     const [formData, setFormData] = useState({
         adminId: null,
         companyName: '',
@@ -21,27 +25,33 @@ const AddDelivery = () => {
         phoneLast: ''
     });
 
-    // 1. 페이지 로드 시 관리자(admin1)의 고유 ID(Long)를 가져옴
     useEffect(() => {
-    // ---------------- [임시 로그인 코드 시작] ----------------
-    // 실제 로그인이 완성되기 전까지만 사용
-    localStorage.setItem('memberId', '1'); 
-    localStorage.setItem('role', 'ADMIN');
-    // ---------------- [임시 로그인 코드 끝] ----------------
+        const fetchAdminInfo = async () => {
+            try {
+                // 방법 1: 세션 기반인 경우 서버에 물어보기 (/admin/me는 이전 답변에서 만든 API)
+                const response = await axios.get('/admin/me');
+                if (response.data && response.data.adminId) {
+                    setFormData(prev => ({
+                        ...prev,
+                        adminId: response.data.adminId // 서버에서 받은 ID 세팅
+                    }));
+                }
+            } catch (error) {
+                console.error("관리자 정보를 가져오는데 실패했습니다.", error);
+                // 방법 2: 서버 API가 없다면 localStorage에서 시도
+                const savedId = localStorage.getItem("adminId");
+                if (savedId) {
+                    setFormData(prev => ({ ...prev, adminId: savedId }));
+                } else {
+                    alert("로그인 정보가 없습니다. 다시 로그인해주세요.");
+                    navigate("/login");
+                }
+            }
+        };
 
-    const savedMemberId = localStorage.getItem('memberId');
-    const savedRole = localStorage.getItem('role');
+        fetchAdminInfo();
+    }, [navigate]);
 
-    if (savedRole === 'ADMIN') {
-        setFormData(prev => ({
-            ...prev,
-            adminId: parseInt(savedMemberId)
-        }));
-    } else {
-        alert("관리자 권한이 없습니다.");
-        // navigate('/login'); // 나중에 로그인 생기면 활성화
-    }
-}, []);
 
     // 입력값 변경
     const handleChange = (e) => {
@@ -54,6 +64,7 @@ const AddDelivery = () => {
         });
     };
 
+    
     // 등록
     const handleSubmit = async (e) => {
        e.preventDefault();
@@ -86,6 +97,7 @@ const AddDelivery = () => {
         
         if (response.status === 200) {
             alert("✅ 기사 등록이 완료되었습니다!");
+             navigate("/admin");
         }
     } catch (error) {
         // 에러 처리 로직 (기존 유지)
@@ -98,6 +110,8 @@ const AddDelivery = () => {
         }
     }
 };
+
+
 
     return (
 

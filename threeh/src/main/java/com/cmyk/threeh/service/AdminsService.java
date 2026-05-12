@@ -33,27 +33,31 @@ public class AdminsService {
         // 일반 사용자가 실수로 관리자가 되는 것 방지
         admin.setRole(MemberRole.ADMIN);
         
-/* 테스트 확인용 
-        if (dto.getRole() != null) {
-            admin.setRole(dto.getRole());
-        } else {
-            admin.setRole(MemberRole.ADMIN); 
-        }
-*/
+
         return adminsRepository.save(admin);
     }
-/* 
-    // 관리자 조회
-    public Admins getAdmin(Long id) {
-        return adminsRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Admin not found"));
-    }
-*/
 
     // AdminsService.java에 추가
     public Admins getAdminByLoginId(String loginId) {
         return adminsRepository.findByAdLoginId(loginId)
                 .orElseThrow(() -> new RuntimeException("해당 아이디의 관리자를 찾을 수 없습니다: " + loginId));
+    }
+
+     public Admins login(String loginId, String password) {
+
+        Admins admin = adminsRepository.findByAdLoginId(loginId)
+                .orElse(null);
+
+        if (admin == null) {
+            return null;
+        }
+
+        // 비밀번호 검증
+        if (passwordEncoder.matches(password, admin.getPassword())) {
+            return admin;
+        }
+
+        return null;
     }
 
     @Transactional // 데이터 변경이 일어나므로 반드시 추가

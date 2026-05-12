@@ -1,23 +1,41 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 
 
-function OrderItemInfo( { orderData, orderType }) {
+function OrderItemInfo( { orderData, orderType, zipCode, address, deliveryDate, detailedAddress }) {
 
    const clientKey = "test_ck_4yKeq5bgrpKLdW2mBbdBVGX0lzW6"
   
-
-   
-       useEffect(() => {
-           const tossPayemnts = window.TossPayments(clientKey)
-       }, [])
+    const isLoadingRef = useRef(false);
+    const navigate = useNavigate();
+      
        
    
        const hadlePayment = async () => {
-           const tossPayment = window.TossPayments(clientKey);
+           
 
-          
+           if(isLoadingRef.current) return; 
+
+           if(!orderType) {
+                alert("배송 및 설치 방법을 선택하세요");
+                return;
+           }
+
+           if(!address) {
+                alert("주소를 입력해주세요");
+                return;
+           }
+
+           if(!deliveryDate){
+                alert("배송 희망 날짜를 선택해주세요");
+                return;
+           }
+
+           isLoadingRef.current = true;
+
+          const tossPayment = window.TossPayments(clientKey);
 
            try {
                 const res = await axios.post('/payment/toss', {
@@ -28,12 +46,16 @@ function OrderItemInfo( { orderData, orderType }) {
 
                 const orderId = res.data.orderId;
 
+                console.log("orderData 전체:", orderData);
+
+                const user = JSON.parse(sessionStorage.getItem("user"));
+
                 sessionStorage.setItem("pendingOrder", JSON.stringify({
-                    memberId: orderData?.memberId,
+                    memberId: user.memberId,
                     orderItems: [{ itemId: orderData?.itemId, count: 1 }],
-                    deliveryAddr: orderData?.defaultAddr,
-                    deliveryAddrDetail: orderData?.defaultAddrDetail,
-                    zipCode: orderData?.defaultZipCode,
+                    deliveryAddr: address,
+                    deliveryAddrDetail: detailedAddress,
+                    zipCode: zipCode,
                     orderType: orderType
                 }));
 
@@ -48,11 +70,18 @@ function OrderItemInfo( { orderData, orderType }) {
                 });
 
             } catch (error) {
-                if (error) {
-                    alert("결제에 실패했습니다.")
+                const status = error.response?.status;
+
+                if (status === 401) {
+                    alert("로그인이 필요한 서비스입니다.");
+                    navigate("/login"); // 로그인 페이지로
+                } else if (status === 500) {
+                    alert("서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
                 } else {
-                    console.log(error);
+                    alert("결제에 실패했습니다. 다시 시도해주세요.");
                 }
+            } finally {
+                isLoadingRef.current = false;
             }
        };
 
