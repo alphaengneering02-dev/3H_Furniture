@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/itemImgs")
+@RequestMapping("/api/itemImgs")
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")  
 public class ItemImgController {
     

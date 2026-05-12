@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/item")
+@RequestMapping("/api/item")
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")  
 public class ItemController {
     
