@@ -10,17 +10,24 @@ function Order(props) {
     const { itemId } = useParams();
     const [orderData, setOrderData] = useState(null);
 
+    const [orderType, setOrderType] = useState("DELIVERY_ONLY");
+
     useEffect(() => {
         axios.get(`/order/${itemId}`)
         .then(res => setOrderData(res.data))
-        .catch(error => console.log(error))
+        .catch(error => {
+            console.log(error);
+             if (error.response?.status === 401 || error.response?.status === 500) {
+                navigator("/login");
+            }
+        })
     }, [itemId])
 
     return (
         <>
-            <OrderInfo orderData={orderData}/>
+            <OrderInfo setOrderType={setOrderType} orderType={orderType} orderData={orderData}/>
             <OrderUser orderData={orderData}/>
-            <OrderItemInfo orderData={orderData}/>
+            <OrderItemInfo setOrderType={setOrderType} orderType={orderType} orderData={orderData}/>
         </>
     );
 }

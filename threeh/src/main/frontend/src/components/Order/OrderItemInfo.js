@@ -1,38 +1,59 @@
+import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 
 
-function OrderItemInfo( { orderData }) {
+
+function OrderItemInfo( { orderData, orderType }) {
 
    const clientKey = "test_ck_4yKeq5bgrpKLdW2mBbdBVGX0lzW6"
+  
+
    
        useEffect(() => {
            const tossPayemnts = window.TossPayments(clientKey)
        }, [])
        
    
-       const hadlePayment = () => {
+       const hadlePayment = async () => {
            const tossPayment = window.TossPayments(clientKey);
 
-           sessionStorage.setItem("pendingOrder", JSON.stringify({
-                
-                memberId: orderData?.memberId,
-                orderItems: [{ itemId: orderData?.itemId, count: 1}],
-                deliveryAddr: orderData?.deliveryAddr,
-                deliveryAddrDeatil : orderData?.defaultAddr,
-                zipcode: orderData?.defaultZipCode,
-                orderType: "ONLINE"
+          
 
-           }));
-   
-           tossPayment.requestPayment('CARD', {
-               amount: orderData?.price,
-               orderId: 'bec1d544-2a34-4f44-ada0-c5213d8fd8dd',
-               orderName: orderData?.itemName,
-               customerName : orderData?.memberName,
-               customerEmail: orderData?.email,
-               successUrl: "http://localhost:3000/payment/toss/success",
-               failUrl: 'http://localhost:3000/payment/toss/fail'
-           });
+           try {
+                const res = await axios.post('/payment/toss', {
+                    amount: orderData?.price,
+                    payType: "CARD",
+                    orderName: orderData?.itemName,
+                }, { withCredentials: true });
+
+                const orderId = res.data.orderId;
+
+                sessionStorage.setItem("pendingOrder", JSON.stringify({
+                    memberId: orderData?.memberId,
+                    orderItems: [{ itemId: orderData?.itemId, count: 1 }],
+                    deliveryAddr: orderData?.defaultAddr,
+                    deliveryAddrDetail: orderData?.defaultAddrDetail,
+                    zipCode: orderData?.defaultZipCode,
+                    orderType: orderType
+                }));
+
+                tossPayment.requestPayment('CARD', {
+                    amount: orderData?.price,
+                    orderId: orderId,
+                    orderName: orderData?.itemName,
+                    customerName: orderData?.memberName,
+                    customerEmail: orderData?.email,
+                    successUrl: "http://localhost:3000/payment/toss/success",
+                    failUrl: 'http://localhost:3000/payment/toss/fail'
+                });
+
+            } catch (error) {
+                if (error) {
+                    alert("결제에 실패했습니다.")
+                } else {
+                    console.log(error);
+                }
+            }
        };
 
     return (

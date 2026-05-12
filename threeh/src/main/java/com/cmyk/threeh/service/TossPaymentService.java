@@ -15,6 +15,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import com.cmyk.threeh.domain.Member;
@@ -39,8 +40,8 @@ public class TossPaymentService{
     private final PaymentRepository paymentRepository;
     private final TossPaymentsConfig tossPaymentsConfig;
 
-    public Payment requestPayment(Payment payment, String userEmail){
-        Member member = memberService.findMember(userEmail); 
+    public Payment requestPayment(Payment payment, String username){
+        Member member = memberService.getUser(username); 
 
         if(payment.getAmount() < 1000){
             throw new CustomException(ErrorCode.INVALID_PAYMENT_AMOUNT);
@@ -89,19 +90,24 @@ public class TossPaymentService{
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers =  getHeaders();
         JSONObject params = new JSONObject();
+        params.put("paymentKey", paymentKey);
         params.put("orderId", orderid);
         params.put("amount", amount);
 
         PaymentSuccessDTO result = null;
 
         try {
-            result = restTemplate.postForObject(TossPaymentsConfig.URL + paymentKey,
+            result = restTemplate.postForObject(TossPaymentsConfig.URL,
 
                 new HttpEntity<>(params, headers),
                 PaymentSuccessDTO.class
             );
+        } catch (HttpClientErrorException e) {
+            // 401 에러의 구체적인 본문을 로그로 확인 (원인 파악에 매우 유리)
+            System.out.println("Toss API Error: " + e.getResponseBodyAsString());
+            throw new RuntimeException("Toss API 인증 실패: " + e.getMessage());
         } catch (Exception e) {
-            throw new RuntimeException(e.toString());
+            throw new RuntimeException(e.getMessage());
         }
 
         
@@ -112,11 +118,13 @@ public class TossPaymentService{
     private HttpHeaders getHeaders() {
 
         HttpHeaders headers = new HttpHeaders();
-
-        String encodeAuthKey = new String(
-            Base64.getEncoder().encode((tossPaymentsConfig.getTestSecretKey() + ":").getBytes(StandardCharsets.UTF_8)));
+        System.out.println("Secret Key: " + tossPaymentsConfig.getTestSecretKey());
         
-        headers.setBasicAuth(encodeAuthKey);
+        String secretKey = tossPaymentsConfig.getTestSecretKey() + ":";
+        String encodedKey = Base64.getEncoder().encodeToString(secretKey.getBytes(StandardCharsets.UTF_8));
+        
+        System.out.println("Authorization: " + "Basic " + encodedKey);
+        headers.set("Authorization", "Basic " + encodedKey);
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 

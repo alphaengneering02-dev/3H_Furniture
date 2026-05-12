@@ -26,8 +26,6 @@ public class SessionMember implements Serializable {
 
     private String phone;
 
-    // private String picture;  //사진도 업데이트 한다면 추가
-
     private MemberRole role;
 
     private String regNo;
@@ -41,7 +39,6 @@ public class SessionMember implements Serializable {
 	public SessionMember(Member member) {
 		this.name = member.getName();
 		this.email = member.getEmail();
-		// this.picture = member.getPicture();
 	}  //=> 세션 상에 업로드
 
     

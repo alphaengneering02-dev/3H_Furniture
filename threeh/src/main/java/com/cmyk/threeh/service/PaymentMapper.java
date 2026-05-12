@@ -1,15 +1,20 @@
 package com.cmyk.threeh.service;
 
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Component;
 
 import com.cmyk.threeh.domain.Payment;
 import com.cmyk.threeh.dto.ChargingHistoryDTO;
 
-public interface PaymentMapper {
+@Component
+public class PaymentMapper {
 
-    default List<ChargingHistoryDTO> chargingHistoryToChargingHIstoryResponse(List<Payment> chargingHistories) {
+    
+
+
+    public List<ChargingHistoryDTO> chargingHistoryToChargingHistoryResponse(List<Payment> chargingHistories) {
 
         if(chargingHistories == null) {
             return null;

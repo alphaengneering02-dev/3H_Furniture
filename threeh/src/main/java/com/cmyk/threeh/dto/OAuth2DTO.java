@@ -14,23 +14,21 @@ import lombok.Getter;
 @Getter
 public class OAuth2DTO {
 
-    private String registrationId;
+  private String registrationId;
 	private Map<String, Object> attributes;  //원시 사용자 데이터 (Map<key, value> 형태)
 	private String nameAttributeKey;  //사용자 PK(=동일인 식별정보) == userNameAttributeName
 	private String name;
 	private String email;
-	private String picture;
 	
 
 	@Builder
-	public OAuth2DTO(String registrationId, Map<String, Object> attributes, String nameAttributeKey, String name, String email, String picture) {
+	public OAuth2DTO(String registrationId, Map<String, Object> attributes, String nameAttributeKey, String name, String email) {
 
-        this.registrationId = registrationId;
+    this.registrationId = registrationId;
 		this.attributes = attributes;
 		this.nameAttributeKey = nameAttributeKey;
 		this.name = name;
 		this.email = email;
-		this.picture = picture;
 		
 	}
 	
@@ -64,7 +62,6 @@ public class OAuth2DTO {
             .registrationId(registrationId)
             .name((String)attributes.get("name"))
             .email((String)attributes.get("email"))
-            .picture((String)attributes.get("picture"))
             .attributes(attributes)  //사용자 정보
             .nameAttributeKey(userNameAttributeName)  //사용자 PK
             .build();
@@ -82,7 +79,6 @@ public class OAuth2DTO {
             .registrationId(registrationId)
             .name((String)kakaoProfile.get("nickname"))
             .email("email")
-            .picture((String)kakaoProfile.get("profile_image_url"))
             .attributes(attributes)  //사용자 정보
             .nameAttributeKey(userNameAttributeName)  //사용자 PK
             .build();
@@ -99,7 +95,6 @@ public class OAuth2DTO {
             .registrationId(registrationId)
             .name((String)response.get("name"))
             .email((String)response.get("email"))
-            .picture((String)response.get("profile_image"))
             .attributes(response)  //사용자 정보
             .nameAttributeKey(userNameAttributeName)  //사용자 PK
             .build();
@@ -120,7 +115,6 @@ public class OAuth2DTO {
         member.setName(this.name);
         member.setEmail(this.email);
         member.setPhone(randomString);
-        // member.setPicture(this.picture);  //사진도 업데이트 한다면 추가
         member.setRole(MemberRole.USER);
         member.setRegNo(randomString);
         member.setCreatedAt(LocalDateTime.now());

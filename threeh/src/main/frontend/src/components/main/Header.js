@@ -36,13 +36,13 @@ const Header = () => {
                     <div class="right">
                         <ul class="userMenu">
                             <li>
-                                <Link to="#">
+                                <Link to="/login">
                                     <img src="" alt="로그인"/>
                                     <p>로그인</p>
                                 </Link>
                             </li>
                             <li>
-                                <Link to="#">
+                                <Link to="/singup">
                                     <img src="" alt="회원가입"/>
                                     <p>회원가입</p>
                                 </Link>

@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import javax.management.RuntimeErrorException;
 import javax.transaction.Transactional;
 
-
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -61,47 +61,8 @@ public class OrderController {
     private final ItemImgService itemImgService;
     private final CartItemRepository cartItemRepository;
 
-    //주문 화면 들어올시
-    @GetMapping("/{itemId}")
-    public ResponseEntity getOrder(@PathVariable Long itemId, Principal principal){
 
-        ItemResponseDTO item = itemService.getItem(itemId);
-        ItemImgResponseDTO itemImage = itemImgService.getMainImg(itemId);
 
-        /**
-         * member 로그인 없이 테스트
-         */
-         
-        Member member = memberService.getUser(principal.getName());
-
-       
-        try {
-            itemImage = itemImgService.getMainImg(itemId);
-        } catch (Exception e) {
-          throw new RuntimeException(e.getMessage());
-        }
-
-        //기본주소지 조회
-        MemberAddressDTO defaultAddress = memberAddressService.getDefaultAddressForOrder(member.getId());
-
-        OrderFormDTO orderFormDTO = OrderFormDTO.builder()
-            .itemId(item.getItemId())
-            .itemName(item.getItemName())
-            .itemDetail(item.getItemDetail())
-            .price(item.getItemPrice())
-            .stock(item.getItemStock())
-            .itemIamge(itemImage.getItemImgUrl())
-            .memberName(member.getName())
-            .email(member.getEmail())
-            .phone(member.getPhone())
-            .defaultAddr(defaultAddress != null ? defaultAddress.getAddr() : null)
-            .defaultAddrDetail(defaultAddress != null ? defaultAddress.getAddrdetail() : null)
-            .defaultZipCode(defaultAddress != null ? defaultAddress.getZipcode() : null)
-            .isDefault(defaultAddress != null ? defaultAddress.getIsdefault() : "N")
-            .build();
-
-        return ResponseEntity.ok().body(orderFormDTO);
-    }
 
     /** 장바구니로 올시 */
     @PostMapping("/form")
@@ -142,12 +103,56 @@ public class OrderController {
             return ResponseEntity.ok().body(orderFormDTO);
     }
 
+    //주문 화면 들어올시
+    @GetMapping("/{itemId}")
+    public ResponseEntity getOrder(@PathVariable Long itemId, Principal principal){
+
+        ItemResponseDTO item = itemService.getItem(itemId);
+        ItemImgResponseDTO itemImage = itemImgService.getMainImg(itemId);
+         
+        if (principal == null) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+        }
+        
+        Member member = memberService.getUser(principal.getName());
+
+       
+        try {
+            itemImage = itemImgService.getMainImg(itemId);
+        } catch (Exception e) {
+          throw new RuntimeException(e.getMessage());
+        }
+
+        //기본주소지 조회
+        MemberAddressDTO defaultAddress = memberAddressService.getDefaultAddressForOrder(member.getId());
+
+        OrderFormDTO orderFormDTO = OrderFormDTO.builder()
+            .itemId(item.getItemId())
+            .itemName(item.getItemName())
+            .itemDetail(item.getItemDetail())
+            .price(item.getItemPrice())
+            .stock(item.getItemStock())
+            .itemIamge(itemImage.getItemImgUrl())
+            .memberName(member.getName())
+            .email(member.getEmail())
+            .phone(member.getPhone())
+            .defaultAddr(defaultAddress != null ? defaultAddress.getAddr() : null)
+            .defaultAddrDetail(defaultAddress != null ? defaultAddress.getAddrdetail() : null)
+            .defaultZipCode(defaultAddress != null ? defaultAddress.getZipcode() : null)
+            .isDefault(defaultAddress != null ? defaultAddress.getIsdefault() : "N")
+            .build();
+
+        return ResponseEntity.ok().body(orderFormDTO);
+    }
+
+    
+
 
 
     //주문 생성
     @PostMapping
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity orderCreate(@RequestBody OrderRequestDTO dto, @AuthenticationPrincipal User user) throws Exception{
+    public ResponseEntity orderCreate(@RequestBody OrderRequestDTO dto, Principal principal) throws Exception{
 
         //상품 조회
         List<OrderRequestDTO.OrderItemDTO> orderItems = dto.getOrderitems();

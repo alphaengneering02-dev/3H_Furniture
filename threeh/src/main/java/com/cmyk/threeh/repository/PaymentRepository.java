@@ -18,6 +18,6 @@ public interface PaymentRepository extends JpaRepository<Payment, Long>{
 
     Slice<Payment> findAllByMember_Email(String email, Pageable pageable);
 
-    Slice<Payment> findAllChargingHistroies(String username, Pageable pageable);
+    
     
 }

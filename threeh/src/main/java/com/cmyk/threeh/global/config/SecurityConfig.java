@@ -47,6 +47,9 @@ public class SecurityConfig {
 		.authorizeRequests()
 			//.antMatchers("/admin/**").hasRole("ADMIN")
             .antMatchers("/api/v1/**").hasRole("USER")  ///api/v1로 시작하는 모든 API 요청은 ROLE_USER (일반 고객)만 접속 가능
+			.antMatchers("/itemImgs/**").permitAll()
+			.antMatchers("/upload/**").permitAll()
+			.antMatchers("/**").permitAll()
             .antMatchers("/**").permitAll()  // 모든 인증되지 않은 접속 요청을 허락함
 		.and()
 
@@ -83,10 +86,23 @@ public class SecurityConfig {
 
         // OAuth2 로그인 설정
         .oauth2Login()
-            .defaultSuccessUrl("/")
 		    .userInfoEndpoint()
                 .userService(memberSecurityService)
             .and()
+
+			// 2. 로그인 성공 시 실행될 동작 (JSON 반환)
+			.successHandler((request, response, authentication) -> {
+				response.setStatus(HttpStatus.OK.value()); // 200 상태 코드
+				response.setContentType("application/json;charset=UTF-8");  //"React에게 보낼 응답은 HTML이 아니라 JSON 형식의 데이터이고, UTF-8로 인코딩함"
+				response.getWriter().write("{"   //JSON 데이터를 문자열로 직접 작성 (res.data로 호출함)
+				+ "\"status\": true,"
+				+ "\"message\": \"로그인에 성공하였습니다.\""
+				+ "\"id\":" + authentication.getName()
+				+ "}");
+			})
+			
+			// 3. 로그인 실패 시 실행될 동작 (JSON 반환)
+			.failureHandler(loginFailHandler)  //에러 처리 핸들러 객체를 넣어줌
         .and()
 
 

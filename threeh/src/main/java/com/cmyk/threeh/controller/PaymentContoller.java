@@ -1,7 +1,13 @@
 package com.cmyk.threeh.controller;
 
 
+import java.security.Principal;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
@@ -14,10 +20,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cmyk.threeh.domain.Payment;
+import com.cmyk.threeh.dto.ChargingHistoryDTO;
 import com.cmyk.threeh.dto.PaymentDTO;
 import com.cmyk.threeh.dto.PaymentFailDTO;
 import com.cmyk.threeh.dto.PaymentResponseDTO;
+import com.cmyk.threeh.dto.SliceInfo;
+import com.cmyk.threeh.dto.SliceResponseDTO;
 import com.cmyk.threeh.global.config.TossPaymentsConfig;
+import com.cmyk.threeh.service.PaymentMapper;
 import com.cmyk.threeh.service.TossPaymentService;
 
 @RestController
@@ -26,10 +36,12 @@ public class PaymentContoller {
 
     @Autowired TossPaymentService tossPaymentService;
     @Autowired TossPaymentsConfig tossPaymentsConfig;
+    @Autowired  PaymentMapper mapper;
     
     @PostMapping("/toss")
-    public ResponseEntity requestTossPayment(@AuthenticationPrincipal User prinUser, @RequestBody PaymentDTO paymentDTO){
-        PaymentResponseDTO payemntResDTO = tossPaymentService.requestPayment(paymentDTO.toEntity(), prinUser.getUsername()).toPaymentResponseDTO();
+    public ResponseEntity requestTossPayment(Principal principal, @RequestBody PaymentDTO paymentDTO){
+        System.out.print("로그인 유저: "  + principal.getName());
+        PaymentResponseDTO payemntResDTO = tossPaymentService.requestPayment(paymentDTO.toEntity(), principal.getName()).toPaymentResponseDTO();
 
         paymentDTO.setYourSuccessUrl(paymentDTO.getYourSuccessUrl()== null ? tossPaymentsConfig.getSuccessUrl() : paymentDTO.getYourSuccessUrl());
 
@@ -74,5 +86,21 @@ public class PaymentContoller {
                     .build()
             );
         }
+
+    @GetMapping("/history")
+    public ResponseEntity getChargingHistory(Principal principal, Pageable pageable) {
+
+        Slice<Payment> chargingHistories = tossPaymentService.findAllChargingHistroies(principal.getName(), pageable);
+
+        List<ChargingHistoryDTO> content = mapper.chargingHistoryToChargingHistoryResponse(chargingHistories.getContent());
+
+        SliceInfo sliceInfo = new SliceInfo(pageable, chargingHistories.getNumberOfElements(), chargingHistories.hasNext());
+
+        return new ResponseEntity<>(
+             new SliceResponseDTO<>(content, sliceInfo), HttpStatus.OK
+        );
+    }
+
+    
         
 }

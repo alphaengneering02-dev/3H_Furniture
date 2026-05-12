@@ -144,7 +144,6 @@ public class MemberSecurityService implements UserDetailsService, OAuth2UserServ
     //사용자 정보 업데이트
     private Member update(Member entity, OAuth2DTO dto) {
         entity.setName(dto.getName());
-        // entity.setPicture(attributes.getPicture()); //사진도 업데이트 한다면 추가
         
         return entity;
     }
