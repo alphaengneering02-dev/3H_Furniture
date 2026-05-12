@@ -160,7 +160,7 @@ const Signup_site = () => {
 
 
                 <article>
-                    <button onClick={() => navigate("/singup")}>취소</button>
+                    <button onClick={() => navigate("/signup")}>취소</button>
                     <button type='submit'>회원가입</button>
                 </article>
             </form>

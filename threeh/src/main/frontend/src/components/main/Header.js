@@ -42,7 +42,7 @@ const Header = () => {
                                 </Link>
                             </li>
                             <li>
-                                <Link to="/singup">
+                                <Link to="/signup">
                                     <img src={null} alt="회원가입"/>
                                     <p>회원가입</p>
                                 </Link>

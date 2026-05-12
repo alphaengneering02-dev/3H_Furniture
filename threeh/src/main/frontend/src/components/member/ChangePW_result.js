@@ -1,18 +1,19 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-const ChangePw_result = () => {
+const ChangePw_result = ({resultPw}) => {
 
-    const [resultPw, setResultPw] = useState()
+    const navigate = useNavigate();
 
 
     return (
         <div>
-            <h3>아이디 찾기가 완료되었습니다.</h3>
+            <h3>비밀번호 재설정이 완료되었습니다.</h3>
 
             <input type='text' value={resultPw} id='resultPw' name='resultPw' placeholder='사용자 비밀번호'/>
 
 
-            <button>로그인</button>
+            <button onClick={() => navigate("/login")}>로그인</button>
         </div>
     );
 };

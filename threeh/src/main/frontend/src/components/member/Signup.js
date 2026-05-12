@@ -17,7 +17,7 @@ const Signup = () => {
 
 
             {/* 자체 회원가입 */}
-            <button onClick={() => navigate("/singup_site")}>사이트 회원가입</button>
+            <button onClick={() => navigate("/signup_site")}>사이트 회원가입</button>
 
 
             {/* oauth2 소셜 로그인 */}

@@ -4,12 +4,15 @@ import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cmyk.threeh.domain.Member;
 import com.cmyk.threeh.dto.MemberDTO;
+import com.cmyk.threeh.dto.SessionMember;
 import com.cmyk.threeh.enums.MemberRole;
 import com.cmyk.threeh.form.SignupUpdateForm;
 import com.cmyk.threeh.global.error.CustomException;
@@ -25,6 +28,7 @@ public class MemberService {
     
     private final MemberRepository memberRepository;
 	private final PasswordEncoder passwordEncoder;  //비밀번호 암호화
+	private final HttpSession httpSession;
 
 
 	//<계정 관리>
@@ -182,11 +186,19 @@ public class MemberService {
 
 	//<계정 찾기>
 	//아이디 찾기
-	public String findUserId(MemberDTO dto) {
+	public String findUserId(String name, String phoneORemail) {
 		
-		String name = dto.getName();
-		String phone = dto.getPhone();
-		String email = dto.getEmail();
+		//전화번호인지, 이메일인지 구분
+		String phone="";
+		String email="";
+
+		if(phoneORemail.indexOf("@") == -1) {  //전화번호
+			phone = phoneORemail;
+		} else {  //이메일
+			email = phoneORemail;
+		}
+
+
 		Optional<Member> op = Optional.empty();
 		Member member = null;
 		String result="";
@@ -198,9 +210,9 @@ public class MemberService {
 		}
 
 		//전화번호 or 이메일로 op 가져오기
-		if(phone!=null) {
+		if(email.isEmpty()) {  //전화번호로
 			op = memberRepository.findByNameAndPhone(name, phone);
-		} else {
+		} else {  //이메일로
 			op = memberRepository.findByNameAndEmail(name, email);
 		}
 
@@ -221,7 +233,14 @@ public class MemberService {
 
 	//비밀번호 재설정
 	@Transactional
-	public boolean changeUserPassword(String id, String oldPassword, String newPassword) {
+	public String changeUserPassword(String id, String oldPassword, String newPassword) {
+
+		//1. 로그인이 되어있는 상태인지 검사한다. (세션 유저 정보에서 가져옴)
+		SessionMember user = (SessionMember)httpSession.getAttribute("user");
+
+		if(user==null) {
+			throw new CustomException(ErrorCode.NOT_LOGIN);
+		}
 		
 		Optional<Member> op = memberRepository.findById(id);
 		if(!op.isPresent()) {
@@ -229,7 +248,8 @@ public class MemberService {
 		}
 		Member member = op.get();
 
-		//1. 회원가입이 되어있는 상태인지 검사한다. (세션 유저 정보에서 가져옴)
+
+		//2. 회원가입이 되어있는 상태인지 검사한다. 
 		if(member==null) {
 			throw new CustomException(ErrorCode.MEMBER_NOT_FOUND);
 		}
@@ -247,7 +267,8 @@ public class MemberService {
 		//4. DB 저장
 		memberRepository.save(member);
 
-		return true;
+
+		return newPassword;
 		
 	}
 

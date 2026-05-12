@@ -37,7 +37,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/member")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")  //프론트엔드(3000번 포트)의 접근을 허락함
+//@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")  //프론트엔드(3000번 포트)의 접근을 허락함
 public class MemberController {
 
     private final MemberService memberService;
@@ -226,6 +226,27 @@ public class MemberController {
 
 		memberService.delete(id);
         
+    }
+
+
+
+    //아이디 찾기 - 이름, 전화번호 또는 이메일
+    @GetMapping("/findUserId/{name}/{phoneORemail}")  //경로 형식: /member/findUserId/이름/연락처
+    public String findUserId(@PathVariable("name") String name, @PathVariable("phoneORemail") String phoneORemail){
+
+        String id = memberService.findUserId(name, phoneORemail);
+        return id;
+
+    }
+
+
+    //비밀번호 재설정 - 아이디, 기존 비번, 새로운 비번
+    @GetMapping("/changeUserPassword/{id}/{oldPassword}&{newPassword}")  //경로 형식: /member/findUserId/아이디/기존 비번&새로운 비번
+    public String changeUserPassword(@PathVariable("id") String id, @PathVariable("oldPassword") String oldPassword, @PathVariable("newPassword") String newPassword){
+
+        String resultNewPassword = memberService.changeUserPassword(id, oldPassword, newPassword);
+        return resultNewPassword;
+
     }
 
 }

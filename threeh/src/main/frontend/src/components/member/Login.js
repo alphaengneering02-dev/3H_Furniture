@@ -180,7 +180,7 @@ const Login = () => {
 
             <article>
                 <p>계정이 없으신가요? 지금 바로 만들어 보세요.</p>
-                <button onClick={() => navigate("/singup")}>회원가입</button>  {/* Link */}
+                <button onClick={() => navigate("/signup")}>회원가입</button>  {/* Link */}
             </article>
 
         </div>
