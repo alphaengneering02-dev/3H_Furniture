@@ -5,9 +5,12 @@ import icon_hamburger from '../../assets/icon_hamburger.png';
 import icon_facebook from '../../assets/icon_facebook.png';
 import icon_instagram from '../../assets/icon_instagram.png';
 import icon_kakao from '../../assets/icon_kakao.png';
+import icon_mypage from '../../assets/icon_mypage.png';
+import icon_logout from '../../assets/icon_logout.png';
 import icon_login from '../../assets/icon_login.png';
 import icon_signup from '../../assets/icon_signup.png';
 import axios from 'axios';
+import Header_searchCondition from './Header_searchCondition';
 
 // 헤더
 const Header = () => {
@@ -75,8 +78,16 @@ const Header = () => {
     const [searchKey, setSearchKey] = useState()
     const [searchValue, setSearchValue] = useState()
 
+    const [isSearchCondition, setIsSearchCondition] = useState(false)
+
     // const changeSearchKey = (evt) => {}
     const changeSearchValue = (evt) => {setSearchValue(evt.target.value)}
+
+
+    //검색 조건 선택창 
+    const toggleSearchCondition = () => {
+        setIsSearchCondition(!isSearchCondition)
+    }
 
 
     const doSearch = async() => {
@@ -120,65 +131,22 @@ const Header = () => {
 
                         <div className="search">
                             <form action="" method="get">
-                                {/* 검색창 (searchValue) */}
-                                <button className="btn" type="button">
-                                    <img src={icon_search} alt="검색하기" onClick={doSearch} style={{width: 20}}/>
-                                </button>
-                                <input className="input" type="text" id={searchValue} name={searchValue} value={searchValue} placeholder="검색어를 입력하세요" onChange={changeSearchValue}/>
-                                <button className="hamburger" type="button">
-                                    <img src={icon_hamburger} alt="검색하기" style={{width: 20}}/>
-                                </button>
-
-                                {/* 검색 조건 선택 (searchKey) */}
-                                <section>
-                                    <article>
-                                        <h3>검색 조건</h3>
-                                        <button>전체 삭제</button>
-                                    </article>
-
-
-                                    <article>
-                                        {/* 사용공간 */}
-                                        <div>
-                                            <select>
-                                                <option selected disabled>사용공간</option>
-                                            </select>
-                                        </div>
-
-                                        {/* 종류 */}
-                                        <div>
-                                            <select>
-                                                <option selected disabled>종류</option>
-                                            </select>
-                                        </div>
-
-                                        {/* 브랜드 */}
-                                        <div>
-                                            <select>
-                                                <option selected disabled>브랜드</option>
-                                            </select>
-                                        </div>
-
-                                        {/* 소재 */}
-                                        <div>
-                                            <select>
-                                                <option selected disabled>소재</option>
-                                            </select>
-                                        </div>
-
-                                        {/* 사이즈 */}
-                                        <div>
-                                            <h4>사이즈</h4>
-                                            <input type='range'/>
-                                        </div>
-
-                                        {/* 가격대 */}
-                                        <div>
-                                            <h4>가격대</h4>
-                                            <input type='range'/>
-                                        </div>
-                                    </article>
+                                {/* 검색창 */}
+                                <section className='bar'>
+                                    <button className="btn" type="button">
+                                        <img src={icon_search} alt="검색하기" onClick={doSearch} style={{width: 20}}/>
+                                    </button>
+                                    <input type="text" id={searchValue} name={searchValue} value={searchValue} placeholder="검색어를 입력하세요" onChange={changeSearchValue}/>
+                                    <button className="hamburger" type="button">
+                                        <img src={icon_hamburger} alt="검색 조건 선택창" onClick={toggleSearchCondition} style={{width: 20}}/>
+                                    </button>
                                 </section>
+
+
+                                {/* 검색 조건 선택창 */}
+                                {
+                                    isSearchCondition && <Header_searchCondition/>
+                                }
                             </form>
                         </div>
                     </div>
@@ -194,13 +162,13 @@ const Header = () => {
                                     <>
                                         <li>
                                             <Link to="/">
-                                                <img src={null} alt="마이페이지"/>
+                                                <img src={icon_mypage} alt="마이페이지" style={{width: 50}}/>
                                                 <p>마이페이지</p>
                                             </Link>
                                         </li>
                                         <li>
                                             <Link onClick={logout}>
-                                                <img src={null} alt="로그아웃"/>
+                                                <img src={icon_logout} alt="로그아웃" style={{width: 50}}/>
                                                 <p>로그아웃</p>
                                             </Link>
                                         </li>

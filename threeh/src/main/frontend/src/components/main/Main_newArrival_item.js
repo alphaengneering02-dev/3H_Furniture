@@ -1,7 +1,6 @@
 import React from 'react';
 
-const NewArrival_item = ({prod, prodImgs}) => {
-
+const Main_newArrival_item = ({prod, prodImgs}) => {
     const mainImg = prodImgs.find((img)=> img.thumbnailYn === "Y");
     const subImgs = prodImgs.filter((img)=> img.thumbnailYn === "N");
 
@@ -18,4 +17,4 @@ const NewArrival_item = ({prod, prodImgs}) => {
     );
 };
 
-export default NewArrival_item;
+export default Main_newArrival_item;

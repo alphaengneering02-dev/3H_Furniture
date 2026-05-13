@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import NewArrival_item from './NewArrival_item';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import Main_newArrival_item from './Main_newArrival_item';
 
-const NewArrival = () => {
+const Main_newArrival = () => {
 
     //URL에서 Item 가져오기
     const {itemId} = useParams();
@@ -59,7 +59,7 @@ const NewArrival = () => {
             <article className="items">
                 {
                     item && item.map(prod =>
-                        <NewArrival_item key={prod.itemId} prod={prod} prodImgs={itemImgs}/>
+                        <Main_newArrival_item key={prod.itemId} prod={prod} prodImgs={itemImgs}/>
                     )
                 }
 
@@ -94,4 +94,4 @@ const NewArrival = () => {
     );
 };
 
-export default NewArrival;
+export default Main_newArrival;

@@ -16,6 +16,7 @@ import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserServ
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
@@ -25,8 +26,6 @@ import com.cmyk.threeh.domain.CustomMemberDetails;
 import com.cmyk.threeh.domain.Member;
 import com.cmyk.threeh.dto.OAuth2DTO;
 import com.cmyk.threeh.dto.SessionMember;
-import com.cmyk.threeh.global.error.CustomException;
-import com.cmyk.threeh.global.error.ErrorCode;
 import com.cmyk.threeh.repository.AdminsRepository;
 import com.cmyk.threeh.repository.MemberRepository;
 
@@ -112,57 +111,64 @@ public class MemberSecurityService implements UserDetailsService, OAuth2UserServ
     //===================OAUTH2 소셜 로그인/회원가입===================
 	@Override
 	public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {  //userRequest(소셜 사용자 정보)
-		
-		OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2MemberService = new DefaultOAuth2UserService();
-	
-		//userRequest --> oAuth2UserService로 넘김(load)
-		OAuth2User oAuth2Member = oAuth2MemberService.loadUser(userRequest);
-		
-		//플랫폼 고유 코드 (google, 네이버, 카카오)
-		String registrationId = userRequest.getClientRegistration().getRegistrationId();
-		
-		//사용자 고유 PK == nameAttributeKey
-		String userNameAttributeName = 
-            userRequest.getClientRegistration().getProviderDetails()
-            .getUserInfoEndpoint().getUserNameAttributeName();  //sub(Google), response(네이버), id(카카오)
-		
-		System.out.println("필드명 확인: " + userNameAttributeName);  //PK 필드명 확인
-		
-		//-------------------------------------------------------------
-		
-		//플랫폼에서 가져온 원시 사용자 데이터 get
-		OAuth2DTO attributes = 
-				OAuth2DTO.of(registrationId, userNameAttributeName, oAuth2Member.getAttributes());  //플랫폼, 사용자 PK, 사용자 정보
-		
-		System.out.println(attributes.getAttributes());  //응답받은 데이터 확인(Json 형태로 넘어옴)
-		
 
-		//원시 데이터(OAuth2DTO) -> 엔티티 Member에 넣음
-		Member authUser = saveOrUpdate(attributes);
+		try {
+
+			OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2MemberService = new DefaultOAuth2UserService();
 		
-        
-		//백엔드 http세션에 사용자 정보를 저장
-		//(* 프론트엔드 SessionStorage는 Login.js에서 저장)
-		httpSession.setAttribute("user", new SessionMember(authUser));
-		httpSession.setMaxInactiveInterval(expiredTime);  //세션 만료시간
+			//userRequest --> oAuth2UserService로 넘김(load)
+			OAuth2User oAuth2Member = oAuth2MemberService.loadUser(userRequest);
+			
+			//플랫폼 고유 코드 (google, 네이버, 카카오)
+			String registrationId = userRequest.getClientRegistration().getRegistrationId();
+			
+			//사용자 고유 PK == nameAttributeKey
+			String userNameAttributeName = 
+				userRequest.getClientRegistration().getProviderDetails()
+				.getUserInfoEndpoint().getUserNameAttributeName();  //sub(Google), response(네이버), id(카카오)
+			
+			System.out.println("필드명 확인: " + userNameAttributeName);  //PK 필드명 확인
+			
+			//-------------------------------------------------------------
+			
+			//플랫폼에서 가져온 원시 사용자 데이터 get
+			OAuth2DTO attributes = 
+					OAuth2DTO.of(registrationId, userNameAttributeName, oAuth2Member.getAttributes());  //플랫폼, 사용자 PK, 사용자 정보
+			
+			System.out.println(attributes.getAttributes());  //응답받은 데이터 확인(Json 형태로 넘어옴)
+			
 
-		System.out.println("[백엔드 http세션에 올라간 회원정보]"  + "\n"
-			+ "sessindId: " + httpSession.getId() + "\n"
-			+ "만료시간: " + httpSession.getMaxInactiveInterval() + "\n"
-			+ "생성시간: " + httpSession.getCreationTime() + "\n"
-			+ "마지막 접속시간: " + httpSession.getLastAccessedTime()
-		);
+			//원시 데이터(OAuth2DTO) -> 엔티티 Member에 넣음
+			Member authUser = saveOrUpdate(attributes);
+			
+			
+			//백엔드 http세션에 사용자 정보를 저장
+			//(* 프론트엔드 SessionStorage는 Login.js에서 저장)
+			httpSession.setAttribute("user", new SessionMember(authUser));
+			httpSession.setMaxInactiveInterval(expiredTime);  //세션 만료시간
+
+			System.out.println("[백엔드 http세션에 올라간 회원정보]"  + "\n"
+				+ "sessindId: " + httpSession.getId() + "\n"
+				+ "만료시간: " + httpSession.getMaxInactiveInterval() + "\n"
+				+ "생성시간: " + httpSession.getCreationTime() + "\n"
+				+ "마지막 접속시간: " + httpSession.getLastAccessedTime()
+			);
 
 
-		//프론트엔드 세션에 넘겨주기 위해, DB에 실제로 저장된 진짜 ID를 Map에 끼워 넣음
-		Map<String, Object> customAttributes = new HashMap<>(attributes.getAttributes());
-		customAttributes.put("db_id", authUser.getId());
-		
+			//프론트엔드 세션에 넘겨주기 위해, DB에 실제로 저장된 진짜 ID를 Map에 끼워 넣음
+			Map<String, Object> customAttributes = new HashMap<>(attributes.getAttributes());
+			customAttributes.put("db_id", authUser.getId());
+			
 
-		return new DefaultOAuth2User(
-            Collections.singleton(new SimpleGrantedAuthority(authUser.getRole().getKey())), 
-            customAttributes,  //원본 Map 대신, 진짜 ID가 포함된 새로운 Map을 시큐리티로 넘김(authentication)
-            attributes.getNameAttributeKey());
+			return new DefaultOAuth2User(
+				Collections.singleton(new SimpleGrantedAuthority(authUser.getRole().getKey())), 
+				customAttributes,  //원본 Map 대신, 진짜 ID가 포함된 새로운 Map을 시큐리티로 넘김(authentication)
+				attributes.getNameAttributeKey());
+
+		} catch (Exception e) {
+			//소셜 로그인 과정에서 발생하는 모든 에러를, 시큐리티가 이해할 수 있는 예외로 던짐
+			throw new OAuth2AuthenticationException(new OAuth2Error("oauth2_error"), e.getMessage());
+		}
 		
 	}
 	
@@ -174,7 +180,7 @@ public class MemberSecurityService implements UserDetailsService, OAuth2UserServ
 
 		//이메일이 없는 경우 예외 처리나 기본값 할당
 		if (attributes.getEmail() == null || attributes.getEmail().isEmpty()) {
-			throw new RuntimeException("OAuth2 소셜로그인 회원의 이메일이 없습니다.");
+			throw new OAuth2AuthenticationException(new OAuth2Error("email_not_found"), "이메일 제공 동의가 필요합니다.");
 		}
 		
 		try {
@@ -196,7 +202,5 @@ public class MemberSecurityService implements UserDetailsService, OAuth2UserServ
         
         return entity;
     }
-	
-
 
 }
