@@ -20,7 +20,10 @@ function Order(props) {
 
      const user = sessionStorage.getItem("user");
 
-    
+    if(!user) {
+        alert("로그인이 필요한 서비스입니다.");
+        navigate('/login');
+    }
 
     useEffect(() => {
 

@@ -1,10 +1,13 @@
 import React from 'react';
 import AdrdressInput from './AdrdressInput';
+import { Link } from 'react-router-dom';
 
 function OrderInfo({orderType, setOrderType, zipcode, address, setZipcode, setAddress, detailedAddress, setDetailedAddress}) {
     return (
         <div>
            <div>
+                <h1> <Link to="/">로고</Link> </h1>
+
                 <label>배송 및 설치 선택</label>
 
                 <div>

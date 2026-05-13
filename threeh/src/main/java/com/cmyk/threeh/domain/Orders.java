@@ -51,7 +51,7 @@ public class Orders {
     private Member member;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "delivery_id", nullable = false)
+    @JoinColumn(name = "delivery_id", nullable = true)
     private Delivery delivery;
 
     @Column(name = "delivery_addr", length = 500)
@@ -124,10 +124,11 @@ public class Orders {
     public void cancel() {
 
 
-        if(delivery.getStatus() == DeliveryStatus.COMPLETED){
-
+        if (delivery != null && delivery.getStatus() == DeliveryStatus.COMPLETED) {
             throw new CustomException(ErrorCode.ORDER_CANCEL_FAIL);    
-        }
+         }
+
+       
 
         this.setOrderState(OrderState.CANCEL);
 
@@ -163,7 +164,7 @@ public class Orders {
   */
   public void changeOrderState(OrderState newState) {
     
-    if(delivery.getStatus() == DeliveryStatus.COMPLETED && newState == OrderState.ORDER ){
+    if (delivery != null && delivery.getStatus() == DeliveryStatus.             COMPLETED && newState == OrderState.ORDER) {
         throw new CustomException(ErrorCode.ORDER_CANCEL_FAIL);
     }
 
@@ -171,10 +172,15 @@ public class Orders {
   }
 
   public void complete() {
-    if(delivery.getStatus() != DeliveryStatus.COMPLETED){
-        throw new CustomException(ErrorCode.ORDER_CANCEL_FAIL);
+    if (delivery == null || delivery.getStatus() != DeliveryStatus.COMPLETED) {
+        throw new CustomException(ErrorCode.ORDER_CANCEL_FAIL); 
     }
     this.setOrderState(OrderState.PURCHASED);
+  }
+
+  public void assignOrder(Delivery delivery){
+    this.delivery =  delivery;
+    this.setOrderState(OrderState.READY);
   }
   
 

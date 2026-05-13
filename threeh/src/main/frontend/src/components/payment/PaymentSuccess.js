@@ -5,6 +5,7 @@ import axios from 'axios';
 function PaymentSuccess() {
 
     const [searchParams] = useSearchParams();
+    const [finalOrderData, setFinalOrderData] = useState(null);
     const [payStatus, setPayStatus] = useState("loading");
     const [failReason, setFailReason] = useState(""); 
     const navigate = useNavigate();
@@ -13,7 +14,9 @@ function PaymentSuccess() {
     const orderId = searchParams.get("orderId");
     const amount = searchParams.get("amount");
 
-    const orderData = JSON.parse(sessionStorage.getItem("pendingOrder"));
+    
+
+    
 
     
 
@@ -21,6 +24,17 @@ function PaymentSuccess() {
         let ignored = false;
 
         const confirmPayment = async () => {
+
+            const orderData = JSON.parse(sessionStorage.getItem("pendingOrder"));
+
+            console.log("세션스토리지 전체:", sessionStorage); // 세션에 뭐가 들어있는지 전체 출력
+            console.log("파싱된 데이터:", orderData);
+
+            if (!orderData) {
+                console.error("세션에 주문 데이터가 없습니다!");
+                navigate("/OrderFail");
+                return ;
+            }
             try {
                 if (ignored) return;
 
@@ -30,8 +44,15 @@ function PaymentSuccess() {
 
                 await axios.post(`/api/order`, orderData, { withCredentials: true });
 
-                sessionStorage.removeItem("pendingOrder");
-                setPayStatus("success");
+                if (!ignored) {
+                
+                    setFinalOrderData(orderData); 
+                    sessionStorage.removeItem("pendingOrder");
+                    setPayStatus("success");
+                }
+
+                
+                
 
             } catch (e) {
                 if (ignored) return;
@@ -43,7 +64,7 @@ function PaymentSuccess() {
                         : errorMsg;
                 const status = e.response?.status;
 
-                // ✅ 에러 종류별 메시지
+                
                 if (errorMessage === "재고가 부족합니다.") {
                     setFailReason("죄송합니다. 해당 상품의 재고가 부족합니다.");
                 } else if (status === 401) {
@@ -78,7 +99,7 @@ function PaymentSuccess() {
             <div>
                 <h2>결제 실패</h2>
                 <p>{failReason}</p> 
-                <button onClick={() => navigate(`/order/${orderData?.orderItems[0]?.itemId}`)}>다시 시도</button>
+                <button onClick={() => navigate(`/order/${finalOrderData?.orderItems[0]?.itemId}`)}>다시 시도</button>
                 <button onClick={() => navigate("/")}>홈으로</button>
             </div>
         );
@@ -87,10 +108,10 @@ function PaymentSuccess() {
     return (
         <div>
             <div>✓</div>
-            <h2>{orderData?.memberName}님 결제가 완료되었습니다</h2>
-            <p>{orderData?.orderItems[0]?.itemName}</p>
+            <h2>{finalOrderData?.memberName}님 결제가 완료되었습니다</h2>
+            <p>상품명:{finalOrderData?.orderItems[0]?.itemName}</p>
             <p>주문번호: {orderId?.slice(0, 8).toUpperCase()}</p>
-            <p>배송지: {orderData?.deliveryAddr}</p>
+            <p>배송지: {finalOrderData?.deliveryAddr}</p>
             <p>결제금액: {Number(amount).toLocaleString()}원</p>
             <button onClick={() => navigate("/")}>홈으로</button>
         </div>
