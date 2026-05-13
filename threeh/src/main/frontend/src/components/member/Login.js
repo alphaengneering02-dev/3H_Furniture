@@ -98,7 +98,7 @@ const Login = () => {
             let res;
 
             if(form.id.indexOf("admin") != -1) {  //어드민 유저  **어드민 회원정보를 가져오는 코드가 만들어져야 함
-                res = await axios.get(`http://localhost:8080/api/admin/${id}`)
+                res = await axios.get(`http://localhost:8080/admin/${id}`)
             } else {  //일반 유저
                 res = await axios.get(`http://localhost:8080/api/member/${id}`)
             }

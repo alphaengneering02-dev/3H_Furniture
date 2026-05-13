@@ -72,7 +72,7 @@ public class SecurityConfig {
 		// 커스텀 로그인 페이지 설정
 		.formLogin()
 			// React가 로그인 데이터를 POST로 보낼 주소 (Security가 가로챕니다!)
-			.loginProcessingUrl("/member/login")  //"/api/v1/login"
+			.loginProcessingUrl("/api/member/login")  //"/api/v1/login"
 			.usernameParameter("id") // 리액트에서 보내는 필드명과 일치시킴
     		.passwordParameter("password")
 
