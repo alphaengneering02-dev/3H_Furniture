@@ -26,7 +26,7 @@ const OAuth2Success = () => {
     const setOAuth2Session = async(id) => {
         try {
             // DB에서 회원 데이터 검색 (소셜 로그인 회원은 무조건 member 테이블에 저장된다)
-            const res = await axios.get(`http://localhost:8080/member/${id}`);
+            const res = await axios.get(`http://localhost:8080/api/member/${id}`);
             
             console.log("OAuth2 소셜 회원 데이터 가져오기 성공!", res.data);
 

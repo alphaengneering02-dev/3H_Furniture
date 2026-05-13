@@ -56,7 +56,7 @@ const Signup_site = () => {
 
         //데이터 전송
         try {
-            const res = await axios.post(`http://localhost:8080/member/signup`, req)
+            const res = await axios.post(`http://localhost:8080/api/member/signup`, req)
 
             console.log("member 데이터 전송 성공!", res)
             navigate("/")  //메인으로 리다이렉트

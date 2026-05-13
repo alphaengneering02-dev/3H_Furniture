@@ -33,9 +33,8 @@ import com.cmyk.threeh.service.MemberService;
 import lombok.RequiredArgsConstructor;
 
 @Controller
-@RequestMapping("/bookmark")
+@RequestMapping("/api/bookmark")
 @RequiredArgsConstructor
-//@CrossOrigin(origins = "http://localhost:3000")  //프론트엔드(3000번 포트)의 접근을 허락함
 public class BookmarkController {
 
     private final MemberService memberService;
