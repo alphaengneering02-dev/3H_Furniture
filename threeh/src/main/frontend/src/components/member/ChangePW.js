@@ -33,7 +33,7 @@ const ChangePw = () => {
 
             //DB에서 이름, 전화번호가 같은 사이트 회원 데이터 검색 (일반 유저)
             //경로 형식을 서버와 맞춥니다: /member/findUserId/이름/연락처
-            const res = await axios.get(`http://localhost:8080/member/changeUserPassword/${id}/${oldPassword}&${newPassword}`)
+            const res = await axios.get(`http://localhost:8080/api/member/changeUserPassword/${id}/${oldPassword}&${newPassword}`)
             setResultPw(res.data)
             setShowResult(true)
 
@@ -50,7 +50,7 @@ const ChangePw = () => {
         <div>
             ChangePW 페이지
             
-            <h1>로고</h1>
+            <h1> <Link to="/">로고</Link> </h1>
 
             <h2> <Link to="/findId">아이디 찾기</Link> </h2>
             <h2>비밀번호 재설정</h2>
@@ -74,6 +74,8 @@ const ChangePw = () => {
             
 
                 <button onClick={onSubmit}>비밀번호 재설정</button>
+
+                <Link to="/login">로그인</Link>
             </div>
 
             {/* 비밀번호 재설정 클릭 시, ChangePw_result 화면으로 전환 (ajax) */}

@@ -7,12 +7,16 @@ import org.springframework.web.bind.annotation.RestController;
 import com.cmyk.threeh.dto.SessionMember;
 import com.cmyk.threeh.domain.Admins;
 import com.cmyk.threeh.domain.Delivery;
+import com.cmyk.threeh.domain.Orders;
 import com.cmyk.threeh.dto.AdminLoginDTO;
 import com.cmyk.threeh.dto.AdminsDTO;
 import com.cmyk.threeh.dto.DeliveryDTO;
+import com.cmyk.threeh.dto.OrderResponseDTO;
 import com.cmyk.threeh.repository.AdminsRepository;
 import com.cmyk.threeh.service.AdminsService;
 import com.cmyk.threeh.service.DeliveryService;
+import com.cmyk.threeh.service.OrderService;
+
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
@@ -39,6 +43,7 @@ public class AdminsController {
     private final DeliveryService deliveryService;
     private final AdminsService adminsService;
     private final AdminsRepository adminsRepository;
+    private final OrderService orderService;
 
 
     @PostMapping("/delivery")
@@ -174,6 +179,15 @@ public ResponseEntity<?> getMyInfo(HttpSession session) {
     // 관리자 세션인지 일반 멤버 세션인지 구분 로그
     System.out.println("✅ [Admin/Me] 현재 접속자: " + user.getAdminName() + " (Role: " + user.getRole() + ")");
     return ResponseEntity.ok(user);
+}
+
+@GetMapping("/orders")
+public ResponseEntity<List<OrderResponseDTO>> getAllOrdersForAdmin() {
+    System.out.println("📦 [Admin] 전체 주문 목록 조회 요청");
+    
+    List<OrderResponseDTO> orders = orderService.findAllOrders();
+    
+    return ResponseEntity.ok(orders);
 }
 
 

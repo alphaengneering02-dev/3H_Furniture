@@ -1,5 +1,7 @@
 import React from 'react';
 import { Link } from "react-router-dom";
+import icon_search from '../../assets/icon_search.png';
+import icon_hamburger from '../../assets/icon_hamburger.png';
 
 // 헤더
 const Header = () => {
@@ -11,22 +13,34 @@ const Header = () => {
                     {/* 좌측 영역 : sns 바로가기 */}
                     <div className="left">
                         <ul className="sns">
-                            <li> <Link to="#" target="_blank"><img src={null} alt="sns 바로가기1"/></Link> </li>
-                            <li> <Link to="#" target="_blank"><img src={null} alt="sns 바로가기2"/></Link> </li>
-                            <li> <Link to="#" target="_blank"><img src={null} alt="sns 바로가기3"/></Link> </li>
+                            <li> <Link to="#" target="_blank">
+                                <img src={null} alt="페이스북 바로가기"/>
+                            </Link> </li>
+                            <li> <Link to="#" target="_blank">
+                                <img src={null} alt="인스타그램 바로가기"/>
+                            </Link> </li>
+                            <li> <Link to="#" target="_blank">
+                                <img src={null} alt="카카오톡 공식채널 바로가기"/>
+                            </Link> </li>
                         </ul>   {/* sns 끝 */}
                     </div>
 
 
                     {/* <!-- 중앙 영역 : 로고와 통합검색창 --> */}
                     <div className="center">
-                        <h1> <Link to="/"><img src={null} alt="웹사이트 로고"/></Link> </h1>
+                        <h1 className='logo'> 
+                            <Link to="/"><img src={null} alt="웹사이트 로고"/></Link> 
+                        </h1>
 
                         <div className="totalSearch">
                             <form action="" method="get">
-                                <button className="btnSearch" type="button"> <img src={null} alt="검색하기"/> </button>
-                                <input className="inputSearch" type="text" placeholder="검색어를 입력하세요"/>
-                                <button className="hamSearch" type="button"> ▤ </button>
+                                <button className="btn" type="button">
+                                    <img src={icon_search} alt="검색하기" style={{width: 20}}/>
+                                </button>
+                                <input className="input" type="text" placeholder="검색어를 입력하세요"/>
+                                <button className="hamburger" type="button">
+                                    <img src={icon_hamburger} alt="검색하기" style={{width: 20}}/>
+                                </button>
                             </form>
                         </div>
                     </div>

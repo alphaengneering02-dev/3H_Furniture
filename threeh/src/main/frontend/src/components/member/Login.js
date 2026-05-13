@@ -1,6 +1,9 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom'
+import icon_google from '../../assets/icon_google.png';
+import icon_kakao from '../../assets/icon_kakao.png';
+import icon_naver from '../../assets/icon_naver.png';
 
 const Login = () => {
 
@@ -58,7 +61,7 @@ const Login = () => {
         //데이터 전송 및 sessionStorage 저장
         try {
             //데이터 전송
-            const res = await axios.post(`http://localhost:8080/member/login`, params, {
+            const res = await axios.post(`http://localhost:8080/api/member/login`, params, {
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 withCredentials: true // 세션 쿠키를 유지하기 위해 필요합니다.
             })
@@ -97,7 +100,7 @@ const Login = () => {
             if(form.id.indexOf("admin") != -1) {  //어드민 유저  **어드민 회원정보를 가져오는 코드가 만들어져야 함
                 res = await axios.get(`http://localhost:8080/admin/${id}`)
             } else {  //일반 유저
-                res = await axios.get(`http://localhost:8080/member/${id}`)
+                res = await axios.get(`http://localhost:8080/api/member/${id}`)
             }
             
             console.log("사이트 회원 데이터 가져오기 성공!", res.data)
@@ -153,8 +156,8 @@ const Login = () => {
             <article>
                 <p> <input type='checkbox' checked={isChecked} onChange={changeChecked}/>로그인 상태 유지 </p>
                 <p> 
-                    <span onClick={() => navigate("/")}>아이디 찾기</span>
-                    <span onClick={() => navigate("/")}>비밀번호 찾기</span>
+                    <span onClick={() => navigate("/findId")}>아이디 찾기</span>
+                    <span onClick={() => navigate("/changePw")}>비밀번호 찾기</span>
                 </p>
             </article>
 
@@ -171,9 +174,21 @@ const Login = () => {
             
             {/* oauth2 소셜 로그인 */}
             <div>
-                <p> <Link to="http://localhost:8080/oauth2/authorization/google">구글</Link> </p>
-                <p> <Link to="http://localhost:8080/oauth2/authorization/naver">네이버</Link> </p>
-                <p> <Link to="http://localhost:8080/oauth2/authorization/kakao">카카오</Link> </p>  {/*  */}
+                <p> 
+                    <Link to="http://localhost:8080/oauth2/authorization/google">
+                        <img src={icon_google} alt='구글' style={{width: 70}}/>
+                    </Link>
+                </p>
+                <p> 
+                    <Link to="http://localhost:8080/oauth2/authorization/naver">
+                        <img src={icon_naver} alt='네이버'/>
+                    </Link>
+                </p>
+                <p> 
+                    <Link to="http://localhost:8080/oauth2/authorization/kakao">
+                        <img src={icon_kakao} alt='카카오'/>
+                    </Link>
+                </p>
             </div>
 
 

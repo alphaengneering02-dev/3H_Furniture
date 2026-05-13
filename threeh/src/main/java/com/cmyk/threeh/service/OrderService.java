@@ -179,4 +179,16 @@ public class OrderService {
         return payment.toPaymentResponseDTO();
     }
 
+    /**
+     * 관리자용: 전체 주문 목록 조회 (DTO 변환 버전)
+     */
+    @Transactional
+    public List<OrderResponseDTO> findAllOrders() {
+    List<Orders> orders = orderRepository.findAll();
+    
+    return orders.stream()
+            .map(OrderResponseDTO::from)
+            .collect(Collectors.toList());
+}
+
 }

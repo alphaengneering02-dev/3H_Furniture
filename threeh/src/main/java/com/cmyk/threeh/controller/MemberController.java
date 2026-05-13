@@ -35,7 +35,7 @@ import com.cmyk.threeh.service.MemberService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/member")
+@RequestMapping("/api/member")
 @RequiredArgsConstructor
 //@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")  //프론트엔드(3000번 포트)의 접근을 허락함
 public class MemberController {

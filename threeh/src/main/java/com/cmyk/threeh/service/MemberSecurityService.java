@@ -171,13 +171,22 @@ public class MemberSecurityService implements UserDetailsService, OAuth2UserServ
 	
 	//최초 사용자 등록 or 사용자 정보 업데이트
 	private Member saveOrUpdate(OAuth2DTO attributes) {
+
+		//이메일이 없는 경우 예외 처리나 기본값 할당
+		if (attributes.getEmail() == null || attributes.getEmail().isEmpty()) {
+			throw new RuntimeException("OAuth2 소셜로그인 회원의 이메일이 없습니다.");
+		}
 		
-		Member authUser = memberRepository.findByEmail(attributes.getEmail())
-            .map(entity -> update(entity, attributes))  //과거의 정보, 새로운 정보
-            .orElse(attributes.toEntity());
-		
-		return memberRepository.save(authUser);
-		
+		try {
+			Member authUser = memberRepository.findByEmail(attributes.getEmail())
+				.map(entity -> update(entity, attributes))  //과거의 정보, 새로운 정보
+				.orElse(attributes.toEntity());
+			
+			return memberRepository.save(authUser);
+		} catch (Exception e) {
+			throw new RuntimeException("OAuth2 소셜로그인 회원 저장 중 오류 발생", e);
+		}
+
 	}
 
 
