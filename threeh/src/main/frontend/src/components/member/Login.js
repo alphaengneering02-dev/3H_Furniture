@@ -116,7 +116,7 @@ const Login = () => {
                 expiry: now.getTime() + expireTime
             }
             
-            sessionStorage.setItem("user", JSON.stringify(user))
+            sessionStorage.setItem("user", JSON.stringify(user))  //객체 ---> JSON 형태
 
             console.log("[프론트엔드 sessionStorage에 올라간 사이트 회원정보]"  + "\n"
             	+ sessionStorage.getItem("user")

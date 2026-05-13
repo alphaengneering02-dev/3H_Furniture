@@ -1,5 +1,6 @@
 import React from 'react';
 import Header from './Header';
+import NewArrival from './NewArrival';
 
 const Main = () => {
     return (
@@ -31,47 +32,7 @@ const Main = () => {
 
 
             
-                <section className="newArrival">
-                    <h2>NEW ARRIVAL</h2>
-
-                    <article className="products">
-                        <div>
-                            <div>
-                                상품 이미지
-                                <button>♡</button>
-                            </div>
-                            <p>상품명</p>
-                            <h4>가격</h4>
-                        </div>
-
-                        <div>
-                            <div>
-                                상품 이미지
-                                <button>♡</button>
-                            </div>
-                            <p>상품명</p>
-                            <h4>가격</h4>
-                        </div>
-
-                        <div>
-                            <div>
-                                상품 이미지
-                                <button>♡</button>
-                            </div>
-                            <p>상품명</p>
-                            <h4>가격</h4>
-                        </div>
-
-                        <div>
-                            <div>
-                                상품 이미지
-                                <button>♡</button>
-                            </div>
-                            <p>상품명</p>
-                            <h4>가격</h4>
-                        </div>
-                    </article>
-                </section>
+                <NewArrival/>
 
 
 

@@ -1,6 +1,9 @@
 //<Spring Security 설정파일>
 package com.cmyk.threeh.global.config;
 
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -35,7 +38,7 @@ public class SecurityConfig {
 
 	private final MemberSecurityService memberSecurityService;
 	private final LoginFailHandler loginFailHandler;  //로그인 에러 핸들러 주입
-
+	private final HttpSession httpSession;
 
 
 	@Bean
@@ -124,9 +127,16 @@ public class SecurityConfig {
 
 		// 로그아웃 설정
 		.logout()
-			.logoutRequestMatcher(new AntPathRequestMatcher("/api/member/logout"))
-			.invalidateHttpSession(true)
-			.deleteCookies("JSESSIONID")
+			.logoutUrl("/api/member/logout")  //로그아웃 경로 설정
+
+			//실행할 로직
+			.invalidateHttpSession(true)  //세션 무효화(자동 처리)
+			.deleteCookies("JSESSIONID")  //쿠키 삭제(자동 처리)
+			
+			//로그아웃 성공 시 응답 설정 (REST API 대응)
+			.logoutSuccessHandler((request, response, authentication) -> {
+				response.setStatus(HttpServletResponse.SC_OK); //200 상태코드만 반환
+			})
 		;
 		
 		return http.build();
