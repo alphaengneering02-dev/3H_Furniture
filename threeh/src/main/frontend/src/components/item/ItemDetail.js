@@ -35,7 +35,7 @@ const ItemDetail = () => {
     const getItemImgs = async() =>{
         try{
             const response = await axios.get(
-                `http://localhos:8080/itemImgs/${itemId}`
+                `http://localhost:8080/itemImgs/${itemId}`
             );
             console.log("상품 이미지: ", response.data);
             setItemImgs(response.data);
