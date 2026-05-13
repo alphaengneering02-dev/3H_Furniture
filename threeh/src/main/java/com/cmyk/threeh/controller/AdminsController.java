@@ -6,11 +6,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cmyk.threeh.dto.SessionMember;
 import com.cmyk.threeh.domain.Admins;
+import com.cmyk.threeh.domain.CustomMemberDetails;
 import com.cmyk.threeh.domain.Delivery;
 import com.cmyk.threeh.domain.Orders;
 import com.cmyk.threeh.dto.AdminLoginDTO;
 import com.cmyk.threeh.dto.AdminsDTO;
 import com.cmyk.threeh.dto.DeliveryDTO;
+import com.cmyk.threeh.dto.DeliveryExcelDTO;
 import com.cmyk.threeh.dto.OrderResponseDTO;
 import com.cmyk.threeh.repository.AdminsRepository;
 import com.cmyk.threeh.service.AdminsService;
@@ -18,6 +20,7 @@ import com.cmyk.threeh.service.DeliveryService;
 import com.cmyk.threeh.service.OrderService;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import java.util.List;
 import java.util.Map;
@@ -189,6 +192,28 @@ public ResponseEntity<List<OrderResponseDTO>> getAllOrdersForAdmin() {
     
     return ResponseEntity.ok(orders);
 }
+
+//엑셀 등록용
+@PostMapping("/delivery/bulk")
+public ResponseEntity<?> bulkInsert(
+        @RequestBody List<DeliveryExcelDTO> list,
+        @AuthenticationPrincipal CustomMemberDetails user
+) {
+    Admins admin = user.getAdmins();
+
+    if (admin == null) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body("관리자만 등록 가능합니다.");
+    }
+
+    Long adminId = admin.getAdminId();
+
+    deliveryService.bulkInsert(list, adminId);
+
+    return ResponseEntity.ok().build();
+}
+
+
 
 
 

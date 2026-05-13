@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import com.cmyk.threeh.domain.Admins;
 import com.cmyk.threeh.domain.Delivery;
 import com.cmyk.threeh.dto.DeliveryDTO;
+import com.cmyk.threeh.dto.DeliveryExcelDTO;
 import com.cmyk.threeh.enums.DeliveryStatus;
 import com.cmyk.threeh.repository.AdminsRepository;
 import com.cmyk.threeh.repository.DeliveryRepository;
@@ -113,4 +114,40 @@ public class DeliveryService {
         // 2. 삭제 실행
         deliveryRepository.delete(delivery);
     }
+
+    //엑셀
+    public void bulkInsert(List<DeliveryExcelDTO> list, Long adminId) {
+
+    Admins admin = adminsRepository.findById(adminId)
+            .orElseThrow(() -> new RuntimeException("관리자 정보가 없습니다."));
+
+    for (DeliveryExcelDTO excelDto : list) {
+
+        Delivery delivery = new Delivery();
+
+        delivery.setAdmin(admin);
+
+        delivery.setCompanyName(excelDto.getCompanyName());
+        delivery.setBusinessName(excelDto.getBusinessName());
+        delivery.setBusinessNo(excelDto.getBusinessNo());
+        delivery.setBusinessPhone(excelDto.getBusinessPhone());
+        delivery.setBusinessAddr(excelDto.getBusinessAddr());
+
+        delivery.setDeliveryName(excelDto.getDeliveryName());
+        delivery.setDeliveryPhone(excelDto.getDeliveryPhone());
+        delivery.setDeliveryCarNo(excelDto.getDeliveryCarNo());
+
+        // ⭐ status 처리 핵심 위치
+        delivery.setStatus(
+            excelDto.getStatus() != null
+                ? DeliveryStatus.valueOf(excelDto.getStatus())
+                : DeliveryStatus.WAITING
+        );
+
+        deliveryRepository.save(delivery);
+    }
 }
+}
+
+
+

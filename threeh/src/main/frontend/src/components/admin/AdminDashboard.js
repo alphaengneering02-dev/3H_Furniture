@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Link } from "react-router-dom";
 import axios from 'axios';
 import AddCompany from './AddCompany';
-
+import Orderboard from './Orderboard';
 
 const AdminDashboard = () => {
 
@@ -64,21 +64,7 @@ const AdminDashboard = () => {
         return `${hours}:${minutes}`;
     };
 
-    const [orders, setOrders] = useState([
-        {
-            orderId: 1,
-            orderitems: [
-                { itemName: '의자', count: 2 },
-                { itemName: '책상', count: 1 }
-            ],
-            deliveryAddr: '서울시 강남구',
-            deliveryAddrDetail: '101호',
-            orderSate: 'ORDER',
-            orderDate: '2023-10-27T10:00:00',
-            deliveryDate: '-'
-        }
-    ]);
-
+    const [orders, setOrders] = useState([]);
     const [items, setItems] = useState([]);
 
     const fetchDeliveries = async () => {
@@ -126,7 +112,6 @@ const AdminDashboard = () => {
         }
 
         // 3. 관리자 이름 또는 ID 설정
-        // 백엔드 AdminsDTO의 필드명인 adminName 또는 adLoginId를 사용합니다.
         setAdminId(userObj.adminName || userObj.adLoginId || '관리자');
         
         console.log("=== AdminDashboard 진입 ===");
@@ -166,7 +151,6 @@ const handleAssignDriver = async (orderId) => {
     }
 
     try {
-        // 백엔드 API 호출 (예시: /admin/orders/assign)
         await axios.post(`/admin/orders/${orderId}/assign`, {
             deliveryId: deliveryId,
             status: 'SHIPPING' // 배정 시 상태 변경
@@ -232,14 +216,7 @@ useEffect(() => {
             {/* 왼쪽 */}
             <div className="side-box">
 
-                <div className="welcome-message" style={{ 
-                    marginBottom: '20px', 
-                    padding: '10px', 
-                    backgroundColor: '#f0f2f5', 
-                    borderRadius: '8px',
-                    fontWeight: 'bold',
-                    textAlign: 'center'
-                }}>
+                <div className="welcome-message">
                     <span>👤 {adminId}님 접속을 환영합니다.</span>
                 </div>
 
@@ -367,7 +344,7 @@ useEffect(() => {
                 <div>
                     <h3>기사 리스트</h3>
                     <Link to="/admin/delivery">
-                        <button>추가</button>
+                        <button>기사 추가</button>
                     </Link>
                    <div>
     <h3>회사 기사 엑셀 등록</h3>
@@ -436,205 +413,14 @@ useEffect(() => {
                     </table>
                 </div>
 
-                {/* 배송 배정 status(SHIPPING)*/}
-                <div>
-    <h3>배송 배정 완료 목록</h3>
-    <table className="table-style">
-        <thead>
-            <tr>
-                <th>번호</th>
-                <th>상품</th>
-                <th>주소</th>
-                <th>배정된 기사</th> {/* 컬럼 추가 */}
-                <th>상태</th>
-                <th>주문일</th>
-            </tr>
-        </thead>
-        <tbody>
-            {orders
-                .filter(order => order.orderSate === 'SHIPPING') // 배정된 데이터만 필터링
-                .map((order, index) => (
-                    <tr key={order.orderId}>
-                        <td>{index + 1}</td>
-                        <td>{renderItemName(order.orderitems)}</td>
-                        <td>{order.deliveryAddr} {order.deliveryAddrDetail}</td>
-                        <td>
-                            {/* 배정된 기사 이름 출력 (기사 리스트에서 찾기) */}
-                            <strong>
-                                {items.find(d => d.deliveryId === order.deliveryId)?.deliveryName || "정보 없음"}
-                            </strong>
-                        </td>
-                        <td>배송중</td>
-                        <td>{order.orderDate?.split('T')[0]}</td>
-                    </tr>
-                ))}
-        </tbody>
-    </table>
-</div>
-
-
-                {/* 배송 미배정 status(WAITING)*/}
-                <div>
-                    <h3>
-                        배송 미배정
-                        <button size="small">
-                            배송 업체 관리
-                        </button>
-                    </h3>
-
-                    <table style={{
-                        width: '100%',
-                        borderCollapse: 'collapse'
-                    }}>
-                        <thead>
-                            <tr>
-                                <th>번호</th>
-                                <th>상품</th>
-                                <th>수량</th>
-                                <th>주소</th>
-                                <th>상태</th>
-                                <th>주문일</th>
-                                <th>배송 신청 날짜</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            {orders.map((order, index) => (
-                                <tr key={order.orderId}>
-
-                                    <td>
-                                        {index + 1}
-                                    </td>
-
-                                    <td>
-                                        {renderItemName(order.orderitems)}
-                                    </td>
-
-                                    <td>
-                                        {
-                                            order.orderitems.reduce(
-                                                (sum, item) =>
-                                                    sum + item.count,
-                                                0
-                                            )
-                                        }개
-                                    </td>
-
-                                    <td>
-                                        {order.deliveryAddr}
-                                        {' '}
-                                        {order.deliveryAddrDetail}
-                                    </td>
-
-                                   
-                                       <td>
-                                       상품준비완료 기사님 배정중(WAITING)
-                                    </td>
-                                    <td>
-    <select 
-        value={selectedDrivers[order.orderId] || ""} 
-        onChange={(e) => handleDriverSelect(order.orderId, e.target.value)}
-        style={{ marginRight: '10px' }}
-    >
-        <option value="">기사 선택</option>
-        {items
-            .filter(driver => driver.status === 'WAITING') // 활동 가능한 기사만
-            .map(driver => (
-                <option key={driver.deliveryId} value={driver.deliveryId}>
-                    {driver.deliveryName}
-                </option>
-            ))
-        }
-    </select>
-    <button 
-        onClick={() => handleAssignDriver(order.orderId)}
-        className="assign-btn"
-    >
-        배정하기
-    </button>
-</td>
-                                 
-
-                                    <td>
-                                        {
-                                            order.orderDate?.split('T')[0]
-                                        }
-                                    </td>
-
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-
-                {/* 배송 완료 status(COMPLETED)*/}
-                <div>
-                    <h3>
-                        배송 완료 
-                        <button size="small">
-                            배송 업체 관리
-                        </button>
-                    </h3>
-
-                    <table style={{
-                        width: '100%',
-                        borderCollapse: 'collapse'
-                    }}>
-                        <thead>
-                            <tr>
-                                <th>번호</th>
-                                <th>상품</th>
-                                <th>수량</th>
-                                <th>주소</th>
-                                <th>상태</th>
-                                <th>주문일</th>
-                                <th>배송 신청 날짜</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            {orders.map((order, index) => (
-                                <tr key={order.orderId}>
-
-                                    <td>
-                                        {index + 1}
-                                    </td>
-
-                                    <td>
-                                        {renderItemName(order.orderitems)}
-                                    </td>
-
-                                    <td>
-                                        {
-                                            order.orderitems.reduce(
-                                                (sum, item) =>
-                                                    sum + item.count,
-                                                0
-                                            )
-                                        }개
-                                    </td>
-
-                                    <td>
-                                        {order.deliveryAddr}
-                                        {' '}
-                                        {order.deliveryAddrDetail}
-                                    </td>
-
-                                    <td>
-                                       상품배송완료(COMPLETED)
-                                    </td>
-
-                                    <td>
-                                        {
-                                            order.orderDate?.split('T')[0]
-                                        }
-                                    </td>
-
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+                    <Orderboard 
+        orders={orders} 
+        items={items} 
+        selectedDrivers={selectedDrivers}
+        handleDriverSelect={handleDriverSelect}
+        handleAssignDriver={handleAssignDriver}
+        handleStatusChange={handleStatusChange}
+    />
 
             </div>
 
