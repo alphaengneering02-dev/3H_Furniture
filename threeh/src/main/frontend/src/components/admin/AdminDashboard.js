@@ -191,19 +191,40 @@ const handleAssignDriver = async (orderId) => {
             : firstName;
     };
 
+    const fetchOrders = async () => {
+    try {
+        const response = await axios.get('/admin/orders'); 
+        setOrders(response.data);
+    } catch (error) {
+        console.error("데이터 로드 실패:", error);
+    }
+};
+
+useEffect(() => {
+    fetchDeliveries();
+    fetchOrders(); // 주문 목록도 함께 호출
+}, []);
+
     const handleStatusChange = async (orderId, newStatus) => {
-        try {
-            setOrders(prevOrders =>
-                prevOrders.map(order =>
-                    order.orderId === orderId
-                        ? { ...order, orderSate: newStatus }
-                        : order
-                )
-            );
-        } catch (error) {
-            alert("상태 업데이트 실패");
-        }
-    };
+    try {
+        // 1. 백엔드에 상태 업데이트 요청
+        await axios.put(`/admin/orders/${orderId}/status`, { status: newStatus });
+
+        // 2. 클라이언트 상태 반영 (기존 코드 유지 또는 새로고침)
+        setOrders(prevOrders =>
+            prevOrders.map(order =>
+                order.orderId === orderId
+                    ? { ...order, orderSate: newStatus }
+                    : order
+            )
+        );
+        
+        alert(`상태가 ${newStatus}로 변경되었습니다.`);
+    } catch (error) {
+        console.error("상태 업데이트 실패:", error);
+        alert("상태 업데이트 중 오류가 발생했습니다.");
+    }
+};
 
     return (
         <div className="dashboard-container">
@@ -417,72 +438,39 @@ const handleAssignDriver = async (orderId) => {
 
                 {/* 배송 배정 status(SHIPPING)*/}
                 <div>
-                    <h3>
-                        배송 배정
-                        <button size="small">
-                            배송 업체 관리
-                        </button>
-                    </h3>
-
-                    <table style={{
-                        width: '100%',
-                        borderCollapse: 'collapse'
-                    }}>
-                        <thead>
-                            <tr>
-                                <th>번호</th>
-                                <th>상품</th>
-                                <th>수량</th>
-                                <th>주소</th>
-                                <th>상태</th>
-                                <th>주문일</th>
-                                <th>배송 신청 날짜</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            {orders.map((order, index) => (
-                                <tr key={order.orderId}>
-
-                                    <td>
-                                        {index + 1}
-                                    </td>
-
-                                    <td>
-                                        {renderItemName(order.orderitems)}
-                                    </td>
-
-                                    <td>
-                                        {
-                                            order.orderitems.reduce(
-                                                (sum, item) =>
-                                                    sum + item.count,
-                                                0
-                                            )
-                                        }개
-                                    </td>
-
-                                    <td>
-                                        {order.deliveryAddr}
-                                        {' '}
-                                        {order.deliveryAddrDetail}
-                                    </td>
-
-                                    <td>
-                                       배송중(SHIPPING)
-                                    </td>
-
-                                    <td>
-                                        {
-                                            order.orderDate?.split('T')[0]
-                                        }
-                                    </td>
-
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+    <h3>배송 배정 완료 목록</h3>
+    <table className="table-style">
+        <thead>
+            <tr>
+                <th>번호</th>
+                <th>상품</th>
+                <th>주소</th>
+                <th>배정된 기사</th> {/* 컬럼 추가 */}
+                <th>상태</th>
+                <th>주문일</th>
+            </tr>
+        </thead>
+        <tbody>
+            {orders
+                .filter(order => order.orderSate === 'SHIPPING') // 배정된 데이터만 필터링
+                .map((order, index) => (
+                    <tr key={order.orderId}>
+                        <td>{index + 1}</td>
+                        <td>{renderItemName(order.orderitems)}</td>
+                        <td>{order.deliveryAddr} {order.deliveryAddrDetail}</td>
+                        <td>
+                            {/* 배정된 기사 이름 출력 (기사 리스트에서 찾기) */}
+                            <strong>
+                                {items.find(d => d.deliveryId === order.deliveryId)?.deliveryName || "정보 없음"}
+                            </strong>
+                        </td>
+                        <td>배송중</td>
+                        <td>{order.orderDate?.split('T')[0]}</td>
+                    </tr>
+                ))}
+        </tbody>
+    </table>
+</div>
 
 
                 {/* 배송 미배정 status(WAITING)*/}
