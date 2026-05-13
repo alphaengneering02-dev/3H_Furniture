@@ -22,7 +22,7 @@ const Mypage = () => {
             axios.get('http://localhost:8080/Member/mypage.do', { withCredentials: true })
                 .then(res => {
                     setMember(res.data.member);
-                    setAddresses(res.data.addAddressList || []);
+                    setAddresses(res.data.addressList || []);
                     setOrders(res.data.recentOrders || []);
 
                     sessionStorage.setItem('user', JSON.stringify(res.data.member));
@@ -164,8 +164,7 @@ const Mypage = () => {
                 <div style={{ display: 'flex' }}>
                     <aside className="mypage-sidebar">
                         <button className="sidebar-btn" onClick={() => navigate('/schedule')}>배송/설치 시간 내역</button>
-                        <button className="sidebar-btn" onClick={() => navigate('/cart/return')}>교환 및 반품</button>
-                        <button className="sidebar-btn" onClick={() => navigate('/orders')}>구매내역</button>
+                        <button className="sidebar-btn" onClick={() => navigate('/cart/return')}>구매내역 / 교환 및 반품</button>
                         <button className="sidebar-btn" onClick={() => navigate('/cart')}>장바구니 목록</button>
                     </aside>
 
@@ -178,6 +177,7 @@ const Mypage = () => {
                             <button className="mypage-action-btn" onClick={() => navigate(`/member/update/${member.id}`)}>정보 수정</button>
                         </div>
 
+                        {/* 회원정보 */}
                         <div className="info-content-box">
                             <h3 className="info-section-title">회원정보</h3>
                             <div className="info-data-block">
@@ -186,8 +186,26 @@ const Mypage = () => {
                                 <p><strong>가입 주소:</strong> {member.address}</p>
                             </div>
 
+                            {/*
+                            <h3 className="into-section-title">최근 구매 내역</h3>
+                            <div className="info-data-block">
+                                {orders && orders.length > 0 ? (
+                                    orders.map(order => (
+                                        <div key={order.id} style={{borderBottom:'1px solid #eee', padding:'10px 0', display:'flex',justifyContent:'space-between'}}>
+                                            <p><strong>주문번호:</strong>{order.id}</p>
+                                            <p><strong>상품명:</strong>{order.productName || "주문 상품"}</p>
+                                            <p>{order.orderDate ? new Date(order.orderDate).toLocaleDateString() : ""}</p>
+                                    </div>
+                                    ))
+                                ) : (
+                                    <p>최근 구매 내역이 없습니다.</p>
+                                
+                                )}
+                            </div>
+                            */}
+
                             {/* 교환 및 반품 신청 섹션 */}
-                            <h3 className="info-section-title">교환 및 반품 신청</h3>
+                            <h3 id="refund-section" className="info-section-title">구매내역 / 교환 및 반품 신청</h3>
                             <div className="info-data-block">
                                 {orders && orders.length > 0 ? (
                                     orders.map(order => (
