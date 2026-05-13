@@ -81,11 +81,7 @@ public class SecurityConfig {
 			.loginProcessingUrl("/api/member/login")  //"/api/v1/login"
 			.usernameParameter("id") // 리액트에서 보내는 필드명과 일치시킴
     		.passwordParameter("password")
-
-			// .defaultSuccessUrl("/", true) // 3. 성공 시 이동할 주소 (로그인 컨트롤러)  
 			
-			
-
 			// 2. 로그인 성공 시 실행될 동작 (JSON 반환)
 			.successHandler((request, response, authentication) -> {
 				response.setStatus(HttpStatus.OK.value()); // 200 상태 코드
@@ -99,7 +95,6 @@ public class SecurityConfig {
 			
 			// 3. 로그인 실패 시 실행될 동작 (JSON 반환)
 			.failureHandler(loginFailHandler)  //에러 처리 핸들러 객체를 넣어줌
-
 
 			.permitAll()
 		.and()  // >> 로그인 성공 시, Cookie에 정보가 저장됨
@@ -129,8 +124,7 @@ public class SecurityConfig {
 
 		// 로그아웃 설정
 		.logout()
-			.logoutRequestMatcher(new AntPathRequestMatcher("/member/logout"))
-			.logoutSuccessUrl("/")
+			.logoutRequestMatcher(new AntPathRequestMatcher("/api/member/logout"))
 			.invalidateHttpSession(true)
 			.deleteCookies("JSESSIONID")
 		;
