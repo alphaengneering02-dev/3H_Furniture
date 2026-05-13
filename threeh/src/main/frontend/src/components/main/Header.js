@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from "react-router-dom";
-import icon_search from '../../assets/image/icon_search.png';
-import icon_hamburger from '../../assets/image/icon_hamburger.png';
+import icon_search from '../../assets/icon_search.png';
+import icon_hamburger from '../../assets/icon_hamburger.png';
 
 // 헤더
 const Header = () => {

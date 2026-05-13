@@ -1,9 +1,9 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom'
-import icon_google from '../../assets/image/icon_google.png';
-import icon_kakao from '../../assets/image/icon_kakao.png';
-import icon_naver from '../../assets/image/icon_naver.png';
+import icon_google from '../../assets/icon_google.png';
+import icon_kakao from '../../assets/icon_kakao.png';
+import icon_naver from '../../assets/icon_naver.png';
 
 const Login = () => {
 
