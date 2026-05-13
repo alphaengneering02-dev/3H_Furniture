@@ -103,6 +103,16 @@ public class MemberAddressService {
         }
     }
 
+    //교환 및 반품
+    @Transactional
+    public void deleteOrderForce(Long orderId) {
+    // 버튼을 눌렀을 때 날짜 상관없이 바로 삭제하는 기능
+    Orders order = orderRepository.findById(orderId)
+            .orElseThrow(() -> new IllegalArgumentException("삭제할 주문 내역이 없습니다."));
+    
+    orderRepository.delete(order);
+}
+
     // 기본배송지 자동 연동
     @Transactional
     public MemberAddressDTO getDefaultAddressForOrder(String userid) {

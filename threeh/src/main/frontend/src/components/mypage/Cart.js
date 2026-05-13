@@ -5,21 +5,26 @@ import axios from 'axios';
 const Cart = () => {
     const navigate = useNavigate();
     const [cartItems, setCartItems] = useState([]);
+    const [member, setMember] = useState(null);
 
-    // 장바구니 데이터 로드
+    //페이지 로드 시 세션 확인 및 데이터 로드
     useEffect(() => {
-        axios.get('http://localhost:8080/mypage/cart', { withCredentials: true })
+        const savedUser = sessionStorage.getItem('user');
+        if(savedUser) {
+            setMember(JSON.parse(savedUser));
+        }
+
+        axios.get('http://localhost:8080/mypage/cart',{withCredentials:true})
             .then(res => {
                 setCartItems(res.data.cartItems || res.data.items || []);
             })
             .catch(err => {
-                console.error("데이터 로드 실패", err);
-                // 서버 안 될 때 테스트용 더미 데이터
+                console.error("데이터 로드 실패",err);
                 setCartItems([
-                    { cartItemId: 1, itemName: "테스트용 소파", count: 1, orderPrice: 500000 }
-                ]);
-            });
-    }, []);
+                    {cartItemId: 1, itemName: "테스트용 소파",count: 1, orderPrice : 50000}
+                ])
+            })
+    },[]);
 
     //상품 삭제 로직
     const deleteItem = (cartItemId) => {
@@ -59,7 +64,7 @@ const Cart = () => {
             });
         };
 
-    // 주문하기 (조장님 미션 경로)
+    // 주문하기 (조장님 미션 경로) //잘 넘어가는지 나중에 테스트
     const handleOrder = () => {
         if (cartItems.length === 0) return alert("장바구니가 비어 있습니다.");
         navigate('/order/form', { state: { orderItems: cartItems, fromCart: true } });
@@ -76,10 +81,20 @@ const Cart = () => {
                         <span style={{ margin: '0 10px' }}>{item.count}</span>
                         <button onClick={() => updateCount(item.cartItemId, item.count + 1)}>+</button>
                     </div>
+
+                    <p>가격: {(item.orderPrice * item.count).toLocaleString()}원</p>
+
                     <p>{item.orderPrice}원</p>
                     <button onClick={() => deleteItem(item.cartItemId)} style={{ color: 'red' }}>삭제</button>
                 </div>
             ))}
+
+            <div className="total-price-box" style={{ marginTop: '30px', borderTop: '2px solid #333', paddingTop: '20px' }}>
+                <h3>총 결제 예상 금액: {
+                cartItems.reduce((total, item) => total + (item.orderPrice * item.count), 0).toLocaleString()
+                }원</h3>
+            </div>
+
             <button onClick={handleOrder} style={{ marginTop: '20px', padding: '10px 20px', backgroundColor: '#333', color: '#fff' }}>
                 주문하기
             </button>
