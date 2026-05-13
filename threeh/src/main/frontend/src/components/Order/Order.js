@@ -18,9 +18,12 @@ function Order(props) {
     const [orderType, setOrderType] = useState(null);
     const navigate = useNavigate();
 
-     const user = sessionStorage.getItem("user");
+    const user = sessionStorage.getItem("user");
 
-    
+    if(!user) {
+        alert("로그인이 필요한 서비스입니다.");
+        navigate('/login');
+    }
 
     useEffect(() => {
 
@@ -34,7 +37,7 @@ function Order(props) {
         })
         .catch(error => {
             console.log(error);
-            // navigate('/error')
+           
         })
 
         
@@ -53,7 +56,6 @@ function Order(props) {
                 setDetailedAddress={setDetailedAddress}
                 setAddress={setAddress}
                 />
-
             <OrderUser 
                 orderData={orderData}
                 deliveryDate={deliveryDate}

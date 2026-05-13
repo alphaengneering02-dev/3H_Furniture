@@ -21,8 +21,6 @@ import com.cmyk.threeh.domain.Payment;
 import com.cmyk.threeh.dto.OrderRequestDTO;
 import com.cmyk.threeh.dto.OrderResponseDTO;
 import com.cmyk.threeh.dto.PaymentResponseDTO;
-import com.cmyk.threeh.dto.PaymentSuccessDTO;
-import com.cmyk.threeh.enums.DeliveryStatus;
 import com.cmyk.threeh.enums.OrderState;
 import com.cmyk.threeh.enums.OrderType;
 import com.cmyk.threeh.global.error.CustomException;
@@ -61,8 +59,7 @@ public class OrderService {
 
         String memberName = member.getName();
         Adress address = new Adress(city, street, zipCode);
-        Delivery delivery = new Delivery();
-        delivery.setSavedAddress(address);
+        
 
         List<OrderItem> oderitemList = orderItems.stream()
                 .map(dto -> {
@@ -73,7 +70,7 @@ public class OrderService {
                 .collect(Collectors.toList());
 
         // 주문 정보 생성
-        Orders order = Orders.createOrder(member, delivery, oderitemList.toArray(new OrderItem[0]));
+        Orders order = Orders.createOrder(member, null, oderitemList.toArray(new OrderItem[0]));
         order.setOrderState(OrderState.ORDER);
         order.setOrderType(orderType);
         order.setDeliveryDate(LocalDate.now().plusDays(3));

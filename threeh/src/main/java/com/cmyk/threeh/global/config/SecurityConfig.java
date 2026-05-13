@@ -49,11 +49,16 @@ public class SecurityConfig {
 
 		.authorizeRequests()
 			.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-			.antMatchers("/admin/**").permitAll()  //.antMatchers("/admin/**").hasRole("ADMIN")
+			.antMatchers("/api/member/login").permitAll()
+			.antMatchers("/api/member/**").permitAll()
+			.antMatchers("/item/**").permitAll()
 			.antMatchers("/itemImgs/**").permitAll()
 			.antMatchers("/upload/**").permitAll()
+			.antMatchers("/admin/**").permitAll()  
+            .antMatchers("/**").permitAll()  
+						//.antMatchers("/admin/**").hasRole("ADMIN")
             //.antMatchers("/api/v1/**").hasRole("USER")  ///api/v1로 시작하는 모든 API 요청은 ROLE_USER (일반 고객)만 접속 가능
-            .antMatchers("/**").permitAll()  // 모든 인증되지 않은 접속 요청을 허락함
+			// 모든 인증되지 않은 접속 요청을 허락함
 		.and()
 
 

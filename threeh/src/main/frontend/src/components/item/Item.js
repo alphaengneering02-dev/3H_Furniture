@@ -30,7 +30,7 @@ function Item(){
             ):(
                 item.map((item) => (
                     <div key={item.itemId}>
-                        <img src={`http://localhost:3000${item.itemImgUrl}`} alt={item.itemName} width="200"/>
+                        <img src={`http://localhost:8080${item.itemImgUrl}`} alt={item.itemName} width="200"/>
                         
                         <Link to={`/item/${item.itemId}`}>
                             <h2>{item.itemName}</h2>
@@ -41,8 +41,8 @@ function Item(){
                         <p>상품 색상: {item.itemColor}</p>
                         <p>상품 가격: {item.itemPrice}</p>
                         <p>상품 할인가격: {item.itemDiscountPrice}</p>
-                        <p>상품 최종가격: {item.itemDiscountPrice}</p>
-                        <p>상품 재고: {item.itemDiscountPrice}</p>
+                        <p>상품 최종가격: {item.itemFinalPrice}</p>
+                        <p>상품 재고: {item.item}</p>
 
                     </div>
                 ))
