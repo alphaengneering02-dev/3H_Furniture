@@ -110,6 +110,7 @@ const ItemUpdate = () => {
             "http://localhost:8080/itemImgs/uploadItemImg",
             formData,
             {
+                withCredentials: true,
                 headers:{
                     "Content-Type": "multipart/form-data",
                 },
@@ -151,9 +152,7 @@ const ItemUpdate = () => {
                 `http://localhost:8080/admin/item/${itemId}`,
                 itemPayload,
                 {
-                    headers:{
                       withCredentials:true,
-                    },
                 }
             );
 

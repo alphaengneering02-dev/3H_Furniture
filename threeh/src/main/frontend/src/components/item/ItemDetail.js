@@ -80,7 +80,7 @@ const ItemDetail = () => {
             <hr/>
 
             <p>카테고리: {item.itemCategory}</p>
-            <p>상품 설명: {item.ItemDetail}</p>
+            <p>상품 설명: {item.itemDetail}</p>
             <p>상품 색상: {item.itemColor}</p>
             <p>상품 가격: {item.itemPrice}</p>
             <p>상품 할인가격: {item.itemDiscountPrice}</p>
