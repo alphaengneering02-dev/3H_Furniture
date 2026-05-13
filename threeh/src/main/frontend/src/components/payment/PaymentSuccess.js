@@ -6,7 +6,7 @@ function PaymentSuccess() {
 
     const [searchParams] = useSearchParams();
     const [payStatus, setPayStatus] = useState("loading");
-    const [failReason, setFailReason] = useState(""); // ✅ 실패 이유 state
+    const [failReason, setFailReason] = useState(""); 
     const navigate = useNavigate();
 
     const paymentKey = searchParams.get("paymentKey");
@@ -51,7 +51,7 @@ function PaymentSuccess() {
                     navigate("/login");
                     return;
                 } else if(status === 404) {
-                    
+                    setFailReason("주문 처리 중 오류가 발생했습니다. 다시 시도해주세요.");
                 } else if (status === 500) {
                     setFailReason("서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
                 } else if (errorMessage) {
@@ -77,7 +77,7 @@ function PaymentSuccess() {
         return (
             <div>
                 <h2>결제 실패</h2>
-                <p>{failReason}</p> {/* ✅ 실패 이유 표시 */}
+                <p>{failReason}</p> 
                 <button onClick={() => navigate(`/order/${orderData?.orderItems[0]?.itemId}`)}>다시 시도</button>
                 <button onClick={() => navigate("/")}>홈으로</button>
             </div>
@@ -89,7 +89,7 @@ function PaymentSuccess() {
             <div>✓</div>
             <h2>{orderData?.memberName}님 결제가 완료되었습니다</h2>
             <p>{orderData?.orderItems[0]?.itemName}</p>
-            <p>주문번호: {orderId?.slice(0, 8).toUpperCase()}</p> {/* ✅ () 추가 */}
+            <p>주문번호: {orderId?.slice(0, 8).toUpperCase()}</p>
             <p>배송지: {orderData?.deliveryAddr}</p>
             <p>결제금액: {Number(amount).toLocaleString()}원</p>
             <button onClick={() => navigate("/")}>홈으로</button>
