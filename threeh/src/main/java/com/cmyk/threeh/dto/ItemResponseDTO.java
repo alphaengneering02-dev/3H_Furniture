@@ -2,6 +2,7 @@ package com.cmyk.threeh.dto;
 
 import com.cmyk.threeh.domain.Item;
 import com.cmyk.threeh.domain.ItemImg;
+import com.cmyk.threeh.enums.SubImg;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -47,6 +48,7 @@ private String itemImgUrl;
         .itemPriceCurrency(item.getItemPriceCurrency())
         .itemStock(item.getItemStock())
         .itemImgUrl(item.getItemImgList().stream()
+            .filter(img->img.getThumbnailYn() ==SubImg.Y)
             .findFirst()
             .map(ItemImg::getItemImgUrl)
             .orElse(null))
