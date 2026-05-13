@@ -72,40 +72,59 @@ public class OAuth2DTO {
 	//Kakao 사용자 데이터를 추출
 	private static OAuth2DTO ofKakao(String registrationId, String userNameAttributeName, Map<String, Object> attributes) {
 
-    String nickname = "";
-    String email = "";
+    String nickname = "default";
+    String email = "default";
 		
-    // 1. 카카오가 kakao_account(중첩) 형태로 데이터를 줄 때
-    if (attributes.containsKey("kakao_account")) {
-      Map<String, Object> kakaoAccount = (Map<String, Object>)attributes.get("kakao_account");  //kakao_account 필드
-      Map<String, Object> kakaoProfile = (Map<String, Object>)kakaoAccount.get("profile");
+	try {
+		// 1. 카카오가 kakao_account(중첩) 형태로 데이터를 줄 때
+		if (attributes.containsKey("kakao_account")) {
+			Object accountObj = attributes.get("kakao_account");
 
-      nickname = kakaoProfile != null ? (String)kakaoProfile.get("nickname") : "";
-      email = kakaoAccount != null ? (String)kakaoAccount.get("email") : "";
-    }
+			if (accountObj instanceof Map) {
+				Map<String, Object> kakaoAccount = (Map<String, Object>)accountObj;
+				Object profileObj = kakaoAccount.get("profile");
+			
+				if (profileObj instanceof Map) {
+					Map<String, Object> kakaoProfile = (Map<String, Object>)profileObj;
+					nickname = (String)kakaoProfile.get("nickname");
+				}
+				email = (String)kakaoAccount.get("email");
+			} 
+			
+			// 2. 카카오가 OIDC(평면) 형태로 데이터를 줄 때 (주석의 샘플 데이터 형태)
+			else {
+				nickname = (String)attributes.get("nickname");
+				email = (String)attributes.get("email");
+			}
+		}
 
-    // 2. 카카오가 OIDC(평면) 형태로 데이터를 줄 때 (주석의 샘플 데이터 형태)
-    else {
-        nickname = (String)attributes.get("nickname");
-        email = (String)attributes.get("email");
-    }
+	} catch (Exception e) {
+		//Throwable 에러 대응: 런타임 예외로 감싸서 던지거나, 로그 기록
+		throw new RuntimeException("카카오 데이터 파싱 중 오류 발생", e);
+	}
     		
-		return OAuth2DTO.builder()
-            .registrationId(registrationId)
-            .name(nickname)
-            .email("default")  //*이메일 : 카카오에서 제공하지 않음, 직접 입력해야함
-            .attributes(attributes)  //사용자 정보
-            .nameAttributeKey(userNameAttributeName)  //사용자 PK
-            .build();
+	return OAuth2DTO.builder()
+		.registrationId(registrationId)
+		.name(nickname)
+		.email(email)  //*이메일 : 카카오에서 제공하지 않음, 직접 입력해야함
+		.attributes(attributes)  //사용자 정보
+		.nameAttributeKey(userNameAttributeName)  //사용자 PK
+		.build();
     
 	}
 	
 	
 	//Naver 사용자 데이터를 추출
 	private static OAuth2DTO ofNaver(String registrationId, String userNameAttributeName, Map<String, Object> attributes) {
-		
-		Map<String, Object> response = (Map<String, Object>)attributes.get("response");
-		
+		Object responseObj = attributes.get("response");
+		Map<String, Object> response;
+
+		if (responseObj instanceof Map) {
+			response = (Map<String, Object>)responseObj;
+		} else {
+			response = attributes;
+		}
+
 		return OAuth2DTO.builder()
             .registrationId(registrationId)
             .name((String)response.get("name"))

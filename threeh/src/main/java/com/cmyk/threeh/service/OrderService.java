@@ -53,7 +53,7 @@ public class OrderService {
 
     @Transactional
     public Long order(Long memberId, List<OrderRequestDTO.OrderItemDTO> orderItems, String city, String street,
-            String zipCode, OrderType orderType) {
+            String zipCode, OrderType orderType) throws Exception{
 
         // 엔티티 조회
         Member member = memberRepository.findById(memberId)

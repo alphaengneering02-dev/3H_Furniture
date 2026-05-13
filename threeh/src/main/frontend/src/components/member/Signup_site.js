@@ -56,7 +56,7 @@ const Signup_site = () => {
 
         //데이터 전송
         try {
-            const res = await axios.post(`http://localhost:8080/member/signup`, req)
+            const res = await axios.post(`http://localhost:8080/api/member/signup`, req)
 
             console.log("member 데이터 전송 성공!", res)
             navigate("/")  //메인으로 리다이렉트
@@ -172,26 +172,6 @@ const Signup_site = () => {
                 {errors.global && <p>{errors.global.message}</p>}
                 {errors.others && <p>{errors.others.message}</p>}
             </div>
-
-
-
-            {/* =================================================== */}
-            
-            {/* member 데이터 뿌려주기
-            <h4>백엔드 서버에서 넘어온 member 데이터(response)</h4>
-            <ul>
-                <li>memberId: {data.memberId}</li>
-                <li>id: {data.id}</li>
-                <li>password: {data.password}</li>
-                <li>name: {data.name}</li>
-                <li>email: {data.email}</li>
-                <li>phone: {data.phone}</li>
-                <li>role: {data.role}</li>
-                <li>regNo: {data.regNo}</li>
-                <li>createdAt: {data.createdAt}</li>
-                <li>updatedAt: {data.updatedAt}</li>
-            </ul>
-            */}
 
 
             

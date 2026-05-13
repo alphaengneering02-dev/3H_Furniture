@@ -2,15 +2,16 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
+//상품 등록
 const ItemCreate = () => {
 
     const navigate = useNavigate();
     //세션 유지용 (로그인 일반 유저 _어드민 구현 전까지)
-    const user = JSON.parse(sessionStorage.getItem("user"));
+    const admin = JSON.parse(sessionStorage.getItem("admin1"));
 
-    //상품 정보 입력
+    //상품 정보 입력(Item table)
     const[item,setItem] = useState({
-        itemCategory:"카테고리 선택",
+        itemCategory:"",
         itemName:"",
         itemDetail:"",
         itemColor:"",
@@ -64,15 +65,15 @@ const ItemCreate = () => {
         e.preventDefault();
 
         //제출 전에 로그인 여부 확인
-        const user = JSON.parse(sessionStorage.getItem("user"));
+        const admin = JSON.parse(sessionStorage.getItem("admin1"));
 
-        if(!user){
+        if(!admin){
             alert("로그인이 필요합니다.");
             navigate("/login");
             return;
         }
 
-        console.log("로그인한 사용자:",user);
+        console.log("로그인한 사용자:",admin);
     
         if(!mainImgFile){
             alert("대표 이미지를 선택해주세요.");
@@ -135,6 +136,7 @@ const ItemCreate = () => {
                 <div>
                     <label>카테고리</label>
                     <select  name="itemCategory" value={item.itemCategory} onChange={handleItemChange} required>
+                    <option value="">카테고리 선택</option>
                     <option value="거실">거실</option>    
                     <option value="욕실">욕실</option>    
                     <option value="주방">주방</option>    
@@ -168,6 +170,7 @@ const ItemCreate = () => {
                     <label>가격</label>
                     <input type='number' name="itemPrice" value={item.itemPrice} onChange={handleItemChange} required/>
                 </div>
+
                 {/*할인 가격*/}
                 <div>
                     <label>할인 가격</label>
@@ -179,6 +182,7 @@ const ItemCreate = () => {
                     <label>상품 재고</label>
                     <input type="number" name="itemStock" value={item.itemStock} onChange={handleItemChange} required/>
                 </div>
+
                 {/*판매상태 */}
                 <div>
                     <label>판매 상태</label>
@@ -197,7 +201,8 @@ const ItemCreate = () => {
                 </div>
 
                 <hr/>
-                <h3>상품 이미지</h3>
+
+                <h3>===상품 이미지===</h3>
 
                 {/*대표 이미지 */}
 
@@ -226,6 +231,7 @@ const ItemCreate = () => {
                     }}
                     />
                     <p>{subImgFiles.length}/10</p>
+                    
                     <ul>
                         {subImgFiles.map((file,index)=>(
                             <li key={index}>{file.name}

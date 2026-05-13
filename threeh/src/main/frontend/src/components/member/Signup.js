@@ -1,5 +1,8 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import icon_google from '../../assets/icon_google.png';
+import icon_kakao from '../../assets/icon_kakao.png';
+import icon_naver from '../../assets/icon_naver.png';
 
 // 회원가입 선택 페이지
 const Signup = () => {
@@ -25,11 +28,23 @@ const Signup = () => {
                 <hr/>
                 or
                 <hr/>
-
+                
                 <div>
-                    <p> 구글 </p>
-                    <p> 네이버 </p>
-                    <p> 카카오 </p>
+                    <p> 
+                        <Link to="http://localhost:8080/oauth2/authorization/google">
+                            <img src={icon_google} alt='구글' style={{width: 70}}/>
+                        </Link>
+                    </p>
+                    <p> 
+                        <Link to="http://localhost:8080/oauth2/authorization/naver">
+                            <img src={icon_naver} alt='네이버'/>
+                        </Link>
+                    </p>
+                    <p> 
+                        <Link to="http://localhost:8080/oauth2/authorization/kakao">
+                            <img src={icon_kakao} alt='카카오'/>
+                        </Link>
+                    </p>
                 </div>
 
                 <hr/>
