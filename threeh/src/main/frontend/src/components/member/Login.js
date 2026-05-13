@@ -1,9 +1,9 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom'
-import icon_google from './assets/image/icon_google.png';
-import icon_kakao from './assets/image/icon_kakao.png';
-import icon_naver from './assets/image/icon_naver.png';
+import icon_google from '../../assets/image/icon_google.png';
+import icon_kakao from '../../assets/image/icon_kakao.png';
+import icon_naver from '../../assets/image/icon_naver.png';
 
 const Login = () => {
 
@@ -176,7 +176,7 @@ const Login = () => {
             <div>
                 <p> 
                     <Link to="http://localhost:8080/oauth2/authorization/google">
-                        <img src={icon_google} alt='구글'/>
+                        <img src={icon_google} alt='구글' style={{width: 70}}/>
                     </Link>
                 </p>
                 <p> 

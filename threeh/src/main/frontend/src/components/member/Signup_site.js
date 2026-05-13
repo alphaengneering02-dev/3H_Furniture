@@ -174,26 +174,6 @@ const Signup_site = () => {
             </div>
 
 
-
-            {/* =================================================== */}
-            
-            {/* member 데이터 뿌려주기
-            <h4>백엔드 서버에서 넘어온 member 데이터(response)</h4>
-            <ul>
-                <li>memberId: {data.memberId}</li>
-                <li>id: {data.id}</li>
-                <li>password: {data.password}</li>
-                <li>name: {data.name}</li>
-                <li>email: {data.email}</li>
-                <li>phone: {data.phone}</li>
-                <li>role: {data.role}</li>
-                <li>regNo: {data.regNo}</li>
-                <li>createdAt: {data.createdAt}</li>
-                <li>updatedAt: {data.updatedAt}</li>
-            </ul>
-            */}
-
-
             
         </div>
     );
