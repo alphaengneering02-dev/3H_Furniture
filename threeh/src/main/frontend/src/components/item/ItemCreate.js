@@ -5,6 +5,8 @@ import axios from 'axios';
 const ItemCreate = () => {
 
     const navigate = useNavigate();
+    //세션 유지용 (로그인 일반 유저 _어드민 구현 전까지)
+    const user = JSON.parse(sessionStorage.getItem("user"));
 
     //상품 정보 입력
     const[item,setItem] = useState({
@@ -15,7 +17,7 @@ const ItemCreate = () => {
         itemPrice:"",
         itemDiscountPrice:"",
         itemPriceCurrency: "KRW",
-        itemSellStatus:"판매상태 선택",
+        itemSellStatus:"",
         itemStock:"",
     });
 
@@ -36,23 +38,7 @@ const ItemCreate = () => {
         });
     };
 
-
-    /*const addSubImgInput = () =>{
-        if(subImgs.length >=10){
-            alert("서브 이미지는 최대 10장까지 등록할 수 있습니다.");
-            return;
-        }
-        setSubImgs([...subImgs,""]);
-    };
-
-    const removeSubImgInput =(index)=>{
-        const newSubImgs = subImgs.filter((_,i)=> i !==index);
-        setSubImgs(newSubImgs);
-    }
-    <input type="file" multiple/>이 여러 파일 선택들 자동 지원함.
-    */
-
-    const uploadImage = async (itemId,file,thumbnailYn,token) => {
+    const uploadImage = async (itemId,file,thumbnailYn) => {
         const formData = new FormData();
 
         formData.append("itemId",itemId);
@@ -63,9 +49,9 @@ const ItemCreate = () => {
             "http://localhost:8080/itemImgs/uploadItemImg",
             formData,
             {
-                headers:{
-                    Authorization:  `Bearer ${token}`,
-                    "Content-Type":"multipart/form-data",
+                withCredentials: true,
+                headers: {
+                    "Content-Type": "multipart/form-data",
                 },
             }
         );
@@ -76,6 +62,17 @@ const ItemCreate = () => {
 
     const handleItemSubmit =async(e)=>{
         e.preventDefault();
+
+        //제출 전에 로그인 여부 확인
+        const user = JSON.parse(sessionStorage.getItem("user"));
+
+        if(!user){
+            alert("로그인이 필요합니다.");
+            navigate("/login");
+            return;
+        }
+
+        console.log("로그인한 사용자:",user);
     
         if(!mainImgFile){
             alert("대표 이미지를 선택해주세요.");
@@ -88,8 +85,6 @@ const ItemCreate = () => {
         }
 
         try{
-            const token = localStorage.getItem("token");
-
             const itemPayload = {
                 itemCategory: item.itemCategory,
                 itemName: item.itemName,
@@ -105,24 +100,22 @@ const ItemCreate = () => {
             const itemRes = await axios.post(
                 "http://localhost:8080/admin/item",
                 itemPayload,
-                {
-                    headers:{
-                        Authorization: `Bearer ${token}`,
-                    },
+                { 
+                       withCredentials:true,
                 }
             );
 
             const createdItemId = itemRes.data.itemId;
 
-            await uploadImage(createdItemId, mainImgFile,"Y",token);
+            await uploadImage(createdItemId, mainImgFile,"Y");
 
             for(const file of subImgFiles){
-                await uploadImage(createdItemId,file,"N",token);
+                await uploadImage(createdItemId,file,"N");
             }
 
             alert("상품 등록 완료");
-
             navigate("/item");
+
         } catch(error){
             console.error(error);
 
@@ -158,7 +151,9 @@ const ItemCreate = () => {
                 {/*상품 설명*/}
                 <div>
                     <label>상품 설명</label>
-                    <textarea name="itemDetail" value={item.itemDetail} onChange={handleItemChange} maxLength={255}/>
+                    <textarea name="itemDetail" value={item.itemDetail} onChange={handleItemChange} maxLength={255}
+                    rows={5}
+                    style={{resize:"none",width:"400px",height:"120px",}}/>
                     <p>{item.itemDetail.length}/255</p>
                 </div>
 
@@ -188,7 +183,7 @@ const ItemCreate = () => {
                 <div>
                     <label>판매 상태</label>
                     <select name="itemSellStatus" value={item.itemSellStatus} onChange={handleItemChange} required>
-
+                        <option value="">판매상태 선택</option>
                         <option value="SELL">SELL</option>
                         <option value="READY">READY</option>
                         <option value="NON_SELL">NON_SELL</option>
@@ -233,10 +228,13 @@ const ItemCreate = () => {
                     <p>{subImgFiles.length}/10</p>
                     <ul>
                         {subImgFiles.map((file,index)=>(
-                            <li key={index}>{file.name} <button type='button' onClick={()=> {
+                            <li key={index}>{file.name}
+                            <button type='button' onClick={()=> {
                                 const newFiles =subImgFiles.filter((_,i)=> i !== index);
                                 setSubImgFiles(newFiles);
-                            }}> 삭제 </button></li>
+                            }}> 
+                            삭제 
+                            </button></li>
                         ))}
                     </ul>
                 </div>

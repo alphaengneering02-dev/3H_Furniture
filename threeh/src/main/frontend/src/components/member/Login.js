@@ -64,14 +64,15 @@ const Login = () => {
             })
 
             setLoginResultMsg(res.data.message);  //"message": "로그인에 성공하였습니다"
-            console.log("회원 데이터 전송 성공!", res)
+            console.log("사이트 회원 데이터 전송 성공!", res)
 
 
             //sessionStorage 저장
-            await setSession()
+            await setSession(form.id)
 
             //메인으로 리다이렉트
             navigate("/")
+
         } catch (error) {
             //백엔드의 LoginFailHandler가 보낸 JSON 응답을 받음
             if (error.response && error.response.data) {
@@ -80,7 +81,7 @@ const Login = () => {
                 setLoginResultMsg("서버와 연결할 수 없습니다.");
             }
 
-            console.error("회원 데이터 전송 실패!", error)
+            console.error("사이트 회원 데이터 전송 실패!", error)
         }
 
     }
@@ -88,18 +89,18 @@ const Login = () => {
 
 
     //sessionStorage 저장
-    const setSession = async() => {
+    const setSession = async(id) => {
         try {
-            //DB에서 아이디가 같은 회원 데이터 검색
+            //DB에서 아이디가 같은 사이트 회원 데이터 검색
             let res;
 
             if(form.id.indexOf("admin") != -1) {  //어드민 유저  **어드민 회원정보를 가져오는 코드가 만들어져야 함
-                res = await axios.get(`http://localhost:8080/admin/${form.id}`)
+                res = await axios.get(`http://localhost:8080/admin/${id}`)
             } else {  //일반 유저
-                res = await axios.get(`http://localhost:8080/member/${form.id}`)
+                res = await axios.get(`http://localhost:8080/member/${id}`)
             }
             
-            console.log("회원 데이터 가져오기 성공!", res.data)
+            console.log("사이트 회원 데이터 가져오기 성공!", res.data)
 
             
             // 2. 프론트엔드 sessionStorage에 사용자 정보를 저장
@@ -114,16 +115,16 @@ const Login = () => {
             
             sessionStorage.setItem("user", JSON.stringify(user))
 
-            console.log("[프론트엔드 sessionStorage에 올라간 회원정보]"  + "\n"
+            console.log("[프론트엔드 sessionStorage에 올라간 사이트 회원정보]"  + "\n"
             	+ sessionStorage.getItem("user")
             )
 
             // debugger;  //디버깅 모드 on
+
         } catch (error) {
-            console.error("회원 데이터 가져오기 실패!", error)
+            console.error("사이트 회원 데이터 가져오기 실패!", error)
         }
     }
-
 
 
 
@@ -171,15 +172,15 @@ const Login = () => {
             {/* oauth2 소셜 로그인 */}
             <div>
                 <p> <Link to="http://localhost:8080/oauth2/authorization/google">구글</Link> </p>
-                <p> <Link to="http://localhost:8080/oauth2/authorization/kakao">네이버</Link> </p>
-                <p> <Link to="http://localhost:8080/oauth2/authorization/naver">카카오</Link> </p>  {/*  */}
+                <p> <Link to="http://localhost:8080/oauth2/authorization/naver">네이버</Link> </p>
+                <p> <Link to="http://localhost:8080/oauth2/authorization/kakao">카카오</Link> </p>  {/*  */}
             </div>
 
 
 
             <article>
                 <p>계정이 없으신가요? 지금 바로 만들어 보세요.</p>
-                <button onClick={() => navigate("/singup")}>회원가입</button>  {/* Link */}
+                <button onClick={() => navigate("/signup")}>회원가입</button>  {/* Link */}
             </article>
 
         </div>
