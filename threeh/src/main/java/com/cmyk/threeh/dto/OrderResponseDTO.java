@@ -17,8 +17,9 @@ import lombok.Getter;
 public class OrderResponseDTO {
     
     private Long orderId;
+    private Long deliveryId;
     private String memberName;
-    private String orderSate;
+    private String orderState;
     private OrderType orderType;
     private LocalDateTime orderDate;
     private LocalDate deliveryDate;
@@ -45,8 +46,11 @@ public class OrderResponseDTO {
     public static OrderResponseDTO from (Orders orders){
         return OrderResponseDTO.builder()
                 .orderId(orders.getOrderId())
+                .deliveryId(
+                orders.getDelivery() != null
+                    ? orders.getDelivery().getDeliveryId() : null)
                 .memberName(orders.getMember().getName()) 
-                .orderSate(orders.getOrderState().getMessage())
+                .orderState(orders.getOrderState().getMessage())
                 .orderType(orders.getOrderType())
                 .orderDate(orders.getOrderDate())
                 .deliveryDate(orders.getDeliveryDate())

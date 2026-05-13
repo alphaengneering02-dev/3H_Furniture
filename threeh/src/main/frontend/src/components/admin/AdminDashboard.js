@@ -198,7 +198,7 @@ useEffect(() => {
         setOrders(prevOrders =>
             prevOrders.map(order =>
                 order.orderId === orderId
-                    ? { ...order, orderSate: newStatus }
+                    ? { ...order, orderState: newStatus }
                     : order
             )
         );
@@ -312,7 +312,7 @@ useEffect(() => {
 
                                     <td>
                                         <select
-                                            value={order.orderSate}
+                                            value={order.orderState}
                                             onChange={(e) =>
                                                 handleStatusChange(
                                                     order.orderId,

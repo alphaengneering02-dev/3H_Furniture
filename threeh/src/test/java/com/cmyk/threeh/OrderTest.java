@@ -138,7 +138,7 @@ public class OrderTest {
         //then
         assertFalse(orderLists.isEmpty(), "주문 목록이 비어있으면 안된다");
         assertEquals(1, orderLists.size(), "주문은 반드시 1건");
-        assertEquals("배송 준비중", orderLists.get(0).getOrderSate(), "주문 상태여야 함");
+        assertEquals("배송 준비중", orderLists.get(0).getOrderState(), "주문 상태여야 함");
         assertEquals("JPA 책", orderLists.get(0).getOrderitems().get(0).getItemName(), "배송 상품 이름이 맞아야함");
     }
 
