@@ -42,7 +42,8 @@ public class SecurityConfig {
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
 		http
-		.cors().and()  // CORS 설정 활성화
+		.cors().configurationSource(corsConfigurationSource()) // 빈을 직접 주입
+		.and()  // CORS 설정 활성화
 
 		.csrf().disable()  // 인가(접근 권한) 설정
 
