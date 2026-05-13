@@ -19,7 +19,7 @@ import EditDelivery from '../components/admin/EditDelivery';
 import ItemUpdate from '../components/item/ItemUpdate';
 import OAuth2Success from '../components/member/OAuth2Success';
 import Refund from '../components/mypage/Refund'; 
-
+import MemberAddressUpdate from '../components/mypage/MemberAddressUpdate'; 
 
 
 const Router = () => {
@@ -42,6 +42,8 @@ const Router = () => {
                 <Route path="/mypage" element={<Mypage/>} />
                 <Route path='/cart' element={<Cart/>}/>
                 <Route path="/cart/return" element={<Refund />} />
+                <Route path="/member/update/:id" element={<MemberAddressUpdate />} />
+
                 
                 <Route path="/admin" element={<AdminDashboard/>} />
                 <Route path="/admin/delivery" element={<AddDelivery/>} />
