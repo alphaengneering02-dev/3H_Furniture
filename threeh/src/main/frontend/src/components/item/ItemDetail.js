@@ -1,21 +1,38 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import{useParams}from "react-router-dom";
+import{useNavigate,useParams}from "react-router-dom";
 
 const ItemDetail = () => {
 
     //URL에서 Item 가져오기
     const {itemId} = useParams();
+    const navigate = useNavigate();
     
     //상품 상태 관리
     const [item,setItem] = useState(null);
     //이미지 상태 관리
     const [itemImgs,setItemImgs] = useState([]);
 
+    const user = JSON.parse(sessionStorage.getItem("user"));
+
+    const isAdmin = user && (
+        user.role ==="ADMIN"||
+        user.role ==="ROLE_ADMIN"||
+        user.role?.key === "ROLE_ADMIN"||
+        user.role?.key === "ADMIN"
+    );
+
     useEffect(()=>{
+        if(!itemId){
+            console.error("itemId가 없습니다.");
+            return;
+        }
+
         getItem();
         getItemImgs();
+
     },[itemId]);
+
 
     //상품정보 동기화
     const getItem = async() =>{
@@ -44,6 +61,47 @@ const ItemDetail = () => {
         }catch(error){
             console.error("상품 이미지 조회 실패", error);
         }
+    };
+
+    const handleUpdateClick = () =>{
+        navigate(`/item/update/${itemId}`);
+    };
+
+    const handleDeleteClick = async () => {
+        const confirmDelete = window.confirm("정말 이 상품을 삭제하시겠습니까?");
+
+        if(!confirmDelete){
+            return;
+        }
+
+        try{
+            /*아이템이미지가 아이템을 참조하고 있어서, 이미지가 있는 상품은 이미지 먼저 삭제하고
+            상품을 삭제하도록 순서를 맞춰야 함. 알았지? */
+
+            for(const img of itemImgs){
+                await axios.delete(
+                    `http://localhost:8080/api/itemImgs/${img.itemImgId}`,{
+                        withCredentials: true,
+                    }
+                );
+            }
+
+        await axios.delete(
+            `http://localhost:8080/api/admin/item/${itemId}`,{
+                withCredentials:true,
+            }
+        );
+
+        alert("상품이 삭제되었습니다.");
+        navigate("/item");
+    }catch(error){
+        console.error("상품 삭제 실패", error);
+
+        if(error.response){
+            console.log(error.response.data);
+        }
+        alert("상품 삭제 실패");
+    }
     };
 
     if(!item){
@@ -88,6 +146,16 @@ const ItemDetail = () => {
             <p>상품 할인가격: {item.itemDiscountPrice}</p>
             <p>상품 최종가격: {item.itemFinalPrice}</p>
             <p>상품 재고: {item.itemStock}</p>
+
+            {isAdmin &&(
+                <div style={{marginTop:"20px"}}>
+                    <button type="button" onClick={handleUpdateClick}>상품 수정</button>
+
+                    <button type="button" onClick={handleDeleteClick} style={{marginLeft:"10px"}}>상품 삭제</button>
+
+                </div>
+            )}
+
         </div>
     );
 };
