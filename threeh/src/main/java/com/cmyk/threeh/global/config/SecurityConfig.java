@@ -34,7 +34,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
-//@EnableMethodSecurity(prePostEnabled = true)   //로그아웃 상태면, login_form으로 이동시킴
+@EnableMethodSecurity(prePostEnabled = true)   //로그아웃 상태면, login_form으로 이동시킴
 public class SecurityConfig {
 
     private final MemberSecurityService memberSecurityService;
@@ -56,12 +56,12 @@ public class SecurityConfig {
 			.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 			.antMatchers("/api/member/login").permitAll()
 			.antMatchers("/api/member/**").permitAll()
-			.antMatchers("/item/**").permitAll()
-			.antMatchers("/itemImgs/**").permitAll()
-			.antMatchers("/upload/**").permitAll()
-			.antMatchers("/admin/**").permitAll()  
+			.antMatchers("/api/item/**").permitAll()
+			.antMatchers("/api/itemImgs/**").permitAll()
+			.antMatchers("/api/admin/**").permitAll()
+			.antMatchers("/upload/**").permitAll()  
             .antMatchers("/**").permitAll()  
-						//.antMatchers("/admin/**").hasRole("ADMIN")
+			//.antMatchers("/admin/**").hasRole("ADMIN")
             //.antMatchers("/api/v1/**").hasRole("USER")  ///api/v1로 시작하는 모든 API 요청은 ROLE_USER (일반 고객)만 접속 가능
 			// 모든 인증되지 않은 접속 요청을 허락함
 		.and()
@@ -87,16 +87,16 @@ public class SecurityConfig {
 			.usernameParameter("id") // 리액트에서 보내는 필드명과 일치시킴
     		.passwordParameter("password")
 			
-			// 2. 로그인 성공 시 실행될 동작 (JSON 반환)
-			// .successHandler((request, response, authentication) -> {
-			// 	response.setStatus(HttpStatus.OK.value()); // 200 상태 코드
-			// 	response.setContentType("application/json;charset=UTF-8");  //"React에게 보낼 응답은 HTML이 아니라 JSON 형식의 데이터이고, UTF-8로 인코딩함"
-			// 	response.getWriter().write("{"   //JSON 데이터를 문자열로 직접 작성 (res.data로 호출함)
-			// 	+ "\"status\": true,"
-			// 	+ "\"message\": \"로그인에 성공하였습니다.\""
-			// 	+ "\"id\":" + authentication.getName()
-			// 	+ "}");
-			// })
+			//2. 로그인 성공 시 실행될 동작 (JSON 반환)
+			.successHandler((request, response, authentication) -> {
+			response.setStatus(HttpStatus.OK.value()); // 200 상태 코드
+			response.setContentType("application/json;charset=UTF-8");  //"React에게 보낼 응답은 HTML이 아니라 JSON 형식의 데이터이고, UTF-8로 인코딩함"
+			response.getWriter().write("{"   //JSON 데이터를 문자열로 직접 작성 (res.data로 호출함)
+			+ "\"status\": true,"
+			+ "\"message\": \"로그인에 성공하였습니다.\""
+			+ "\"id\":" + authentication.getName()
+			+ "}");
+			})
 			.successHandler(loginSuccessHandler)
 			
 			// 3. 로그인 실패 시 실행될 동작 (JSON 반환)
