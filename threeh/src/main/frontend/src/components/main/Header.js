@@ -23,6 +23,8 @@ const Header = () => {
 
     const getSession = () => {
         try {
+            setUser(null)
+
             //sessionStorage에서 회원정보를 가져옴
             const rawData = sessionStorage.getItem("user")
 
@@ -156,7 +158,7 @@ const Header = () => {
                     <div className="right">
                         <ul className="userMenu">
                             {
-                                user
+                                user && user!=null
                                 //로그인 한 상태의 화면
                                 ? (
                                     <>

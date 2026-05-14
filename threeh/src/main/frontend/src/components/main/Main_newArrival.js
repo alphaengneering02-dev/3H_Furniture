@@ -22,7 +22,7 @@ const Main_newArrival = () => {
     const getItem = async() =>{
         try{
             const response = await axios.get(
-                `http://localhost:8080/item/${itemId}`
+                `http://localhost:8080/api/item/${itemId}`
             );
             console.log("상품 상세:", response.data);
             setItem(response.data);
@@ -36,7 +36,7 @@ const Main_newArrival = () => {
     const getItemImgs = async() =>{
         try{
             const response = await axios.get(
-                `http://localhost:8080/itemImgs/${itemId}`
+                `http://localhost:8080/api/itemImgs/${itemId}`
             );
             console.log("상품 이미지: ", response.data);
             setItemImgs(response.data);
