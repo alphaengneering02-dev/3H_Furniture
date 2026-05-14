@@ -20,6 +20,7 @@ import ItemUpdate from '../components/item/ItemUpdate';
 import OAuth2Success from '../components/member/OAuth2Success';
 import Refund from '../components/mypage/Refund'; 
 import MemberAddressUpdate from '../components/mypage/MemberAddressUpdate'; 
+import SearchResult from '../components/member/SearchResult';
 
 
 const Router = () => {
@@ -27,6 +28,7 @@ const Router = () => {
         <BrowserRouter>
             <Routes>
                 <Route path="/" element={<Main/>} />
+                <Route path="/searchResult/:searchKey/:searchValue" element={<SearchResult/>} />
                 <Route path="/login" element={<Login/>} />
                 <Route path="/oauth/success" element={<OAuth2Success/>} />
                 <Route path="/signup" element={<Signup/>} />
