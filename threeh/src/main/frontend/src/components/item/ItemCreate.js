@@ -47,7 +47,7 @@ const ItemCreate = () => {
         formData.append("thumbnailYn",thumbnailYn);
 
         await axios.post(
-            "http://localhost:8080/itemImgs/uploadItemImg",
+            "http://localhost:8080/api/itemImgs/uploadItemImg",
             formData,
             {
                 withCredentials: true,
