@@ -1,6 +1,6 @@
 import React from "react";
 import {useEffect,useState} from "react";
-import { Link } from "react-router-dom";
+import {useNavigate,Link} from "react-router-dom";
 import axios from "axios";
 
 
@@ -19,6 +19,59 @@ function Item(){
                 console.error("뭐 잘못했나봐..",error);
             });
     },[]);
+
+    const navigate = useNavigate();
+
+    const getLoginUser = () => {
+        return JSON.parse(sessionStorage.getItem("user"));
+    };
+
+    const handleAddCart  = async (itemId) => {
+        const user  = getLoginUser();
+
+        if(!user){
+            alert("로그인이 필요합니다.");
+            navigate("/login");
+            return;
+        }
+
+        try{
+            const formdata = new FormData();
+            formdata.append("itemId",itemId);
+            formdata.append("count",1);
+
+            await axios.post(
+                "http://localhost:8080/cartItem/add", formdata,{
+                    withCredentials: true,
+                }
+            );
+
+            alert("장바구니에 담겼습니다.");
+        }catch(error){
+            console.error("장바구니 담기 실패",error);
+
+            if(error.response?.status === 401){
+                alert("로그인이 필요합니다.");
+                navigate("/login");
+                return;
+            }
+
+            alert("장바구니 담기 실패");
+        }
+    };
+
+    const handleBuyNow = (itemId) => {
+
+        const user = getLoginUser();
+
+        if(!user){
+            alert("로그인이 필요합니다.");
+            navigate("/login");
+            return;
+        }
+
+        navigate(`/order/${itemId}`);
+    };
 
     return (
             <div>
@@ -50,6 +103,10 @@ function Item(){
                     <p>상품 할인가격: {item.itemDiscountPrice}</p>
                     <p>상품 최종가격: {item.itemFinalPrice}</p>
                     <p>상품 재고: {item.itemStock}</p>
+
+                    <button type="button" onClick={()=>handleAddCart(item.itemId)}>장바구니 담기</button>
+
+                    <button type="button" onClick={()=>handleBuyNow(item.itemId)}style={{marginLeft:"10px"}}>구매하기</button>
                 </div>
                 ))
             )}

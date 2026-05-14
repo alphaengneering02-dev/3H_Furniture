@@ -7,6 +7,57 @@ const ItemDetail = () => {
     //URL에서 Item 가져오기
     const {itemId} = useParams();
     const navigate = useNavigate();
+
+    //로그인 확인
+    const getLoginUser = () => {
+        return JSON.parse(sessionStorage.getItem("user"))
+    };
+
+    const handleAddCart =async()=>{
+        const user = getLoginUser();
+
+        if(!user){
+            alert("로그인이 필요합니다.");
+            navigate("/login");
+            return;
+        }
+
+        try{
+            const formData = new FormData();
+            formData.append("itemId", itemId);
+            formData.append("count", 1);
+
+            await axios.post(
+                "http://localhost:8080/cartItem/add",
+                formData,
+                {
+                    withCredentials:true,
+                }
+            );
+
+            alert("장바구니에 담겼습니다.");
+        }catch(error){
+            console.error("장바구니 담기 실패", error);
+
+            if(error.response?.status === 401){
+                alert("로그인이 필요합니다.");
+                navigate("/login");
+                return;
+            }
+            alert("장바구니 담기 실패");
+        }
+    };
+
+    const handleBuyNow = () =>{
+        const user =getLoginUser();
+
+        if(!user){
+            alert("로그인이 필요합니다.")
+            navigate("/login");
+            return;
+        }
+        navigate(`/order/${itemId}`);
+    }
     
     //상품 상태 관리
     const [item,setItem] = useState(null);
@@ -155,6 +206,14 @@ const ItemDetail = () => {
 
                 </div>
             )}
+
+            <div style={{marginTop:"20px"}}>
+
+                <button type="button" onClick={handleAddCart}>장바구니 담기</button>
+
+                <button type="button" onClick={handleBuyNow} style={{marginLeft:"10px"}}>구매하기</button>
+
+            </div>
 
         </div>
     );
