@@ -27,14 +27,13 @@ const Orderboard = ({
 
     // 2. 배송 미배정: 관리자가 'READY'로 바꿨지만, 아직 기사를 안 붙인 주문
     const unassignedOrders = orders.filter(o => 
-        o.orderState === 'READY' && !o.deliveryId
-    );
+    o.orderState === 'READY' && (!o.deliveryId || o.deliveryId === 0)
+);
 
     // 3. 배송 배정 완료: 'READY' 상태이면서 기사가 배정된 주문
     const assignedOrders = orders.filter(o => 
-        o.orderState === 'READY' && o.deliveryId
-    );
-
+    o.orderState === 'READY' && o.deliveryId > 0
+);
     // 4. 배송 완료: 최종 구매완료/배송완료
     const completedOrders = orders.filter(o => o.orderState === 'PURCHASED');
 
@@ -89,18 +88,12 @@ const Orderboard = ({
 
                                     <td>
                                         <select
-                                            value={order.orderState}
-                                            onChange={(e) =>
-                                                handleStatusChange(
-                                                    order.orderId,
-                                                    e.target.value
-                                                )
-                                            }
-                                        >
-                                            <option value="ORDER">주문완료</option>
-                                            <option value="PREPARING">물품준비중</option>
-                                            <option value="READY">준비완료</option>
-                                        </select>
+                                        value={order.orderState}
+                                        onChange={(e) => handleStatusChange(order.orderId, e.target.value)}
+                                         >
+                                    <option value="ORDER">주문완료</option>
+                                    <option value="READY">준비완료</option> 
+                                            </select>
                                     </td>
 
                                     <td>

@@ -5,6 +5,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cmyk.threeh.dto.SessionMember;
+import com.cmyk.threeh.enums.OrderState;
+import com.cmyk.threeh.global.error.CustomException;
+import com.cmyk.threeh.global.error.ErrorCode;
 import com.cmyk.threeh.domain.Admins;
 import com.cmyk.threeh.domain.CustomMemberDetails;
 import com.cmyk.threeh.domain.Delivery;
@@ -15,6 +18,8 @@ import com.cmyk.threeh.dto.DeliveryDTO;
 import com.cmyk.threeh.dto.DeliveryExcelDTO;
 import com.cmyk.threeh.dto.OrderResponseDTO;
 import com.cmyk.threeh.repository.AdminsRepository;
+import com.cmyk.threeh.repository.DeliveryRepository;
+import com.cmyk.threeh.repository.OrderRepository;
 import com.cmyk.threeh.service.AdminsService;
 import com.cmyk.threeh.service.DeliveryService;
 import com.cmyk.threeh.service.OrderService;
@@ -31,11 +36,13 @@ import javax.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
@@ -119,10 +126,10 @@ public ResponseEntity<AdminsDTO> getAdminIdByLoginId(@PathVariable("loginId") St
     Admins admin = adminsRepository.findByAdLoginId(loginId)
             .orElseThrow(() -> new RuntimeException("Admin not found"));
     
-    // 2. AdminsDTO 객체 생성 및 데이터 복사 (비밀번호는 제외!)
     AdminsDTO dto = new AdminsDTO();
     dto.setAdminId(admin.getAdminId());
     dto.setAdLoginId(admin.getAdLoginId());
+    dto.setPassword(admin.getPassword());
     dto.setAdminName(admin.getAdminName());
     dto.setRole(admin.getRole());
     
@@ -215,6 +222,43 @@ public ResponseEntity<?> bulkInsert(
     deliveryService.bulkInsert(list, adminId);
 
     return ResponseEntity.ok().build();
+}
+
+@RestController
+@RequestMapping("/order/status")
+@RequiredArgsConstructor
+public class AdminOrderController {
+
+    private final OrderService orderService;
+    private final OrderRepository orderRepository;
+    private final DeliveryRepository deliveryRepository;
+
+    // 1. 주문 상태 단순 변경 (예: ORDER -> READY)
+    @PutMapping("/orders/{orderId}/status")
+public ResponseEntity<?> updateOrderStatus(@PathVariable Long orderId, @RequestBody Map<String, String> payload) {
+    String statusStr = payload.get("status");
+    OrderState newState = OrderState.valueOf(statusStr); // Enum 변환
+    
+    Orders order = orderRepository.findById(orderId)
+            .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
+    order.changeOrderState(newState);
+    orderRepository.save(order);
+    return ResponseEntity.ok("상태 변경 완료");
+}
+
+    // 2. 배송 기사 배정
+    @PostMapping("/orders/{orderId}/assign")
+public ResponseEntity<?> assignOrderToDelivery(
+        @PathVariable("orderId") Long orderId, 
+        @RequestBody Map<String, Object> payload) {
+    
+    Long deliveryId = Long.valueOf(String.valueOf(payload.get("deliveryId")));
+    // adminsService.assignOrder 내부에 orderState를 READY로, 
+    // deliveryStatus를 WAITING으로 바꾸는 로직이 있는지 확인하세요!
+    adminsService.assignOrder(orderId, deliveryId); 
+    
+    return ResponseEntity.ok("배정이 완료되었습니다.");
+}
 }
 
 
