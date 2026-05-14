@@ -71,8 +71,7 @@ public class Orders {
     @Column(name = "order_type", nullable = false, length = 50)
     private OrderType orderType;
 
-    @Enumerated(EnumType.STRING)
-    private DeliveryStatus deliveryStatus;
+    
 
     @Column(name = "install_date")
     private LocalDate installDate;
@@ -184,6 +183,14 @@ public class Orders {
   public void assignOrder(Delivery delivery){
     this.delivery =  delivery;
     this.setOrderState(OrderState.READY);
+  }
+
+  public DeliveryStatus getTotalStatus() {
+    
+    if(delivery != null) {
+        return delivery.getStatus();
+    }
+    return DeliveryStatus.WAITING;
   }
   
 
