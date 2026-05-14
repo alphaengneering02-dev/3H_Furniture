@@ -145,19 +145,41 @@ const AdminDashboard = () => {
 
 const handleAssignDriver = async (orderId) => {
     const deliveryId = selectedDrivers[orderId];
+
+    // 1. 기사 선택 체크
     if (!deliveryId) {
         alert("기사를 선택해주세요.");
         return;
     }
 
     try {
+        // 2. 백엔드에 배정 요청 + 배송 상태 시작
         await axios.post(`/admin/orders/${orderId}/assign`, {
             deliveryId: deliveryId,
-            status: 'SHIPPING' // 배정 시 상태 변경
+            deliveryStatus: 'WAITING'   // 🔥 핵심 추가
         });
-        
-        alert("배송 배정이 완료되었습니다.");
-        fetchDeliveries(); // 기사 상태 갱신
+
+        // 3. UI 반영 (프론트 즉시 업데이트)
+        setOrders(prev =>
+            prev.map(order =>
+                order.orderId === orderId
+                    ? {
+                        ...order,
+                        deliveryId: deliveryId,
+                        deliveryStatus: 'WAITING'
+                    }
+                    : order
+            )
+        );
+
+        // 4. 선택 초기화
+        setSelectedDrivers(prev => ({
+            ...prev,
+            [orderId]: ""
+        }));
+
+        alert("기사 배정 완료 (배송 대기 상태로 변경됨)");
+
     } catch (error) {
         console.error("배정 실패:", error);
         alert("배정 중 오류가 발생했습니다.");
@@ -264,81 +286,7 @@ useEffect(() => {
                     <p>수정 삭제는 어드민만 볼 수 있는 상품리스트를 만들어서로 이동?</p>
                 </div>
 
-                {/* 주문 목록 */}
-                <div className="content-box">
-
-                    <h3>주문 목록</h3>
-
-                    <table className="table-style">
-
-                        <thead>
-                            <tr>
-                                <th>번호</th>
-                                <th>상품</th>
-                                <th>수량</th>
-                                <th>주소</th>
-                                <th>상태</th>
-                                <th>주문일</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-
-                            {orders.map((order, index) => (
-
-                                <tr key={order.orderId}>
-
-                                    <td>{index + 1}</td>
-
-                                    <td>
-                                        {renderItemName(order.orderitems)}
-                                    </td>
-
-                                    <td>
-                                        {
-                                            order.orderitems.reduce(
-                                                (sum, item) =>
-                                                    sum + item.count,
-                                                0
-                                            )
-                                        }개
-                                    </td>
-
-                                    <td>
-                                        {order.deliveryAddr}
-                                        {' '}
-                                        {order.deliveryAddrDetail}
-                                    </td>
-
-                                    <td>
-                                        <select
-                                            value={order.orderState}
-                                            onChange={(e) =>
-                                                handleStatusChange(
-                                                    order.orderId,
-                                                    e.target.value
-                                                )
-                                            }
-                                        >
-                                            <option value="ORDER">주문완료</option>
-                                            <option value="PREPARING">물품준비중</option>
-                                            <option value="READY">준비완료</option>
-                                        </select>
-                                    </td>
-
-                                    <td>
-                                        {order.orderDate?.split('T')[0]}
-                                    </td>
-
-                                </tr>
-
-                            ))}
-
-                        </tbody>
-
-                    </table>
-
-                </div>
+                
 
   {/* 기사 리스트 */}
                 <div>

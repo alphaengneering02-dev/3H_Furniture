@@ -20,8 +20,102 @@ const Orderboard = ({
             : firstName;
     };
 
+    
+
+        // 1. 주문 목록: 아직 준비 전인 주문들
+    const masterOrders = orders.filter(o => o.orderState === 'ORDER');
+
+    // 2. 배송 미배정: 관리자가 'READY'로 바꿨지만, 아직 기사를 안 붙인 주문
+    const unassignedOrders = orders.filter(o => 
+        o.orderState === 'READY' && !o.deliveryId
+    );
+
+    // 3. 배송 배정 완료: 'READY' 상태이면서 기사가 배정된 주문
+    const assignedOrders = orders.filter(o => 
+        o.orderState === 'READY' && o.deliveryId
+    );
+
+    // 4. 배송 완료: 최종 구매완료/배송완료
+    const completedOrders = orders.filter(o => o.orderState === 'PURCHASED');
+
     return (
         <div>
+
+            {/* 주문 목록 */}
+                <div className="content-box">
+
+                    <h3>주문 목록</h3>
+
+                    <table className="table-style">
+
+                        <thead>
+                            <tr>
+                                <th>번호</th>
+                                <th>상품</th>
+                                <th>수량</th>
+                                <th>주소</th>
+                                <th>상태</th>
+                                <th>주문일</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            {orders.map((order, index) => (
+
+                                <tr key={order.orderId}>
+
+                                    <td>{index + 1}</td>
+
+                                    <td>
+                                        {renderItemName(order.orderitems)}
+                                    </td>
+
+                                    <td>
+                                        {
+                                            order.orderitems.reduce(
+                                                (sum, item) =>
+                                                    sum + item.count,
+                                                0
+                                            )
+                                        }개
+                                    </td>
+
+                                    <td>
+                                        {order.deliveryAddr}
+                                        {' '}
+                                        {order.deliveryAddrDetail}
+                                    </td>
+
+                                    <td>
+                                        <select
+                                            value={order.orderState}
+                                            onChange={(e) =>
+                                                handleStatusChange(
+                                                    order.orderId,
+                                                    e.target.value
+                                                )
+                                            }
+                                        >
+                                            <option value="ORDER">주문완료</option>
+                                            <option value="PREPARING">물품준비중</option>
+                                            <option value="READY">준비완료</option>
+                                        </select>
+                                    </td>
+
+                                    <td>
+                                        {order.orderDate?.split('T')[0]}
+                                    </td>
+
+                                </tr>
+
+                            ))}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
 
             {/* 배송 배정 완료 */}
             <div>
@@ -41,8 +135,8 @@ const Orderboard = ({
 
                     <tbody>
                         {orders
-                            .filter(order => order.deliveryId)
-                            .map((order, index) => (
+    .filter(order => order.deliveryStatus === 'WAITING' || order.deliveryStatus === 'SHIPPING' || order.deliveryStatus === 'COMPLETED')
+    .map((order, index) => (
                                 <tr key={order.orderId}>
                                     <td>{index + 1}</td>
                                     <td>{renderItemName(order.orderitems)}</td>
@@ -53,7 +147,7 @@ const Orderboard = ({
                                         </strong>
                                     </td>
                                     <td>
-                                        {order.orderSate === 'SHIPPING' ? '배송중' : order.orderSate}
+                                        {order.deliveryStatus === 'WAITING' && '배정됨'}
                                     </td>
                                     <td>{order.orderDate?.split('T')[0]}</td>
                                 </tr>
@@ -80,7 +174,7 @@ const Orderboard = ({
 
                     <tbody>
                         {orders
-                            .filter(order => !order.deliveryId)
+                            .filter(order => order.orderState === 'READY' && !order.deliveryStatus)
                             .map((order, index) => (
                                 <tr key={order.orderId}>
                                     <td>{index + 1}</td>
@@ -148,7 +242,9 @@ const Orderboard = ({
                         </thead>
 
                         <tbody>
-                            {orders.map((order, index) => (
+                            {orders
+    .filter(order => order.deliveryStatus === 'COMPLETED')
+    .map((order, index) => (
                                 <tr key={order.orderId}>
 
                                     <td>
@@ -176,7 +272,7 @@ const Orderboard = ({
                                     </td>
 
                                     <td>
-                                       상품배송완료(COMPLETED)
+                                       {order.deliveryStatus}
                                     </td>
 
                                     <td>

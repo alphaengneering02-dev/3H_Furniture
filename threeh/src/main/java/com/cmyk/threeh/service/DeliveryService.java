@@ -8,9 +8,11 @@ import lombok.RequiredArgsConstructor;
 
 import com.cmyk.threeh.domain.Admins;
 import com.cmyk.threeh.domain.Delivery;
+import com.cmyk.threeh.domain.Orders;
 import com.cmyk.threeh.dto.DeliveryDTO;
 import com.cmyk.threeh.dto.DeliveryExcelDTO;
 import com.cmyk.threeh.enums.DeliveryStatus;
+import com.cmyk.threeh.enums.OrderState;
 import com.cmyk.threeh.repository.AdminsRepository;
 import com.cmyk.threeh.repository.DeliveryRepository;
 
@@ -137,7 +139,7 @@ public class DeliveryService {
         delivery.setDeliveryPhone(excelDto.getDeliveryPhone());
         delivery.setDeliveryCarNo(excelDto.getDeliveryCarNo());
 
-        // ⭐ status 처리 핵심 위치
+        // status 처리 핵심 위치
         delivery.setStatus(
             excelDto.getStatus() != null
                 ? DeliveryStatus.valueOf(excelDto.getStatus())
@@ -147,6 +149,36 @@ public class DeliveryService {
         deliveryRepository.save(delivery);
     }
 }
+
+@Transactional
+public void assignDelivery(Long orderId, Long deliveryId) {
+/* 
+    Orders order = ordersRepository.findById(orderId)
+            .orElseThrow(() -> new RuntimeException("주문 없음"));
+*/
+    Delivery delivery = deliveryRepository.findById(deliveryId)
+            .orElseThrow(() -> new RuntimeException("기사 없음"));
+/* 
+    // 이미 배정된 경우 방지
+    if (order.getDelivery() != null) {
+        throw new RuntimeException("이미 배정된 주문입니다.");
+    }
+*/
+    // 기사 상태 체크
+    if (delivery.getStatus() != DeliveryStatus.WAITING) {
+        throw new RuntimeException("배정 불가능한 기사입니다.");
+    }
+/* 
+    // 핵심 연결
+    order.setDelivery(delivery);
+    order.setOrderState(OrderState.SHIPPING);
+
+    delivery.setStatus(DeliveryStatus.SHIPPING);
+*/
+    }
+
+
+
 }
 
 

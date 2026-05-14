@@ -183,7 +183,7 @@ const Mypage = () => {
                             <div className="info-data-block">
                                 <p><strong>아이디:</strong> {member.id}</p>
                                 <p><strong>연락처:</strong> {member.phone}</p>
-                                <p><strong>가입 주소:</strong> {member.address}</p>
+                                <p><strong>이메일:</strong> {member.email || "-"}</p>
                             </div>
 
                             {/*
