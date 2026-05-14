@@ -158,7 +158,7 @@ public class Orders {
    */
    public void assinOrder(){
         this.delivery = delivery;
-        this.setOrderState(orderState.READY);
+        this.setOrderState(OrderState.READY);
     }
 
     /*
@@ -183,6 +183,7 @@ public class Orders {
     public void assignOrder(Delivery delivery){
         this.delivery =  delivery;
         this.setOrderState(OrderState.READY);
+        delivery.setStatus(DeliveryStatus.WAITING);
     }
 
     public DeliveryStatus getTotalStatus() {
