@@ -34,9 +34,29 @@ function Order(props) {
     useEffect(() => {
 
         if(cartItems.state && cartItems.state.cartItems){
-            console.log("장바구니 주문 처리");
-            setOrderData(cartItems.state.cartItems); 
-            setIsCartOrder(true)
+
+            const ids = cartItems.state.cartItemsIds;
+
+            //백엔드 검증 데이터 로드
+            axios.post("/api/order/items", ids)
+                .then(res => {
+                    console.log("서버 검증 데이터: ", res.data);
+
+                    setOrderData(res.data); 
+                    setIsCartOrder(true);
+
+                    if(res.data.defaultAddr){
+                        setAddress(res.defaultAddr);
+                        setDetailedAddress(res.detailedAddress);
+                        setZipcode(res.zipCode);
+                    }
+                })
+
+                .catch(error => {
+                    alert("상품 정보를 불러오는데 실패");
+                    navigate('/cart');
+                })
+            
         }else if (itemId) {
             axios.get(`/api/order/${itemId}`)
                 .then(res => {

@@ -60,6 +60,10 @@ public class OrderController {
                     CartItem cartItem = cartItemRepository.findById(cartItemId)
                             .orElseThrow(() -> new CustomException(ErrorCode.ITEM_NOT_FOUND));
 
+                    if (cartItem.getItem().getItemStock() < cartItem.getCount()) {
+                        throw new CustomException(ErrorCode.OUT_OF_STOCK); 
+                    }
+
                     ItemImgResponseDTO itemImage = itemImgService.getMainImg(cartItem.getItem().getItemId());
 
                     return OrderFormDTO.OrderItemInfo.builder()
