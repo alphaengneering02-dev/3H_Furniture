@@ -10,7 +10,7 @@ function Item(){
     const [item, setItem] = useState([]);
 
     useEffect(()=> {
-        axios.get("/item")
+        axios.get("api/item")
             .then((response) => {
                 console.log(response.data);
                 setItem(response.data);
