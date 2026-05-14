@@ -9,9 +9,14 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import com.cmyk.threeh.domain.Admins;
+import com.cmyk.threeh.domain.Orders;
 import com.cmyk.threeh.dto.AdminsDTO;
+import com.cmyk.threeh.enums.DeliveryStatus;
 import com.cmyk.threeh.enums.MemberRole;
+import com.cmyk.threeh.enums.OrderState;
 import com.cmyk.threeh.repository.AdminsRepository;
+import com.cmyk.threeh.repository.DeliveryRepository;
+import com.cmyk.threeh.repository.OrderRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +25,8 @@ public class AdminsService {
 
     private final PasswordEncoder passwordEncoder;
     private final AdminsRepository adminsRepository;
+    private final OrderRepository orderRepository;
+    private final DeliveryRepository deliveryRepository;
 
     // 관리자 등록
     @Transactional
@@ -59,6 +66,26 @@ public class AdminsService {
 
         return null;
     }
+/* 
+    @Transactional
+public void assignOrder(Long orderId, Long deliveryId) {
+
+    Orders order = orderRepository.findById(orderId)
+            .orElseThrow(() -> new RuntimeException("주문 없음"));
+
+    // 1. 상태 검증 (중요)
+    if (!order.getOrderState().equals(OrderState.READY)) {
+        throw new IllegalStateException("READY 상태만 배정 가능");
+    }
+
+    // 2. 기사 배정
+    order.setDeliveryId(deliveryId);
+
+    // 3. 배송 상태 시작
+    order.setDeliveryStatus(DeliveryStatus.WAITING);
+
+    orderRepository.save(order);
+}
 
     @Transactional // 데이터 변경이 일어나므로 반드시 추가
 public void assignOrder(Long orderId, Long deliveryId) {
@@ -66,4 +93,32 @@ public void assignOrder(Long orderId, Long deliveryId) {
     System.out.println("주문 번호 " + orderId + "번에 기사 " + deliveryId + "번 배정 로직 실행");
 }
 
+@Transactional
+public void startShipping(Long orderId) {
+
+    Orders order = orderRepository.findById(orderId)
+            .orElseThrow(() -> new RuntimeException("주문 없음"));
+
+    if (order.getDeliveryStatus() != DeliveryStatus.WAITING) {
+        throw new IllegalStateException("WAITING 상태만 배송 시작 가능");
+    }
+
+    order.setDeliveryStatus(DeliveryStatus.SHIPPING);
+}
+
+@Transactional
+public void completeDelivery(Long orderId) {
+
+    Orders order = orderRepository.findById(orderId)
+            .orElseThrow(() -> new RuntimeException("주문 없음"));
+
+    if (order.getDeliveryStatus() != DeliveryStatus.SHIPPING) {
+        throw new IllegalStateException("SHIPPING 상태만 완료 가능");
+    }
+
+    order.setDeliveryStatus(DeliveryStatus.COMPLETED);
+}
+
+
+*/
 }
