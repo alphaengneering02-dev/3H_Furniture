@@ -37,10 +37,6 @@ public class MemberSecurityService implements UserDetailsService, OAuth2UserServ
     
     private final AdminsRepository adminsRepository;
     private final MemberRepository memberRepository;
-    private final HttpSession httpSession;
-	
-	//세션 만료시간(초 단위, 기본값 10분)
-	public int expiredTime=600;
 
     
 	
@@ -85,19 +81,6 @@ public class MemberSecurityService implements UserDetailsService, OAuth2UserServ
                 throw new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + id);
             }
         }
-
-
-        //백엔드 http세션에 사용자 정보를 저장
-		//(* 프론트엔드 SessionStorage는 Login.js에서 저장)
-		httpSession.setAttribute("user", user);
-		httpSession.setMaxInactiveInterval(expiredTime);  //세션 만료시간
-
-		System.out.println("[백엔드 http세션에 올라간 회원정보]"  + "\n"
-			+ "sessindId: " + httpSession.getId() + "\n"
-			+ "만료시간: " + httpSession.getMaxInactiveInterval() + "\n"
-			+ "생성시간: " + httpSession.getCreationTime() + "\n"
-			+ "마지막 접속시간: " + httpSession.getLastAccessedTime()
-		);
 		
 
        // 찾은 엔티티를 CustomUserDetails에 담아서 시큐리티에 넘겨줍니다.
@@ -140,19 +123,6 @@ public class MemberSecurityService implements UserDetailsService, OAuth2UserServ
 
 			//원시 데이터(OAuth2DTO) -> 엔티티 Member에 넣음
 			Member authUser = saveOrUpdate(attributes);
-			
-			
-			//백엔드 http세션에 사용자 정보를 저장
-			//(* 프론트엔드 SessionStorage는 Login.js에서 저장)
-			httpSession.setAttribute("user", new SessionMember(authUser));
-			httpSession.setMaxInactiveInterval(expiredTime);  //세션 만료시간
-
-			System.out.println("[백엔드 http세션에 올라간 회원정보]"  + "\n"
-				+ "sessindId: " + httpSession.getId() + "\n"
-				+ "만료시간: " + httpSession.getMaxInactiveInterval() + "\n"
-				+ "생성시간: " + httpSession.getCreationTime() + "\n"
-				+ "마지막 접속시간: " + httpSession.getLastAccessedTime()
-			);
 
 
 			//프론트엔드 세션에 넘겨주기 위해, DB에 실제로 저장된 진짜 ID를 Map에 끼워 넣음

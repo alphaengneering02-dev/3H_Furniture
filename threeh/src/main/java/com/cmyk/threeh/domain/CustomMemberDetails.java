@@ -9,6 +9,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.cmyk.threeh.global.error.CustomException;
+import com.cmyk.threeh.global.error.ErrorCode;
+
 public class CustomMemberDetails implements UserDetails, Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -44,7 +47,9 @@ public class CustomMemberDetails implements UserDetails, Serializable {
         // 2. 일반 멤버인 경우
         else if(member != null) {
             authorities.add(new SimpleGrantedAuthority(member.getRole().getKey()));
-        } 
+        } else {
+            throw new CustomException(ErrorCode.MEMBER_NOT_FOUND);
+        }
 
         return authorities;
     }
