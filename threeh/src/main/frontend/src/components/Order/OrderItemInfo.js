@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 
 
-function OrderItemInfo( { orderData, orderType, zipCode, address, deliveryDate, detailedAddress }) {
+function OrderItemInfo( { orderData, orderType, zipCode, address, deliveryDate, detailedAddress, isCartOrder }) {
 
    const clientKey = "test_ck_4yKeq5bgrpKLdW2mBbdBVGX0lzW6"
   
@@ -33,6 +33,8 @@ function OrderItemInfo( { orderData, orderType, zipCode, address, deliveryDate, 
                 return;
            }
 
+          
+
            isLoadingRef.current = true;
 
           const tossPayment = window.TossPayments(clientKey);
@@ -50,6 +52,18 @@ function OrderItemInfo( { orderData, orderType, zipCode, address, deliveryDate, 
 
                 const user = JSON.parse(sessionStorage.getItem("user"));
 
+                 const orderItems = isCartOrder
+                ? orderData.map(item => ({
+                    itemId : item.itemId,
+                    itemName : item.itemName,
+                    count: item.count
+                }))
+                : [{
+                    itemId : orderData?.itemId,
+                    itemName : orderData?.itemName,
+                    count : 1
+                }]
+
                 sessionStorage.setItem("pendingOrder", JSON.stringify({
                     memberId: user.memberId,
                     memberName: user.name,
@@ -64,10 +78,14 @@ function OrderItemInfo( { orderData, orderType, zipCode, address, deliveryDate, 
                     orderType: orderType
                 }));
 
+                const displayOrderName = orderItems.length > 1
+                    ? `${orderItems[0].itemName} 외 ${orderItems.length -1}건`
+                    : orderItems[0].itemName
+
                 tossPayment.requestPayment('CARD', {
                     amount: orderData?.price,
                     orderId: orderId,
-                    orderName: orderData?.itemName,
+                    orderName: displayOrderName,
                     customerName: orderData?.memberName,
                     customerEmail: orderData?.email,
                     successUrl: "http://localhost:3000/payment/toss/success",
@@ -95,8 +113,7 @@ function OrderItemInfo( { orderData, orderType, zipCode, address, deliveryDate, 
             <div>
 
                 <div>
-                    <img src={orderData?.itemIamge} />
-                    
+                    <img src={orderData?.itemIamge} /> 
                     <p>{orderData?.itemName}</p>
                     <p>{orderData?.price}</p>
                     <p>{orderData?.itemDetail}</p>

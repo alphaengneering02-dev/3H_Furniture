@@ -99,7 +99,7 @@ const ItemCreate = () => {
             };
 
             const itemRes = await axios.post(
-                "http://localhost:8080/admin/item",
+                "http://localhost:8080/api/admin/item",
                 itemPayload,
                 { 
                        withCredentials:true,

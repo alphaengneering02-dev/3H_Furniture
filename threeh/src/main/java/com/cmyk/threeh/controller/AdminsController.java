@@ -109,6 +109,10 @@ public List<Delivery> getAllDeliveries(HttpSession session) {
 
   @GetMapping("/{loginId}") 
 public ResponseEntity<AdminsDTO> getAdminIdByLoginId(@PathVariable("loginId") String loginId) {
+
+    //추가 오현옥
+    loginId = loginId.trim();
+
     System.out.println("🔍 관리자 데이터 조회 요청 - Login ID: " + loginId);
     
     // 1. DB에서 관리자 엔티티 조회
