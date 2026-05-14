@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import OrderInfo from './OrderInfo';
 import OrderUser from './OrderUser';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import OrderItemInfo from './OrderItemInfo';
 
 function Order(props) {
 
     const { itemId } = useParams();
+    const cartItems = useLocation();
+
+
     const [orderData, setOrderData] = useState(null);
+    const [isCartOrder, setIsCartOrder] = useState(false);
     const [zipCode, setZipcode] = useState('');
     const [address, setAddress] = useState('');
     const [detailedAddress, setDetailedAddress] = useState('');
@@ -25,23 +29,45 @@ function Order(props) {
         navigate('/login');
     }
 
+    console.log(cartItems);
+
     useEffect(() => {
 
-        
+        if(cartItems.state && cartItems.state.cartItems){
 
-        axios.get(`/api/order/${itemId}`)
-        .then(res => {
-            console.log(res);
-            setOrderData(res.data);
+            const ids = cartItems.state.cartItemsIds;
+
+            //백엔드 검증 데이터 로드
+            axios.post("/api/order/items", ids)
+                .then(res => {
+                    console.log("서버 검증 데이터: ", res.data);
+
+                    setOrderData(res.data); 
+                    setIsCartOrder(true);
+
+                    if(res.data.defaultAddr){
+                        setAddress(res.defaultAddr);
+                        setDetailedAddress(res.detailedAddress);
+                        setZipcode(res.zipCode);
+                    }
+                })
+
+                .catch(error => {
+                    alert("상품 정보를 불러오는데 실패");
+                    navigate('/cart');
+                })
             
-        })
-        .catch(error => {
-            console.log(error);
-           
-        })
+        }else if (itemId) {
+            axios.get(`/api/order/${itemId}`)
+                .then(res => {
+                    setOrderData(res.data);
+                    setIsCartOrder(false);
+                })
+                .catch(error => console.log(error));
+        }
+    }, [itemId, cartItems.state]);
 
-        
-    }, [itemId])
+    
 
     return (
         <>
@@ -65,6 +91,7 @@ function Order(props) {
                 setOrderType={setOrderType} 
                 orderType={orderType} 
                 orderData={orderData}
+                isCartOrder={isCartOrder}
                 zipCode={zipCode}
                 address={address}
                 deliveryDate={deliveryDate}

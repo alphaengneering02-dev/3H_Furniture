@@ -96,11 +96,17 @@ const Login = () => {
         try {
             //DB에서 아이디가 같은 사이트 회원 데이터 검색
             let res;
+            
 
+            //코딩 추가_오현옥:withCredentials:true,
             if(form.id.indexOf("admin") != -1) {  //어드민 유저  **어드민 회원정보를 가져오는 코드가 만들어져야 함
-                res = await axios.get(`http://localhost:8080/admin/${id}`)
+                res = await axios.get(`http://localhost:8080/admin/${id}`,{
+                    withCredentials:true,
+                });
             } else {  //일반 유저
-                res = await axios.get(`http://localhost:8080/api/member/${id}`)
+                res = await axios.get(`http://localhost:8080/api/member/${id}`, {
+                    withCredentials:true,
+                });
             }
             
             console.log("사이트 회원 데이터 가져오기 성공!", res.data)
@@ -125,9 +131,13 @@ const Login = () => {
             // debugger;  //디버깅 모드 on
 
         } catch (error) {
-            console.error("사이트 회원 데이터 가져오기 실패!", error)
+            console.error("사이트 회원 데이터 가져오기 실패!", error);
+
+            if(error.response){
+                console.log("세션 저장 실패 응답", error.response.data);
+            }
         }
-    }
+    };
 
 
 

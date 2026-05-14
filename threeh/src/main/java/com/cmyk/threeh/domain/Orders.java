@@ -143,7 +143,7 @@ public class Orders {
     /*
     * 전체 주문 가격 조회
     */
-   public int getTotalPrice(){
+    public int getTotalPrice(){
         int totalPrice = 0;
 
         for (OrderItem orderItem : orderItems){
@@ -156,42 +156,42 @@ public class Orders {
    /*
    주문 할당
    */
-  public void assinOrder(){
-    this.delivery = delivery;
-    this.setOrderState(orderState.READY);
-  }
-
-  /*
-  주문 상태 변경 
-  */
-  public void changeOrderState(OrderState newState) {
-    
-    if (delivery != null && delivery.getStatus() == DeliveryStatus.             COMPLETED && newState == OrderState.ORDER) {
-        throw new CustomException(ErrorCode.ORDER_CANCEL_FAIL);
+   public void assinOrder(){
+        this.delivery = delivery;
+        this.setOrderState(orderState.READY);
     }
 
-    this.setOrderState(newState);
-  }
+    /*
+    주문 상태 변경 
+    */
+    public void changeOrderState(OrderState newState) {
+        
+        if (delivery != null && delivery.getStatus() == DeliveryStatus.             COMPLETED && newState == OrderState.ORDER) {
+            throw new CustomException(ErrorCode.ORDER_CANCEL_FAIL);
+        }
 
-  public void complete() {
-    if (delivery == null || delivery.getStatus() != DeliveryStatus.COMPLETED) {
-        throw new CustomException(ErrorCode.ORDER_CANCEL_FAIL); 
+        this.setOrderState(newState);
     }
-    this.setOrderState(OrderState.PURCHASED);
-  }
 
-  public void assignOrder(Delivery delivery){
-    this.delivery =  delivery;
-    this.setOrderState(OrderState.READY);
-  }
-
-  public DeliveryStatus getTotalStatus() {
-    
-    if(delivery != null) {
-        return delivery.getStatus();
+    public void complete() {
+        if (delivery == null || delivery.getStatus() != DeliveryStatus.COMPLETED) {
+            throw new CustomException(ErrorCode.ORDER_CANCEL_FAIL); 
+        }
+        this.setOrderState(OrderState.PURCHASED);
     }
-    return DeliveryStatus.WAITING;
-  }
+
+    public void assignOrder(Delivery delivery){
+        this.delivery =  delivery;
+        this.setOrderState(OrderState.READY);
+    }
+
+    public DeliveryStatus getTotalStatus() {
+        
+        if(delivery != null) {
+            return delivery.getStatus();
+        }
+        return DeliveryStatus.WAITING;
+    }
   
 
 }

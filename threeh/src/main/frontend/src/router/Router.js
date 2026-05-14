@@ -18,7 +18,6 @@ import ItemUpdate from '../components/item/ItemUpdate';
 
 //김승우
 import Order from '../components/Order/Order';
-import OrderItems from '../components/Order/OrderItems';
 import PaymentSuccess from '../components/payment/PaymentSuccess';
 
 //김태양
@@ -64,7 +63,7 @@ const Router = () => {
                 
                 <Route path="/payment/toss/success" element={<PaymentSuccess/>} />
                 <Route path="/order/:itemId" element={<Order/>} />
-                <Route path='/order/itmes' element={<OrderItems/>} />
+             
                 
             </Routes>
         </BrowserRouter>

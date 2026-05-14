@@ -49,7 +49,7 @@ public class OrderController {
     private final CartItemRepository cartItemRepository;
 
     /** 장바구니로 올시 */
-    @PostMapping("/form")
+    @PostMapping("/items")
     public ResponseEntity getOrderForm(@RequestBody List<Long> cartItemIds, Principal principal) {
 
         Member member = memberService.getUser(principal.getName());
@@ -59,6 +59,10 @@ public class OrderController {
                 .map(cartItemId -> {
                     CartItem cartItem = cartItemRepository.findById(cartItemId)
                             .orElseThrow(() -> new CustomException(ErrorCode.ITEM_NOT_FOUND));
+
+                    if (cartItem.getItem().getItemStock() < cartItem.getCount()) {
+                        throw new CustomException(ErrorCode.OUT_OF_STOCK); 
+                    }
 
                     ItemImgResponseDTO itemImage = itemImgService.getMainImg(cartItem.getItem().getItemId());
 
