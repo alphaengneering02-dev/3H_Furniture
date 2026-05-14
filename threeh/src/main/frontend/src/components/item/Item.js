@@ -8,6 +8,14 @@ function Item(){
 
     
     const [items, setItem] = useState([]);
+    const [user, setUser] = useState({});
+;
+
+    const getLoginUser = () => {
+
+        setUser (JSON.parse(sessionStorage.getItem("user")));
+        return 
+    };
 
     useEffect(()=> {
         axios.get("api/item")
@@ -18,16 +26,17 @@ function Item(){
             .catch((error)=>{
                 console.error("뭐 잘못했나봐..",error);
             });
+
+            getLoginUser();
     },[]);
 
     const navigate = useNavigate();
 
-    const getLoginUser = () => {
-        return JSON.parse(sessionStorage.getItem("user"));
-    };
+    
 
     const handleAddCart  = async (itemId) => {
-        const user  = getLoginUser();
+        
+        console.log(user);
 
         if(!user){
             alert("로그인이 필요합니다.");
@@ -41,7 +50,7 @@ function Item(){
             formdata.append("count",1);
 
             await axios.post(
-                "http://localhost:8080/cartItem/add", formdata,{
+                "/api/cartItem/add", formdata,{
                     withCredentials: true,
                 }
             );
@@ -51,7 +60,7 @@ function Item(){
             console.error("장바구니 담기 실패",error);
 
             if(error.response?.status === 401){
-                alert("로그인이 필요합니다.");
+                alert("인증되지 않은 회원입니다.");
                 navigate("/login");
                 return;
             }

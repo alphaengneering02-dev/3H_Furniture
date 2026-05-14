@@ -25,10 +25,10 @@ public class CartItemService {
     private final HttpSession httpSession; 
 
     @Transactional
-    public void addCartItem(CartItemForm form) { 
+    public void addCartItem(CartItemForm form, String sessionMember) { 
     
         //현재 브라우저 세션에서 로그인안 회원 정보 가져옴
-    SessionMember sessionMember = (SessionMember) httpSession.getAttribute("member");
+    
      // 로그인이 되어있지 않은 경우 예외 발생 (방어 로직)
     if (sessionMember == null) {
         throw new IllegalStateException("로그인이 필요합니다.");
@@ -36,7 +36,7 @@ public class CartItemService {
 
     // 세션에 담긴 로그인 ID(문자열)를 사용하여 실제 DB에 저장된 Member 엔티티 객체를 조회
     // 이 과정을 통해 memberId(PK) 등 상세 회원 정보를 확보함
-    Member member = memberService.getUser(sessionMember.getId());
+    Member member = memberService.getUser(sessionMember);
     
     Cart cart = cartRepository.findBymember_memberId(member.getMemberId()).orElse(null);
     // 장바구니가 없는 유저(첫 사용 등)일 경우, 즉석에서 새 장바구니를 생성하고 DB에 저장

@@ -1,10 +1,13 @@
 package com.cmyk.threeh.controller;
 
+import java.security.Principal;
+
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping; 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,15 +20,19 @@ import lombok.RequiredArgsConstructor;
 
 @RestController // 화면 이동 대신 성공/실패 여부를 데이터로 리액트에 리턴합니다.
 @RequiredArgsConstructor
-@RequestMapping("/cartItem")
+@RequestMapping("/api/cartItem")
 public class CartItemController {
 
     private final CartItemService cartItemService;
 
     @PostMapping("/add") 
-    public ResponseEntity<String> addCartItem(@Valid CartItemForm cartItemForm,
+    public ResponseEntity<String> addCartItem(@Valid @ModelAttribute CartItemForm cartItemForm,
                                               BindingResult bindingResult,
-                                              HttpSession session) {
+                                              Principal principal) {
+
+        if(principal == null) {
+            return ResponseEntity.status(401).body("로그인이 필요한 서비스입니다.");
+        }
 
         // 유효성 검사 에러 시 에러 메시지를 리액트에 400 에러로 응답합니다.
         if(bindingResult.hasErrors()) {
@@ -33,8 +40,7 @@ public class CartItemController {
         }
 
         // 세션에 담는 키값 "member"로 로그인 여부 확인
-        SessionMember member = (SessionMember) session.getAttribute("member");
-        
+        String member =  principal.getName();        
         // 로그인 정보가 없으면 401(미인증) 에러를 리액트에 쏴서 로그인 창으로 유도합니다.
         if(member == null) {
             return ResponseEntity.status(401).body("로그인이 필요한 서비스입니다.");
@@ -42,7 +48,7 @@ public class CartItemController {
 
         // 서비스 레이어 호출 (기존에 작성하신 서비스를 그대로 사용합니다.)
         try {
-            cartItemService.addCartItem(cartItemForm);
+            cartItemService.addCartItem(cartItemForm, member);
         } catch (Exception e) {
             return ResponseEntity.status(500).body("장바구니 담기 중 오류 발생: " + e.getMessage());
         }
