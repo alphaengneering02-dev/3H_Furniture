@@ -21,7 +21,7 @@ const ItemDetail = () => {
     const getItem = async() =>{
         try{
             const response = await axios.get(
-                `http://localhost:8080/item/${itemId}`,{
+                `http://localhost:8080/api/item/${itemId}`,{
                     withCredentials:true,
                 }
             );
@@ -37,7 +37,7 @@ const ItemDetail = () => {
     const getItemImgs = async() =>{
         try{
             const response = await axios.get(
-                `http://localhost:8080/itemImgs/${itemId}`
+                `http://localhost:8080/api/itemImgs/${itemId}`
             );
             console.log("상품 이미지: ", response.data);
             setItemImgs(response.data);
