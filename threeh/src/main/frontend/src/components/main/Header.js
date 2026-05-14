@@ -19,10 +19,11 @@ const Header = () => {
 
 
     //로그인한 회원정보 가져오기
-    const [user, setUser] = useState({})
+    const [user, setUser] = useState({})  //회원정보 저장객체
 
     const getSession = () => {
         try {
+            //회원정보 저장객체 초기화
             setUser(null)
 
             //sessionStorage에서 회원정보를 가져옴
@@ -163,7 +164,7 @@ const Header = () => {
                                 ? (
                                     <>
                                         <li>
-                                            <Link to="/">
+                                            <Link to="/mypage">
                                                 <img src={icon_mypage} alt="마이페이지" style={{width: 50}}/>
                                                 <p>마이페이지</p>
                                             </Link>

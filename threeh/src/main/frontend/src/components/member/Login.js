@@ -39,6 +39,7 @@ const Login = () => {
 
 
     const [loginResultMsg, setLoginResultMsg] = useState("");
+     const expireTime = 30 * 60 * 1000  //세션 만료시간(밀리초 단위, 30분)
 
 
 
@@ -48,11 +49,17 @@ const Login = () => {
         //브라우저의 기본 폼 제출(새로고침) 방지
         evt.preventDefault();
 
+        //모든 필드의 null 검사
+        if(id=="" || password=="") {
+            alert("모든 항목을 입력해주세요!")
+            return
+        }
+
 
         //백엔드 서버로 전송할 데이터 (Form data 형태)
         const params = new URLSearchParams();
-        params.append('id', form.id);
-        params.append('password', form.password);  //예: id=user2&password=a123 형태의 Form Data
+        params.append('id', id);
+        params.append('password', password);  //예: id=user2&password=a123 형태의 Form Data
         
 
         console.log("서버로 보내는 데이터: " + params.toString())
@@ -60,7 +67,7 @@ const Login = () => {
 
         //데이터 전송 및 sessionStorage 저장
         try {
-            //데이터 전송
+            //데이터 전송 (어드민, 일반 유저)
             const res = await axios.post(`http://localhost:8080/api/member/login`, params, {
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 withCredentials: true // 세션 쿠키를 유지하기 위해 필요합니다.
@@ -71,18 +78,20 @@ const Login = () => {
 
             // Spring Boot에서 보내준 JSON 응답(status: true) 확인
             if (res.data.status === true) {
-                setLoginResultMsg(res.data.message);  //"message": "로그인에 성공하였습니다"
-                alert("로그인에 성공하였습니다.");
+                const passMessage = res.data.message
+                setLoginResultMsg(passMessage);  //"message": "로그인에 성공하였습니다"
+                alert(passMessage)
+                console.log(passMessage)
 
                 //sessionStorage 저장
                 await setSession(res.data.id);
                 
-                // 세션 만료시, 세션 삭제+로그인 페이지로 이동 (10분=600,000 밀리초 후)
+                // 세션 만료시, 세션 삭제+로그인 페이지로 이동 (30분)
                 setTimeout(() => {
                     alert("세션이 만료되었습니다. 다시 로그인해주세요.");
                     sessionStorage.removeItem("user"); //세션 삭제
                     navigate('/login'); //로그인 페이지로 이동
-                }, 10*60*1000)
+                }, expireTime)
 
                 // 메인 페이지로 이동
                 navigate('/')
@@ -91,14 +100,17 @@ const Login = () => {
         } catch (error) {
             //백엔드의 LoginFailHandler가 보낸 JSON 응답을 받음
             if (error.response && error.response.data) {
-                setLoginResultMsg(error.response.data.message);  //"잠긴 계정입니다.", "비밀번호가 만료되었습니다." 등의 텍스트
+                const errorMessage = error.response.data.message
+                setLoginResultMsg(errorMessage);  //"잠긴 계정입니다.", "비밀번호가 만료되었습니다." 등의 에러메세지
+
+                alert(errorMessage)
+                console.log(errorMessage)
             } else {
                 setLoginResultMsg("서버와 연결할 수 없습니다.");
             }
 
-            console.error("사이트 회원 데이터 전송 실패!", error)
+            console.error("로그인 시도 중 오류 발생: ", error)
         }
-
     }
 
 
@@ -108,10 +120,8 @@ const Login = () => {
         try {
             //DB에서 아이디가 같은 사이트 회원 데이터 검색
             let res;
-            
 
-            //코딩 추가_오현옥:withCredentials:true,
-            if(form.id.indexOf("admin") != -1) {  //어드민 유저  **어드민 회원정보를 가져오는 코드가 만들어져야 함
+            if(form.id.indexOf("admin") != -1) {  //어드민 유저
                 res = await axios.get(`http://localhost:8080/admin/${id}`,{
                     withCredentials:true,
                 });
@@ -127,7 +137,6 @@ const Login = () => {
             // 2. 프론트엔드 sessionStorage에 사용자 정보를 저장
             //(* 백엔드 HttpSession은 MemberSecurityService.java에서 저장)
             const now = new Date()
-            const expireTime = 600 * 1000  //세션 만료시간(밀리초 단위, 10분)
 
             const user = {
                 ...res.data,
@@ -182,12 +191,6 @@ const Login = () => {
                     <span onClick={() => navigate("/changePw")}>비밀번호 찾기</span>
                 </p>
             </article>
-
-
-            {/* 로그인 성공/실패 메세지 */}
-            <div>
-                {loginResultMsg && <p>{loginResultMsg}</p>}
-            </div>
 
 
             <button onClick={onSubmit}>로그인</button>

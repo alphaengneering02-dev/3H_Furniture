@@ -72,6 +72,8 @@ public class OAuth2DTO {
 	//Kakao 사용자 데이터를 추출
 	private static OAuth2DTO ofKakao(String registrationId, String userNameAttributeName, Map<String, Object> attributes) {
 
+		System.out.println(attributes);
+
 		// 1. 카카오가 kakao_account(중첩) 형태로 데이터를 줄 때
 		Map<String, Object> kakaoAccount = (Map<String, Object>)attributes.get("kakao_account");
 		Map<String, Object> profile = 
@@ -86,9 +88,9 @@ public class OAuth2DTO {
 			: "default"  // 2. 카카오가 OIDC(평면) 형태로 데이터를 줄 때 (코드 아래의 샘플 데이터 형태)
 		;
 		String email = 
-			(kakaoAccount != null) 
+			(kakaoAccount != null && kakaoAccount.get("email") != null) 
 			? (String) kakaoAccount.get("email") 
-			: "default"
+			: attributes.get("id") + "@kakao.com"
 		;
 
 				
@@ -132,7 +134,8 @@ public class OAuth2DTO {
         //랜덤 UUID 생성
         String randomString = UUID.randomUUID().toString().substring(0, 8);
 
-        member.setId(this.registrationId + "_" + randomString);
+		String db_id = this.registrationId + "_" + randomString;  //DB 저장용 랜덤 생성 ID
+        member.setId(db_id);
         member.setPassword(randomString);  //초기 비밀번호는 UUID와 같음
         member.setName(this.name);
         member.setEmail(this.email);

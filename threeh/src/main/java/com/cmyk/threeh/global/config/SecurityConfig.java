@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -37,7 +38,7 @@ import lombok.RequiredArgsConstructor;
 @EnableMethodSecurity(prePostEnabled = true)   //로그아웃 상태면, login_form으로 이동시킴
 public class SecurityConfig {
 
-    private final MemberSecurityService memberSecurityService;
+    private final MemberSecurityService memberSecurityService;  //사용자 정보 조회 서비스
 	private final LoginSuccessHandler loginSuccessHandler;  //로그인 성공 핸들러 주입
 	private final LoginFailHandler loginFailHandler;  //로그인 에러 핸들러 주입
 	private final HttpSession httpSession;
@@ -159,6 +160,24 @@ public class SecurityConfig {
 			AuthenticationConfiguration authenticationConfiguration) throws Exception {
 		return authenticationConfiguration.getAuthenticationManager();
 	}
+
+
+	//인증 Provider 설정: 예외를 원형 그대로 전달하도록 설정
+    @Bean
+    public DaoAuthenticationProvider daoAuthenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        
+        // 1. 사용자 정보를 조회할 서비스 연결
+        provider.setUserDetailsService(memberSecurityService);
+        
+        // 2. 비밀번호 암호화 방식 연결
+        provider.setPasswordEncoder(passwordEncoder());
+        
+        // 3. 핵심: 존재하지 않는 아이디일 때 UsernameNotFoundException을 그대로 던짐
+        provider.setHideUserNotFoundExceptions(false); 
+        
+        return provider;
+    }
 
 
 
