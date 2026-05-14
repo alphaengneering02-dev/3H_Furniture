@@ -7,7 +7,7 @@ const ItemCreate = () => {
 
     const navigate = useNavigate();
     //세션 유지용 (로그인 일반 유저 _어드민 구현 전까지)
-    const admin = JSON.parse(sessionStorage.getItem("admin1"));
+    const user = JSON.parse(sessionStorage.getItem("user"));
 
     //상품 정보 입력(Item table)
     const[item,setItem] = useState({
@@ -65,15 +65,15 @@ const ItemCreate = () => {
         e.preventDefault();
 
         //제출 전에 로그인 여부 확인
-        const admin = JSON.parse(sessionStorage.getItem("admin1"));
+        const user = JSON.parse(sessionStorage.getItem("user"));
 
-        if(!admin){
+        if(!user){
             alert("로그인이 필요합니다.");
             navigate("/login");
             return;
         }
 
-        console.log("로그인한 사용자:",admin);
+        console.log("로그인한 사용자:",user);
     
         if(!mainImgFile){
             alert("대표 이미지를 선택해주세요.");
