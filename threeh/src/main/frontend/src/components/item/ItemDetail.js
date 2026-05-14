@@ -21,7 +21,9 @@ const ItemDetail = () => {
     const getItem = async() =>{
         try{
             const response = await axios.get(
-                `http://localhost:8080/item/${itemId}`
+                `http://localhost:8080/item/${itemId}`,{
+                    withCredentials:true,
+                }
             );
             console.log("상품 상세:", response.data);
             setItem(response.data);

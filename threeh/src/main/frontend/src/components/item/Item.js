@@ -7,7 +7,7 @@ import axios from "axios";
 function Item(){
 
     
-    const [item, setItem] = useState([]);
+    const [items, setItem] = useState([]);
 
     useEffect(()=> {
         axios.get("api/item")
@@ -20,37 +20,41 @@ function Item(){
             });
     },[]);
 
-    return(
-
-        <div>
-            
+    return (
+            <div>
             <h1>상품 목록</h1>
-            {item.length === 0 ? (
+
+            {items.length === 0 ? (
                 <p>상품이 없습니다.</p>
-            ):(
-                item.map((item) => (
-                    <div key={item.itemId}>
-                        <img src={`http://localhost:8080${item.itemImgUrl}`} alt={item.itemName} width="200"/>
-                        
-                        <Link to={`/item/${item.itemId}`}>
-                            <h2>{item.itemName}</h2>
-                        </Link>
+            ) : (
+                items.map((item) => (
+                <div key={item.itemId}>
+                    {item.itemImgUrl ? (
+                    <img
+                        src={`http://localhost:8080${item.itemImgUrl}`}
+                        alt={item.itemName}
+                        width="200"
+                    />
+                    ) : (
+                    <p>이미지 없음</p>
+                    )}
 
-                        <p>카테고리: {item.itemCategory}</p>
-                        <p>상품 설명: {item.itemDetail}</p>
-                        <p>상품 색상: {item.itemColor}</p>
-                        <p>상품 가격: {item.itemPrice}</p>
-                        <p>상품 할인가격: {item.itemDiscountPrice}</p>
-                        <p>상품 최종가격: {item.itemFinalPrice}</p>
-                        <p>상품 재고: {item.item}</p>
+                    <Link to={`/item/${item.itemId}`}>
+                    <h2>{item.itemName}</h2>
+                    </Link>
 
-                    </div>
+                    <p>카테고리: {item.itemCategory}</p>
+                    <p>상품 설명: {item.itemDetail}</p>
+                    <p>상품 색상: {item.itemColor}</p>
+                    <p>상품 가격: {item.itemPrice}</p>
+                    <p>상품 할인가격: {item.itemDiscountPrice}</p>
+                    <p>상품 최종가격: {item.itemFinalPrice}</p>
+                    <p>상품 재고: {item.itemStock}</p>
+                </div>
                 ))
             )}
-
-        </div>
-    );
-    
-}
+            </div>
+        );
+        }
 
 export default Item;
