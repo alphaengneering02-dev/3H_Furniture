@@ -66,15 +66,27 @@ const Login = () => {
                 withCredentials: true // 세션 쿠키를 유지하기 위해 필요합니다.
             })
 
-            setLoginResultMsg(res.data.message);  //"message": "로그인에 성공하였습니다"
             console.log("사이트 회원 데이터 전송 성공!", res)
+            
 
+            // Spring Boot에서 보내준 JSON 응답(status: true) 확인
+            if (res.data.status === true) {
+                setLoginResultMsg(res.data.message);  //"message": "로그인에 성공하였습니다"
+                alert(loginResultMsg);
 
-            //sessionStorage 저장
-            await setSession(form.id)
+                //sessionStorage 저장
+                await setSession(res.data.id);
+                
+                // 세션 만료시, 세션 삭제+로그인 페이지로 이동 (10분=600,000 밀리초 후)
+                setTimeout(() => {
+                    alert("세션이 만료되었습니다. 다시 로그인해주세요.");
+                    sessionStorage.removeItem("user"); //세션 삭제
+                    navigate('/login'); //로그인 페이지로 이동
+                }, 10*60*1000)
 
-            //메인으로 리다이렉트
-            navigate("/")
+                // 메인 페이지로 이동
+                navigate('/')
+            }
 
         } catch (error) {
             //백엔드의 LoginFailHandler가 보낸 JSON 응답을 받음
