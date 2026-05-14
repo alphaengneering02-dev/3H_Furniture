@@ -1,26 +1,37 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
+//유소은
 import Main from '../components/main/Main';
 import Login from '../components/member/Login';
 import Signup from '../components/member/Signup';
 import Signup_site from '../components/member/Signup_site';
 import FindId from '../components/member/FindId';
 import ChangePW from '../components/member/ChangePW';
-import Order from '../components/Order/Order';
+import OAuth2Success from '../components/member/OAuth2Success';
+import SearchResult from '../components/member/SearchResult';
+
+//오현옥
 import Item from '../components/item/Item';
-import Mypage from '../components/mypage/Mypage';
+import ItemDetail from '../components/item/ItemDetail';
+import ItemCreate from '../components/item/ItemCreate';
+import ItemUpdate from '../components/item/ItemUpdate';
+
+//김승우
+import Order from '../components/Order/Order';
+import OrderItems from '../components/Order/OrderItems';
+import PaymentSuccess from '../components/payment/PaymentSuccess';
+
+//김태양
 import AdminDashboard from '../components/admin/AdminDashboard';
 import AddDelivery from '../components/admin/AddDelivery';
-import PaymentSuccess from '../components/payment/PaymentSuccess';
-import OrderComplete from '../components/Order/OrderComplete';
-import ItemDetail from '../components/item/ItemDetail';
-import Cart from '../components/mypage/Cart';
-import ItemCreate from '../components/item/ItemCreate';
 import EditDelivery from '../components/admin/EditDelivery';
-import ItemUpdate from '../components/item/ItemUpdate';
-import OAuth2Success from '../components/member/OAuth2Success';
 import Refund from '../components/mypage/Refund'; 
 import MemberAddressUpdate from '../components/mypage/MemberAddressUpdate'; 
-import SearchResult from '../components/member/SearchResult';
+
+//김인호
+import Mypage from '../components/mypage/Mypage';
+import Cart from '../components/mypage/Cart';
+
 
 
 const Router = () => {
@@ -53,7 +64,7 @@ const Router = () => {
                 
                 <Route path="/payment/toss/success" element={<PaymentSuccess/>} />
                 <Route path="/order/:itemId" element={<Order/>} />
-                <Route path='/order/complete' element={<OrderComplete/>} />
+                <Route path='/order/itmes' element={<OrderItems/>} />
                 
             </Routes>
         </BrowserRouter>
