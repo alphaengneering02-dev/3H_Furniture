@@ -23,6 +23,15 @@ public class CartItemDTO {
 
     //해당 상품의 장바구니 담긴 수량
     private Long count;
+
+    //URL 이미지 파일
+    private String imageUrl;
+
+    //[추가] 리액트 화면 루프 및 조장님 오더 연동을 위한 상품명
+    private String itemName;
+
+    //[추가] 리액트 가격 연산 및 조장님 오더 연동을 위한 단가 가격
+    private Long orderPrice;
     
     /**
      * [구조적 특징]
