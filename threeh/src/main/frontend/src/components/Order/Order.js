@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import OrderInfo from './OrderInfo';
 import OrderUser from './OrderUser';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import OrderItemInfo from './OrderItemInfo';
 
 function Order(props) {
 
     const { itemId } = useParams();
+    const cartItems = useLocation();
+
+
     const [orderData, setOrderData] = useState(null);
+    const [isCartOrder, setIsCartOrder] = useState(false);
     const [zipCode, setZipcode] = useState('');
     const [address, setAddress] = useState('');
     const [detailedAddress, setDetailedAddress] = useState('');
@@ -25,23 +29,25 @@ function Order(props) {
         navigate('/login');
     }
 
+    console.log(cartItems);
+
     useEffect(() => {
 
-        
+        if(cartItems.state && cartItems.state.cartItems){
+            console.log("장바구니 주문 처리");
+            setOrderData(cartItems.state.cartItems); 
+            setIsCartOrder(true)
+        }else if (itemId) {
+            axios.get(`/api/order/${itemId}`)
+                .then(res => {
+                    setOrderData(res.data);
+                    setIsCartOrder(false);
+                })
+                .catch(error => console.log(error));
+        }
+    }, [itemId, cartItems.state]);
 
-        axios.get(`/api/order/${itemId}`)
-        .then(res => {
-            console.log(res);
-            setOrderData(res.data);
-            
-        })
-        .catch(error => {
-            console.log(error);
-           
-        })
-
-        
-    }, [itemId])
+    
 
     return (
         <>
@@ -65,6 +71,7 @@ function Order(props) {
                 setOrderType={setOrderType} 
                 orderType={orderType} 
                 orderData={orderData}
+                isCartOrder={isCartOrder}
                 zipCode={zipCode}
                 address={address}
                 deliveryDate={deliveryDate}

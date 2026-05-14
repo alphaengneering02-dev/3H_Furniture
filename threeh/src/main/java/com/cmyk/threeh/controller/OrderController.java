@@ -49,7 +49,7 @@ public class OrderController {
     private final CartItemRepository cartItemRepository;
 
     /** 장바구니로 올시 */
-    @PostMapping("/form")
+    @PostMapping("/items")
     public ResponseEntity getOrderForm(@RequestBody List<Long> cartItemIds, Principal principal) {
 
         Member member = memberService.getUser(principal.getName());

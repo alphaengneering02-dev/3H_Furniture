@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import PaymentFail from './PaymentFail';
 
 function PaymentSuccess() {
 
@@ -14,11 +15,7 @@ function PaymentSuccess() {
     const orderId = searchParams.get("orderId");
     const amount = searchParams.get("amount");
 
-    
-
-    
-
-    
+    const user = JSON.parse(sessionStorage.getItem("user"));
 
     useEffect(() => {
         let ignored = false;
@@ -26,13 +23,14 @@ function PaymentSuccess() {
         const confirmPayment = async () => {
 
             const orderData = JSON.parse(sessionStorage.getItem("pendingOrder"));
+            
 
             console.log("세션스토리지 전체:", sessionStorage); // 세션에 뭐가 들어있는지 전체 출력
             console.log("파싱된 데이터:", orderData);
 
             if (!orderData) {
-                console.error("세션에 주문 데이터가 없습니다!");
-                navigate("/OrderFail");
+                console.error("주문 데이터가 없습니다!");
+                //navigate("/OrderFail");
                 return ;
             }
             try {
@@ -68,8 +66,7 @@ function PaymentSuccess() {
                 if (errorMessage === "재고가 부족합니다.") {
                     setFailReason("죄송합니다. 해당 상품의 재고가 부족합니다.");
                 } else if (status === 401) {
-                    alert("로그인이 필요합니다.");
-                    navigate("/login");
+                    setFailReason("주문 처리 중 오류가 발생했습니다. 다시 시도해주세요.");
                     return;
                 } else if(status === 404) {
                     setFailReason("주문 처리 중 오류가 발생했습니다. 다시 시도해주세요.");
@@ -77,7 +74,11 @@ function PaymentSuccess() {
                     setFailReason("서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
                 } else if (errorMessage) {
                     setFailReason(errorMessage);
-                } else {
+                } else if(!user) {
+                    alert("로그인을 다시해주세요.");
+                    navigate("/login");
+                }
+                else {
                     setFailReason("주문 처리 중 오류가 발생했습니다. 다시 시도해주세요.");
                 }
 
@@ -95,15 +96,8 @@ function PaymentSuccess() {
     }
 
     if (payStatus === "fail") {
-        navigate("/PaymentFail");
-        return (
-            <div>
-                <h2>결제 실패</h2>
-                <p>{failReason}</p> 
-                <button onClick={() => navigate(`/order/${finalOrderData?.orderItems[0]?.itemId}`)}>다시 시도</button>
-                <button onClick={() => navigate("/")}>홈으로</button>
-            </div>
-        );
+        <PaymentFail failReason={failReason} finalOrderData={finalOrderData}/>
+        return;
     }
 
     return (
