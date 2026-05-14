@@ -67,12 +67,12 @@ const Login = () => {
             })
 
             console.log("사이트 회원 데이터 전송 성공!", res)
-            
+
 
             // Spring Boot에서 보내준 JSON 응답(status: true) 확인
             if (res.data.status === true) {
                 setLoginResultMsg(res.data.message);  //"message": "로그인에 성공하였습니다"
-                alert(loginResultMsg);
+                alert("로그인에 성공하였습니다.");
 
                 //sessionStorage 저장
                 await setSession(res.data.id);
