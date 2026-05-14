@@ -37,7 +37,7 @@ const ItemUpdate = () => {
     //수정할 아이템 가져오기
     const getItem = async()=>{
         try{
-            const res = await axios.get(`http://localhost:8080/item/${itemId}`,
+            const res = await axios.get(`http://localhost:8080/api/item/${itemId}`,
             {withCredentials:true,});
 
             setItem({
@@ -60,7 +60,7 @@ const ItemUpdate = () => {
     const getItemImgs =async() =>{
         try{
             const res = await axios.get(
-                `http://localhost:8080/itemImgs/${itemId}`,{withCredentials:true,});
+                `http://localhost:8080/api/itemImgs/${itemId}`,{withCredentials:true,});
 
             setItemImgs(res.data);
         }catch(error){
@@ -107,7 +107,7 @@ const ItemUpdate = () => {
         formData.append("thumbnailYn", thumbnailYn);
         
         await axios.post(
-            "http://localhost:8080/itemImgs/uploadItemImg",
+            "http://localhost:8080/api/itemImgs/uploadItemImg",
             formData,
             {
                 withCredentials: true,
@@ -136,7 +136,6 @@ const ItemUpdate = () => {
         }
 
         try{
-            const token = localStorage.getItem("token");
 
             const itemPayload = {
                 itemCategory: item.itemCategory,
@@ -145,11 +144,14 @@ const ItemUpdate = () => {
                 itemColor: item.itemColor,
                 itemPrice: Number(item.itemPrice),
                 itemDiscountPrice: Number(item.itemDiscountPrice || 0),
+                itemPriceCurrency:item.itemPriceCurrency||"KRW",
+                itemSellStatus:item.itemSellStatus,
                 itemStock: Number(item.itemStock),
+                
             };
 
             await axios.put(
-                `http://localhost:8080/admin/item/${itemId}`,
+                `http://localhost:8080/api/admin/item/${itemId}`,
                 itemPayload,
                 {
                       withCredentials:true,
@@ -157,7 +159,7 @@ const ItemUpdate = () => {
             );
 
             for(const itemImgId of deleteImgIds) {
-                await axios.delete(`http://localhost:8080/itemImgs/${itemImgId}`, {withCredentials:true,});
+                await axios.delete(`http://localhost:8080/api/itemImgs/${itemImgId}`, {withCredentials:true,});
             }
  
             if(newMainImgFile){
@@ -167,13 +169,13 @@ const ItemUpdate = () => {
             
                 for(const img of oldMainImgs) {
 
-                    await axios.delete(`http://localhost:8080/itemImgs/${img.itemImgId}`, {withCredentials:true,});
+                    await axios.delete(`http://localhost:8080/api/itemImgs/${img.itemImgId}`, {withCredentials:true,});
                 }
-                await uploadImage(itemId,newMainImgFile,"Y",token);
+                await uploadImage(itemId,newMainImgFile,"Y");
             }
 
             for(const file of newSubImgFiles){
-                await uploadImage(itemId,file,"N",token);
+                await uploadImage(itemId,file,"N");
             }
 
             alert("상품 수정 완료");
