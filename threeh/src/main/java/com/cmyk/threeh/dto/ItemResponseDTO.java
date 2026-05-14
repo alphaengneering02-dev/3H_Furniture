@@ -36,8 +36,24 @@ private String itemImgUrl;
 
     public static ItemResponseDTO from(Item item){
 
+        String imgUrl = null;
+
+        if(item.getItemImgList()!=null){
+            imgUrl = item.getItemImgList()
+                    .stream()
+                    .filter(img->img.getThumbnailYn()==SubImg.Y)
+                    .findFirst()
+                    .map(ItemImg::getItemImgUrl)
+                    .orElse(null);
+        }
+
         return ItemResponseDTO.builder()
         .itemId(item.getItemId())
+        .adminId(
+            item.getAdmin() !=null
+            ? item.getAdmin().getAdminId()
+            :null
+        )
         .itemCategory(item.getItemCategory())
         .itemName(item.getItemName())
         .itemDetail(item.getItemDetail())
@@ -47,11 +63,7 @@ private String itemImgUrl;
         .itemFinalPrice(item.getItemFinalPrice())
         .itemPriceCurrency(item.getItemPriceCurrency())
         .itemStock(item.getItemStock())
-        .itemImgUrl(item.getItemImgList().stream()
-            .filter(img->img.getThumbnailYn() ==SubImg.Y)
-            .findFirst()
-            .map(ItemImg::getItemImgUrl)
-            .orElse(null))
+        .itemImgUrl(imgUrl)
         .build();
     }
 }
