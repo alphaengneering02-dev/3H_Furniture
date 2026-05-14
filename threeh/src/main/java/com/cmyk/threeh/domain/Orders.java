@@ -71,6 +71,9 @@ public class Orders {
     @Column(name = "order_type", nullable = false, length = 50)
     private OrderType orderType;
 
+    @Enumerated(EnumType.STRING)
+    private DeliveryStatus deliveryStatus;
+
     @Column(name = "install_date")
     private LocalDate installDate;
 
