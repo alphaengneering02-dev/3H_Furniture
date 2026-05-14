@@ -34,7 +34,7 @@ const OAuth2Success = () => {
             // 2. 프론트엔드 sessionStorage에 사용자 정보를 저장
             //(* 백엔드 HttpSession은 MemberSecurityService.java에서 저장)
             const now = new Date();
-            const expireTime = 600 * 1000;  //10분
+            const expireTime = 30 * 60 * 1000;  //30분
 
             const user = {
                 ...res.data,

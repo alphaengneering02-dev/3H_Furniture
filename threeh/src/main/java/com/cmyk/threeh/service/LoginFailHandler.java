@@ -36,23 +36,26 @@ public class LoginFailHandler implements AuthenticationFailureHandler {
 		
         String errorMessage = "알 수 없는 에러가 발생했습니다.";
 		
-		if (exception instanceof AuthenticationServiceException || exception instanceof UsernameNotFoundException) {
+		if (exception instanceof AuthenticationServiceException) {
+                  errorMessage = "DB와의 연결에 실패했습니다.";
+
+            } else if (exception instanceof UsernameNotFoundException) {
 			errorMessage = "존재하지 않는 사용자입니다.";
 		
 		} else if(exception instanceof BadCredentialsException) {
 			errorMessage = "아이디 또는 비밀번호가 틀립니다.";
 			
 		} else if(exception instanceof LockedException) {
-            errorMessage = "잠긴 계정입니다.";
+                  errorMessage = "잠긴 계정입니다.";
 			
 		} else if(exception instanceof DisabledException) {
-            errorMessage = "비활성화된 계정입니다.";
+                  errorMessage = "비활성화된 계정입니다.";
 			
 		} else if(exception instanceof AccountExpiredException) {
-            errorMessage = "만료된 계정입니다.";
+                  errorMessage = "만료된 계정입니다.";
 			
 		} else if(exception instanceof CredentialsExpiredException) {
-            errorMessage = "비밀번호가 만료되었습니다.";
+                  errorMessage = "비밀번호가 만료되었습니다.";
 		}
 
 

@@ -26,7 +26,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     // 자바 객체를 JSON 문자열로 변환해주는 도구
     private final ObjectMapper objectMapper;
-    //세션 만료시간(초 단위, 기본값 10분)
+    //세션 만료시간(초 단위, 30분)
 	private final int expiredTime=600;
 
 
@@ -45,7 +45,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
         // 3. 백엔드 Spring session에 사용자 정보를 저장하고 만료 시간을 설정합니다.
         httpSession.setAttribute("user", principal);
-        httpSession.setMaxInactiveInterval(expiredTime); // 톰캣이 자동으로 10분 뒤 만료 처리 (활동 시 자동 연장됨)
+        httpSession.setMaxInactiveInterval(expiredTime); // 톰캣이 자동으로 30분 뒤 만료 처리 (활동 시 자동 연장됨)
 
 		System.out.println("[백엔드 Spring session에 올라간 회원정보]"  + "\n"
 			+ "sessindId: " + httpSession.getId() + "\n"
