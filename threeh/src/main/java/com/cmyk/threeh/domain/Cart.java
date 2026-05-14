@@ -6,13 +6,17 @@ import lombok.Setter;
 import lombok.NoArgsConstructor;
 import java.util.List;
 import java.util.ArrayList;
+import java.io.Serializable; // 자바 직렬화를 위해 임포트 문 추가 (추가완료)
 
 @Entity
 @Table(name = "cart")
 @Getter 
 @Setter
 @NoArgsConstructor
-public class Cart {
+public class Cart implements Serializable { // 직렬화 자격 부여를 위해 implements 추가 (수정완료)
+
+    // 직렬화 고유 버전 ID 선언 (추가완료)
+    private static final long serialVersionUID = 1L;
 
     //장바구니 고유 번호 (PK) - 시퀀스 전략 사용
     @Id
