@@ -368,6 +368,27 @@ function Item() {
   };
 
 
+  //내 장바구니로 가기
+  //장바구니 담기 API: POST /api/cartItem/add
+  //장바구니 목록 API: GET /api/Member/cart/list/{id}
+  //프론트 장바구니 화면: /cart
+  const handlGoMyCart = () =>{
+    const loginUser = getLoginUser();
+
+    if(!loginUser){
+        alert("로그인이 필요합니다.");
+        navigate("/login");
+        return;
+    }
+
+    if(!isUserRole(loginUser)){
+        alert("일반 회원만 장바구니를 이용할 수 있습니다.");
+        return;
+    }
+
+    navigate("/cart")
+  }
+
   //선택한 여러 상품 구매
   //현재 구조에서는 선택 상품을 장바구니에 담고 장바구니 페이지로 이동
   const handleBuySelectedItems = async () => {
@@ -482,6 +503,15 @@ function Item() {
     <div>
         {/*상품 목록 페이지 제목 */}
       <h1>상품 목록</h1>
+
+         {/*내 장바구니로 가기*/}
+      {!isAdmin&&(
+        <div style={{marginBottom:"20px"}}>
+            <button type="button" onClick={handlGoMyCart}>
+                장바구니 보기
+            </button>
+        </div>
+      )}
 
       {/*관리자 로그인 시에만 상품 등록/수정삭제 버튼 표시 */}
       {isAdmin && (
