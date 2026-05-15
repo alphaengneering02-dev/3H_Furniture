@@ -35,8 +35,15 @@ public class MemberAddress {
     @Column(name = "addr_detail")
     private String addrDetail;
 
+<<<<<<< Updated upstream
     //기본 배송지 여부 - 'Y'일 경우 주문서 작성 시 자동으로 불러오는 로직
     @Column(name = "is_default", length = 1)
     private String isDefault = "N"; 
 
 }
+=======
+    @Column(name = "is_default", length = 1, nullable = false)
+    private String isDefault = "N"; 
+
+}
+>>>>>>> Stashed changes

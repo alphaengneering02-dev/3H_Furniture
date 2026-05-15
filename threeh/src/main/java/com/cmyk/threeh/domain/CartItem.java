@@ -21,17 +21,29 @@ public class CartItem {
     @Column(name = "cart_item_id") 
     private Long cartItemId;
 
+<<<<<<< Updated upstream
     //소속된 장바구니 - 여러 아이템이 하나의 장바구니에 담기므로 다대일 관계
+=======
+    //여러 개의 상품 아이템이 하나의 장바구니에 속함
+>>>>>>> Stashed changes
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cart_id", nullable = false) 
     private Cart cart;
 
+<<<<<<< Updated upstream
     //담긴 상품 정보 - 여러 아이템 행이 하나의 상품 종류를 가리킬 수 있으므로 다대일 관계
+=======
+    //한 종류의 상품이 여러 장바구니에 아이템으로 등록
+>>>>>>> Stashed changes
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id", nullable = false) 
     private Item item; 
 
+<<<<<<< Updated upstream
     //상품 수량 - 해당 상품을 몇 개 담았는지 저장
     @Column(name = "count") 
+=======
+    @Column(name = "count") //해당 상품을 몇 개 담았는지 수량
+>>>>>>> Stashed changes
     private int count;
 }
