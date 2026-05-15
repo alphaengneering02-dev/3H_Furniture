@@ -39,6 +39,30 @@ function Item(){
         );
     };
 
+    //일반 유저가 상품을 선택했을 때, 선택한 상품의 총 가격이랑, 상품 재고와 판매상태에 따른 선택 가능여부
+    const getFinalPrice = (item) => {
+        if(item.itemFinalPrice !==null && item.itemFinalPrice !==undefined){
+            return Number(item.itemFinalPrice);
+        }
+        return Number(item.itemPrice || 0 ) - Number(item.itemDiscountPrice || 0);
+    };
+
+    const canSelectItem =(item) => {
+        if(item.itemStock<=0){
+            alert("품절된 상품입니다.")
+            return false;
+        }
+
+        if(
+            item.itemSellStatus && item.itemSellStatus !=="SELL"
+        ){
+            alert("판매중인 상품만 선택이 가능합니다.")
+            return false;
+        }
+        return true
+    };
+
+    
     useEffect(()=>{
         getItems();
     },[]);
@@ -52,8 +76,16 @@ function Item(){
             setItems(response.data);
         }catch(error){
             console.log("상품 목록 조회 실패", error);
+            alert("상품 목록을 불러오지 못했습니다.");
         }
     };
+
+
+    //선택된 상품
+    //const isSelected = (itemId) => {
+        //return selectedItems.some((selected)=> selected.itemId === itemId);
+    //};
+
 
     
     //어드민 계정으로 로그인해서 상품목록에 접근했을 때

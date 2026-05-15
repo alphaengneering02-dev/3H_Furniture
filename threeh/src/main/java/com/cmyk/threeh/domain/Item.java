@@ -198,8 +198,12 @@ public class Item {
         item.itemPrice = dto.getItemPrice();
         item.itemDiscountPrice = dto.getItemDiscountPrice() !=null? dto.getItemDiscountPrice() : 0;
         item.itemPriceCurrency = dto.getItemPriceCurrency() !=null? dto.getItemPriceCurrency():"KRW";
-        item.itemStock = dto.getItemStock();
 
+        item.itemSellStatus = dto.getItemSellStatus() != null
+                            ? dto.getItemSellStatus()
+                            : ItemSellStatus.NON_SELL;
+
+        item.itemStock = dto.getItemStock();
         item.validateItem();
 
         return item;
