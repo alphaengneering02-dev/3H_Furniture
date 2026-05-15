@@ -1,6 +1,7 @@
 package com.cmyk.threeh.controller;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,8 +40,39 @@ public class MemberAddressController {
         }
 
         Map<String, Object> responseData = new HashMap<>();
-        responseData.put("member", member);
-        responseData.put("recentOrders", member.getOrdersList());
+        
+        // [오류 수정 포인트 1] Member 엔티티 내부의 순수 텍스트 필드만 Map으로 가공하여 무한 루프 진입 차단
+        Map<String, Object> memberMap = new HashMap<>();
+        memberMap.put("memberId", member.getMemberId());
+        memberMap.put("id", member.getId());
+        memberMap.put("name", member.getName());
+        memberMap.put("email", member.getEmail());
+        memberMap.put("phone", member.getPhone());
+        memberMap.put("role", member.getRole());
+        memberMap.put("regNo", member.getRegNo());
+        responseData.put("member", memberMap);
+
+        // [오류 수정 포인트 2] 최근 주문 엔티티 내의 Member 순환 참조 차단을 위한 맵 변환
+        List<Map<String, Object>> recentOrdersMapList = new ArrayList<>();
+        if (member.getOrdersList() != null) {
+            for (Orders order : member.getOrdersList()) {
+                Map<String, Object> orderMap = new HashMap<>();
+                orderMap.put("orderId", order.getOrderId());
+                orderMap.put("deliveryAddr", order.getDeliveryAddr());
+                orderMap.put("deliveryAddrDetail", order.getDeliveryAddrDetail());
+                orderMap.put("orderDate", order.getOrderDate());
+                orderMap.put("orderState", order.getOrderState());
+                orderMap.put("orderType", order.getOrderType());
+                orderMap.put("installDate", order.getInstallDate());
+                orderMap.put("deliveryDate", order.getDeliveryDate());
+                orderMap.put("requestTime", order.getRequestTime());
+                orderMap.put("requestMessage", order.getRequestMessage());
+                orderMap.put("totalPrice", order.getTotalPrice());
+                orderMap.put("totalStatus", order.getTotalStatus());
+                recentOrdersMapList.add(orderMap);
+            }
+        }
+        responseData.put("recentOrders", recentOrdersMapList);
         
         return ResponseEntity.ok(responseData);
     }
@@ -61,8 +93,27 @@ public class MemberAddressController {
             return ResponseEntity.status(404).body("회원 정보를 찾을 수 없습니다.");
         }
 
-        List<Orders> orders = member.getOrdersList();
-        return ResponseEntity.ok(orders);
+        // [오류 수정 포인트 3] 반환형 List<Orders> 엔티티 내에 박힌 Member 연쇄 참조 오류 완전 차단
+        List<Map<String, Object>> refundMapList = new ArrayList<>();
+        if (member.getOrdersList() != null) {
+            for (Orders order : member.getOrdersList()) {
+                Map<String, Object> orderMap = new HashMap<>();
+                orderMap.put("orderId", order.getOrderId());
+                orderMap.put("deliveryAddr", order.getDeliveryAddr());
+                orderMap.put("deliveryAddrDetail", order.getDeliveryAddrDetail());
+                orderMap.put("orderDate", order.getOrderDate());
+                orderMap.put("orderState", order.getOrderState());
+                orderMap.put("orderType", order.getOrderType());
+                orderMap.put("installDate", order.getInstallDate());
+                orderMap.put("deliveryDate", order.getDeliveryDate());
+                orderMap.put("requestTime", order.getRequestTime());
+                orderMap.put("requestMessage", order.getRequestMessage());
+                orderMap.put("totalPrice", order.getTotalPrice());
+                orderMap.put("totalStatus", order.getTotalStatus());
+                refundMapList.add(orderMap);
+            }
+        }
+        return ResponseEntity.ok(refundMapList);
     }
 
     //구매내역 전체 조회

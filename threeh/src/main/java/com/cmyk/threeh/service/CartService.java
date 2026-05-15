@@ -6,19 +6,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.transaction.Transactional;
-
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional; // 다른 팀원과 완전 일치시킴
+import lombok.RequiredArgsConstructor;
 
 import com.cmyk.threeh.domain.Cart;
+import com.cmyk.threeh.domain.CartItem;
+import com.cmyk.threeh.domain.Item;
+import com.cmyk.threeh.domain.ItemImg;
 import com.cmyk.threeh.domain.Member;
 import com.cmyk.threeh.domain.MemberAddress; // 주소록 엔티티 포함
 import com.cmyk.threeh.dto.CartDTO;
 import com.cmyk.threeh.dto.CartItemDTO;
+import com.cmyk.threeh.enums.SubImg;
 import com.cmyk.threeh.repository.CartRepository;
+import com.cmyk.threeh.repository.ItemImgRepository;
+import com.cmyk.threeh.repository.ItemRepository; // 누락되었던 상품 레포지토리 임포트 추가
 import com.cmyk.threeh.repository.MemberAddressRepository; // 주소록 리포지토리 포함
-
-import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -26,9 +30,11 @@ public class CartService {
     
     private final CartItemRepository cartItemRepository;
     private final CartRepository cartRepository;
+    private final ItemRepository itemRepository; // 오라클 ITEM 테이블 조회를 위해 명확히 변수 선언
     private final MemberService memberService;
     private final com.cmyk.threeh.service.ItemImgService itemImgService;
-    private final MemberAddressRepository memberAddressRepository; // 주소록 의존성 주입 유지
+    private final MemberAddressRepository memberAddressRepository; 
+    private final ItemImgRepository itemImgRepository;
 
     // 장바구니 생성 (기존 규격 보존)
     @Transactional
@@ -38,99 +44,104 @@ public class CartService {
         return cartRepository.save(cart);
     }
 
-    // 장바구니 목록 조회 (💡 조장님 DB 실제 이미지 데이터 URL 구조 완벽 복구형 하드매핑 버전)
-    @Transactional
-    public CartDTO getCartDto(String loginUserId) {
+    @Transactional(readOnly = true)
+    public CartDTO getCartDTO(String loginUserId) {
+        Member member = memberService.getUser(loginUserId);
 
-        Member member = memberService.getUser(loginUserId); 
-        Long cartId = cartRepository.findBymember_memberId(member.getMemberId())
-                        .map(Cart::getCartId)
-                        .orElseThrow(() -> new IllegalStateException("정보없음"));
-
-        System.out.println(cartId);
+        Cart cart = cartRepository.findBymember_memberId(member.getMemberId())
+            .orElseGet(() -> createCart(member));
 
         CartDTO cartDTO = new CartDTO();
-        cartDTO.setCartId(cartId); // 테스트용 임시 장바구니 번호
-        cartDTO.setMemberId(member != null ? member.getMemberId() : 1L);
+        cartDTO.setCartId(cart.getCartId());
+        cartDTO.setMemberId(member.getMemberId());
 
-        // 화면에 뿌려줄 장바구니 상품 리스트 바구니 준비
-        List<CartItemDTO> itemDtoList = new ArrayList<CartItemDTO>();
+        List<CartItemDTO> itemDtoList = new ArrayList<>();
+        List<CartItem> cartItems = cartItemRepository.findByCart_CartId(cart.getCartId());
 
-        // ----------------------------------------------------------------------
-        // 💡 [더미 가구 1번 복구] 조장님 DB에 등록된 223번 대표 가구 데이터 세팅 (t1.JPG 매핑)
-        // ----------------------------------------------------------------------
+        if(cartItems != null && !cartItems.isEmpty()) {
+            for (CartItem item : cartItems) {
+                CartItemDTO dto = new CartItemDTO();
 
-        /**
-         * 진짜 db 데이터로 수정
-         */
-        CartItemDTO item1 = new CartItemDTO();
-        item1.setCartitemId(101L); // 장바구니 아이템 고유 PK 번호
-        item1.setItemid(223L);     // 조장님 사진 속 매핑 타깃 가구 고유 ID (ITEM_ID)
-        item1.setCartid(999L);
-        item1.setCount(1L);        // 수량 1개
-        item1.setItemName("조장님 가죽 소파 (t1.JPG)");
-        item1.setOrderPrice(750000L); // 소파 단가
-        
-        // 조장님 DB ITEM_IMG_URL에 기재된 실제 UUID 난수 경로 주입 복구
-        item1.setImageUrl("http://localhost:8080/upload/item/bb7215ad-8855-4d64-9c7b-d64e6158812e.JPG");
-        itemDtoList.add(item1);
+                dto.setCartItemId(item.getCartItemId());
+                dto.setItemId(item.getItem().getItemId());
+                dto.setCartId(cart.getCartId());
+                dto.setCount((long)item.getCount());
 
-        
-        // 대표 정보 연산 유지 (질문자님 원본 규칙 보존)
-        cartDTO.setItemName(item1.getItemName());
-        cartDTO.setOrderPrice(item1.getOrderPrice().intValue());
+                dto.setItemName(item.getItem().getItemName());
+                dto.setOrderPrice((long)item.getItem().getItemPrice());
 
+                String dbFileName = itemImgRepository.findByItem_ItemIdAndThumbnailYn(item.getItem().getItemId(), SubImg.Y)
+                    .map(ItemImg::getItemImgUrl) 
+                    .orElse("default.jpg"); 
+
+                    dto.setImageUrl(dbFileName);
+
+                itemDtoList.add(dto);
+            }
+
+            cartDTO.setItemName(itemDtoList.get(0).getItemName());
+            cartDTO.setOrderPrice(itemDtoList.get(0).getOrderPrice().intValue());
+        }
         cartDTO.setCartItems(itemDtoList);
         return cartDTO;
     }
 
-    // 장바구니 상품 삭제 (더미 호환 로그 출력 유지)
+    //상품 삭제
     @Transactional
-    public void deleteCartItem(Long cartItemId) {
-        System.out.println("장바구니에서 삭제 요청 처리 완료: " + cartItemId);
-    }
-
-    // 장바구니 상품 수량 변경 (더미 가짜 ID 400 에러 원천 차단 로직 완벽 보존)
-    @Transactional
-    public void updateCount(Long cartItemId, int count) {
-         if (cartItemId == 101L || cartItemId == 102L || cartItemId == 1L) {
-             System.out.println("임시 더미 장바구니 수량 실시간 변경 성공 - 아이템: " + cartItemId + " / 수량: " + count);
-             return; 
-         }
-    }
-
-    // 주문 페이지로 토스 마감 (조장님 규격 명칭 다중 품목 실데이터 전송 로직 완벽 복구)
-    @Transactional
-    public List<CartItemDTO> tossToOrderPage(String loginUserId, List<Long> checkedCartItemIds) {
+    public void deleteCartItem(Long cartItemId) { //컨트롤러가 호출하는 대문자 cartItemId 규칙 완벽 일치
+        // 조장님이 레포지토리에 선언해 둔 단건 조회 메서드 활용
+        CartItem cartItem = cartItemRepository.findByCartItemId(cartItemId)
+                .orElseThrow(() -> new IllegalArgumentException("삭제 대상 상품이 장바구니에 없습니다."));
         
-        List<CartItemDTO> tossList = new ArrayList<CartItemDTO>();
-
-        // 1번 가구 전송 데이터 패킹 복구
-        CartItemDTO item1 = new CartItemDTO();
-        item1.setCartitemId(101L);
-        item1.setItemid(223L);
-        item1.setCartid(999L);
-        item1.setCount(1L);
-        item1.setItemName("조장님 가죽 소파 (t1.JPG)");
-        item1.setOrderPrice(750000L);
-        item1.setImageUrl("http://localhost:8080/upload/item/bb7215ad-8855-4d64-9c7b-d64e6158812e.JPG");
-        tossList.add(item1);
-
-        // 2번 가구 전송 데이터 패킹 복구
-        CartItemDTO item2 = new CartItemDTO();
-        item2.setCartitemId(102L);
-        item2.setItemid(223L);
-        item2.setCartid(999L);
-        item2.setCount(2L);
-        item2.setItemName("조장님 원목 침대 (t1_1.JPG)");
-        item2.setOrderPrice(1200000L);
-        item2.setImageUrl("http://localhost:8080/upload/item/435c4273-a654-42d9-ac02-3a3b25a5e60b.JPG");
-        tossList.add(item2);
-
-        return tossList;
+        cartItemRepository.delete(cartItem);
+        System.out.println("오라클 DB 장바구니 아이템 영구 삭제 완료: " + cartItemId);
     }
 
-    // 💡 [질문자님 전용 주소록 기능 완전 유지] 내 테이블에 순수 텍스트 주소록 문자열 영구 인서트 처리
+    //상품 수량 변경
+    @Transactional
+    public void updateCount(Long cartItemId, int count) { //컨트롤러가 호출하는 대문자 cartItemId 규칙 완벽 일치
+         CartItem cartItem = cartItemRepository.findByCartItemId(cartItemId)
+                 .orElseThrow(() -> new IllegalArgumentException("변경 대상 상품이 장바구니에 없습니다."));
+         
+         cartItem.setCount(count); // 수량 덮어쓰기 후 JPA 자동 업데이트 발동
+         System.out.println("오라클 DB 장바구니 수량 실시간 변경 성공 - 아이템: " + cartItemId + " / 수량: " + count);
+    }
+
+    @Transactional
+    public void addCart(String loginUserId, CartItemDTO cartItemDTO) {
+        Member member = memberService.getUser(loginUserId);
+
+        Cart cart = cartRepository.findBymember_memberId(member.getMemberId())
+            .orElseGet(() -> createCart(member));
+
+        // 들어온 매개변수명(cartItemDTO)과 변수 선언(itemRepository) 싱크 완벽 조율
+        Item item = itemRepository.findById(cartItemDTO.getItemId())
+                .orElseThrow(() -> new IllegalArgumentException("오라클 DB에 존재하지 않는 가구 상품입니다."));
+                
+        if((long)item.getItemStock() < cartItemDTO.getCount()) {
+            throw new RuntimeException("선택하신 수량이 현재 매장 재고(" + item.getItemStock() + "개)를 초과했습니다");
+        }
+
+        // 장바구니에 동일한 가구가 들어있는지 중복 판별
+        CartItem existItem = cartItemRepository.findByCart_CartIdAndItem_ItemId(cart.getCartId(), item.getItemId());
+
+        if(existItem != null) {
+            // DTO의 Long count를 엔티티의 int 규격에 맞게 intValue로 가공하여 합산
+            existItem.setCount(existItem.getCount() + cartItemDTO.getCount().intValue());
+            // CartItem 엔티티이므로 cartItemRepository 창고에 저장하도록 정정
+            cartItemRepository.save(existItem);
+        } else {
+            CartItem newCartItem = new CartItem();
+            newCartItem.setCart(cart);
+            newCartItem.setItem(item);
+            // DTO의 Long count를 엔티티의 int count 규격으로 형변환하여 대입
+            newCartItem.setCount(cartItemDTO.getCount().intValue());
+
+            cartItemRepository.save(newCartItem);
+        }
+    }
+
+    // 내 테이블에 순수 텍스트 주소록 문자열 영구 인서트 처리
     @Transactional
     public void addNewAddress(String loginUserId, String city, String street, String addrDetail) {
         Member member = memberService.getUser(loginUserId);
@@ -139,28 +150,28 @@ public class CartService {
         }
 
         MemberAddress memberAddress = new MemberAddress();
-        memberAddress.setMember(member); // 내 고유 member_id 외래키 연결 수립
-        memberAddress.setAddr(city + " " + street); // 내가 입력한 텍스트 그대로 조립 대입
+        memberAddress.setMember(member); 
+        memberAddress.setAddr(city + " " + street); 
         memberAddress.setAddrDetail(addrDetail);
         memberAddress.setIsDefault("N");
 
         memberAddressRepository.save(memberAddress);
     }
 
-    // [질문자님 전용 주소록 기능 완전 유지] 내가 입력한 진짜 주소 문자열만 정밀 수집하여 리액트로 토스
-    @Transactional
+    // 내가 입력한 진짜 주소 문자열만 정밀 수집하여 리액트로 토스
+    @Transactional(readOnly = true)
     public List<Map<String, Object>> getMyAddressList(String loginUserId) {
         Member member = memberService.getUser(loginUserId);
         List<MemberAddress> addrList = memberAddressRepository.findByMember_MemberId(member.getMemberId());
         
-        List<Map<String, Object>> resultList = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> resultList = new ArrayList<>();
         if (addrList != null) {
             for (MemberAddress addr : addrList) {
-                Map<String, Object> map = new HashMap<String, Object>();
+                Map<String, Object> map = new HashMap<>();
                 
                 map.put("id", addr.getAddrId()); 
-                map.put("addr", addr.getAddr()); // 내가 쓴 주소 글자 복사
-                map.put("addrDetail", addr.getAddrDetail()); // 내가 쓴 상세주소 글자 복사
+                map.put("addr", addr.getAddr()); 
+                map.put("addrDetail", addr.getAddrDetail()); 
                 
                 resultList.add(map);
             }

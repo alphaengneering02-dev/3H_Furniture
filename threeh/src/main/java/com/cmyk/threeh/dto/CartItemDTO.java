@@ -13,13 +13,13 @@ import lombok.AllArgsConstructor;
 public class CartItemDTO {
 
     //장바구니 개별 아이템 고유 번호(화면에서 삭제 버튼 클릭 시 식별자로 사용)
-    private Long cartitemId;
+    private Long cartItemId;
     
     //상품 고유 번호(상품 상세 페이지 이동이나 재고 확인 시 사용)
-    private Long itemid;
+    private Long itemId;
 
     //소속된 장바구니 번호
-    private Long cartid;
+    private Long cartId;
 
     //해당 상품의 장바구니 담긴 수량
     private Long count;

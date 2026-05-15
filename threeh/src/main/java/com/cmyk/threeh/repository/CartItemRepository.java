@@ -1,5 +1,7 @@
 package com.cmyk.threeh.repository;
 
+
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import com.cmyk.threeh.domain.CartItem;
@@ -14,4 +16,6 @@ public interface CartItemRepository extends JpaRepository<CartItem, Long>{
     //아이템 단건 조회
     //장바구니 아이템의 고유 번호(PK)로 데이터를 조회하며, null 방지를 위합 옵셔널 사용
     Optional<CartItem> findByCartItemId(Long cartitemid);
+
+    List<CartItem> findByCart_CartId(Long cartId);
 }

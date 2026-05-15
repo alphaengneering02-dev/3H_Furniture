@@ -4,106 +4,41 @@ import axios from 'axios';
 
 const MemberAddressUpdate = () => {
     const navigate = useNavigate();
-    const { id } = useParams();
+    const {id} = useParams();
 
-    const [formData, setFormData] = useState({
+    //조원의 백엔드 수신 양식
+    const [fromData, setFormData] = useState({
         id: id || '',
         name: '',
-        phone: '',
-        email: ''
+        email: '',
+        password1: '', //조원 코드 비밀번호 누락 방지용
+        password2: ''
     });
 
-    const handleUpdateSubmit = (e) => {
-        e.preventDefault();
+     // [최초 로드] 조원의 GET API(/api/member/{id})를 호출하여 기존 회원정보 세팅
+    useEffect(() => {
+        if(!id) {
+            alert("잘못된 접근입니다");
+            navigate('/mypage');
+            return;
+        }
+    });
 
-        const params = new URLSearchParams();
-        params.append('id', formData.id);
-        params.append('name', formData.name);
-        params.append('phone', formData.phone);
-        params.append('email', formData.email);
+        
+    //     axios.get(`http://localhost:8080/api/member/${id}`, {withCredentials:true})
+    //     .then(res => {
+    //         setFormData({
+    //             id: res.data.id || '',
+    //             name: res.data.name || '',
+    //             phone: res.data.phone || '',
+    //             email: res.data.email || '',
+    //             password1: res.data.password1 || '', //기본 패스워드 동기화
+    //             password2: res.data.password2 || '',
+    //         })
+    //     })
+    //     .catch
+    // })
+}
 
-        axios.post('http://localhost:8080/Member/info/update', params, { withCredentials: true })
-            .then(res => {
-                alert("회원 정보가 수정되었습니다");
-                sessionStorage.setItem('user', JSON.stringify(formData));
-                navigate('/mypage');
-            })
-            .catch(err => {
-                console.error("수정 실패 오류:",err);
-                if(err.response && err.response.data) {
-                    alert("수정 실패:" + err.response.data);
-                }else {
-                    alert("정보 수정 중 오류가 발생했습니다");
-                }
-            })
-
-    
-    }
-
-    return (
-        <div style={{ padding: '30px', maxWidth: '500px', margin: '0 auto' }}>
-            <h2>내 정보 수정</h2>
-            <hr />
-            <form onSubmit={handleUpdateSubmit}>
-                <div style={{ marginBottom: '15px' }}>
-                    <label>아이디: </label>
-                    <input
-                        type="text"
-                        name="id"
-                        value={formData.id}
-                        readOnly
-                        style={{ backgroundColor: '#f0f0f0', width: '100%', padding: '8px' }}
-                    />
-                </div>
-
-                <div style={{ marginBottom: '15px' }}>
-                    <label>이름: </label>
-                    <input
-                        type="text"
-                        name="name"
-                        value={formData.name || ''}
-                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        style={{ width: '100%', padding: '8px' }}
-                        required
-                    />
-                </div>
-
-                <div style={{ marginBottom: '15px' }}>
-                    <label>연락처: </label>
-                    <input
-                        type="text"
-                        name="phone"
-                        value={formData.phone || ''}
-                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                        style={{ width: '100%', padding: '8px' }}
-                        required
-                    />
-                </div>
-
-                <div style={{ marginBottom: '15px' }}>
-                    <label>이메일: </label>
-                    <input
-                        type="email"
-                        name="email"
-                        value={formData.email || ''}
-                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        style={{ width: '100%', padding: '8px' }}
-                        required
-                    />
-                </div>
-
-                <div style={{ marginTop: '20px' }}>
-                    <button type="submit">정보 변경하기</button>
-                    <button type="button" onClick={() => navigate('/mypage')}>취소</button>
-                </div>
-            </form>
-
-
-
-        </div>
-    )
-
-
-};
 
 export default MemberAddressUpdate;

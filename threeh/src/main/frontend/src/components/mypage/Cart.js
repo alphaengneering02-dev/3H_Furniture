@@ -29,8 +29,13 @@ const Cart = () => {
             // [팀 규격 완전 싱크] 팀원들의 세션 프리패스 대문자 주소 규칙인 /Member/cart 하위로 정석 호출합니다.
             axios.get(`/api/Member/cart/list?id=${loginUserId}`, { withCredentials: true })
                 .then(res => {
+
+                    console.log(res);
                     // 서버 DB에서 받아온 실제 사용자의 장바구니 상품 목록 세팅
-                    setCartItems(res.data.cartItems || res.data.items || []);
+                    if(res.data){
+                        setCartItems(res.data.cartItems);
+                    }
+                    console.log(cartItems);
                 })
                 .catch(err => {
                     console.error("장바구니 최신 데이터 로드 실패", err);
@@ -88,7 +93,7 @@ const Cart = () => {
         params.append('count', newCount);
 
         // 팀원들의 안심 대문자 경로인 /Member/cart/update 주소로 정석 발송
-        axios.post('http://localhost:8080/Member/cart/update', params, { 
+        axios.post('/api/Member/cart/update', params, { 
             withCredentials: true,
             headers: {'Content-Type': 'application/x-www-form-urlencoded'} 
         })
@@ -142,9 +147,9 @@ const Cart = () => {
                 <div key={item.cartItemId || item.cartitemId} className="cart-item" style={{ borderBottom: '1px solid #ddd', padding: '15px' }}>
                     
                     {/* 이미지 경로 데이터 매핑 활성화 */}
-                    {item.imageUrl && (
+                    {/* {item.imageUrl && ( */}
                         <img src={item.imageUrl} alt={item.itemName} style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '4px', marginRight: '15px' }} />
-                    )}
+                    {/* )} */}
 
                     <p><strong>{item.itemName}</strong></p>
                     <div className="quantity-box">
