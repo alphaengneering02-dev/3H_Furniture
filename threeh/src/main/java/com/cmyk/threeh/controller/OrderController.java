@@ -2,6 +2,7 @@ package com.cmyk.threeh.controller;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -9,6 +10,7 @@ import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -95,6 +97,7 @@ public class OrderController {
     @GetMapping("/{itemId}")
     public ResponseEntity getOrder(@PathVariable Long itemId, Principal principal) {
 
+        String loginId = "";
         ItemResponseDTO item = itemService.getItem(itemId);
         ItemImgResponseDTO itemImage = itemImgService.getMainImg(itemId);
 
@@ -102,7 +105,19 @@ public class OrderController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
         }
 
-        Member member = memberService.getUser(principal.getName());
+        if(principal instanceof OAuth2AuthenticationToken){
+            OAuth2AuthenticationToken authToken = (OAuth2AuthenticationToken) principal;
+
+            Map<String, Object> attributes = authToken.getPrincipal().getAttributes();
+
+            loginId = String.valueOf(attributes.get("db_id"));
+
+        }
+        else{
+            loginId = principal.getName();
+        }
+
+            Member member = memberService.getUser(loginId);
 
         try {
             itemImage = itemImgService.getMainImg(itemId);

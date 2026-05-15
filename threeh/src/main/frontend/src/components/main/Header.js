@@ -6,10 +6,11 @@ import icon_facebook from '../../assets/icon_facebook.png';
 import icon_instagram from '../../assets/icon_instagram.png';
 import icon_kakao from '../../assets/icon_kakao.png';
 import icon_mypage from '../../assets/icon_mypage.png';
+import icon_cart from '../../assets/icon_cart.png';
 import icon_logout from '../../assets/icon_logout.png';
 import icon_login from '../../assets/icon_login.png';
 import icon_signup from '../../assets/icon_signup.png';
-import axios from 'axios';
+import axios, { all } from 'axios';
 import Header_searchCondition from './Header_searchCondition';
 
 // 헤더
@@ -78,9 +79,25 @@ const Header = () => {
 
 
     //검색창
-    const [searchKey, setSearchKey] = useState()
-    const [searchValue, setSearchValue] = useState()
-
+    /*
+    searchKey (다중 선택 가능)
+    - "사용공간": [거실, 침실, 주방...] 
+    - "종류": [책상, 의자, 책꽃이...]
+    - "브랜드": [리바트, 한샘, 허먼밀러...]
+    - "소재": [패브릭, 메탈...]
+    - "사이즈": [min, max]
+    - "가격": [min, max]
+    */
+    const [searchKey, setSearchKey] = useState({
+        "space": ["all"],
+        "kind": ["all"],
+        "brand": ["all"],
+        "material": ["all"],
+        "size": [0, 0],
+        "price": [0, 0]
+    })  //객체
+    const [searchValue, setSearchValue] = useState("")  //String값
+    
     const [isSearchCondition, setIsSearchCondition] = useState(false)
 
     // const changeSearchKey = (evt) => {}
@@ -148,7 +165,7 @@ const Header = () => {
 
                                 {/* 검색 조건 선택창 */}
                                 {
-                                    isSearchCondition && <Header_searchCondition/>
+                                    isSearchCondition && <Header_searchCondition searchKey={searchKey} setSearchKey={setSearchKey}/>
                                 }
                             </form>
                         </div>
@@ -163,12 +180,33 @@ const Header = () => {
                                 //로그인 한 상태의 화면
                                 ? (
                                     <>
+                                        {
+                                            user.adLoginId && user.adLoginId!=null
+                                            ? (  //어드민 계정
+                                                <li>
+                                                    <Link to="/admin">
+                                                        <img src={icon_mypage} alt="관리자 대시보드" style={{width: 50}}/>
+                                                        <p>관리자 대시보드</p>
+                                                    </Link>
+                                                </li>
+                                            )
+                                            : (  //일반 유저 계정
+                                                <li>
+                                                    <Link to="/mypage">
+                                                        <img src={icon_mypage} alt="마이페이지" style={{width: 50}}/>
+                                                        <p>마이페이지</p>
+                                                    </Link>
+                                                </li>
+                                            )
+                                        }
+
                                         <li>
-                                            <Link to="/mypage">
-                                                <img src={icon_mypage} alt="마이페이지" style={{width: 50}}/>
-                                                <p>마이페이지</p>
+                                            <Link to="/cart">
+                                                <img src={icon_cart} alt="장바구니" style={{width: 50}}/>
+                                                <p>장바구니</p>
                                             </Link>
                                         </li>
+                                        
                                         <li>
                                             <Link onClick={logout}>
                                                 <img src={icon_logout} alt="로그아웃" style={{width: 50}}/>
