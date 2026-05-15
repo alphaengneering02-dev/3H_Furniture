@@ -25,12 +25,20 @@ public class Cart implements Serializable { // 직렬화 자격 부여를 위해
     @Column(name = "cart_id")
     private Long cartId;
 
+<<<<<<< Updated upstream
     //장바구니 소유 회원 - 회원 한 명당 하나의 장바구니만 가지도록 1:1 관계
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
     //장바구니에 담긴 상품 목록 - 장바구니 삭제 시 담긴 아이템도 함께 삭제 영속성
+=======
+    @OneToOne(fetch = FetchType.LAZY) //회원 한명당 장바구나 하나
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
+
+    //장바구니 하나에 여러 상품이 담김
+>>>>>>> Stashed changes
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartItem> cartItems = new ArrayList<>();
 
