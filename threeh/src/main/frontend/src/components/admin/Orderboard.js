@@ -143,7 +143,21 @@ const Orderboard = ({
                                         </strong>
                                     </td>
                                     <td>
-                                        {order.deliveryStatus === 'WAITING' && '배정됨'}
+                                        <td>
+    {order.deliveryStatus === 'WAITING' && '배송 대기중'}
+
+    {order.deliveryStatus === 'SHIPPING' && (
+        <span style={{ color: 'orange', fontWeight: 'bold' }}>
+            배송중
+        </span>
+    )}
+
+    {order.deliveryStatus === 'COMPLETED' && (
+        <span style={{ color: 'green', fontWeight: 'bold' }}>
+            배송완료
+        </span>
+    )}
+</td>
                                     </td>
                                     <td>{order.orderDate?.split('T')[0]}</td>
                                 </tr>
@@ -181,7 +195,7 @@ const Orderboard = ({
                                         onChange={(e) => handleDriverSelect(order.orderId, e.target.value)}
                                     >
                                         <option value="">기사 선택</option>
-                                        {items.filter(d => d.status === 'WAITING' || d.status === 'READY').map(driver => (
+                                        {items.filter(d => d.status === 'WAITING').map(driver => (
                                             <option key={driver.deliveryId} value={driver.deliveryId}>
                                                 {driver.deliveryName}
                                             </option>
