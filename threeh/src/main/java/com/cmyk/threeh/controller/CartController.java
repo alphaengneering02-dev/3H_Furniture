@@ -24,14 +24,14 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 // [팀 프로토콜 완벽 결합] 팀원들의 세션 프리패스 대문자 주소 규칙인 /Member 하위로 장바구니 주소를 완벽 정착시킵니다.
-@RequestMapping("/Member/cart") 
+@RequestMapping("/api/Member/cart") 
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true") 
 public class CartController {
 
     private final CartService cartService;
 
     // 장바구니 목록조회 (팀 로그인 체계 완전 동화 버전)
-    @GetMapping("/list")
+    @GetMapping("/list/{id}")
     public ResponseEntity<?> cartList(Principal principal) { 
 
         // [핵심 교정] 세션이 끊겨 비로그인 상태일 때, HTML 통짜로 튕겨서 리액트를 터트리지 않고

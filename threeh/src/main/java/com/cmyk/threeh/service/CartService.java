@@ -43,9 +43,14 @@ public class CartService {
     public CartDTO getCartDto(String loginUserId) {
 
         Member member = memberService.getUser(loginUserId); 
+        Long cartId = cartRepository.findBymember_memberId(member.getMemberId())
+                        .map(Cart::getCartId)
+                        .orElseThrow(() -> new IllegalStateException("정보없음"));
+
+        System.out.println(cartId);
 
         CartDTO cartDTO = new CartDTO();
-        cartDTO.setCartId(999L); // 테스트용 임시 장바구니 번호
+        cartDTO.setCartId(cartId); // 테스트용 임시 장바구니 번호
         cartDTO.setMemberId(member != null ? member.getMemberId() : 1L);
 
         // 화면에 뿌려줄 장바구니 상품 리스트 바구니 준비
@@ -54,6 +59,10 @@ public class CartService {
         // ----------------------------------------------------------------------
         // 💡 [더미 가구 1번 복구] 조장님 DB에 등록된 223번 대표 가구 데이터 세팅 (t1.JPG 매핑)
         // ----------------------------------------------------------------------
+
+        /**
+         * 진짜 db 데이터로 수정
+         */
         CartItemDTO item1 = new CartItemDTO();
         item1.setCartitemId(101L); // 장바구니 아이템 고유 PK 번호
         item1.setItemid(223L);     // 조장님 사진 속 매핑 타깃 가구 고유 ID (ITEM_ID)
@@ -66,21 +75,7 @@ public class CartService {
         item1.setImageUrl("http://localhost:8080/upload/item/bb7215ad-8855-4d64-9c7b-d64e6158812e.JPG");
         itemDtoList.add(item1);
 
-        // ----------------------------------------------------------------------
-        // 💡 [더미 가구 2번 복구] 조장님 DB 서브 이미지 연동 검증용 세팅 (t1_1.JPG 매핑)
-        // ----------------------------------------------------------------------
-        CartItemDTO item2 = new CartItemDTO();
-        item2.setCartitemId(102L);
-        item2.setItemid(223L);     
-        item2.setCartid(999L);
-        item2.setCount(2L);        // 수량 2개
-        item2.setItemName("조장님 원목 침대 (t1_1.JPG)");
-        item2.setOrderPrice(1200000L); // 침대 단가
         
-        // 조장님 DB ITEM_IMG_URL에 기재된 실제 UUID 난수 경로 주입 복구
-        item2.setImageUrl("http://localhost:8080/upload/item/435c4273-a654-42d9-ac02-3a3b25a5e60b.JPG");
-        itemDtoList.add(item2);
-
         // 대표 정보 연산 유지 (질문자님 원본 규칙 보존)
         cartDTO.setItemName(item1.getItemName());
         cartDTO.setOrderPrice(item1.getOrderPrice().intValue());

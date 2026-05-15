@@ -27,7 +27,7 @@ const Cart = () => {
             }
 
             // [팀 규격 완전 싱크] 팀원들의 세션 프리패스 대문자 주소 규칙인 /Member/cart 하위로 정석 호출합니다.
-            axios.get(`http://localhost:8080/Member/cart/list?id=${loginUserId}`, { withCredentials: true })
+            axios.get(`/api/Member/cart/list?id=${loginUserId}`, { withCredentials: true })
                 .then(res => {
                     // 서버 DB에서 받아온 실제 사용자의 장바구니 상품 목록 세팅
                     setCartItems(res.data.cartItems || res.data.items || []);
@@ -37,15 +37,16 @@ const Cart = () => {
 
                     // 팀 마이페이지 핵심 차단 알고리즘 구조 그대로 수용
                     if (err.response && err.response.status === 401) {
-                        sessionStorage.removeItem('user');
-                        setMember(null);
+                        // sessionStorage.removeItem('user');
+                        // setMember(null);
                         alert("세션이 만료되었습니다. 다시 로그인해주세요.");
                         navigate('/login'); // 로그인 유도 추가
                     } else {
-                        console.log("네트워크 장애로 인한 세션 강제 보존 및 테스트 데이터 바인딩");
-                        setCartItems([
-                            { cartItemId: 1, itemName: "테스트용 소파", count: 1, orderPrice: 50000 }
-                        ]);
+                        // console.log("네트워크 장애로 인한 세션 강제 보존 및 테스트 데이터 바인딩");
+                        // setCartItems([
+                        //     { cartItemId: 1, itemName: "테스트용 소파", count: 1, orderPrice: 50000 }
+                        // ]);
+                         alert("시스템 오류");
                     }
                 });
                 

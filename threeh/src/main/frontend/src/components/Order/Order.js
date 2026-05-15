@@ -22,9 +22,9 @@ function Order(props) {
     const [orderType, setOrderType] = useState(null);
     const navigate = useNavigate();
 
-    const user = sessionStorage.getItem("user");
+    // const user = sessionStorage.getItem("user");
 
-    if(!user) {
+    if(!cartItems.state.user) {
         alert("로그인이 필요한 서비스입니다.");
         navigate('/login');
     }
@@ -33,12 +33,16 @@ function Order(props) {
 
     useEffect(() => {
 
-        if(cartItems.state && cartItems.state.cartItems){
+        if(cartItems.state && cartItems.state.orderItems){
 
-            const ids = cartItems.state.cartItemsIds;
+            const ids = cartItems.state.orderId;
 
             //백엔드 검증 데이터 로드
-            axios.post("/api/order/items", ids)
+            axios.post("/api/order/items", [ids], {
+                headers: {
+                    'Content-Type' : 'qpplication/json'
+                }
+            })
                 .then(res => {
                     console.log("서버 검증 데이터: ", res.data);
 
@@ -52,7 +56,8 @@ function Order(props) {
                     }
                 })
 
-                .catch(error => {
+                .catch(error =>  {
+                    console.log(error)
                     alert("상품 정보를 불러오는데 실패");
                     navigate('/cart');
                 })
