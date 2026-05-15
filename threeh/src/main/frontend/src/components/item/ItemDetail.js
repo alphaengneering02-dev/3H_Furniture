@@ -28,7 +28,7 @@ const ItemDetail = () => {
             formData.append("count", 1);
 
             await axios.post(
-                "http://localhost:8080/cartItem/add",
+                "http://localhost:8080/api/cartItem/add",
                 formData,
                 {
                     withCredentials:true,

@@ -8,13 +8,22 @@ function Item(){
 
     
     const [items, setItem] = useState([]);
-    const [user, setUser] = useState({});
 ;
 
     const getLoginUser = () => {
 
-        setUser (JSON.parse(sessionStorage.getItem("user")));
-        return 
+       return JSON.parse(sessionStorage.getItem("user"));
+    };
+
+    const isUserRole = (user)=>{
+        return(
+            user && (
+                user.role === "USER"||
+                user.role === "USER_USER"||
+                user.role?.key === "USER"||
+                user.role?.key === "ROLE_USER"
+            )
+        );
     };
 
     useEffect(()=> {
@@ -27,20 +36,25 @@ function Item(){
                 console.error("뭐 잘못했나봐..",error);
             });
 
-            getLoginUser();
     },[]);
 
     const navigate = useNavigate();
 
-    
-
+    //비로그인이면 로그인을 하도록하고, 일반 유저면 장바구니/구매 가능하고, 관리자는 장바구니/구매 불가
     const handleAddCart  = async (itemId) => {
         
-        console.log(user);
+        const loginUser = getLoginUser();
 
-        if(!user){
+        console.log("로그인 유저:", loginUser);
+
+        if(!loginUser){
             alert("로그인이 필요합니다.");
             navigate("/login");
+            return;
+        }
+
+        if(!isUserRole(loginUser)){
+            alert("일반 회원만 장바구니를 이용할 수 있습니다.");
             return;
         }
 
@@ -50,7 +64,8 @@ function Item(){
             formdata.append("count",1);
 
             await axios.post(
-                "/api/cartItem/add", formdata,{
+                "/api/cartItem/add", formdata,
+                {
                     withCredentials: true,
                 }
             );
@@ -59,8 +74,13 @@ function Item(){
         }catch(error){
             console.error("장바구니 담기 실패",error);
 
+            if(error.response){
+                console.log("상태코드:", error.response.status);
+                console.log("응답메시지:", error.response.data);
+            }
+            
             if(error.response?.status === 401){
-                alert("인증되지 않은 회원입니다.");
+                alert("로그인이 필요합니다.");
                 navigate("/login");
                 return;
             }
@@ -71,11 +91,16 @@ function Item(){
 
     const handleBuyNow = (itemId) => {
 
-        const user = getLoginUser();
+        const loginUser = getLoginUser();
 
-        if(!user){
+        if(!loginUser){
             alert("로그인이 필요합니다.");
             navigate("/login");
+            return;
+        }
+
+        if(!isUserRole(loginUser)){
+            alert("일반 회원만 구매할 수 있습니다.");
             return;
         }
 

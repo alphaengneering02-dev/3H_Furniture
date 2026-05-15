@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect,useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -6,8 +6,36 @@ import axios from 'axios';
 const ItemCreate = () => {
 
     const navigate = useNavigate();
-    //세션 유지용 (로그인 일반 유저 _어드민 구현 전까지)
-    const user = JSON.parse(sessionStorage.getItem("user"));
+
+    useEffect(()=>{
+        //세션 유지용
+        const user = JSON.parse(sessionStorage.getItem("user"));
+        
+        //어드민만 해당 페이지에 접근 가능하도록.
+        const isAdmin =
+            user && (
+                user.role === "ADMIN"||
+                user.role === "ROLE_ADMIN"||
+                user.role?.key === "ADMIN"||
+                user.role?.key === "ROLE_ADMIN"
+            );
+
+        //로그인이 안되었을 때
+        if(!user){
+            alert("로그인이 필요합니다.");
+            navigate("/login");
+            return;
+        }
+
+        //로그인한 계정이 관리자 계정이 아닌 일반 유저일 때.
+
+        if(!isAdmin){
+            alert("관리자 계정만 접근이 가능한 페이지입니다.");
+            navigate("/");
+            return;
+        }
+    },[navigate]);
+
 
     //상품 정보 입력(Item table)
     const[item,setItem] = useState({
@@ -67,9 +95,24 @@ const ItemCreate = () => {
         //제출 전에 로그인 여부 확인
         const user = JSON.parse(sessionStorage.getItem("user"));
 
+        const isAdmin =
+            user &&
+            (
+                user.role === "ADMIN"||
+                user.role === "ROLE_ADMIN"||
+                user.role?.key === "ADMIN" ||
+                user.role?.key === "ROLE_ADMIN"
+            );
+
         if(!user){
             alert("로그인이 필요합니다.");
             navigate("/login");
+            return;
+        }
+
+        if(!isAdmin){
+            alert("관리자만 상품을 등록할 수 있습니다.");
+            navigate("/");
             return;
         }
 
@@ -126,6 +169,9 @@ const ItemCreate = () => {
             alert("상품등록 실패");
         }
     };
+
+
+    
 
     return (
         <div>
