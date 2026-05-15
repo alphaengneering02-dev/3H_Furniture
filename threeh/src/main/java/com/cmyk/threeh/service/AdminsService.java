@@ -14,6 +14,9 @@ import com.cmyk.threeh.enums.MemberRole;
 import com.cmyk.threeh.repository.AdminsRepository;
 import com.cmyk.threeh.repository.DeliveryRepository;
 import com.cmyk.threeh.repository.OrderRepository;
+import com.cmyk.threeh.domain.Orders;
+import com.cmyk.threeh.domain.Delivery;
+import com.cmyk.threeh.enums.DeliveryStatus;
 
 @Service
 @RequiredArgsConstructor
@@ -64,11 +67,32 @@ public class AdminsService {
         return null;
     }
 
-    @Transactional // 데이터 변경이 일어나므로 반드시 추가
+    @Transactional
 public void assignOrder(Long orderId, Long deliveryId) {
-        
-    System.out.println("주문 번호 " + orderId + "번에 기사 " + deliveryId + "번 배정 로직 실행");
-}
 
+    Orders order = orderRepository.findById(orderId)
+            .orElseThrow(() -> new RuntimeException("주문 없음"));
+
+    Delivery delivery = deliveryRepository.findById(deliveryId)
+            .orElseThrow(() -> new RuntimeException("기사 없음"));
+
+    // 이미 배정된 주문 방지
+    if (order.getDelivery() != null) {
+        throw new RuntimeException("이미 배정된 주문입니다.");
+    }
+
+    // 기사 상태 확인
+    if (delivery.getStatus() != DeliveryStatus.WAITING) {
+        throw new RuntimeException("대기 상태 기사가 아닙니다.");
+    }
+
+    // 핵심
+    order.assignOrder(delivery);
+
+    // 기사 상태 변경
+    delivery.setStatus(DeliveryStatus.SHIPPING);
+
+    System.out.println("배정 완료");
+}
 
 }
