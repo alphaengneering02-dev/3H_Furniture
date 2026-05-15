@@ -421,7 +421,7 @@ function Item() {
     }
 
     setSelectedItems([]);
-    navigate("api/Member/cart");
+    navigate("/cart");
   };
 
   const handleAdminCreateClick = () => {

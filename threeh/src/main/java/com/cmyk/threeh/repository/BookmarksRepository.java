@@ -24,7 +24,7 @@ public interface BookmarksRepository extends JpaRepository<Bookmarks, Long> {
 
     //중복체크
     @Query("SELECT COUNT(b) > 0 FROM Bookmarks b WHERE b.member.memberId = :memberId AND b.item.itemId = :itemId")
-    boolean existsByMemberIdAndItemId(@Param("memberId") Long memberId, @Param("memberId")Long itemId);
+    boolean existsByMemberIdAndItemId(@Param("memberId") Long memberId, @Param("itemId")Long itemId);
 
     
 }
