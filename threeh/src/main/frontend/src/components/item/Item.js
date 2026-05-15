@@ -5,40 +5,124 @@ import axios from "axios";
 
 
 function Item(){
-
+    const navigate = useNavigate();
     
-    const [items, setItem] = useState([]);
-;
+    const [items, setItems] = useState([]);
+    const[adminMode, setAdminMode] = useState(false);
 
     const getLoginUser = () => {
 
        return JSON.parse(sessionStorage.getItem("user"));
     };
 
+    //admin인지 확인
+    const isAdminRole = (user)=>{
+        return(
+            user &&
+            (
+                user.role ==="ADMIN"||
+                user.role ==="ROLE_ADMIN"||
+                user.role?.key === "ADMIN"||
+                user.role?.key === "ROLE_ADMIN"
+            )
+        );
+    };
+
     const isUserRole = (user)=>{
         return(
             user && (
                 user.role === "USER"||
-                user.role === "USER_USER"||
+                user.role === "ROLE_USER"||
                 user.role?.key === "USER"||
                 user.role?.key === "ROLE_USER"
             )
         );
     };
 
-    useEffect(()=> {
-        axios.get("api/item")
-            .then((response) => {
-                console.log(response.data);
-                setItem(response.data);
-            })
-            .catch((error)=>{
-                console.error("뭐 잘못했나봐..",error);
-            });
-
+    useEffect(()=>{
+        getItems();
     },[]);
 
-    const navigate = useNavigate();
+    const getItems =async()=>{
+        try{
+            const response = await axios.get("api/item",{
+                withCredentials:true,
+            });
+            console.log("상품 목록:",response.data);
+            setItems(response.data);
+        }catch(error){
+            console.log("상품 목록 조회 실패", error);
+        }
+    };
+
+    
+    //어드민 계정으로 로그인해서 상품목록에 접근했을 때
+    const handleCreateClick = () => {
+        navigate("/item/create");
+    };
+
+    const handleAdminCreateClick = ()=>{
+        navigate("/item/create");
+    }
+
+    const handleAdminListClick = () =>{
+        setAdminMode(true);
+    };
+
+    const handleNormalListClick = () => {
+        setAdminMode(false);
+    };
+
+    const handleUpdateClick = (itemId) => {
+        navigate(`/item/update/${itemId}`);
+    };
+
+    const handleDeleteClick = async(itemId)=>{
+        const confirmDelete = window.confirm("정말 이 상품을 삭제하시겠습니까?");
+
+        if(!confirmDelete){
+            return;
+        }
+
+        try{
+
+            //이미지를 먼저 지워야 상품을 지우니까(fk)
+            const imgRes = await axios.get(
+                `http://localhost:8080/api/itemImgs/${itemId}`,
+                {
+                    withCredentials: true,
+                }
+            );
+
+            const itemImgs =imgRes.data;
+
+            for(const img of itemImgs){
+                await axios.delete(
+                    `http://localhost:8080/api/itemImgs/${img.itemId}`,
+                    {
+                        withCredentials:true,
+                    }
+                );
+            }
+
+            await axios.delete(`/api/admin/item/${itemId}`,{
+                withCredentials: true,
+            });
+
+            alert("상품이 삭제 되었습니다.");
+
+            setItems(items.filter((item)=> item.itemId !== itemId));
+            
+        }catch(error){
+            console.error("상품 삭제 실패", error)
+
+            if(error.response){
+                console.log(error.response.data);
+            }
+
+            alert("상품 삭제 실패");
+        }
+    };
 
     //비로그인이면 로그인을 하도록하고, 일반 유저면 장바구니/구매 가능하고, 관리자는 장바구니/구매 불가
     const handleAddCart  = async (itemId) => {
@@ -107,45 +191,117 @@ function Item(){
         navigate(`/order/${itemId}`);
     };
 
+    const user = getLoginUser();
+    const isAdmin = isAdminRole(user);
+
     return (
             <div>
             <h1>상품 목록</h1>
 
-            {items.length === 0 ? (
-                <p>상품이 없습니다.</p>
-            ) : (
-                items.map((item) => (
-                <div key={item.itemId}>
-                    {item.itemImgUrl ? (
-                    <img
-                        src={`http://localhost:8080${item.itemImgUrl}`}
-                        alt={item.itemName}
-                        width="200"
-                    />
-                    ) : (
-                    <p>이미지 없음</p>
-                    )}
-
-                    <Link to={`/item/${item.itemId}`}>
-                    <h2>{item.itemName}</h2>
-                    </Link>
-
-                    <p>카테고리: {item.itemCategory}</p>
-                    <p>상품 설명: {item.itemDetail}</p>
-                    <p>상품 색상: {item.itemColor}</p>
-                    <p>상품 가격: {item.itemPrice}</p>
-                    <p>상품 할인가격: {item.itemDiscountPrice}</p>
-                    <p>상품 최종가격: {item.itemFinalPrice}</p>
-                    <p>상품 재고: {item.itemStock}</p>
-
-                    <button type="button" onClick={()=>handleAddCart(item.itemId)}>장바구니 담기</button>
-
-                    <button type="button" onClick={()=>handleBuyNow(item.itemId)}style={{marginLeft:"10px"}}>구매하기</button>
+            {isAdmin && (
+                <div style={{marginBottom:"20px"}}>
+                    <button type="button" onClick={handleAdminCreateClick}>
+                        상품 등록하기
+                    </button>
+                    <button type="button" onClick={handleAdminListClick} style={{marginLeft:"10px"}}>
+                        상품수정 및 삭제하기
+                    </button>
+                {adminMode && (
+                    <button type="button" onClick={handleNormalListClick} style={{marginLeft:"10px"}}>
+                        일반상품 목록 보기
+                    </button>
+                )}
                 </div>
-                ))
             )}
-            </div>
-        );
-        }
+
+            {adminMode && isAdmin ? (
+                <div>
+                    <h2>관리자 상품 관리</h2>
+
+                    {items.length === 0 ?(
+                        <p>등록된 상품이 없습니다.</p>
+                    ):(
+                        <table border="1" cellPadding="10" style={{borderCollapse:"collapse"}}>
+                            <thead>
+                                <tr>
+                                    <th>itemId</th>
+                                    <th>제품 카테고리</th>
+                                    <th>제품명</th>
+                                    <th>가격</th>
+                                    <th>재고</th>
+                                    <th>판매상태</th>
+                                    <th>관리</th>
+                                </tr>
+                            </thead>
+
+                        <tbody>
+                            {items.map((item)=>(
+                                <tr key={item.itemId}>
+                                    <td>{item.itemId}</td>
+                                    <td>{item.itemCategory}</td>
+                                    <td>{item.itemName}</td>
+                                    <td>{item.itemPrice}</td>
+                                    <td>{item.itemStock}</td>
+                                    <td>{item.itemSellStatus}</td>
+                                    <td>
+                                        <button type="button" onClick={()=>handleUpdateClick(item.itemId)}>
+                                         수정
+                                        </button>
+                                        <button type="button" onClick={()=>handleDeleteClick(item.itemId)}
+                                            style={{marginLeft:"10px"}}>
+                                         삭제
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                    )}
+                </div>
+            ):(
+                <div>
+                    {items.length ===0 ?(
+                        <p>상품이 없습니다.</p>
+                    ):(
+                        items.map((item)=>(
+                            <div key={item.itemId} style={{marginBottom:"30px"}}>
+
+                                {item.itemImgUrl ? (
+                                    <img src={`http://localhost:8080${item.itemImgUrl}`} alt={item.itemName} width="200"/>
+                                ):(
+                                    <p>이미지 없음</p>
+                                )}
+
+                                <Link to={`/item/${item.itemId}`}>
+                                    <h2>{item.itemName}</h2>
+                                </Link>
+
+                                <p>카테고리: {item.itemCategory}</p>
+                                <p>상품 설명: {item.itemDetail}</p>
+                                <p>상품 색상: {item.itemColor}</p>
+                                <p>상품 가격: {item.itemPrice}</p>
+                                <p>상품 할인가격: {item.itemDiscountPrice}</p>
+                                <p>상품 최종가격: {item.itemFinalPrice}</p>
+                                <p>상품 재고: {item.itemStock}</p>
+                            
+                            {!isAdmin &&(
+                                <div>
+                                    <button type="button" onClick={()=>handleAddCart(item.itemId)}>
+                                        장바구니 담기
+                                    </button>
+
+                                    <button type="button" onClick={()=>handleBuyNow(item.itemId)} style={{marginLeft:"10px"}}>
+                                        구매하기
+                                    </button>
+                                </div>
+                            )}
+                            </div>
+                        ))
+                    )}
+                </div>
+            )}
+        </div>
+    );
+}
 
 export default Item;

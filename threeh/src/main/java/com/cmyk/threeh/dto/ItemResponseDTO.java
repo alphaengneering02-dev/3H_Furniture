@@ -2,6 +2,7 @@ package com.cmyk.threeh.dto;
 
 import com.cmyk.threeh.domain.Item;
 import com.cmyk.threeh.domain.ItemImg;
+import com.cmyk.threeh.enums.ItemSellStatus;
 import com.cmyk.threeh.enums.SubImg;
 
 import lombok.AllArgsConstructor;
@@ -30,6 +31,7 @@ private String itemPriceCurrency;
 private Integer itemStock; 
 private Integer itemFinalPrice;
 private String itemImgUrl;
+private ItemSellStatus itemSellStatus;
 
 
 //상품 조회시 DTO
@@ -62,6 +64,7 @@ private String itemImgUrl;
         .itemDiscountPrice(item.getItemDiscountPrice())
         .itemFinalPrice(item.getItemFinalPrice())
         .itemPriceCurrency(item.getItemPriceCurrency())
+        .itemSellStatus(item.getItemSellStatus())
         .itemStock(item.getItemStock())
         .itemImgUrl(imgUrl)
         .build();
