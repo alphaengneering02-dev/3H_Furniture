@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Slider } from "@mui/material";
 
 const Header_searchCondition = ({searchKey, setSearchKey}) => {
 
@@ -42,23 +43,12 @@ const Header_searchCondition = ({searchKey, setSearchKey}) => {
     const [sizeMax, setSizeMax] = useState(100)
 
     const changeSize = (evt) => {
-        const {name, value} = evt.target
-        const numValue = Number(value)  //input에서 넘어온 값(String)을 숫자로 변환
+        const numValue = Number(evt.target.value)  //input에서 넘어온 값(String)을 숫자로 변환
 
-        if(name==='sizeMin') {
-            if(numValue <= sizeMax) {  //최소값 <= 최대값일 때만
-                setSizeMin(numValue)
-            } else {
-                setSizeMin(sizeMax)
-            }
-        } else {  //sizeMax
-            if(numValue >= sizeMin) {  //최대값 >= 최소값일 때만
-                setSizeMax(numValue)
-            } else {
-                setSizeMax(sizeMin)
-            }
-        }
-        
+        setSearchKey({
+            ...searchKey,
+            size: numValue
+        }) 
     }
 
 
@@ -123,10 +113,13 @@ const Header_searchCondition = ({searchKey, setSearchKey}) => {
                 {/* 사이즈 */}
                 <div>
                     <h4>사이즈</h4>
-                    <div>
-                        <input type='range' id='sizeMin' name='sizeMin' min={0} max={100} value={sizeMin} onChange={changeSize}/>
-                        <input type='range' id='sizeMax' name='sizeMax' min={0} max={100} value={sizeMax} onChange={changeSize}/>
-                    </div>
+                    <Slider
+                        getAriaLabel={() => 'Minimum distance shift'}
+                        value={searchKey.size}
+                        onChange={changeSize}
+                        valueLabelDisplay="auto"
+                        disableSwap
+                    />
                 </div>
 
                 {/* 가격대 */}
@@ -135,6 +128,14 @@ const Header_searchCondition = ({searchKey, setSearchKey}) => {
                     <div>
                         <input type='range' id='priceMin' name='price'/>
                         <input type='range' id='priceMax' name='price'/>
+                        <div class="track"
+                            style={{
+                                width: '100%',
+                                height: '100%',
+                                background: 'red'
+                            }}>
+                            <div class="progress"></div>
+                        </div>
                     </div>
                 </div>
             </article>

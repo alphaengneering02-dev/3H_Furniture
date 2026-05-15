@@ -42,6 +42,7 @@ public class SecurityConfig {
 	private final LoginSuccessHandler loginSuccessHandler;  //로그인 성공 핸들러 주입
 	private final LoginFailHandler loginFailHandler;  //로그인 에러 핸들러 주입
 	private final HttpSession httpSession;
+	public final PasswordEncoder passwordEncoder;
 
 
 	@Bean
@@ -89,15 +90,6 @@ public class SecurityConfig {
     		.passwordParameter("password")
 			
 			//2. 로그인 성공 시 실행될 동작 (JSON 반환)
-			.successHandler((request, response, authentication) -> {
-			response.setStatus(HttpStatus.OK.value()); // 200 상태 코드
-			response.setContentType("application/json;charset=UTF-8");  //"React에게 보낼 응답은 HTML이 아니라 JSON 형식의 데이터이고, UTF-8로 인코딩함"
-			response.getWriter().write("{"   //JSON 데이터를 문자열로 직접 작성 (res.data로 호출함)
-			+ "\"status\": true,"
-			+ "\"message\": \"로그인에 성공하였습니다.\""
-			+ "\"id\":" + authentication.getName()
-			+ "}");
-			})
 			.successHandler(loginSuccessHandler)
 			
 			// 3. 로그인 실패 시 실행될 동작 (JSON 반환)
@@ -113,16 +105,17 @@ public class SecurityConfig {
             .and()
 
 			// 2. 로그인 성공 시 실행될 동작 (JSON 반환 대신 프론트엔드(React)로 리다이렉트)
-            .successHandler((request, response, authentication) -> {
-				//인증 객체에서 OAuth2User를 꺼냅니다.
-				OAuth2User oauth2User = (OAuth2User)authentication.getPrincipal();
+            // .successHandler((request, response, authentication) -> {
+			// 	//인증 객체에서 OAuth2User를 꺼냅니다.
+			// 	OAuth2User oauth2User = (OAuth2User)authentication.getPrincipal();
 
-				//OAuth2User에서 진짜 DB ID를 추출합니다.
-				String id = oauth2User.getAttribute("db_id");
+			// 	//OAuth2User에서 진짜 DB ID를 추출합니다.
+			// 	String id = oauth2User.getAttribute("db_id");
 				
-                //추출한 DB ID를 프론트엔드로 넘겨줍니다.(OAuth2Success.js 컴포넌트)
-                response.sendRedirect("http://localhost:3000/oauth/success?id=" + id);
-            })
+            //     //추출한 DB ID를 프론트엔드로 넘겨줍니다.(OAuth2Success.js 컴포넌트)
+            //     response.sendRedirect("http://localhost:3000/oauth/success?id=" + id);
+            // })
+			.successHandler(loginSuccessHandler)
 			
 			// 3. 로그인 실패 시 실행될 동작 (JSON 반환)
 			.failureHandler(loginFailHandler)  //에러 처리 핸들러 객체를 넣어줌
@@ -148,10 +141,10 @@ public class SecurityConfig {
 	}
 	
 	
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
+	// @Bean
+	// public PasswordEncoder passwordEncoder() {
+	// 	return new BCryptPasswordEncoder();
+	// }
 	
 	
     //spring security 인증 관리자 (DB 비교+로그인 처리)
@@ -171,7 +164,8 @@ public class SecurityConfig {
         provider.setUserDetailsService(memberSecurityService);
         
         // 2. 비밀번호 암호화 방식 연결
-        provider.setPasswordEncoder(passwordEncoder());
+        // provider.setPasswordEncoder(passwordEncoder());
+        provider.setPasswordEncoder(passwordEncoder);
         
         // 3. 핵심: 존재하지 않는 아이디일 때 UsernameNotFoundException을 그대로 던짐
         provider.setHideUserNotFoundExceptions(false); 

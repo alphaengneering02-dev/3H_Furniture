@@ -30,14 +30,16 @@ const Header = () => {
             //sessionStorage에서 회원정보를 가져옴
             const rawData = sessionStorage.getItem("user")
 
-            if(rawData) {
-                const sessionData = JSON.parse(rawData)  //JSON ---> 객체 형태
-                setUser(sessionData)
-
-                console.log("[로그인 데이터 로드 완료]"  + "\n"
-                    + rawData
-                )
+            if(!rawData) {
+                return
             }
+
+            const sessionData = JSON.parse(rawData)  //JSON ---> 객체 형태
+            setUser(sessionData)
+
+            console.log("[로그인 데이터 로드 완료]"  + "\n"
+                + rawData
+            )
 
             // debugger;  //디버깅 모드 on
 

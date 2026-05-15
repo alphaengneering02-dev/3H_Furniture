@@ -61,7 +61,6 @@ const Login = () => {
         params.append('id', id);
         params.append('password', password);  //예: id=user2&password=a123 형태의 Form Data
         
-
         console.log("서버로 보내는 데이터: " + params.toString())
 
 
@@ -78,23 +77,15 @@ const Login = () => {
 
             // Spring Boot에서 보내준 JSON 응답(status: true) 확인
             if (res.data.status === true) {
-                const passMessage = res.data.message
-                setLoginResultMsg(passMessage);  //"message": "로그인에 성공하였습니다"
-                alert(passMessage)
-                console.log(passMessage)
-
                 //sessionStorage 저장
                 await setSession(res.data.id);
-                
-                // 세션 만료시, 세션 삭제+로그인 페이지로 이동 (30분)
+
+                // 세션 만료시간 타이머 (30분)
                 setTimeout(() => {
                     alert("세션이 만료되었습니다. 다시 로그인해주세요.");
                     sessionStorage.removeItem("user"); //세션 삭제
                     navigate('/login'); //로그인 페이지로 이동
                 }, expireTime)
-
-                // 메인 페이지로 이동
-                navigate('/')
             }
 
         } catch (error) {
@@ -102,11 +93,12 @@ const Login = () => {
             if (error.response && error.response.data) {
                 const errorMessage = error.response.data.message
                 setLoginResultMsg(errorMessage);  //"잠긴 계정입니다.", "비밀번호가 만료되었습니다." 등의 에러메세지
-
                 alert(errorMessage)
                 console.log(errorMessage)
             } else {
                 setLoginResultMsg("서버와 연결할 수 없습니다.");
+                alert("서버와 연결할 수 없습니다.")
+                console.log("서버와 연결할 수 없습니다.")
             }
 
             console.error("로그인 시도 중 오류 발생: ", error)
