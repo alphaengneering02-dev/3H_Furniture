@@ -301,13 +301,18 @@ public ResponseEntity<?> driverLogin(@RequestBody Map<String, String> payload) {
  */
 @GetMapping("/driver/{deliveryId}/orders")
 public ResponseEntity<?> getDriverOrders(@PathVariable Long deliveryId) {
-    // 로그 추가: 요청이 들어온 기사 ID 확인
+
     System.out.println("요청된 기사 ID: " + deliveryId);
+
     List<Orders> orders = orderRepository.findByDelivery_DeliveryId(deliveryId);
-    
-    // 로그 추가: DB에서 찾은 주문 개수 확인
-    System.out.println("조회된 주문 개수: " + orders.size());  
-    return ResponseEntity.ok(orders);
+
+    System.out.println("조회된 주문 개수: " + orders.size());
+
+    List<OrderResponseDTO> result = orders.stream()
+            .map(OrderResponseDTO::from)
+            .collect(java.util.stream.Collectors.toList());
+
+    return ResponseEntity.ok(result);
 }
 
 /**

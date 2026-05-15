@@ -21,14 +21,16 @@ const DriverPage = () => {
 
     // 2. 배정된 주문 목록 가져오기
     const fetchOrders = async (id) => {
-        try {
-            const res = await axios.get(`/admin/driver/${id}/orders`);
-            setAssignedOrders(res.data);
-        } catch (err) {
-            console.error("목록 로드 실패", err);
-        }
-    };
+    try {
+        const res = await axios.get(`/admin/driver/${id}/orders`);
 
+        console.log("기사 주문 데이터:", res.data);
+
+        setAssignedOrders(res.data);
+    } catch (err) {
+        console.error("목록 로드 실패", err);
+    }
+};
     // 3. 수락 및 완료 처리 (통합 핸들러)
     const handleAction = async (orderId, actionType) => {
         try {
