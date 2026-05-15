@@ -26,11 +26,8 @@ import lombok.RequiredArgsConstructor;
 public class MemberAddressService {
     
     private final MemberAddressRepository memberAddressRepository;
-<<<<<<< Updated upstream
-    private final MemberService memberService; 
-    private final OrderRepository orderRepository; 
-=======
     private final MemberService memberService;
+    private final OrderRepository orderRepository;
 
     public MemberAddress createMemberAddress(String userid, String addr, String addrDetail) {
         //사용자 정보 조회
@@ -44,7 +41,6 @@ public class MemberAddressService {
         return memberAddressRepository.save(memberAddress);
 
     }
->>>>>>> Stashed changes
 
     // 배송지 저장 로직
     @Transactional
@@ -58,35 +54,22 @@ public class MemberAddressService {
         }
 
         MemberAddress address = new MemberAddress();
-<<<<<<< Updated upstream
-=======
         //폼 데이터를 엔티티 객체로 변환
->>>>>>> Stashed changes
         address.setMember(member);
         
         // 조장님 Adress VO 설정 (city, street, zipcode)
         address.setAdressl(new Adress(form.getCity(), form.getStreet(), form.getZipcode()));
         address.setAddr(form.getCity() + " " + form.getStreet()); 
         address.setAddrDetail(form.getAddrDetail());
-<<<<<<< Updated upstream
         address.setIsDefault(form.getIsDefault() != null ? form.getIsDefault() : "N");
         
         memberAddressRepository.save(address);
-=======
-        address.setIsDefault("N");
-
-        memberAddressRepository.save(address); //DB저장
-
->>>>>>> Stashed changes
     }
 
     // 주소록 목록 조회
     @Transactional
     public List<MemberAddressDTO> getAddressList(String userid) {
-<<<<<<< Updated upstream
-=======
         //회원 정보 조회
->>>>>>> Stashed changes
         Member member = memberService.getUser(userid);
         List<MemberAddressDTO> dtoList = new ArrayList<>();
         List<MemberAddress> addresses = memberAddressRepository.findByMember_MemberId(member.getMemberId());

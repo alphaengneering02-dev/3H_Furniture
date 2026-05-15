@@ -25,17 +25,10 @@ public class CartItemController {
 
     private final CartItemService cartItemService;
 
-<<<<<<< Updated upstream
     @PostMapping("/add") 
     public ResponseEntity<String> addCartItem(@Valid @ModelAttribute CartItemForm cartItemForm,
                                               BindingResult bindingResult,
                                               Principal principal) {
-=======
-    @PostMapping("/add") //로그인한 사용자의 장바구니 목록 표시
-    public String addCartItem(@Valid CartItemForm cartItemForm,
-                              BindingResult bindingResult,
-                              HttpSession session) {
->>>>>>> Stashed changes
 
         if(principal == null) {
             return ResponseEntity.status(401).body("로그인이 필요한 서비스입니다.");
@@ -46,24 +39,16 @@ public class CartItemController {
             return ResponseEntity.badRequest().body("입력 형식이 올바르지 않습니다.");
         }
 
-<<<<<<< Updated upstream
         // 세션에 담는 키값 "member"로 로그인 여부 확인
         String member =  principal.getName();        
         // 로그인 정보가 없으면 401(미인증) 에러를 리액트에 쏴서 로그인 창으로 유도합니다.
         if(member == null) {
             return ResponseEntity.status(401).body("로그인이 필요한 서비스입니다.");
-=======
-        //세션에서 로그인한 사용자의 아이디를 확인
-        String userid = (String) session.getAttribute("userid");
-        
-        if(userid == null) { //비로그인 상태면 로그인 페이지로 이동
-            return "redirect:/user/login";
->>>>>>> Stashed changes
         }
 
         // 서비스 레이어 호출 (기존에 작성하신 서비스를 그대로 사용합니다.)
         try {
-            cartItemService.addCartItem(cartItemForm, member);
+            cartItemService.addCartItem(member, cartItemForm);
         } catch (Exception e) {
             return ResponseEntity.status(500).body("장바구니 담기 중 오류 발생: " + e.getMessage());
         }

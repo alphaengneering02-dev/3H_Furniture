@@ -25,36 +25,6 @@ public class CartItemService {
     private final HttpSession httpSession; 
 
     @Transactional
-<<<<<<< Updated upstream
-    public void addCartItem(CartItemForm form, String sessionMember) { 
-    
-        //현재 브라우저 세션에서 로그인안 회원 정보 가져옴
-    
-     // 로그인이 되어있지 않은 경우 예외 발생 (방어 로직)
-    if (sessionMember == null) {
-        throw new IllegalStateException("로그인이 필요합니다.");
-    }
-
-    // 세션에 담긴 로그인 ID(문자열)를 사용하여 실제 DB에 저장된 Member 엔티티 객체를 조회
-    // 이 과정을 통해 memberId(PK) 등 상세 회원 정보를 확보함
-    Member member = memberService.getUser(sessionMember);
-    
-    Cart cart = cartRepository.findBymember_memberId(member.getMemberId()).orElse(null);
-    // 장바구니가 없는 유저(첫 사용 등)일 경우, 즉석에서 새 장바구니를 생성하고 DB에 저장
-    if (cart == null) {
-        cart = new Cart();
-        cart.setMember(member);
-        cart = cartRepository.save(cart);
-    }
-    // 사용자가 담으려는 상품(Item)이 실제로 DB에 존재하는지 확인
-        Item item = itemRepository.findById(form.getItemId()).orElse(null);
-        if (item == null) throw new IllegalArgumentException("상품이 존재하지 않습니다.");
-    // 현재 장바구니(cartId) 내에 이미 똑같은 상품(itemId)이 들어있는지 조회
-        CartItem savedItem = cartItemRepository.findByCart_CartIdAndItem_ItemId(cart.getCartId(), item.getItemId());
-
-        if (savedItem != null) {
-            // 이미 상품이 존재한다면, 새로운 행을 만들지 않고 기존 상품의 수량(count)만 합산 업데이트
-=======
     public void addCartItem(String userid, CartItemForm form) {
         
         //사용자 정보 조회
@@ -76,7 +46,6 @@ public class CartItemService {
         CartItem savedItem = cartItemRepository.findByCart_CartIdAndItem_ItemId(cart.getCartId(), item.getItemId());
 
         if (savedItem != null) {//중복된 상품이면 수량만 더해줌
->>>>>>> Stashed changes
             savedItem.setCount(savedItem.getCount() + form.getCount());
         } else {
             // 장바구니에 없던 새 상품이라면, CartItem 엔티티를 새로 생성하여 장바구니-상품-수량을 연결해 저장

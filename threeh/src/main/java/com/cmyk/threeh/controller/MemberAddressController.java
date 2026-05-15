@@ -26,14 +26,10 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/Member")
 public class MemberAddressController {
 
-<<<<<<< Updated upstream
-=======
     //@Resource
->>>>>>> Stashed changes
     private final MemberAddressService memberAddressService;
     private final MemberService memberService; 
 
-<<<<<<< Updated upstream
     //마이페이지 홈
     @RequestMapping(value = "mypage.do")
     public ResponseEntity<?> mypage(Principal principal) throws Exception {
@@ -42,37 +38,6 @@ public class MemberAddressController {
         
         if (member == null) {
             return ResponseEntity.status(404).body("회원 정보를 찾을 수 없습니다.");
-=======
-    @GetMapping("/list") //사용자의 배송지 목록 화면에 표시
-    public String addressList(HttpSession session, Model model) {
-        String userid = (String) session.getAttribute("userid");
-
-        if(userid == null) userid = "testuser01";
-        
-        //사용자의 주소록 리스트를 가져와 모델에 담기
-        model.addAttribute("addressList", memberAddressService.getAddressList(userid));
-
-        return "mypage/address_list";
-    }
-
-    @PostMapping("/add")
-    public String addAddress(@Valid MemberAddressForm memberAddressForm,
-                            BindingResult bindingResult,
-                            HttpSession session) {
-
-            if(bindingResult.hasErrors()) {
-                return "mypage/address_form";
-            }
-
-            //사용자의 아이디 확인
-            String userid = (String) session.getAttribute("userid");
-            if(userid == null) userid = "testuser01";
-
-                memberAddressService.saveAddress(userid, memberAddressForm);
-
-                //저장 완료 후 다시 목록 페이지로 이동
-                return "redirect:/Member/list";
->>>>>>> Stashed changes
         }
 
         Map<String, Object> responseData = new HashMap<>();

@@ -44,14 +44,6 @@ public class CartService {
         return cartRepository.save(cart);
     }
 
-<<<<<<< Updated upstream
-    @Transactional(readOnly = true)
-    public CartDTO getCartDTO(String loginUserId) {
-        Member member = memberService.getUser(loginUserId);
-
-        Cart cart = cartRepository.findBymember_memberId(member.getMemberId())
-            .orElseGet(() -> createCart(member));
-=======
     @Transactional //사용자의 장바구니를 찾아 화면 전달
     public CartDTO getCartDto(String userid) {
 
@@ -61,9 +53,8 @@ public class CartService {
         Cart cart = cartRepository.findBymember_memberId(member.getMemberId()).orElse(null);
 
         if(cart == null) {
-            cart = createCart(userid);
+            cart = createCart(member);
         }
->>>>>>> Stashed changes
 
         CartDTO cartDTO = new CartDTO();
         cartDTO.setCartId(cart.getCartId());

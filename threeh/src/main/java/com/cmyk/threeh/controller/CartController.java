@@ -1,14 +1,9 @@
 package com.cmyk.threeh.controller;
 
-<<<<<<< Updated upstream
 import java.security.Principal; // 팀 시큐리티 연동 필수 주입
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-=======
-import javax.annotation.Resource;
-import javax.servlet.http.HttpSession;
->>>>>>> Stashed changes
 
 import org.springframework.http.ResponseEntity; 
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -18,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.cmyk.threeh.dto.CartDTO;
 import com.cmyk.threeh.dto.CartItemDTO;
@@ -48,7 +44,7 @@ public class CartController {
 
         String loginUserId = principal.getName();
         // 서비스 명세 규칙에 맞게 getCartDTO로 명칭 일치화
-        CartDTO cartDTO = cartService.getCartDTO(loginUserId);
+        CartDTO cartDTO = cartService.getCartDto(loginUserId);
         
         return ResponseEntity.ok(cartDTO); 
     }

@@ -10,29 +10,21 @@ public class MemberAddressForm {
     @NotEmpty(message = "우편번호는 필수입니다.")
     private String zipcode;
 
-<<<<<<< Updated upstream
     @NotEmpty(message = "도시/지역을 입력하세요")
     private String city;
 
     @NotEmpty(message = "도로명 주소를 입력하세요")
     private String street;
-=======
-    @NotEmpty(message = "주소는 필수입니다.")
-    private String addr;
->>>>>>> Stashed changes
 
     @NotEmpty(message = "상세 주소는 필수입니다.")
     private String addrDetail;
-<<<<<<< Updated upstream
 
     //추가된 배송지 정보
     private String addressName;
     private String receiverName;
     private String receiverPhone;
 
-    //기본 배송지 설정 여부
+    //기본 배송지 설정 여부s
     private String isDefault;
 
-=======
->>>>>>> Stashed changes
 }
