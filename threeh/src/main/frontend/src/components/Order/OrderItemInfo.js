@@ -51,6 +51,10 @@ function OrderItemInfo( { orderData, orderType, zipCode, address, deliveryDate, 
                 console.log("orderData 전체:", orderData);
 
                 const user = JSON.parse(sessionStorage.getItem("user"));
+                
+                if(!user){
+                    navigate("/login");
+                }
 
                  const orderItems = isCartOrder
                 ? orderData.map(item => ({
