@@ -67,15 +67,6 @@ const AdminDashboard = () => {
     const [orders, setOrders] = useState([]);
     const [items, setItems] = useState([]);
 
-    const fetchDeliveries = async () => {
-        try {
-            const response = await axios.get('/admin/list');
-            setItems(response.data);
-        } catch (error) {
-            console.error("기사 리스트 로드 실패:", error);
-        }
-    };
-
     const handleDeleteDelivery = async (deliveryId) => {
         if (!window.confirm("정말 이 기사를 삭제하시겠습니까?")) return;
 
@@ -118,10 +109,10 @@ const AdminDashboard = () => {
         console.log("접속자 정보:", userObj);
     } else {
         console.log("로그인 정보가 없습니다. 로그인 페이지로 이동합니다.");
-        // navigate("/login"); // 로그인 안 되어있으면 튕겨내기
     }
     
     fetchDeliveries();
+    fetchOrders();
 }, [navigate]);
 
     useEffect(() => {
@@ -144,22 +135,23 @@ const AdminDashboard = () => {
 
 
 const handleAssignDriver = async (orderId) => {
-    const deliveryId = selectedDrivers[orderId];
+    const deliveryIdRaw = selectedDrivers[orderId];
 
-    // 1. 기사 선택 체크
-    if (!deliveryId) {
+    if (!deliveryIdRaw) {
         alert("기사를 선택해주세요.");
         return;
     }
 
     try {
-        // 2. 백엔드에 배정 요청 + 배송 상태 시작
+        // deliveryId를 확실하게 숫자(Number) 타입으로 변환
+        const deliveryId = Number(deliveryIdRaw);
+
+        // 백엔드 API 명세에 맞춰 데이터 전송
         await axios.post(`/admin/orders/${orderId}/assign`, {
-            deliveryId: deliveryId,
-            deliveryStatus: 'WAITING'   // 🔥 핵심 추가
+            deliveryId: deliveryId
         });
 
-        // 3. UI 반영 (프론트 즉시 업데이트)
+        // UI 즉시 업데이트 로직 (기존 유지)
         setOrders(prev =>
             prev.map(order =>
                 order.orderId === orderId
@@ -172,17 +164,12 @@ const handleAssignDriver = async (orderId) => {
             )
         );
 
-        // 4. 선택 초기화
-        setSelectedDrivers(prev => ({
-            ...prev,
-            [orderId]: ""
-        }));
-
-        alert("기사 배정 완료 (배송 대기 상태로 변경됨)");
+        setSelectedDrivers(prev => ({ ...prev, [orderId]: "" }));
+        alert("기사 배정 완료");
 
     } catch (error) {
-        console.error("배정 실패:", error);
-        alert("배정 중 오류가 발생했습니다.");
+        console.error("배정 실패 상세:", error.response?.data); // 서버가 보낸 구체적 에러 확인
+        alert(`배정 실패: ${error.response?.data || "서버 오류"}`);
     }
 };
 
@@ -206,29 +193,41 @@ const handleAssignDriver = async (orderId) => {
     }
 };
 
-useEffect(() => {
-    fetchDeliveries();
-    fetchOrders(); // 주문 목록도 함께 호출
-}, []);
+const handleStatusChange = async (orderId, newState) => {
+    if (newState === 'CANCEL' && !window.confirm("정말 주문을 취소하시겠습니까?")) {
+        fetchOrders();
+        return;
+    }
 
-    const handleStatusChange = async (orderId, newStatus) => {
     try {
-        // 1. 백엔드에 상태 업데이트 요청
-        await axios.put(`/admin/orders/${orderId}/status`, { status: newStatus });
+        // [중요] axios.post -> axios.put으로 변경
+        await axios.put(`/admin/orders/${orderId}/status`, {
+            status: newState
+        });
 
-        // 2. 클라이언트 상태 반영 (기존 코드 유지 또는 새로고침)
-        setOrders(prevOrders =>
-            prevOrders.map(order =>
-                order.orderId === orderId
-                    ? { ...order, orderState: newStatus }
-                    : order
-            )
-        );
-        
-        alert(`상태가 ${newStatus}로 변경되었습니다.`);
+        alert("상태가 변경되었습니다.");
+        fetchOrders(); 
     } catch (error) {
-        console.error("상태 업데이트 실패:", error);
-        alert("상태 업데이트 중 오류가 발생했습니다.");
+        console.error("상태 변경 실패 상세 정보 ---");
+        console.error(error.response?.data);
+        alert("상태 변경 중 오류가 발생했습니다. (PUT 메서드 확인 필요)");
+        fetchOrders();
+    }
+};
+
+const fetchDeliveries = async () => {
+    try {
+        const response = await axios.get('/admin/list');
+        setItems(response.data);
+    } catch (error) {
+        // error.response.data에 우리가 위에서 작성한 "백엔드 에러 발생 원인..."이 담깁니다.
+        console.error("❌ 기사 리스트 로드 실패 상세 원인:");
+        if (error.response && error.response.data) {
+            console.error(error.response.data); 
+            alert("서버 에러: " + error.response.data); // 팝업으로 바로 확인 가능
+        } else {
+            console.error(error.message);
+        }
     }
 };
 

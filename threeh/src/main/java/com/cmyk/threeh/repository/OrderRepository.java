@@ -20,4 +20,7 @@ public interface OrderRepository extends JpaRepository<Orders, Long>{
 
     List<OrderItem> findByOrderItems(String orderId);
    
+
+    //태양 딜리버리 주문 목록 조회 
+    List<Orders> findByDelivery_DeliveryId(Long deliveryId);
 }
