@@ -80,12 +80,15 @@ const Login = () => {
                 //sessionStorage 저장
                 await setSession(res.data.id);
 
-                // 세션 만료시간 타이머 (30분)
+                // 세션 만료시간 타이머(30분): 세션 삭제+로그인 페이지로 이동
                 setTimeout(() => {
                     alert("세션이 만료되었습니다. 다시 로그인해주세요.");
                     sessionStorage.removeItem("user"); //세션 삭제
                     navigate('/login'); //로그인 페이지로 이동
                 }, expireTime)
+
+                // 메인 페이지로 이동
+                navigate('/')
             }
 
         } catch (error) {
