@@ -2,13 +2,13 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 //유소은
 import Main from '../components/main/Main';
+import SearchResult from '../components/main/SearchResult';
 import Login from '../components/member/Login';
+import OAuth2Success from '../components/member/OAuth2Success';
 import Signup from '../components/member/Signup';
 import Signup_site from '../components/member/Signup_site';
 import FindId from '../components/member/FindId';
 import ChangePW from '../components/member/ChangePW';
-import OAuth2Success from '../components/member/OAuth2Success';
-import SearchResult from '../components/member/SearchResult';
 
 //오현옥
 import Item from '../components/item/Item';
@@ -40,7 +40,7 @@ const Router = () => {
         <BrowserRouter>
             <Routes>
                 <Route path="/" element={<Main/>} />
-                <Route path="/searchResult/:searchKey/:searchValue" element={<SearchResult/>} />
+                <Route path="/searchResult" element={<SearchResult/>} />
                 <Route path="/login" element={<Login/>} />
                 <Route path="/oauth/success" element={<OAuth2Success/>} />
                 <Route path="/signup" element={<Signup/>} />

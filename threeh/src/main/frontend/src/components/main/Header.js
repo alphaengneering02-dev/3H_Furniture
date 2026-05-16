@@ -80,7 +80,9 @@ const Header = () => {
 
 
 
-    //검색창
+    //상품 통합검색
+
+    //검색 조건 선택
     /*
     searchKey (다중 선택 가능)
     - "사용공간": [거실, 침실, 주방...] 
@@ -95,29 +97,57 @@ const Header = () => {
         "kind": ["all"],
         "brand": ["all"],
         "material": ["all"],
-        "size": [0, 0],
-        "price": [0, 0]
+        "size": [1, 6],
+        "price": [0, 100]
     })  //객체
-    const [searchValue, setSearchValue] = useState("")  //String값
-    
+
     const [isSearchCondition, setIsSearchCondition] = useState(false)
-
-    // const changeSearchKey = (evt) => {}
-    const changeSearchValue = (evt) => {setSearchValue(evt.target.value)}
-
-
-    //검색 조건 선택창 
     const toggleSearchCondition = () => {
         setIsSearchCondition(!isSearchCondition)
     }
 
 
+    //검색어 입력
+    const [searchValue, setSearchValue] = useState("")  //String값
+    const changeSearchValue = (evt) => {setSearchValue(evt.target.value)}
+
+
+    //검색 함수
     const doSearch = async() => {
 
         try {
-            navigate(`/searchResult/${searchKey}/${searchValue}`)
+            //1. Query String 생성 (예: ?searchValue=책상&space=거실,침실&size=1,6)
+            const params = new URLSearchParams()  //파라미터를 생성하는 훅
+
+            if (searchValue.trim() !== "") {  //parameter - 검색어
+                params.append("searchValue", searchValue);
+            }
+
+
+            Object.keys(searchKey).forEach(key => {  //parameter - 다중 검색 조건(searchKey)을 순회하며 파라미터에 추가
+                const value = searchKey[key];  //검색조건 배열
+
+                //배열에 "all"만 들어있는 경우(예: ["all"])
+                if(value.length === 1 && value[0] === "all") {
+                    return
+                }
+                
+                //그 외에 선택된 조건들이 들어있는 경우(예: ["거실", "주방"])
+                params.append(key, value.join(','))
+            })
+
+
+            //2. 완성된 Query String 확인 (디버깅용)
+            const queryString = params.toString()
+            console.log("검색 쿼리:", queryString)
+            // 출력 예시: searchValue=매트리스&space=거실%2C주방&kind=all&brand=all&material=all&size=1%2C6&price=0%2C100 (, = %2C)
+
+
+            //3. 프론트엔드 라우터(SearchResult 페이지)로 이동
+            navigate(`/searchResult?${queryString}`)
+            // navigate(`/searchResult/${searchKey}/${searchValue}`)
         } catch (error) {
-            
+            console.error("검색 이동 중 오류 발생:", error)
         }
 
     }
@@ -167,7 +197,8 @@ const Header = () => {
 
                                 {/* 검색 조건 선택창 */}
                                 {
-                                    isSearchCondition && <Header_searchCondition searchKey={searchKey} setSearchKey={setSearchKey}/>
+                                    isSearchCondition && 
+                                    <Header_searchCondition searchKey={searchKey} setSearchKey={setSearchKey}/>
                                 }
                             </form>
                         </div>
