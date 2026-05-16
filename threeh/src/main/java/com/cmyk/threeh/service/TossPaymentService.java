@@ -47,6 +47,12 @@ public class TossPaymentService{
             throw new CustomException(ErrorCode.INVALID_PAYMENT_AMOUNT);
         }
 
+        
+
+        Long totalPrice = payment.getAmount();
+
+        System.err.println(totalPrice);
+
         payment.setMember(member);
 
         return paymentRepository.save(payment);
@@ -56,7 +62,7 @@ public class TossPaymentService{
     public PaymentResponseDTO confirmPayment(String paymentKey, String orderId, Long amount){
 
         Payment payment = paymentRepository.findByOrderId(orderId)
-        .orElseThrow(() -> new CustomException(ErrorCode.BOOKMARK_NOT_FOUND));
+        .orElseThrow(() -> new CustomException(ErrorCode.PAYMENT_NOT_FOUND));
 
 
         return  payment.toPaymentResponseDTO();

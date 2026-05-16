@@ -54,6 +54,8 @@ public class OrderController {
     @PostMapping("/items")
     public ResponseEntity getOrderForm(@RequestBody List<Long> cartItemIds, Principal principal) {
 
+        System.out.println("진입완료");
+
         Member member = memberService.getUser(principal.getName());
         MemberAddressDTO defaultAddress = memberAddressService.getDefaultAddressForOrder(member.getId());
 
@@ -134,7 +136,7 @@ public class OrderController {
                 .itemDetail(item.getItemDetail())
                 .price(item.getItemPrice())
                 .stock(item.getItemStock())
-                .itemIamge(itemImage.getItemImgUrl())
+                .itemImage(itemImage.getItemImgUrl())
                 .memberName(member.getName())
                 .email(member.getEmail())
                 .phone(member.getPhone())

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'; 
+import { getUrl } from '../../utils/BackendPath';
 
 const Cart = () => {
     const navigate = useNavigate();
@@ -65,7 +66,7 @@ const Cart = () => {
     // 상품 삭제 로직
     const deleteItem = (cartItemId) => {
         if (window.confirm("상품을 삭제하시겠습니까?")) {
-            axios.post(`http://localhost:8080/Member/cart/delete/${cartItemId}`, {}, { withCredentials: true })
+            axios.post(`/api/Member/cart/delete/${cartItemId}`, {}, { withCredentials: true })
                 .then(res => {
                     alert(res.data || "삭제되었습니다.");
                     setCartItems(cartItems.filter(item => (item.cartItemId || item.cartitemId) !== cartItemId));
@@ -112,7 +113,7 @@ const Cart = () => {
         // 조장님 페이지로 넘어갈 때도 수량이 최신 상태로 갱신된 cartItems 객체 통째가 넘어가도록 마감 처리
         const checkedIds = cartItems.map(item => item.cartItemId || item.cartitemId);
 
-        axios.post('http://localhost:8080/Member/cart/toss',
+        axios.post('/api/Member/cart/toss',
             {cartItemIds:checkedIds},
             {withCredentials:true}
         )
@@ -148,7 +149,7 @@ const Cart = () => {
                     
                     {/* 이미지 경로 데이터 매핑 활성화 */}
                     {/* {item.imageUrl && ( */}
-                        <img src={item.imageUrl} alt={item.itemName} style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '4px', marginRight: '15px' }} />
+                        <img src={getUrl(item.imageUrl)} alt={item.itemName} style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '4px', marginRight: '15px' }} />
                     {/* )} */}
 
                     <p><strong>{item.itemName}</strong></p>

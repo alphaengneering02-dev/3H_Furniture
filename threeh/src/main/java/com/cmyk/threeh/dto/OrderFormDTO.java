@@ -15,7 +15,7 @@ public class OrderFormDTO {
     private String itemDetail;
     private int price;
     private int stock;
-    private String itemIamge;
+    private String itemImage;
     private String memberName;
     private String email;
     private String phone;

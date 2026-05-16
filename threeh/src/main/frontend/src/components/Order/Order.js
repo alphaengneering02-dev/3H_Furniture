@@ -33,14 +33,31 @@ function Order(props) {
 
     console.log(location);
 
+    const { orderItems, fromCart } = location.state || {};
+
+    console.log("주문 아이템 정보", orderItems);
+
     useEffect(() => {
 
-        if(location.state && location.state.orderItems){
+        
 
-            const ids = location.state.orderId;
+        if(fromCart && orderItems){
+
+            
+
+            
+
+            if (!orderItems) {
+                console.log("주문할 아이템 ID가 존재하지 않습니다.");
+                return;
+            }
+
+            const requestBody = orderItems.map(item => Number(item.cartItemId));
+
+            console.log("백엔드 보낼 데이터 : ", requestBody);
 
             //백엔드 검증 데이터 로드
-            axios.post("/api/order/items", [ids], {
+            axios.post("/api/order/items", requestBody, {
                 headers: {
                     'Content-Type' : 'application/json'
                 },
@@ -62,12 +79,13 @@ function Order(props) {
                 .catch(error =>  {
                     console.log(error)
                     alert("상품 정보를 불러오는데 실패");
-                    navigate('/cart');
+                    //navigate('/cart');
                 })
             
         }else if (itemId) {
             axios.get(`/api/order/${itemId}`)
                 .then(res => {
+                   
                     setOrderData(res.data);
                     setIsCartOrder(false);
                 })
@@ -97,6 +115,8 @@ function Order(props) {
                 });
         }
     }, [itemId, location.state]);
+
+    console.log("보낼 상품 정보:", orderData);
 
     
 

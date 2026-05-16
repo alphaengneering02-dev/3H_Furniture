@@ -31,6 +31,7 @@ import DriverPage from '../components/admin/DriverPage';
 //김인호
 import Mypage from '../components/mypage/Mypage';
 import Cart from '../components/mypage/Cart';
+import PaymentFail from '../components/payment/PaymentFail';
 
 
 
@@ -64,7 +65,9 @@ const Router = () => {
                 <Route path="/admin/driver" element={<DriverPage/>} />
                 
                 <Route path="/payment/toss/success" element={<PaymentSuccess/>} />
+                <Route path='/order/order' element={<Order/>} />
                 <Route path="/order/:itemId" element={<Order/>} />
+                <Route path='/payment/fail' element={<PaymentFail/>} />
              
                 
             </Routes>

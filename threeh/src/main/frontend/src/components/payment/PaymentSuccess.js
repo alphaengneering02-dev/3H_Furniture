@@ -23,6 +23,11 @@ function PaymentSuccess() {
         const confirmPayment = async () => {
 
             const orderData = JSON.parse(sessionStorage.getItem("pendingOrder"));
+
+            if(!user) {
+                    alert("로그인을 다시해주세요.");
+                    navigate("/login");
+            }
             
 
             console.log("세션스토리지 전체:", sessionStorage); // 세션에 뭐가 들어있는지 전체 출력
@@ -30,15 +35,19 @@ function PaymentSuccess() {
 
             if (!orderData) {
                 console.error("주문 데이터가 없습니다!");
-                //navigate("/OrderFail");
+                navigate("/payment/fail");
                 return ;
             }
             try {
                 if (ignored) return;
 
-                await axios.get(`/payment/toss/success`, {
+                console.log(amount);
+                
+                await axios.get(`/api/payment/toss/success`, {
                     params: { paymentKey, orderId, amount }
                 });
+
+               
 
                 await axios.post(`/api/order`, orderData, { withCredentials: true });
 
@@ -50,7 +59,7 @@ function PaymentSuccess() {
                 }
 
                 
-                
+                debugger;
 
             } catch (e) {
                 if (ignored) return;
@@ -74,10 +83,7 @@ function PaymentSuccess() {
                     setFailReason("서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
                 } else if (errorMessage) {
                     setFailReason(errorMessage);
-                } else if(!user) {
-                    alert("로그인을 다시해주세요.");
-                    navigate("/login");
-                }
+                } 
                 else {
                     setFailReason("주문 처리 중 오류가 발생했습니다. 다시 시도해주세요.");
                 }
@@ -96,8 +102,7 @@ function PaymentSuccess() {
     }
 
     if (payStatus === "fail") {
-        <PaymentFail failReason={failReason} finalOrderData={finalOrderData}/>
-        return;
+        return <PaymentFail failReason={failReason} finalOrderData={finalOrderData}/>;
     }
 
     return (

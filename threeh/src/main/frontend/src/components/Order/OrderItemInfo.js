@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getUrl } from '../../utils/BackendPath';
 
 
 
@@ -33,17 +34,43 @@ function OrderItemInfo( { orderData, orderType, zipCode, address, deliveryDate, 
                 return;
            }
 
-          
+          // 1. 단건/ 장바구니 분기 계산
+           const isActuallyCart = orderData?.items && orderData?.items.length > 0;
+
+           console.log("넘어온 데이터", orderData)
+           
+           const calculatedAmount = isActuallyCart
+                    ? orderData.items?.reduce((acc, item) => acc + (item.price * item.count), 0)
+                    : (orderData?.price || 0);
+
+           
+
+           const calculatedOrderName = isActuallyCart
+            ? (orderData.items.length > 1 
+                ? `${orderData.items[0].itemName} 외 ${orderData.items.length - 1}건` 
+                : orderData.items[0].itemName)
+            : (orderData?.itemName || "상품 결제");
+
+            console.log("=== 계산된 최종 금액 ===", calculatedAmount);
+            console.log("=== 계산된 최종 주문명 ===", calculatedOrderName);
 
            isLoadingRef.current = true;
 
           const tossPayment = window.TossPayments(clientKey);
 
+          const requestPayload = {
+            amount: calculatedAmount,       // 이 값이 진짜 숫자로 잘 채워졌는지?
+            payType: "CARD",                // 백엔드 DTO 필드명과 일치하는지?
+            orderName: calculatedOrderName, // null이나 빈 문자열이 아닌지?
+        };
+
+          console.log("최종 페이로드 ====", requestPayload)
+
            try {
-                const res = await axios.post('/payment/toss', {
-                    amount: orderData?.price,
+                const res = await axios.post('/api/payment/toss', {
+                    amount: calculatedAmount,
                     payType: "CARD",
-                    orderName: orderData?.itemName,
+                    orderName: calculatedOrderName,
                 }, { withCredentials: true });
 
                 const orderId = res.data.orderId;
@@ -54,10 +81,11 @@ function OrderItemInfo( { orderData, orderType, zipCode, address, deliveryDate, 
                 
                 if(!user){
                     navigate("/login");
+                    return;
                 }
 
-                 const orderItems = isCartOrder
-                ? orderData.map(item => ({
+                 const orderItems = isActuallyCart
+                ? orderData.items.map(item => ({
                     itemId : item.itemId,
                     itemName : item.itemName,
                     count: item.count
@@ -71,25 +99,19 @@ function OrderItemInfo( { orderData, orderType, zipCode, address, deliveryDate, 
                 sessionStorage.setItem("pendingOrder", JSON.stringify({
                     memberId: user.memberId,
                     memberName: user.name,
-                    orderItems: [{ 
-                        itemId: orderData?.itemId, 
-                        itemName: orderData?.itemName, 
-                        count: 1
-                    }],
+                    orderItems:orderItems,
                     deliveryAddr: address,
                     deliveryAddrDetail: detailedAddress,
                     zipCode: zipCode,
                     orderType: orderType
                 }));
 
-                const displayOrderName = orderItems.length > 1
-                    ? `${orderItems[0].itemName} 외 ${orderItems.length -1}건`
-                    : orderItems[0].itemName
+                
 
                 tossPayment.requestPayment('CARD', {
-                    amount: orderData?.price,
+                    amount: calculatedAmount,
                     orderId: orderId,
-                    orderName: displayOrderName,
+                    orderName: calculatedOrderName,
                     customerName: orderData?.memberName,
                     customerEmail: orderData?.email,
                     successUrl: "http://localhost:3000/payment/toss/success",
@@ -99,11 +121,16 @@ function OrderItemInfo( { orderData, orderType, zipCode, address, deliveryDate, 
             } catch (error) {
                 const status = error.response?.status;
 
-                if (status === 401) {
+                if (error.response && error.response.data) {
+
+                    const errorMessage = typeof error.response.data === 'string' 
+                    ? error.response.data 
+                    : (error.response.data.message || error.response.data.error || "결제 요청 중 오류가 발생했습니다.");
+                    alert(`결제 실패: ${errorMessage}`);
+                    
+                } else if (status === 400) {
                     alert("로그인이 필요한 서비스입니다.");
                     navigate("/login"); // 로그인 페이지로
-                } else if (status === 500) {
-                    alert("서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
                 } else {
                     alert("결제에 실패했습니다. 다시 시도해주세요.");
                 }
@@ -116,11 +143,37 @@ function OrderItemInfo( { orderData, orderType, zipCode, address, deliveryDate, 
         <div>
             <div>
 
+                    {orderData?.items && orderData.items.length > 0 ? (
+                    orderData.items.map((item, index) => (
+                        <div key={item.itemId || index}>
+                            <img src={getUrl(item.itemImage)} alt={item.itemName} style={{ width: '100px' }} /> 
+                            <p>상품명: {item.itemName}</p>
+                            <p>가격: {item.price}원 (수량: {item.count}개)</p>
+                            <p>설명: {item.itemDetail}</p>
+                        </div>
+                    ))
+                ) : orderData?.itemId ? (
+                   
+                    <div>
+                     
+                        <img src={getUrl(orderData?.itemImage)} alt={orderData.itemName} /> 
+                        <p>상품명: {orderData.itemName}</p>
+                        <p>가격: {orderData.price}원</p> 
+                        <p>설명: {orderData.itemDetail}</p>
+                    </div>
+                ) : (
+                    <p>주문할 상품 정보가 없습니다.</p>
+                )}
+
+                
                 <div>
-                    <img src={orderData?.itemIamge} /> 
-                    <p>{orderData?.itemName}</p>
-                    <p>{orderData?.price}</p>
-                    <p>{orderData?.itemDetail}</p>
+                    <h3>
+                        총 주문 금액: {
+                            orderData?.items && orderData.items.length > 0
+                                ? orderData.items.reduce((acc, item) => acc + (item.price * item.count), 0).toLocaleString()
+                                : (orderData?.price || 0).toLocaleString() 
+                        }원
+                    </h3>
                 </div>
             
                 <div>

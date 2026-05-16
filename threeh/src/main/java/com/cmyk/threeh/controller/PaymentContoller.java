@@ -30,7 +30,7 @@ import com.cmyk.threeh.service.PaymentMapper;
 import com.cmyk.threeh.service.TossPaymentService;
 
 @RestController
-@RequestMapping("/payment")
+@RequestMapping("/api/payment")
 public class PaymentContoller {
 
     @Autowired TossPaymentService tossPaymentService;
@@ -45,14 +45,13 @@ public class PaymentContoller {
             return ResponseEntity.status(401).body("로그인이 필요합니다.");
         }
 
-        System.out.print("로그인 유저: "  + principal.getName());
-        PaymentResponseDTO payemntResDTO = tossPaymentService.requestPayment(paymentDTO.toEntity(), principal.getName()).toPaymentResponseDTO();
+        PaymentResponseDTO paymentResDTO = tossPaymentService.requestPayment(paymentDTO.toEntity(), principal.getName()).toPaymentResponseDTO();
 
         paymentDTO.setYourSuccessUrl(paymentDTO.getYourSuccessUrl()== null ? tossPaymentsConfig.getSuccessUrl() : paymentDTO.getYourSuccessUrl());
 
-        payemntResDTO.setFailUrl(paymentDTO.getYourFailUrl() == null ? tossPaymentsConfig.getFailUrl() : paymentDTO.getYourFailUrl());
+        paymentResDTO.setFailUrl(paymentDTO.getYourFailUrl() == null ? tossPaymentsConfig.getFailUrl() : paymentDTO.getYourFailUrl());
 
-        return ResponseEntity.ok().body(payemntResDTO);
+        return ResponseEntity.ok().body(paymentResDTO);
 
     }
 
@@ -63,11 +62,9 @@ public class PaymentContoller {
         @RequestParam Long amount,
         @AuthenticationPrincipal User user){
 
-           
 
-            
+            System.out.println(amount);
 
-            
             return ResponseEntity.ok().body(tossPaymentService.tossPaymentSuccess(paymentKey, orderId, amount));
         }
     
