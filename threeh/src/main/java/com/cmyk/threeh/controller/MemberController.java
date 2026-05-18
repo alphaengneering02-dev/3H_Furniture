@@ -147,7 +147,7 @@ public class MemberController {
     //회원수정
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/update/{id}")
-    public SignupUpdateForm update(SignupUpdateForm suform, @PathVariable("id") String id, Principal principal) {
+    public ResponseEntity<SignupUpdateForm> update(@PathVariable("id") String id, Principal principal) {
 
         Member member = memberService.getUser(id);
         
@@ -159,6 +159,8 @@ public class MemberController {
         
         
         //수정할 회원정보를 폼에 채워서 보냄
+        SignupUpdateForm suform = new SignupUpdateForm();
+
         suform.setMemberId(member.getMemberId());  //readOnly
         suform.setId(member.getId());
         suform.setPassword1(member.getPassword());
@@ -170,14 +172,16 @@ public class MemberController {
         suform.setCreatedAt(member.getCreatedAt());  //readOnly
         suform.setUpdatedAt(member.getUpdatedAt());  //readOnly
     
-        return suform;  //수정 전의 회원정보
+        return ResponseEntity.ok(suform);  // 수정 전의 회원정보를 JSON으로 반환
 
     }
 
 
     @PreAuthorize("isAuthenticated()")
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> update(@Valid @RequestBody SignupUpdateForm suform, BindingResult bindingResult) {
+    public ResponseEntity<?> update(@PathVariable("id") String id, @Valid @RequestBody SignupUpdateForm suform, BindingResult bindingResult, Principal principal) {
+
+        Member member = memberService.getUser(id);
 
         //백엔드 - 에러 메세지를 JSON 형태로 반환
         Map<String, String> errorMap = new HashMap<>();
@@ -205,12 +209,12 @@ public class MemberController {
 		
 		//회원수정 실행
 		try {
-			memberService.update(null, suform);
+			memberService.update(member, suform);
             return ResponseEntity.ok().body(suform);  //수정 후의 회원정보
         //데이터 무결성 제약조건 X
 		} catch (Exception e) {
 			field = "global";
-            message = "서버 오류가 발생했습니다(회원가입 실패).";
+            message = "서버 오류가 발생했습니다(회원수정 실패).";
             errorMap.put(field, message);
 			return ResponseEntity.internalServerError().body(errorMap);
 		}
