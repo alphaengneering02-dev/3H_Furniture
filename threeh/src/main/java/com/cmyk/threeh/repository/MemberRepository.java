@@ -1,6 +1,7 @@
 //데이터 흐름: Repository -> Service -> Controller
 package com.cmyk.threeh.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,6 +14,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     //회원정보 가져오기
     Optional<Member> findByMemberId(Long memberId);  //사용자 식별번호(Long)로 회원정보를 가져옴
     Optional<Member> findById(String id);  //로그인 아이디(String)
+    List<Member> findByName(String name);  //이름
     Optional<Member> findByEmail(String email);  //이메일
 
 

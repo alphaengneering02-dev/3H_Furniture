@@ -20,6 +20,7 @@ import com.cmyk.threeh.dto.ItemRequestDTO;
 import com.cmyk.threeh.dto.ItemUpdateRequestDTO;
 import com.cmyk.threeh.enums.ItemSellStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -40,6 +41,7 @@ public class Item {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ADMIN_ID", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})  //추가 유소은
     private Admins admin;
 
     @Column(name="ITEM_CATEGORY",nullable = false,length = 100)

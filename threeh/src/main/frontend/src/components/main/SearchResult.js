@@ -2,6 +2,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import SearchResult_item from './SearchResult_item';
 
 const SearchResult = () => {
     
@@ -28,9 +29,9 @@ const SearchResult = () => {
         //2. 백엔드(Spring Boot) API로 데이터 전송하기
         try {
             //axios의 'params' 속성: GET 요청 시 쿼리 파라미터를 알아서 만들어줌.
-            const response = await axios.get("http://localhost:8080/api/item/search", {  //*** itemController에 관련 메소드 추가건의
+            const res = await axios.get("http://localhost:8080/api/main/searchResult", {  //*** itemController에 관련 메소드 추가건의
                 params: {
-                    keyword: searchValue,
+                    searchValue: searchValue,
                     space: space,
                     kind: kind,
                     brand: brand,
@@ -40,10 +41,14 @@ const SearchResult = () => {
                 }
             })
             
-            //백엔드에서 받아온 가구 리스트를 상태에 저장
-            setSearchResult(response.data);
-            console.log("검색된 가구 목록:", response.data);
 
+            //백엔드에서 받아온 가구 리스트를 상태에 저장
+            console.log("[검색된 가구리스트 (상위 4개)]\n")
+
+            const sliceRes = res.data.slice(0, 4)
+            setSearchResult(sliceRes)
+
+            console.log(sliceRes)
         } catch (error) {
             console.error("검색 결과를 불러오는데 실패했습니다.", error);
         }
@@ -57,7 +62,9 @@ const SearchResult = () => {
             {
                 searchResult && searchResult.length>0
                 ? (
-                    <pre>{JSON.stringify(searchResult, null, 2)}</pre>
+                    searchResult.map(item =>
+                        <SearchResult_item key={item.itemId} item={item}/>
+                    )
                 )
                 : (
                     <p>검색에 실패하거나, 검색결과가 없습니다...</p>

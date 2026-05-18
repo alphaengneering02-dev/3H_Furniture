@@ -1,11 +1,44 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from './Header';
 import Main_newArrival from './Main_newArrival';
 import Main_mainBanner from './Main_mainBanner';
-import Main_customize from './Main_customize';
-import Main_board from './Main_board';
+import axios from 'axios';
+import { useParams } from 'react-router-dom';
+import Main_bestSeller from './Main_bestSeller';
 
 const Main = () => {
+
+    //전체 상품리스트 객체
+    const [itemList, setItemList] = useState([])
+
+    useEffect(() => {
+        getItemList()
+    }, [])
+
+
+    //DB에서 전체 상품리스트를 가져오는 함수
+    const getItemList = async() =>{
+        try{
+            //상품리스트 가져오기
+            const res = await axios.get(
+                `http://localhost:8080/api/item`
+            );
+            setItemList(res.data)
+
+
+            //콘솔 출력
+            const originalItemList = [];
+            for(let i=0; i<=3; i++) {
+                originalItemList.push(res.data[i])
+            }
+            console.log("[전체 상품 리스트 (상위 4개)]\n", originalItemList)
+
+        } catch(error){
+            console.error("[전체 상품리스트 조회 실패]\n", error);
+        }
+    };
+
+
     return (
         <div>
             {/* Header 영역 */}
@@ -15,9 +48,8 @@ const Main = () => {
             {/* <!-- Contents 시작 --> */}
             <div className="inner">
                 <Main_mainBanner/>  {/* 메인 배너 */}
-                <Main_newArrival/>  {/* NEW ARRIVAL(신상품) */}
-                <Main_customize/>  {/* 맞춤 가구 제작 */}
-                <Main_board/>  {/* 사용자 게시판 */}
+                <Main_newArrival itemList={itemList}/>  {/* NEW ARRIVAL(신상품) */}
+                <Main_bestSeller itemList={itemList}/>  {/* BEST SELLER(베스트셀러 상품) */}
             </div>
             {/* <!-- Contents 끝 --> */}
 

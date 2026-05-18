@@ -40,7 +40,6 @@ public class SecurityConfig {
     private final MemberSecurityService memberSecurityService;  //사용자 정보 조회 서비스
 	private final LoginSuccessHandler loginSuccessHandler;  //로그인 성공 핸들러 주입
 	private final LoginFailHandler loginFailHandler;  //로그인 에러 핸들러 주입
-	private final HttpSession httpSession;
 	public final PasswordEncoder passwordEncoder;
 
 

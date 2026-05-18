@@ -12,6 +12,7 @@ import icon_login from '../../assets/icon_login.png';
 import icon_signup from '../../assets/icon_signup.png';
 import axios, { all } from 'axios';
 import Header_searchCondition from './Header_searchCondition';
+import Header_searchCondition2 from './Header_searchCondition2';
 
 // 헤더
 const Header = () => {
@@ -93,10 +94,10 @@ const Header = () => {
     - "가격": [min, max]
     */
     const [searchKey, setSearchKey] = useState({
-        "space": ["all"],
-        "kind": ["all"],
-        "brand": ["all"],
-        "material": ["all"],
+        "space": [],
+        "kind": [],
+        "brand": [],
+        "material": [],
         "size": [1, 6],
         "price": [0, 100]
     })  //객체
@@ -127,13 +128,13 @@ const Header = () => {
             Object.keys(searchKey).forEach(key => {  //parameter - 다중 검색 조건(searchKey)을 순회하며 파라미터에 추가
                 const value = searchKey[key];  //검색조건 배열
 
-                //배열에 "all"만 들어있는 경우(예: ["all"])
-                if(value.length === 1 && value[0] === "all") {
-                    return
+                // 1. 배열 안에서 "all"을 제거
+                const validValues = value.filter(val => val !== "all")
+
+                // 2. 나머지 유효한 값들만 params에 쉼표(,)로 연결해 추가 (예: ["거실", "주방"])
+                if (validValues.length > 0) {
+                    params.append(key, validValues.join(','))
                 }
-                
-                //그 외에 선택된 조건들이 들어있는 경우(예: ["거실", "주방"])
-                params.append(key, value.join(','))
             })
 
 
@@ -145,7 +146,6 @@ const Header = () => {
 
             //3. 프론트엔드 라우터(SearchResult 페이지)로 이동
             navigate(`/searchResult?${queryString}`)
-            // navigate(`/searchResult/${searchKey}/${searchValue}`)
         } catch (error) {
             console.error("검색 이동 중 오류 발생:", error)
         }
@@ -162,13 +162,13 @@ const Header = () => {
                     {/* 좌측 영역 : sns 바로가기 */}
                     <div className="left">
                         <ul className="sns">
-                            <li> <Link to="#" target="_blank">
+                            <li> <Link to="https://www.facebook.com" target="_blank">
                                 <img src={icon_facebook} alt="페이스북 바로가기" style={{width: 30}}/>
                             </Link> </li>
-                            <li> <Link to="#" target="_blank">
+                            <li> <Link to="https://www.instagram.com" target="_blank">
                                 <img src={icon_instagram} alt="인스타그램 바로가기" style={{width: 30}}/>
                             </Link> </li>
-                            <li> <Link to="#" target="_blank">
+                            <li> <Link to="https://pf.kakao.com/_TsIAE" target="_blank">
                                 <img src={icon_kakao} alt="카카오톡 공식채널 바로가기" style={{width: 30}}/>
                             </Link> </li>
                         </ul>   {/* sns 끝 */}
@@ -197,8 +197,11 @@ const Header = () => {
 
                                 {/* 검색 조건 선택창 */}
                                 {
-                                    isSearchCondition && 
-                                    <Header_searchCondition searchKey={searchKey} setSearchKey={setSearchKey}/>
+                                    isSearchCondition &&
+                                    <>
+                                    {/* <Header_searchCondition searchKey={searchKey} setSearchKey={setSearchKey}/> */}
+                                    <Header_searchCondition2 searchKey={searchKey} setSearchKey={setSearchKey}/>
+                                    </>
                                 }
                             </form>
                         </div>
@@ -224,21 +227,24 @@ const Header = () => {
                                                 </li>
                                             )
                                             : (  //일반 유저 계정
-                                                <li>
-                                                    <Link to="/mypage">
-                                                        <img src={icon_mypage} alt="마이페이지" style={{width: 50}}/>
-                                                        <p>마이페이지</p>
-                                                    </Link>
-                                                </li>
+                                                <>
+                                                    <li>
+                                                        <Link to="/cart">
+                                                            <img src={icon_cart} alt="장바구니" style={{width: 50}}/>
+                                                            <p>장바구니</p>
+                                                        </Link>
+                                                    </li>
+                                                    <li>
+                                                        <Link to="/mypage">
+                                                            <img src={icon_mypage} alt="마이페이지" style={{width: 50}}/>
+                                                            <p>마이페이지</p>
+                                                        </Link>
+                                                    </li>
+                                                </>
                                             )
                                         }
 
-                                        <li>
-                                            <Link to="/cart">
-                                                <img src={icon_cart} alt="장바구니" style={{width: 50}}/>
-                                                <p>장바구니</p>
-                                            </Link>
-                                        </li>
+                                        
                                         
                                         <li>
                                             <Link onClick={logout}>

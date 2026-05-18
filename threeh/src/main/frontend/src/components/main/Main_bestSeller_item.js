@@ -1,11 +1,11 @@
 import axios from 'axios';
 import React, { useState } from 'react';
 
-const Main_newArrival_item = ({item}) => {
+const Main_bestSeller_item = ({item}) => {
 
     //이미지 상태 객체
     const [itemImgs, setItemImgs] = useState({});
-    
+
 
     //DB에서 각 상품의 이미지를 가져오는 함수
     const getItemImg = async() =>{
@@ -43,8 +43,9 @@ const Main_newArrival_item = ({item}) => {
             </div>
             <p>{item.itemName}</p>  {/* 상품명 */}
             <h4>{item.itemPrice}</h4>    {/* 가격 */}
+            <h4>{item.itemStock}</h4>    {/* 재고 수량 */}
         </div>
     );
 };
 
-export default Main_newArrival_item;
+export default Main_bestSeller_item;
