@@ -12,6 +12,10 @@ function Item() {
   //알반 유저가 체크박스로 선택한 상품 목록 저장
   const [selectedItems, setSelectedItems] = useState([]);
 
+  //북마크 상태 저장([201,223,230])
+  const [bookmarkedItems, setBookmarkedItems] = useState([]);
+
+
   //관리자 모드 여부
   //false: 일반 상품 목록 화면
   //ture: 관리자 상품 수정/삭제 테이블 화면
@@ -48,6 +52,13 @@ function Item() {
     );
   };
 
+   //컴포넌트가 처음 실행될 때 상품 목록 조회. 그리고 북마크
+  useEffect(() => {
+    getItems();
+    getMyBookmarks();
+  }, []);
+
+
   //상품 최종 가격 계산
   //백엔드에서 itemFinalPrice가 오면 그 값을 사용
   //없으면 원가-할인금액으로 계산
@@ -80,11 +91,7 @@ function Item() {
     return true;
   };
 
-  //컴포넌트가 처음 실행될 때 상품 목록 조회.
-  useEffect(() => {
-    getItems();
-  }, []);
-
+ 
   
   //백엔드에서 전체 상품 목록 가져오기
   const getItems = async () => {
@@ -103,10 +110,51 @@ function Item() {
     }
   };
 
+
+  const getMyBookmarks = async()=>{
+    const loginUser = getLoginUser();
+ 
+    if(!loginUser||!isUserRole(loginUser)){
+      return;
+    }
+
+    const memberId = loginUser.memberId;
+
+    if(!memberId){
+      console.log("memberId가 없습니다:", loginUser);
+      return;
+    }
+
+    try{
+      const response = await axios.get(
+        `http://localhost:8080/api/bookmarks/member/${memberId}`,
+        {
+          withCredentials:true,
+        }
+      );
+
+      console.log("내 북마크 목록:", response.data);
+
+      const bookmarkedItems=response.data.map(
+        (bookmark)=>bookmark.itemId
+      );
+
+      setBookmarkedItems(bookmarkedItems);
+    }catch(error){
+      console.error("북마크 목록 조회 실패", error);
+    }
+  };
+
+
   //현재 로그인한 사용자 정보
   const user = getLoginUser();
   //현재 로그인한 사용자가 admin인지 여부
   const isAdmin = isAdminRole(user);
+
+  //북마크 여부 확인 함수
+  const isBookmarked = (itemId) =>{
+    return bookmarkedItems.includes(itemId);
+  };
 
   //특정 상품이 현재 선택된 상태인지 확인
   const isSelected = (itemId) => {
@@ -158,6 +206,67 @@ function Item() {
     ]);
   };
 
+  //북마크 토글 함수 추가
+   const handleToggleBookmark = async(itemId) =>{
+    const loginUser = getLoginUser();
+
+    if(!loginUser){
+      alert("로그인이 필요합니다.");
+      navigate("/login");
+      return;
+    }
+
+    if(!isUserRole(loginUser)){
+      alert("일반 회원만 북마크를 이용할 수 있습니다.");
+      return;
+    }
+
+    if(!loginUser.memberId){
+      alert("회원 정보가 올바르지 않습ㄴ디ㅏ.");
+      console.log("로그인 유저:", loginUser);
+      return;
+    }
+
+    try{
+      const payload = {
+        memberId:loginUser.memberId,
+        itemId: itemId,
+        type: "ITEM",
+      };
+
+      const response =await axios.post(
+        "http://localhost:8080/api/bookmarks/toggle",
+        payload,
+        {
+          withCredentials: true,
+        }
+      );
+
+      console.log("북마크 응답:",response.data);
+
+      if(response.data.bookmarked){
+        //북마크 추가
+        setBookmarkedItems((prev)=>{
+          if(prev.includes(itemId)){
+            return prev;
+          }
+          return[...prev,itemId];
+        });
+      }else{
+        //북마크 삭제
+        setBookmarkedItems((prev) => prev.filter((id)=>id !==itemId)
+      );
+    }
+  } catch (error) {
+      console.error("북마크 처리 실패",error);
+
+      if(error.response){
+        console.log("상태코드:",error.response.status);
+        console.log("응답메시지:",error.response.data);
+      }
+      alert("북마크 처리 실패");
+    }
+   };
 
   //선택 상품 수량 변경
   const handleCountChange = (itemId, value) => {
@@ -626,6 +735,7 @@ function Item() {
                     <p>이미지 없음</p>
                   )}
 
+                <div>
                   <Link to={`/item/${item.itemId}`}>
                     <h2>{item.itemName}</h2>
                   </Link>
@@ -645,6 +755,22 @@ function Item() {
                     </p>
                   )}
 
+                  {!isAdmin && (
+                    <button
+                      type="button"
+                      onClick={()=>handleToggleBookmark(item.itemId)}
+                      style={{
+                        border:"none",
+                        background:"transparent",
+                        fontSize:"26px",
+                        cursor:"pointer",
+                        color:isBookmarked(item.itemId) ? "red" : "black",
+                      }}
+                     >
+                      {isBookmarked(item.itemId) ?"♥" : "♡"} 
+                    </button>
+                  )}
+                 </div> 
                   {!isAdmin && (
                     <div>
                       <button
