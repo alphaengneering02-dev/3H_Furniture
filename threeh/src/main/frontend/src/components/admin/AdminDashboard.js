@@ -185,12 +185,8 @@ const handleAssignDriver = async (orderId) => {
     };
 
     const fetchOrders = async () => {
-    try {
-        const response = await axios.get('/admin/orders'); 
-        setOrders(response.data);
-    } catch (error) {
-        console.error("데이터 로드 실패:", error);
-    }
+  const res = await axios.get("/admin/orders");
+  setOrders(res.data);
 };
 
 const handleStatusChange = async (orderId, newState) => {
@@ -302,6 +298,7 @@ const fetchDeliveries = async () => {
                     <table style={{ width: "100%", borderCollapse: "collapse" }}>
                         <thead>
                             <tr>
+                                <th>회사</th>
                                 <th>기사명</th>
                                 <th>연락처</th>
                                 <th>상태</th>
@@ -310,55 +307,63 @@ const fetchDeliveries = async () => {
                         </thead>
 
                         <tbody>
+                            
+
                             {items.length === 0 ? (
+                                
                                 <tr>
-                                    <td colSpan="3">
+                                    <td colSpan="5">
                                         등록된 기사가 없습니다.
-                                    </td>
-                                </tr>
-                            ) : (
-                                items.map((item) => (
-                                    <tr key={item.deliveryId}>
-                                        <td>
-                                            {item.deliveryName}
-                                        </td>
+                    </td>
+                </tr>
+            ) : (
+                items.map((item) => (
+                    <tr key={item.deliveryId}>
+                        {/* 🛠️ 1. 회사명 추가 (DTO의 필드명에 따라 item.companyName 또는 item.businessName 사용) */}
+                        <td>
+                            {item.companyName || item.businessName || "회사 정보 없음"}
+                        </td>
 
-                                        <td>
-                                            {item.deliveryPhone}
-                                        </td>
+                        {/* 2. 기사명 (기존 첫 번째 칸에서 두 번째 칸으로 이동) */}
+                        <td>
+                            {item.deliveryName}
+                        </td>
 
-                                        <td>
-                                            <b style={{
-                                                color:
-                                                    item.status === 'WAITING'
-                                                        ? 'blue'
-                                                        : 'black'
-                                            }}>
-                                                {item.status}
-                                            </b>
-                                        </td>
+                        {/* 3. 연락처 */}
+                        <td>
+                            {item.deliveryPhone}
+                        </td>
 
-                                        <td>
-                                        <button 
-                                            onClick={() => handleEditDelivery(item.deliveryId)}
-                                            style={{ marginRight: '5px', padding: '2px 8px', cursor: 'pointer' }}
-                                        >
-                                            수정
-                                        </button>
-                                        <button 
-                                            onClick={() => handleDeleteDelivery(item.deliveryId)}
-                                            style={{ padding: '2px 8px', color: 'red', cursor: 'pointer' }}
-                                        >
-                                            삭제
-                                        </button>
-                                    </td>
+                        {/* 4. 상태 */}
+                        <td>
+                            <b style={{
+                                color: item.status === 'WAITING' ? 'blue' : 'black'
+                            }}>
+                                {item.status}
+                            </b>
+                        </td>
 
-                                    </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
-                </div>
+                        {/* 5. 관리 버튼 */}
+                        <td>
+                            <button 
+                                onClick={() => handleEditDelivery(item.deliveryId)}
+                                style={{ marginRight: '5px', padding: '2px 8px', cursor: 'pointer' }}
+                            >
+                                수정
+                            </button>
+                            <button 
+                                onClick={() => handleDeleteDelivery(item.deliveryId)}
+                                style={{ padding: '2px 8px', color: 'red', cursor: 'pointer' }}
+                            >
+                                삭제
+                            </button>
+                        </td>
+                    </tr>
+                ))
+            )}
+        </tbody>
+    </table>
+</div>
 
                     <Orderboard 
         orders={orders} 

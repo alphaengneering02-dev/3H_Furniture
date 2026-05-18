@@ -30,9 +30,9 @@ public class Delivery {
    @Embedded
     private Adress savedAddress;
 
-    @OneToOne(mappedBy = "delivery")
+    @OneToMany(mappedBy = "delivery")
     @JsonIgnore
-    private Orders orders;
+    private List<Orders> orders;
 
     @Column(name = "COMPANY_NAME", nullable = true)
     private String companyName;
