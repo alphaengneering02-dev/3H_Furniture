@@ -29,7 +29,7 @@ public class Review {
     //코딩 수정, db 컬럼은 그대로 ITEM_ID지만, java에서는 Loing itemId가 아니라 Item item으로 연결 _오현옥
     //리뷰 대상 상품
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(name = "ITEM_ID",nullable = false)
+    @JoinColumn(name = "ITEM_ID",nullable = false)
     private Item item;
 
     //리뷰 작성 회원
@@ -46,7 +46,7 @@ public class Review {
     private String reviewText;
 
     //리뷰 작성일
-    @Column(name = "CREATE_TEXT")
+    @Column(name = "CREATED_AT")
     private LocalDateTime createdAt;
 
     @PrePersist
@@ -74,7 +74,7 @@ public class Review {
     }
     
     //리뷰 생성 메서드
-    public static Review creatReview(Member member , Item item, Integer reviewScore,String reviewText){
+    public static Review createReview(Member member , Item item, Integer reviewScore,String reviewText){
 
         Review review = new Review();
 

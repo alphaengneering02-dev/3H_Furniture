@@ -20,13 +20,10 @@ public interface ReviewRepository extends JpaRepository<Review,Long> {
     List<Review> findByMember_MemberIdOrderByCreatedAtDesc(Long memberId);
 
     //특정 회원이 특정 상품에 이미 리뷰를 작성했는지 조회
-    Optional<Review> existsByMember_MemberIdAndItem_ItemId(Long memberId, Long itemId);
-
-    //특정 회원이 특정 상품에 리뷰를 작성했는지 여부만 확인
-    boolean exisisByMember_MemberIdAndItem_ItemId(Long memberId, Long itemId);
+    boolean existsByMember_MemberIdAndItem_ItemId(Long memberId, Long itemId);
 
     //상품 평균 별점 조회
-    @Query("SELECT COALESCE(AVg(r.reviewScore),0) FROM Review r WHERE r.item.itemId = :itemId")
+    @Query("SELECT COALESCE(AVG(r.reviewScore),0) FROM Review r WHERE r.item.itemId = :itemId")
     Double getAverageScoreByItemId(@Param("itemId") Long itemId);
 
     // 상품별 리뷰 개수 조회
