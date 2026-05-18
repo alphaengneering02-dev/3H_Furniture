@@ -4,6 +4,7 @@ import OrderUser from './OrderUser';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import OrderItemInfo from './OrderItemInfo';
+import CartItem from '../mypage/CartItem';
 
 function Order(props) {
 
@@ -98,6 +99,7 @@ function Order(props) {
                             alert("로그인이 만료되었습니다. 다시 로그인해주세요.");
                             navigate('/login', { state: { from: location.pathname } });
                         } 
+
                         // 3. 그 외 400, 500 등 서버 에러
                         else {
                             console.error(`서버 에러 (${error.response.status}):`, error.response.data);

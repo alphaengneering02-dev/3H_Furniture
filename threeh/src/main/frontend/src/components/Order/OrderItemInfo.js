@@ -156,8 +156,8 @@ function OrderItemInfo( { orderData, orderType, zipCode, address, deliveryDate, 
                    
                     <div>
                      
-                        <img src={getUrl(orderData?.itemImage)} alt={orderData.itemName} /> 
-                        <p>상품명: {orderData.itemName}</p>
+                       
+                        <img src={getUrl(orderData?.itemImage)} alt={orderData.itemName} />
                         <p>가격: {orderData.price}원</p> 
                         <p>설명: {orderData.itemDetail}</p>
                     </div>

@@ -21,6 +21,7 @@ function OrderUser({ orderData, deliveryDate, setDeliveryDate }) {
 
                 <input type='text'
                 value={orderData? orderData.phone  : ''}
+                readOnly
                 />
             </div>
 
