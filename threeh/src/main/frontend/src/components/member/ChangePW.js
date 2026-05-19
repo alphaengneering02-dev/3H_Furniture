@@ -6,11 +6,6 @@ import axios from 'axios';
 
 const ChangePw = () => {
 
-    useEffect(() => {
-        
-    })
-
-
     const [form, setForm] = useState({
         id: "", oldPassword: "", newPassword: ""
     })
@@ -38,7 +33,7 @@ const ChangePw = () => {
 
         //모든 필드의 null 검사
         if(id=="" || oldPassword=="" || newPassword=="") {
-            alert("모든 항목을 입력해주세요!")
+            alert("모든 항목을 입력해주세요.")
             return
         }
 
@@ -55,11 +50,14 @@ const ChangePw = () => {
             console.log("[비밀번호 재설정 성공]", res.data)
             setResultPw(res.data)
             setShowResult(true)
+
         } catch (error) {
             //백엔드의 컨트롤러가 보낸 JSON 응답을 받음
             if (error.response && error.response.data) {
+                // 1. 글로벌 핸들러가 보낸 표준 형식이면 errorData.message 사용
+                // 2. 컨트롤러가 직접 보낸 Map 형식이면 Object.values(errorData)[0] 사용
                 const errorData = error.response.data
-                const errorMessage = Object.values(errorData)[0]
+                const errorMessage =error.response.data.message || Object.values(errorData)[0] || "알 수 없는 오류가 발생했습니다."
 
                 alert("[비밀번호 재설정 실패]\n" + errorMessage)
                 console.log("[비밀번호 재설정 실패]\n" + errorMessage)
@@ -82,35 +80,37 @@ const ChangePw = () => {
             <h2>비밀번호 재설정</h2>
 
 
-            <div>
-                {/* 아이디 */}
+            {
+                showResult===false &&
                 <div>
-                    <input type='text' value={id} id='id' name='id' placeholder='아이디' onChange={changeInput}/>
+                    {/* 아이디 */}
+                    <div>
+                        <input type='text' value={id} id='id' name='id' placeholder='아이디' onChange={changeInput}/>
+                    </div>
+
+                    {/* 기존 비밀번호 */}
+                    <div>
+                        <input type='password' value={oldPassword} id='oldPassword' name='oldPassword' placeholder='기존 비밀번호' onChange={changeInput}/>
+                    </div>
+
+                    {/* 새 비밀번호 */}
+                    <div>
+                        <input type='password' value={newPassword} id='newPassword' name='newPassword' placeholder='새로운 비밀번호' onChange={changeInput}/>
+                    </div>
+                
+
+                    <button onClick={onSubmit}>비밀번호 재설정</button>
+
+                    <Link to="/login">로그인</Link>
                 </div>
+            }
 
-                {/* 기존 비밀번호 */}
-                <div>
-                    <input type='password' value={oldPassword} id='oldPassword' name='oldPassword' placeholder='기존 비밀번호' onChange={changeInput}/>
-                </div>
 
-                {/* 새 비밀번호 */}
-                <div>
-                    <input type='password' value={newPassword} id='newPassword' name='newPassword' placeholder='새로운 비밀번호' onChange={changeInput}/>
-                </div>
-            
-
-                <button onClick={onSubmit}>비밀번호 재설정</button>
-
-                <Link to="/login">로그인</Link>
-            </div>
-
-            {/* 비밀번호 재설정 클릭 시, ChangePw_result 화면으로 전환 (ajax) */}
+            {/* 비밀번호 재설정 클릭 시, ChangePw_result 화면으로 전환 (모듈화) */}
             {
                 showResult===true &&
                 <ChangePw_result resultPw={resultPw}/>
             }
-
-            
         </div>
     );
 };

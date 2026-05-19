@@ -115,7 +115,12 @@ function PaymentSuccess() {
         <div>
             <div>✓</div>
             <h2>{finalOrderData?.memberName}님 결제가 완료되었습니다</h2>
-            <p>상품명:{finalOrderData?.orderItems[0]?.itemName}</p>
+            <p>상품명:{finalOrderData?.orderItems[0]?.itemName}
+                {finalOrderData?.orderItems?.length > 1
+                ? ` 외 ${finalOrderData.orderItems.length-1}개`
+                : ""
+            }
+            </p>
             <p>주문번호: {orderId?.slice(0, 8).toUpperCase()}</p>
             <p>배송지: {finalOrderData?.deliveryAddr}</p>
             <p>결제금액: {Number(amount).toLocaleString()}원</p>

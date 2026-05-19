@@ -51,8 +51,10 @@ const FindId = () => {
         } catch (error) {
             //백엔드의 컨트롤러가 보낸 JSON 응답을 받음
             if (error.response && error.response.data) {
+                // 1. 글로벌 핸들러가 보낸 표준 형식이면 errorData.message 사용
+                // 2. 컨트롤러가 직접 보낸 Map 형식이면 Object.values(errorData)[0] 사용
                 const errorData = error.response.data
-                const errorMessage = Object.values(errorData)[0]
+                const errorMessage =error.response.data.message || Object.values(errorData)[0] || "알 수 없는 오류가 발생했습니다."
 
                 alert("[아이디 찾기 실패]\n" + errorMessage)
                 console.log("[아이디 찾기 실패]\n" + errorMessage)
@@ -99,13 +101,11 @@ const FindId = () => {
             }
             
 
-            {/* 아이디 찾기 클릭 시, FindId_result 화면으로 전환 (ajax) */}
+            {/* 아이디 찾기 클릭 시, FindId_result 화면으로 전환 (모듈화) */}
             {
                 showResult===true &&
                 <FindId_result resultId={resultId}/>
             }
-
-            
         </div>
     );
 };

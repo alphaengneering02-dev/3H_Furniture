@@ -29,8 +29,8 @@ public class MainController {
     private final MainService mainService;
 
 
-    //쿼리 스트링을 List<String>으로 변환하는 메소드
-    private String[] parseStringToList(String str) {
+    //쿼리 스트링을 String[]으로 변환하는 메소드
+    private String[] parseStringToArray(String str) {
         if (str==null || str.trim().isEmpty()) {
             return null;
         }
@@ -43,7 +43,7 @@ public class MainController {
 
 
     //상품 통합검색
-    //프론트엔드 URL: http://localhost:8080/api/main/searchResult?searchValue=검색어&category=livingroom,bedroom&color=desk
+    //프론트엔드 URL: http://localhost:8080/api/main/searchResult?searchValue=검색어&category=거실,침실&color=White,Black
     @GetMapping("/searchResult")
     public List<ItemResponseDTO> searchItems(@RequestParam Map<String, String> allParams){
 
@@ -51,7 +51,8 @@ public class MainController {
         <Parameters>
         searchValue: 검색어,
         "category": [],
-        "color": []
+        "color": [],
+        "price": [0, 500]
         */
 
         //1. 파라미터 추출 및 분해
@@ -62,9 +63,10 @@ public class MainController {
         }
 
         //다중선택 배열 파라미터 (예: "거실,침실" -> List<String> ["거실", "침실"])
-        String[] category = parseStringToList(allParams.get("category"));
-        String[] color = parseStringToList(allParams.get("color"));
-        
+        String[] category = parseStringToArray(allParams.get("category"));
+        String[] color = parseStringToArray(allParams.get("color"));
+        String[] price = parseStringToArray(allParams.get("price"));
+                
 
 
         //========= [디버깅 확인용 로그] =========
@@ -74,13 +76,14 @@ public class MainController {
         System.out.println("검색어: " + searchValue);
         System.out.println("카테고리: " + Arrays.toString(category));
         System.out.println("색상: " + Arrays.toString(color));
+        System.out.println("가격대: " + Arrays.toString(price));
         System.out.println("=====================================");
         //========================================
 
         
         
         //2. 상품 통합검색
-        List<ItemResponseDTO> searchResult = mainService.searchItems(searchValue, category, color);
+        List<ItemResponseDTO> searchResult = mainService.searchItems(searchValue, category, color, price);
 
         return searchResult;
     }
