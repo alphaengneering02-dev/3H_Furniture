@@ -8,6 +8,8 @@ import java.util.Optional;
 import javax.management.RuntimeErrorException;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +21,7 @@ import com.cmyk.threeh.enums.MemberRole;
 import com.cmyk.threeh.form.SignupUpdateForm;
 import com.cmyk.threeh.global.error.CustomException;
 import com.cmyk.threeh.global.error.ErrorCode;
+import com.cmyk.threeh.global.util.GetLoginId;
 import com.cmyk.threeh.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -142,10 +145,14 @@ public class MemberService {
 	public Member getLoginUser(Principal principal) {
 
 		//로그인 정보에서 아이디 가져오기
-		String id = principal.getName();
+		String loginId = GetLoginId.getloginId(principal);
+
+        if(loginId == null){
+			throw new RuntimeException("로그인이 필요합니다.");
+        }
 
 		//회원정보
-		Optional<Member> op = memberRepository.findById(id);
+		Optional<Member> op = memberRepository.findById(loginId);
 		
 		if(!op.isPresent()) {
 			throw new CustomException(ErrorCode.MEMBER_NOT_FOUND);
@@ -161,10 +168,14 @@ public class MemberService {
 	public String checkMemberRole(Principal principal) {
 
 		//로그인 정보에서 아이디 가져오기
-		String id = principal.getName();
+		String loginId = GetLoginId.getloginId(principal);
+
+        if(loginId == null){
+            throw new RuntimeException("로그인이 필요합니다.");
+        }
 
 		//회원정보
-		Optional<Member> op = memberRepository.findById(id);
+		Optional<Member> op = memberRepository.findById(loginId);
 		if(!op.isPresent()) {
 			throw new CustomException(ErrorCode.MEMBER_NOT_FOUND);
 		}
