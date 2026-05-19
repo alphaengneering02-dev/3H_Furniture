@@ -221,7 +221,7 @@ const Header = () => {
                                                         </Link>
                                                     </li>
                                                     <li>
-                                                        <Link to="/api/admin/item">
+                                                        <Link to="/item">
                                                             <img src={icon_mypage} alt="관리자 상품관리" style={{width: 50}}/>
                                                             <p>관리자 상품관리</p>
                                                         </Link>
