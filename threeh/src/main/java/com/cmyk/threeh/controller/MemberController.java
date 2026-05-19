@@ -32,6 +32,7 @@ import com.cmyk.threeh.dto.MemberDTO;
 import com.cmyk.threeh.form.SignupUpdateForm;
 import com.cmyk.threeh.global.error.CustomException;
 import com.cmyk.threeh.global.error.ErrorCode;
+import com.cmyk.threeh.global.util.GetLoginId;
 import com.cmyk.threeh.service.MemberService;
 
 import lombok.RequiredArgsConstructor;
@@ -153,12 +154,18 @@ public class MemberController {
     //회원수정
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/update/{id}")
-    public ResponseEntity<SignupUpdateForm> update(@PathVariable("id") String id, Principal principal) {
+    public ResponseEntity<?> update(@PathVariable("id") String id, Principal principal) {
 
         Member member = memberService.getUser(id);
         
         //현재 로그인한 회원과 수정할 회원이 불일치할 경우
-        if(!member.getId() .equals(principal.getName())) {
+        String loginId = GetLoginId.getloginId(principal);
+
+        if(loginId == null){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+        }
+
+        if(!member.getId() .equals(loginId)) {
             throw new CustomException(ErrorCode.MEMBER_NOT_FOUND);
             // throw new CustomException(ErrorCode.);
         }
@@ -187,7 +194,13 @@ public class MemberController {
     @PutMapping("/update/{id}")
     public ResponseEntity<?> update(@PathVariable("id") String id, @Valid @RequestBody SignupUpdateForm suform, BindingResult bindingResult, Principal principal) {
 
-        Member member = memberService.getUser(id);
+        String loginId = GetLoginId.getloginId(principal);
+
+        if(loginId == null){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+        }
+
+        Member member = memberService.getUser(loginId);
 
         //백엔드 - 에러 메세지를 JSON 형태로 반환
         Map<String, String> errorMap = new HashMap<>();
