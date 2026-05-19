@@ -228,6 +228,38 @@ const ItemDetail = () => {
         }
     }
 
+    //admin리뷰 삭제 함수 추가(어드민이 상품리뷰 관리할 수 있게_삭제)
+    const handleAdminDeleteReview = async(reviewId)=>{
+        const confirmDelete = window.confirm("이 리뷰를 삭제하시겠습니다?");
+
+        if(!confirmDelete){
+            return;
+        }
+
+        try{
+            await axios.delete(
+                `http://localhost:8080/api/reviews/admin/${reviewId}`,
+                {
+                    withCredentials: true,
+                }
+            );
+
+            alert("리뷰가 삭제되었습니다.");
+            
+            getReviews();
+            getReviewsSummary();
+        }catch(error){
+            console.error("관리자 리뷰 삭제 실패", error);
+
+            if(error.response){
+                console.log("리뷰 삭제 상태코드:",error.response.status);
+                console.log("리뷰 삭제 응답:",error.response.data);
+                alert(error.response.data);
+                return;
+            }
+            alert("리뷰 삭제 실패")
+        }
+    }
 
     //삭제 관리......(admin에서)
     const handleDeleteClick = async () => {
@@ -331,16 +363,19 @@ const ItemDetail = () => {
 
                 </div>
             )}
-
+            {/*관리자 모드일 때는 장바구니 구매하기 안보이게 */}
+            {!isAdmin && (
             <div style={{marginTop:"20px"}}>
 
                 <button type="button" onClick={handleAddCart}>장바구니 담기</button>
 
                 <button type="button" onClick={handleBuyNow} style={{marginLeft:"10px"}}>구매하기</button>
             </div>
-            
-            <div style={{ marginTop: "40px", borderTop: "1px solid #ddd", paddingTop: "30px" }}>
-            <h2>상품 리뷰</h2>
+            )}
+
+            {/*관리자 모드일때 상품 리뷰가 상품리뷰관리로 보이도록 */}
+            div style={{ marginTop: "40px", borderTop: "1px solid #ddd", paddingTop: "30px" }}
+            <h2>상{isAdmin ?"상품 리뷰 관리":"상품 리뷰"}</h2>
 
             {reviewSummary && (
                 <div style={{ marginBottom: "20px" }}>
@@ -418,13 +453,25 @@ const ItemDetail = () => {
                         ? String(review.createdAt).substring(0, 10)
                         : ""}
                     </small>
+                    {isAdmin &&(
+                        <div style={{marginTop:"10px"}}>
+                            <button type="button" onClick={()=>handleAdminDeleteReview(review.reviewId)}
+                                style={{backgroundColor:"#333",
+                                    color:"#fff",
+                                    border:"none",
+                                    padding:"6px 12px",
+                                    cursor:"pointer",
+                                }}> 
+                            리뷰 삭제
+                            </button>
+
+                        </div>
+                    )}
                     </div>
                 ))
                 )}
             </div>
             </div>
-
-        </div>
     );
 };
 
