@@ -2,7 +2,6 @@ package com.cmyk.threeh.controller;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -10,7 +9,6 @@ import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,7 +27,6 @@ import com.cmyk.threeh.global.error.CustomException;
 import com.cmyk.threeh.global.error.ErrorCode;
 import com.cmyk.threeh.global.util.GetLoginId;
 import com.cmyk.threeh.repository.CartItemRepository;
-import com.cmyk.threeh.repository.OrderRepository;
 import com.cmyk.threeh.service.ItemImgService;
 import com.cmyk.threeh.service.ItemService;
 import com.cmyk.threeh.service.MemberAddressService;
@@ -47,7 +44,6 @@ public class OrderController {
     private final ItemService itemService;
     private final MemberService memberService;
     private final MemberAddressService memberAddressService;
-    private final OrderRepository orderRepository;
     private final ItemImgService itemImgService;
     private final CartItemRepository cartItemRepository;
 
