@@ -4,6 +4,7 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cmyk.threeh.dto.ReviewDTO;
 import com.cmyk.threeh.dto.ReviewSummaryDTO;
+import com.cmyk.threeh.global.util.GetLoginId;
 import com.cmyk.threeh.service.ReviewService;
 
 import lombok.RequiredArgsConstructor;
@@ -35,23 +37,24 @@ public class ReviewController {
             @RequestBody Map<String, Object> payload,
             Principal principal
     ) {
-        if (principal == null || principal.getName() == null) {
-            return ResponseEntity.status(401).body("로그인이 필요합니다.");
-        }
 
-        try {
-            Integer reviewScore = Integer.parseInt(
-                    payload.get("reviewScore").toString()
-            );
+        String loginId = GetLoginId.getloginId(principal);
+            if(loginId==null){
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+            }
+            try {
+                Integer reviewScore = Integer.parseInt(
+                        payload.get("reviewScore").toString()
+                );
 
-            String reviewText = payload.get("reviewText").toString();
+                String reviewText = payload.get("reviewText").toString();
 
-            ReviewDTO review = reviewService.createReview(
-                    principal.getName(),
-                    itemId,
-                    reviewScore,
-                    reviewText
-            );
+                ReviewDTO review = reviewService.createReview(
+                        loginId,
+                        itemId,
+                        reviewScore,
+                        reviewText
+                );
 
             return ResponseEntity.ok(review);
 
@@ -105,8 +108,9 @@ public class ReviewController {
             @RequestBody Map<String, Object> payload,
             Principal principal
     ) {
-        if (principal == null || principal.getName() == null) {
-            return ResponseEntity.status(401).body("로그인이 필요합니다.");
+     String loginId = GetLoginId.getloginId(principal);
+        if(loginId==null){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
         }
 
         try {
@@ -117,7 +121,7 @@ public class ReviewController {
             String reviewText = payload.get("reviewText").toString();
 
             ReviewDTO review = reviewService.updateReview(
-                    principal.getName(),
+                    loginId,
                     reviewId,
                     reviewScore,
                     reviewText
@@ -137,12 +141,13 @@ public class ReviewController {
             @PathVariable Long reviewId,
             Principal principal
     ) {
-        if (principal == null || principal.getName() == null) {
-            return ResponseEntity.status(401).body("로그인이 필요합니다.");
+        String loginId = GetLoginId.getloginId(principal);
+        if(loginId==null){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
         }
 
         try {
-            reviewService.deleteReview(principal.getName(), reviewId);
+            reviewService.deleteReview(loginId, reviewId);
 
             return ResponseEntity.ok("리뷰가 삭제되었습니다.");
 
