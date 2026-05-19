@@ -217,13 +217,28 @@ const Cart = () => {
             
             {/* [수정/추가 완료] 상단 전체 선택 바 레이아웃 배치 */}
             <div style={{display:'flex',alignItems:'center',padding:'10px 0', borderBottom:'2px solid #ccc', marginBottom:'15px'}}>
-                <lebel style={{display:'flex',alignItems:'center',cursor:'pointer', marginRight:'15px'}}></lebel>
+                <lebel style={{display:'flex',alignItems:'center',cursor:'pointer', marginRight:'15px'}}>
                     <input
                         type="checkbox"
                         onChange={(e) => handleAllCheck(e.target.checked)}
                         checked={selectedIds.length === cartItems.length && cartItems.length > 0}/>
                         <span style={{marginLeft:'5px'}}>전체 선택 ({selectedIds.length}/{cartItems.length})</span>
-                        
+                      </lebel>
+
+                      {/* 전체 선택 삭제 버튼 : 선택된 개수가 0이면 클릭 불가 */}  
+                      <button
+                        onClick={deleteSelectedItems}
+                        disabled={selectedIds.length === 0}
+                        style={{
+                            padding:'5px 10px',
+                            backgroundColor:selectedIds.length === 0 ? '#eee' : '#ff4d4f',
+                            color:'none',
+                            borderRadius:'4px',
+                            cursor:selectedIds.length === 0 ? 'not-allowed' : 'pointer'
+                        }}
+                        >
+                            선택 삭제
+                    </button>
             </div>
 
             {/*             
