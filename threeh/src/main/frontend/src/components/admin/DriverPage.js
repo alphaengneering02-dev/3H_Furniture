@@ -13,52 +13,87 @@ const DriverPage = () => {
     const [shippingOrders, setShippingOrders] = useState([]);
     const [shippingCheckeds, setShippingCheckeds] = useState([]);
 
+    const [canceledOrders, setCanceledOrders] = useState([]);
+
     const [loginInfo, setLoginInfo] = useState({ phone: '', carSuffix: '' });
 
     useEffect(() => {
-        const savedDriver = localStorage.getItem('driverInfo');
-        if (savedDriver) {
-            const driverData = JSON.parse(savedDriver);
-            setDriver(driverData);
-            setIsLoggedIn(true);
+    const savedDriver = localStorage.getItem('driverInfo');
+    if (savedDriver) {
+        const driverData = JSON.parse(savedDriver);
+        setDriver(driverData);
+        setIsLoggedIn(true);
+        fetchDriverOrders(driverData.deliveryId);
+
+        // 💡 [추가] 3초(3000ms)마다 (자동 리로드)
+        const interval = setInterval(() => {
             fetchDriverOrders(driverData.deliveryId);
-        }
-    }, []);
+        }, 3000); 
+
+        // 컴포넌트가 닫힐 때 타이머를 청소해 줍니다. (에러 방지)
+        return () => clearInterval(interval);
+            }
+        }, []);
 
     // 💡 백엔드 상태에 맞춘 데이터 필터링 정의
     const fetchDriverOrders = async (deliveryId) => {
-        try {
-            const orderRes = await axios.get(`/admin/driver/${deliveryId}/orders`);
-        const dbOrders = orderRes.data;
+    try {
+        const orderRes = await axios.get(`/admin/driver/${deliveryId}/orders`);
+        const dbOrders = orderRes.data; // 현재 나에게 배정 유지된 주문들만 옴
         
-        // 🛠️ 수정: deliveryStatus가 null(또는 없을 때)이 진짜 "신규 배정" 요청입니다!
-        setOrders(dbOrders.filter(o => !o.deliveryStatus));
+        // 1. 신규 배정 및 배송중 필터링
+        const newOrders = dbOrders.filter(o => !o.deliveryStatus && o.orderState !== 'CANCEL');
+        const shipping = dbOrders.filter(o => o.deliveryStatus === 'SHIPPING' && o.orderState !== 'CANCEL');
         
-        // 배송 중 조건은 그대로 유지
-        setShippingOrders(dbOrders.filter(o => o.deliveryStatus === 'SHIPPING'));
+        setOrders(newOrders);
+        setShippingOrders(shipping);
+
+        // 💡 핵심 방어 로직: 
+        // 현재 화면의 acceptedOrders(수락대기)에 있던 주문 id가 백엔드에서 온 최신 목록(dbOrders)에 없다면?
+        // 어드민이 캔슬하여 매핑을 끊어버렸다는 뜻입니다!
+        if (acceptedOrders.length > 0) {
+            const dbOrderIds = dbOrders.map(o => o.orderId);
+            
+            // 백엔드 목록에서 사라진 주문들 찾아내기
+            const missingOrders = acceptedOrders.filter(ao => !dbOrderIds.includes(ao.orderId));
+            
+            if (missingOrders.length > 0) {
+                // 취소 리스트 알림창에 추가
+                setCanceledOrders(prev => {
+                    // 중복 등록 방지
+                    const prevIds = prev.map(p => p.orderId);
+                    const uniqueMissing = missingOrders.filter(m => !prevIds.includes(m.orderId));
+                    return [...prev, ...uniqueMissing];
+                });
+                
+                // 수락 목록에서는 제거
+                setAcceptedOrders(prev => prev.filter(ao => dbOrderIds.includes(ao.orderId)));
+            }
+        }
+
     } catch (err) {
         console.error("주문 목록 로드 실패", err);
     }
 };
 
-    // 로그인
-    const handleLogin = async () => {
-        try {
-            const res = await axios.post('/admin/driver/login', loginInfo);
-            setDriver(res.data);
-            setIsLoggedIn(true);
-            localStorage.setItem('driverInfo', JSON.stringify(res.data)); // 로컬스토리지 저장 추가
+    // 로그인 핸들러 수정
+const handleLogin = async () => {
+    try {
+        const res = await axios.post('/admin/driver/login', loginInfo);
+        
+        // 1. 기사 정보 상태 저장 및 로컬스토리지 저장
+        setDriver(res.data);
+        setIsLoggedIn(true);
+        localStorage.setItem('driverInfo', JSON.stringify(res.data)); 
 
-            //리로드 새로고침
-            const orderRes = await axios.get(`/admin/driver/${res.data.deliveryId}/orders`);
-            const dbOrders = orderRes.data;
-            
-            setOrders(dbOrders.filter(o => o.deliveryStatus === 'WAITING'));
-            setShippingOrders(dbOrders.filter(o => o.deliveryStatus === 'SHIPPING'));
-        } catch (err) {
-            alert("로그인 실패");
-        }
-    };
+        // 🔄 2. 이미 만들어둔 함수를 이용해 로그인 즉시 최신 주문 목록 새로고침(리로드)
+        await fetchDriverOrders(res.data.deliveryId);
+
+    } catch (err) {
+        console.error(err);
+        alert("로그인 실패");
+    }
+};
 
     //로그아웃
     const handleLogout = () => {

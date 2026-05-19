@@ -189,19 +189,37 @@ const handleAssignDriver = async (orderId) => {
   setOrders(res.data);
 };
 
-const handleStatusChange = async (orderId, newState) => {
-    if (newState === 'CANCEL' && !window.confirm("정말 주문을 취소하시겠습니까?")) {
-        fetchOrders();
-        return;
-    }
+const handleStatusChange = async (orderId, nextState) => {
+    try {
+        // 💡 백엔드 컨트롤러(@RequestBody Map<String, String> payload) 포맷에 맞춤
+        const payload = { status: nextState };
 
+        // 백엔드 URL 스펙: /admin/orders/{orderId}/status
+        await axios.put(`/admin/orders/${orderId}/status`, payload);
+        
+        // 💡 알림 메시지를 상태에 따라 분기하면 사용자 경험이 더 좋아집니다.
+        if (nextState === 'CANCEL') {
+            alert("주문 취소 및 기사 배정 해제가 완료되었습니다.");
+        } else if (nextState === 'READY') {
+            alert("상품 준비 완료 상태로 변경되었습니다.");
+        } else {
+            alert(`주문 상태가 변경되었습니다.`);
+        }
+
+        // 목록 새로고침 함수 호출 (예: fetchOrders())
+        if (typeof fetchOrders === 'function') {
+            fetchOrders();
+        }
+        
+    } catch (error) {
+        console.error("상태 변경 실패:", error);
+        alert("상태 변경 중 오류가 발생했습니다.");
+    }
     try {
         // [중요] axios.post -> axios.put으로 변경
         await axios.put(`/admin/orders/${orderId}/status`, {
-            status: newState
-        });
-
-        alert("상태가 변경되었습니다.");
+            status: nextState
+        });       
         fetchOrders(); 
     } catch (error) {
         console.error("상태 변경 실패 상세 정보 ---");
@@ -216,11 +234,10 @@ const fetchDeliveries = async () => {
         const response = await axios.get('/admin/list');
         setItems(response.data);
     } catch (error) {
-        // error.response.data에 우리가 위에서 작성한 "백엔드 에러 발생 원인..."이 담깁니다.
         console.error("❌ 기사 리스트 로드 실패 상세 원인:");
         if (error.response && error.response.data) {
             console.error(error.response.data); 
-            alert("서버 에러: " + error.response.data); // 팝업으로 바로 확인 가능
+            alert("서버 에러: " + error.response.data); 
         } else {
             console.error(error.message);
         }
@@ -319,22 +336,19 @@ const fetchDeliveries = async () => {
             ) : (
                 items.map((item) => (
                     <tr key={item.deliveryId}>
-                        {/* 🛠️ 1. 회사명 추가 (DTO의 필드명에 따라 item.companyName 또는 item.businessName 사용) */}
                         <td>
                             {item.companyName || item.businessName || "회사 정보 없음"}
                         </td>
 
-                        {/* 2. 기사명 (기존 첫 번째 칸에서 두 번째 칸으로 이동) */}
                         <td>
                             {item.deliveryName}
                         </td>
 
-                        {/* 3. 연락처 */}
+            
                         <td>
                             {item.deliveryPhone}
                         </td>
 
-                        {/* 4. 상태 */}
                         <td>
                             <b style={{
                                 color: item.status === 'WAITING' ? 'blue' : 'black'
