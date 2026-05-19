@@ -3,6 +3,7 @@ package com.cmyk.threeh.controller;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,11 +43,24 @@ public class PaymentContoller {
     public ResponseEntity requestTossPayment(Principal principal, @RequestBody PaymentDTO paymentDTO){
 
 
-        if(principal == null) {
-            return ResponseEntity.status(401).body("로그인이 필요합니다.");
+        String loginId = "";
+        if (principal == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
         }
 
-        PaymentResponseDTO paymentResDTO = tossPaymentService.requestPayment(paymentDTO.toEntity(), principal.getName()).toPaymentResponseDTO();
+        if(principal instanceof OAuth2AuthenticationToken){
+            OAuth2AuthenticationToken authToken = (OAuth2AuthenticationToken) principal;
+
+            Map<String, Object> attributes = authToken.getPrincipal().getAttributes();
+
+            loginId = String.valueOf(attributes.get("e3w3wq22mn  "));
+
+        }
+        else{
+            loginId = principal.getName();
+        }
+
+        PaymentResponseDTO paymentResDTO = tossPaymentService.requestPayment(paymentDTO.toEntity(), loginId).toPaymentResponseDTO();
 
         paymentDTO.setYourSuccessUrl(paymentDTO.getYourSuccessUrl()== null ? tossPaymentsConfig.getSuccessUrl() : paymentDTO.getYourSuccessUrl());
 

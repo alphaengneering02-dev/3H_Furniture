@@ -54,9 +54,27 @@ public class OrderController {
     @PostMapping("/items")
     public ResponseEntity getOrderForm(@RequestBody List<Long> cartItemIds, Principal principal) {
 
-        System.out.println("진입완료");
+        
 
-        Member member = memberService.getUser(principal.getName());
+        String loginId = "";
+        if (principal == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+        }
+
+        if(principal instanceof OAuth2AuthenticationToken){
+            OAuth2AuthenticationToken authToken = (OAuth2AuthenticationToken) principal;
+
+            Map<String, Object> attributes = authToken.getPrincipal().getAttributes();
+
+            loginId = String.valueOf(attributes.get("e3w3wq22mn  "));
+
+        }
+        else{
+            loginId = principal.getName();
+        }
+
+
+        Member member = memberService.getUser(loginId);
         MemberAddressDTO defaultAddress = memberAddressService.getDefaultAddressForOrder(member.getId());
 
         List<OrderFormDTO.OrderItemInfo> items = cartItemIds.stream()

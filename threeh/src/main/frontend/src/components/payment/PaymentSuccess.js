@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import PaymentFail from './PaymentFail';
+import { LinearProgress, Box, Typography } from '@mui/material';
 
 function PaymentSuccess() {
 
@@ -98,7 +99,12 @@ function PaymentSuccess() {
     }, []);
 
     if (payStatus === "loading") {
-        return <div><p>결제 처리 중...</p></div>;
+        return (
+            <Box sx={{ width: '100%' }}>
+                <Typography mb={1}>결제 처리 중...</Typography>
+                <LinearProgress />
+            </Box>
+        );
     }
 
     if (payStatus === "fail") {
