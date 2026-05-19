@@ -163,21 +163,27 @@ public ResponseEntity<?> assignOrderToDelivery(
         @PathVariable("orderId") Long orderId, 
         @RequestBody Map<String, Long> payload) {
     
-    // JSON 보디에서 deliveryId 추출
     Long deliveryId = payload.get("deliveryId");
-    
     if (deliveryId == null) {
         return ResponseEntity.badRequest().body("기사 ID가 누락되었습니다.");
     }
 
     try {
-        // 배정 로직 실행
+        // 기사 배정 처리 (주문에 기사 ID 맵핑)
         adminsService.assignOrder(orderId, deliveryId);
-        return ResponseEntity.ok("배정이 완료되었습니다.");
+        
+        Orders order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
+
+        order.changeDeliveryStatus(null); 
+        orderRepository.save(order);
+        
+        return ResponseEntity.ok("배정이 완료되었습니다. 기사의 수락을 대기합니다.");
     } catch (Exception e) {
         return ResponseEntity.internalServerError().body("배정 중 오류: " + e.getMessage());
     }
 }
+
  @PostMapping("/login")
 public ResponseEntity<?> login(
         @RequestBody AdminLoginDTO dto,
@@ -315,36 +321,56 @@ public ResponseEntity<?> getDriverOrders(@PathVariable Long deliveryId) {
     return ResponseEntity.ok(result);
 }
 
-/**
- * 3. 기사의 수락/거절 응답 처리
- * URL: PATCH /admin/driver/orders/{orderId}/response
- */
+
+ // 3. 기사의 수락/거절 응답 처리(waiting 유지)
 @PatchMapping("/driver/orders/{orderId}/response")
 public ResponseEntity<?> handleDriverResponse(
         @PathVariable Long orderId,
         @RequestBody Map<String, String> payload) {
     
-    String action = payload.get("action"); // "ACCEPT" 또는 "REJECT"
-    System.out.println("📩 주문 [" + orderId + "]에 대한 기사 응답: " + action);
-
+    String action = payload.get("action");
     Orders order = orderRepository.findById(orderId)
             .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
 
     if ("ACCEPT".equals(action)) {
-        // 수락: 배송 상태를 SHIPPING(배송중)으로 변경
-        if(order.getDelivery() != null) {
-            order.getDelivery().setStatus(com.cmyk.threeh.enums.DeliveryStatus.SHIPPING);
-        }
+        // 수락 시 WAITING 상태 유지
+        order.changeDeliveryStatus(DeliveryStatus.WAITING);
     } else if ("REJECT".equals(action)) {
-        // 거절: 배정된 기사 정보를 지우고 다시 '미배정' 상태로 만듦
-        order.setDelivery(null);
-        // 주문 상태를 다시 'READY' 혹은 'ORDER'로 관리자 정책에 맞게 변경 가능
+        // 거절 시 기사 연결 해제 및 배송 상태를 REJECTED로 명시적 변경
+        order.setDelivery(null); 
+        order.changeOrderState(OrderState.READY); 
+        order.changeDeliveryStatus(DeliveryStatus.REJECTED); // 💡 프론트가 즉시 인지하도록 처리
+    } else {
+        return ResponseEntity.badRequest().body("잘못된 action 값입니다.");
     }
 
     orderRepository.save(order);
     return ResponseEntity.ok("처리되었습니다.");
 }
+// 배송 출발(waiting -> SHIPPING)
+@PostMapping("/orders/{orderId}/start")
+public ResponseEntity<?> startDelivery(@PathVariable Long orderId) {
 
+    Orders order = orderRepository.findById(orderId)
+            .orElseThrow(() -> new RuntimeException("주문 없음"));
+
+    Delivery delivery = order.getDelivery();
+
+    if (delivery == null) {
+        return ResponseEntity.badRequest().body("기사 배정 안됨");
+    }
+
+    // 1. 기사의 상태를 SHIPPING으로 변경
+    delivery.setStatus(DeliveryStatus.SHIPPING);
+
+    order.changeDeliveryStatus(DeliveryStatus.SHIPPING); 
+    orderRepository.save(order);
+
+    return ResponseEntity.ok("배송 시작");
+}
+
+
+//배송완료 ( SHIPPING  -> complete)
 @PostMapping("/orders/{orderId}/complete")
 public ResponseEntity<?> completeDelivery(@PathVariable Long orderId) {
     Orders order = orderRepository.findById(orderId)
@@ -354,11 +380,33 @@ public ResponseEntity<?> completeDelivery(@PathVariable Long orderId) {
         return ResponseEntity.badRequest().body("해당 주문에 배정된 기사가 없습니다.");
     }
     
+    // 1. 기사의 상태를 COMPLETED로 변경
     order.getDelivery().setStatus(DeliveryStatus.COMPLETED);
+
+    // 💡 2. [추가] 주문(Orders)의 배송 상태도 COMPLETED로 함께 변경!
+    order.changeDeliveryStatus(DeliveryStatus.COMPLETED);
+
     orderRepository.save(order);
     return ResponseEntity.ok("배송 완료 처리되었습니다.");
 }
 
-
+//기사님 복귀(complete -> waiting)
+@PutMapping("/driver/{deliveryId}/reset-status")
+    public ResponseEntity<?> resetDriverStatusToWaiting(@PathVariable Long deliveryId) {
+        System.out.println("🔄 기사 [" + deliveryId + "] 상태 대기(WAITING)로 리셋 요청");
+        
+        // 1. 기사 정보 DB에서 조회
+        Delivery delivery = deliveryRepository.findById(deliveryId)
+                .orElseThrow(() -> new RuntimeException("해당 배송 기사를 찾을 수 없습니다."));
+        
+        // 2. 기사의 개인 상태를 WAITING으로 리셋
+        delivery.setStatus(DeliveryStatus.WAITING);
+        
+        // 3. DB에 업데이트 반영
+        deliveryRepository.save(delivery);
+        
+        System.out.println("✅ 기사 [" + deliveryId + "] 상태가 WAITING으로 리셋 완료되어 DB에 반영되었습니다.");
+        return ResponseEntity.ok("기사 상태가 WAITING으로 전환되었습니다.");
+    }
 }
 

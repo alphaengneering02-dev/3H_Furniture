@@ -50,7 +50,7 @@ public class Orders {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "delivery_id", nullable = true)
     private Delivery delivery;
 
@@ -183,7 +183,7 @@ public class Orders {
     public void assignOrder(Delivery delivery){
         this.delivery =  delivery;
         this.setOrderState(OrderState.READY);
-        delivery.setStatus(DeliveryStatus.WAITING);
+        this.deliveryStatus = DeliveryStatus.WAITING;
     }
 
     public DeliveryStatus getTotalStatus() {
@@ -192,6 +192,15 @@ public class Orders {
             return delivery.getStatus();
         }
         return DeliveryStatus.WAITING;
+    }
+
+    // 태양 order에 delivery_status 필요
+    @Enumerated(EnumType.STRING)
+    @Column(name = "delivery_status", nullable = true)
+    private DeliveryStatus deliveryStatus;
+
+    public void changeDeliveryStatus(DeliveryStatus newStatus) {
+        this.deliveryStatus = newStatus;
     }
   
 

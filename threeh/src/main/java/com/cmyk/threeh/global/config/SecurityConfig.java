@@ -33,7 +33,6 @@ import lombok.RequiredArgsConstructor;
 
 @Profile("!test")
 @RequiredArgsConstructor
-@Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)   //로그아웃 상태면, login_form으로 이동시킴
 public class SecurityConfig {
@@ -41,7 +40,6 @@ public class SecurityConfig {
     private final MemberSecurityService memberSecurityService;  //사용자 정보 조회 서비스
 	private final LoginSuccessHandler loginSuccessHandler;  //로그인 성공 핸들러 주입
 	private final LoginFailHandler loginFailHandler;  //로그인 에러 핸들러 주입
-	private final HttpSession httpSession;
 	public final PasswordEncoder passwordEncoder;
 
 
@@ -139,12 +137,6 @@ public class SecurityConfig {
 		return http.build();
 		
 	}
-	
-	
-	// @Bean
-	// public PasswordEncoder passwordEncoder() {
-	// 	return new BCryptPasswordEncoder();
-	// }
 	
 	
     //spring security 인증 관리자 (DB 비교+로그인 처리)

@@ -2,8 +2,10 @@ package com.cmyk.threeh.service;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
+import javax.management.RuntimeErrorException;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,7 +30,6 @@ public class MemberService {
     
     private final MemberRepository memberRepository;
 	private final PasswordEncoder passwordEncoder;  //비밀번호 암호화
-	private final HttpSession httpSession;
 
 
 	//<계정 관리>
@@ -185,88 +186,71 @@ public class MemberService {
 
 
 	//<계정 찾기>
-	//아이디 찾기
-	public String findUserId(String name, String phoneORemail) {
+	//이름으로 회원리스트 조회
+	public List<Member> findUserByName(String name) {
+
+		List<Member> list = memberRepository.findByName(name);
+		return list;
 		
-		//전화번호인지, 이메일인지 구분
-		String phone="";
-		String email="";
+	}
 
-		if(phoneORemail.indexOf("@") == -1) {  //전화번호
-			phone = phoneORemail;
-		} else {  //이메일
-			email = phoneORemail;
-		}
 
+	//아이디 찾기 - 이름, 전화번호
+	public String findUserIdByPhone(String name, String phone) {
 
 		Optional<Member> op = Optional.empty();
 		Member member = null;
 		String result="";
 
 
-		//이름 input 검사
-		if(name.isEmpty()) {
-			throw new CustomException(ErrorCode.INPUT_NOT_CORRECT);
-		}
+		//op 가져오기
+		op = memberRepository.findByNameAndPhone(name, phone);
 
-		//전화번호 or 이메일로 op 가져오기
-		if(email.isEmpty()) {  //전화번호로
-			op = memberRepository.findByNameAndPhone(name, phone);
-		} else {  //이메일로
-			op = memberRepository.findByNameAndEmail(name, email);
-		}
-
-		//op 예외처리
+		//op 데이터 추출
 		if(!op.isPresent()) {
 			throw new CustomException(ErrorCode.MEMBER_NOT_FOUND);
 		}
 
-		//op에서 데이터 추출
 		member = op.get();
-		result = member.getId();
 
+		result = member.getId();
+		return result;
+		
+	}
+
+
+	//아이디 찾기 - 이름, 이메일
+	public String findUserIdByEmail(String name, String email) {
+
+		Optional<Member> op = Optional.empty();
+		Member member = null;
+		String result="";
+
+
+		//op 가져오기
+		op = memberRepository.findByNameAndEmail(name, email);
+
+		//op 데이터 추출
+		if(!op.isPresent()) {
+			throw new CustomException(ErrorCode.MEMBER_NOT_FOUND);
+		}
+
+		member = op.get();
+
+		result = member.getId();
 		return result;
 		
 	}
 
 
 
-	//비밀번호 재설정
+	//비밀번호 재설정 - 아이디, 기존 비번, 새로운 비번
 	@Transactional
-	public String changeUserPassword(String id, String oldPassword, String newPassword) {
+	public String changeUserPassword(Member member, String oldPassword, String newPassword) {
 
-		//1. 로그인이 되어있는 상태인지 검사한다. (세션 유저 정보에서 가져옴)
-		SessionMember user = (SessionMember)httpSession.getAttribute("user");
-
-		if(user==null) {
-			throw new CustomException(ErrorCode.NOT_LOGIN);
-		}
-		
-		Optional<Member> op = memberRepository.findById(id);
-		if(!op.isPresent()) {
-			throw new CustomException(ErrorCode.MEMBER_NOT_FOUND);
-		}
-		Member member = op.get();
-
-
-		//2. 회원가입이 되어있는 상태인지 검사한다. 
-		if(member==null) {
-			throw new CustomException(ErrorCode.MEMBER_NOT_FOUND);
-		}
-
-		//2. 기존 pw가 현재 사용자의 pw와 일치하는지 검사한다.
-		if (!passwordEncoder.matches(oldPassword, member.getPassword())) {
-			//일치하지 않는다면, 오류를 발생시킨다.
-			throw new CustomException(ErrorCode.PASSWORD_NOT_SAME);
-		}
-
-		//3. 일치한다면, 새로운 pw를 암호화하여 변경한다.
 		String encodedNewPassword = passwordEncoder.encode(newPassword);
 		member.setPassword(encodedNewPassword);
-
-		//4. DB 저장
 		memberRepository.save(member);
-
 
 		return newPassword;
 		

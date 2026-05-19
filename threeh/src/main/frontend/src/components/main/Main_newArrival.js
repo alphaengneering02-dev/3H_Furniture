@@ -1,54 +1,34 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import axios from 'axios';
 import Main_newArrival_item from './Main_newArrival_item';
 
-const Main_newArrival = () => {
+const Main_newArrival = ({itemList}) => {
 
-    //URL에서 Item 가져오기
-    const {itemId} = useParams();
-    
-    //상품 상태 관리
-    const [item,setItem] = useState(null);
-    //이미지 상태 관리
-    const [itemImgs,setItemImgs] = useState([]);
+    //NEW ARRIVAL 데이터 객체
+    const [newArrivalList, setNewArrivalList] = useState([])
 
-    useEffect(()=>{
-        getItem();
-        getItemImgs();
-    },[itemId]);
-
-    //상품정보 동기화
-    const getItem = async() =>{
-        try{
-            const response = await axios.get(
-                `http://localhost:8080/api/item/${itemId}`
-            );
-            console.log("상품 상세:", response.data);
-            setItem(response.data);
-        }catch(error){
-            console.error("상품 상세조회 실패", error);
+    useEffect(() => {  // itemList 상태가 변경될 때마다 setNewArrival이 실행됨.
+        if (itemList.length > 0) {
+            setNewArrival();
         }
-    };
+    }, [itemList]);
 
-    //상품이미지 정보 동기화
 
-    const getItemImgs = async() =>{
-        try{
-            const response = await axios.get(
-                `http://localhost:8080/api/itemImgs/${itemId}`
-            );
-            console.log("상품 이미지: ", response.data);
-            setItemImgs(response.data);
-        }catch(error){
-            console.error("상품 이미지 조회 실패", error);
+
+    //NEW ARRIVAL 데이터 세팅함수 (최신순 - 상품리스트 배열을 뒤집어서 한 번에 저장)
+    const setNewArrival = () => {
+        try {
+            console.log("[NEW ARRIVAL 영역에 추가된 상품리스트 (상위 4개)]\n")
+
+            //원본 배열 훼손 없이 역순 배열 생성 + 4개 추출
+            const reversedItemList = [...itemList].reverse().slice(0, 4)
+            //상태를 한번만 업데이트
+            setNewArrivalList(reversedItemList)
+            
+            console.log(reversedItemList);
+        } catch(error){
+            console.error("[NEW ARRIVAL 영역에 상품 추가 실패]\n", error);
         }
-    };
-
-    if(!item){
-        return <p>상품 불러오는 중....</p>;
     }
-
 
 
 
@@ -58,40 +38,32 @@ const Main_newArrival = () => {
 
             <article className="items">
                 {
-                    item && item.map(prod =>
-                        <Main_newArrival_item key={prod.itemId} prod={prod} prodImgs={itemImgs}/>
+                    newArrivalList && newArrivalList.length>0
+                    ? (
+                        newArrivalList.map(item =>
+                            <Main_newArrival_item key={item.itemId} item={item}/>
+                        )
+                    )
+                    : (
+                        <p>신상품 불러오는 중....</p>
                     )
                 }
-
-                <div>
-                    <div>
-                        상품 이미지
-                        <button>♡</button>
-                    </div>
-                    <p>상품명</p>
-                    <h4>가격</h4>
-                </div>
-
-                <div>
-                    <div>
-                        상품 이미지
-                        <button>♡</button>
-                    </div>
-                    <p>상품명</p>
-                    <h4>가격</h4>
-                </div>
-
-                <div>
-                    <div>
-                        상품 이미지
-                        <button>♡</button>
-                    </div>
-                    <p>상품명</p>
-                    <h4>가격</h4>
-                </div>
             </article>
         </section>
     );
 };
 
 export default Main_newArrival;
+
+
+
+{/* 
+<div>
+    <div>
+        상품 이미지
+        <button>♡</button>
+    </div>
+    <p>상품명</p>
+    <h4>가격</h4>
+</div>  
+*/}

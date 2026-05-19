@@ -27,19 +27,39 @@ const FindId = () => {
 
     const onSubmit = async(evt) => {
 
-        try {
-            console.log("서버로 보내는 데이터: ", name, phoneORemail);
+        //브라우저의 기본 폼 제출(새로고침) 방지
+        evt.preventDefault();
 
-            //DB에서 이름, 전화번호가 같은 사이트 회원 데이터 검색 (일반 유저)
+        //모든 필드의 null 검사
+        if(name=="" || phoneORemail=="") {
+            alert("모든 항목을 입력해주세요!")
+            return
+        }
+
+        console.log("서버로 보내는 데이터: ", name, phoneORemail);
+
+
+        try {
+            //아이디 찾기 실행
             //경로 형식을 서버와 맞춥니다: /member/findUserId/이름/연락처
             const res = await axios.get(`http://localhost:8080/api/member/findUserId/${name}/${phoneORemail}`)
+            
+            console.log("[아이디 찾기 성공]", res.data)
             setResultId(res.data)
             setShowResult(true)
 
-            console.log("아이디 찾기 성공!", res.data)
-
         } catch (error) {
-            console.error("아이디 찾기 실패!", error)
+            //백엔드의 컨트롤러가 보낸 JSON 응답을 받음
+            if (error.response && error.response.data) {
+                const errorData = error.response.data
+                const errorMessage = Object.values(errorData)[0]
+
+                alert("[아이디 찾기 실패]\n" + errorMessage)
+                console.log("[아이디 찾기 실패]\n" + errorMessage)
+            } else {
+                alert("[아이디 찾기 실패]\n" + "서버와 연결할 수 없습니다.")
+                console.log("[아이디 찾기 실패]\n" + "서버와 연결할 수 없습니다.")
+            }
         }
 
     }

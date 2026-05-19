@@ -122,10 +122,10 @@ const Header_searchCondition = ({searchKey, setSearchKey}) => {
                 <div>
                     <p>사용공간</p>
                     <select id="space" name="space" value={searchKey.space} multiple onChange={changeSearchKey}>  
-                        <option value="all" selected>전체</option>
-                        <option value="livingroom">거실</option>
-                        <option value="bedroom">침실</option>
-                        <option value="kitchen">주방</option>
+                        <option value="전체" selected>전체</option>
+                        <option value="거실">거실</option>
+                        <option value="침실">침실</option>
+                        <option value="주방">주방</option>
                     </select>
                 </div>
 
@@ -133,10 +133,10 @@ const Header_searchCondition = ({searchKey, setSearchKey}) => {
                 <div>
                     <p>종류</p>
                     <select id="kind" name="kind" value={searchKey.kind} multiple onChange={changeSearchKey}>  
-                        <option value="all" selected>전체</option>
-                        <option value="desk">책상</option>
-                        <option value="chair">의자</option>
-                        <option value="bookshelf">책꽃이</option>
+                        <option value="전체" selected>전체</option>
+                        <option value="책상">책상</option>
+                        <option value="의자">의자</option>
+                        <option value="책꽃이">책꽃이</option>
                     </select>
                 </div>
 
@@ -144,10 +144,10 @@ const Header_searchCondition = ({searchKey, setSearchKey}) => {
                 <div>
                     <p>브랜드</p>
                     <select id="brand" name="brand" value={searchKey.brand} multiple onChange={changeSearchKey}>  
-                        <option value="all" selected>전체</option>
-                        <option value="livart">리바트</option>
-                        <option value="hanssem">한샘</option>
-                        <option value="hermanMiller">허먼 밀러</option>
+                        <option value="전체" selected>전체</option>
+                        <option value="리바트">리바트</option>
+                        <option value="한샘">한샘</option>
+                        <option value="허먼밀러">허먼 밀러</option>
                     </select>
                 </div>
 
@@ -155,10 +155,10 @@ const Header_searchCondition = ({searchKey, setSearchKey}) => {
                 <div>
                     <p>소재</p>
                     <select id="material" name="material" value={searchKey.material} multiple onChange={changeSearchKey}>  
-                        <option value="all" selected>전체</option>
-                        <option value="fabric">페브릭</option>
-                        <option value="wood">원목</option>
-                        <option value="metal">메탈</option>
+                        <option value="전체" selected>전체</option>
+                        <option value="페브릭">페브릭</option>
+                        <option value="원목">원목</option>
+                        <option value="메탈">메탈</option>
                     </select>
                 </div>
 

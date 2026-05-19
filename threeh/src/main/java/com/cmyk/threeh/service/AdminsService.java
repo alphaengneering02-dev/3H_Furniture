@@ -89,10 +89,7 @@ public void assignOrder(Long orderId, Long deliveryId) {
     // 핵심
     order.assignOrder(delivery);
 
-    // 기사 상태 변경
-    delivery.setStatus(DeliveryStatus.SHIPPING);
-
-    System.out.println("배정 완료");
+    System.out.println("수락 대기중 ");
 }
 
 }

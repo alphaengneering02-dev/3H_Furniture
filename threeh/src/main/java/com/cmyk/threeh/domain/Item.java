@@ -20,6 +20,7 @@ import com.cmyk.threeh.dto.ItemRequestDTO;
 import com.cmyk.threeh.dto.ItemUpdateRequestDTO;
 import com.cmyk.threeh.enums.ItemSellStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,10 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import FindId_result from './FindId_result';
 import ChangePw_result from './ChangePW_result';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 const ChangePw = () => {
+
+    useEffect(() => {
+        
+    })
+
 
     const [form, setForm] = useState({
         id: "", oldPassword: "", newPassword: ""
@@ -28,19 +33,40 @@ const ChangePw = () => {
 
     const onSubmit = async(evt) => {
 
-        try {
-            console.log("서버로 보내는 데이터: ", id, oldPassword, newPassword);
+        //브라우저의 기본 폼 제출(새로고침) 방지
+        evt.preventDefault();
 
-            //DB에서 이름, 전화번호가 같은 사이트 회원 데이터 검색 (일반 유저)
-            //경로 형식을 서버와 맞춥니다: /member/findUserId/이름/연락처
-            const res = await axios.get(`http://localhost:8080/api/member/changeUserPassword/${id}/${oldPassword}&${newPassword}`)
+        //모든 필드의 null 검사
+        if(id=="" || oldPassword=="" || newPassword=="") {
+            alert("모든 항목을 입력해주세요!")
+            return
+        }
+
+        console.log("서버로 보내는 데이터: ", id, oldPassword, newPassword);
+
+
+        try {
+            //비밀번호 재설정 실행
+            //경로 형식을 서버와 맞춥니다: /member/changeUserPassword/아이디/기존비번/새비번
+            const res = await axios.get(`http://localhost:8080/api/member/changeUserPassword/${id}/${oldPassword}/${newPassword}`, {
+                withCredentials: true //요청에 로그인 세션 쿠키를 포함하겠다는 설정
+            })
+            
+            console.log("[비밀번호 재설정 성공]", res.data)
             setResultPw(res.data)
             setShowResult(true)
-
-            console.log("비밀번호 재설정 성공!", res.data)
-
         } catch (error) {
-            console.error("비밀번호 재설정 실패!", error)
+            //백엔드의 컨트롤러가 보낸 JSON 응답을 받음
+            if (error.response && error.response.data) {
+                const errorData = error.response.data
+                const errorMessage = Object.values(errorData)[0]
+
+                alert("[비밀번호 재설정 실패]\n" + errorMessage)
+                console.log("[비밀번호 재설정 실패]\n" + errorMessage)
+            } else {
+                alert("[비밀번호 재설정 실패]\n" + "서버와 연결할 수 없습니다.")
+                console.log("[비밀번호 재설정 실패]\n" + "서버와 연결할 수 없습니다.")
+            }
         }
 
     }

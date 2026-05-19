@@ -29,6 +29,9 @@ public class OrderResponseDTO {
     private String zipCode;
     private List<OrderItemDTO> orderitems;
 
+    //태양 order에 delivery_status 필요
+    private String deliveryStatus;
+
     @Getter
     @Builder
     public static class OrderItemDTO {
@@ -51,6 +54,8 @@ public class OrderResponseDTO {
                     ? orders.getDelivery().getDeliveryId() : null)
                 .memberName(orders.getMember().getName()) 
                 .orderState(orders.getOrderState().getMessage())
+                //태양 order에 delivery_status 필요
+                .deliveryStatus(orders.getDeliveryStatus() != null ? orders.getDeliveryStatus().name() : null)
                 .orderType(orders.getOrderType())
                 .orderDate(orders.getOrderDate())
                 .deliveryDate(orders.getDeliveryDate())
