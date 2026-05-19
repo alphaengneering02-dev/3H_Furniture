@@ -149,14 +149,16 @@ public class OrderService {
                     .findFirst()
                     .orElseThrow(() -> new CustomException(ErrorCode.ITEM_NOT_FOUND));
 
-            orderItem.cancel();
-            order.getOrderItems().remove(orderItem);
+            
+            //order.getOrderItems().remove(orderItem);
         });
 
         if (order.getOrderItems().isEmpty()) {
-            order.setOrderState(OrderState.CANCEL);
+           
             order.cancel();
         }
+
+        order.cancel();
 
     }
 
