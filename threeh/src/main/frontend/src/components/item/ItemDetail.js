@@ -287,6 +287,9 @@ const ItemDetail = () => {
 
     return (
         <div>
+            <button type="button" onClick={()=>navigate("/item")}>
+                상품 목록
+            </button>
             
             <h1>상품 상세 페이지</h1>
 
