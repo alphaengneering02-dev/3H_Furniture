@@ -82,6 +82,9 @@ const Header = () => {
 
 
     //상품 통합검색
+    //검색어 입력
+    const [searchValue, setSearchValue] = useState("")  //String값
+    const changeSearchValue = (evt) => {setSearchValue(evt.target.value)}
 
     //검색 조건 선택
     /*
@@ -94,23 +97,14 @@ const Header = () => {
     - "가격": [min, max]
     */
     const [searchKey, setSearchKey] = useState({
-        "space": [],
-        "kind": [],
-        "brand": [],
-        "material": [],
-        "size": [1, 6],
-        "price": [0, 100]
+        "category": [],
+        "color": [],
     })  //객체
 
     const [isSearchCondition, setIsSearchCondition] = useState(false)
     const toggleSearchCondition = () => {
         setIsSearchCondition(!isSearchCondition)
     }
-
-
-    //검색어 입력
-    const [searchValue, setSearchValue] = useState("")  //String값
-    const changeSearchValue = (evt) => {setSearchValue(evt.target.value)}
 
 
     //검색 함수
@@ -140,8 +134,8 @@ const Header = () => {
 
             //2. 완성된 Query String 확인 (디버깅용)
             const queryString = params.toString()
+            console.log("현재 searchKey 상태:", searchKey);
             console.log("검색 쿼리:", queryString)
-            // 출력 예시: searchValue=매트리스&space=거실%2C주방&kind=all&brand=all&material=all&size=1%2C6&price=0%2C100 (, = %2C)
 
 
             //3. 프론트엔드 라우터(SearchResult 페이지)로 이동
@@ -219,12 +213,20 @@ const Header = () => {
                                         {
                                             user.adLoginId && user.adLoginId!=null
                                             ? (  //어드민 계정
-                                                <li>
-                                                    <Link to="/admin">
-                                                        <img src={icon_mypage} alt="관리자 대시보드" style={{width: 50}}/>
-                                                        <p>관리자 대시보드</p>
-                                                    </Link>
-                                                </li>
+                                                <>
+                                                    <li>
+                                                        <Link to="/admin">
+                                                            <img src={icon_mypage} alt="관리자 대시보드" style={{width: 50}}/>
+                                                            <p>관리자 대시보드</p>
+                                                        </Link>
+                                                    </li>
+                                                    <li>
+                                                        <Link to="/admin/item">
+                                                            <img src={icon_mypage} alt="관리자 상품관리" style={{width: 50}}/>
+                                                            <p>관리자 상품관리</p>
+                                                        </Link>
+                                                    </li>
+                                                </>
                                             )
                                             : (  //일반 유저 계정
                                                 <>
