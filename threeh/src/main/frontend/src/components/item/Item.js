@@ -875,11 +875,11 @@ function Item() {
             <tbody>
               {selectedItems.map((item) => (
                 <tr key={item.itemId}>
-                  <td>
-                    <Link to={`/item/${item.itemId}`}>
-                    </Link>
-                    {item.itemName}
-                  </td>
+                    <td>
+                      <Link to={`/item/${item.itemId}`}>
+                      {item.itemName}
+                    </Link>  
+                    </td>
                   <td>{item.itemFinalPrice}</td>
                   <td>
                     <input
@@ -907,7 +907,7 @@ function Item() {
             </tbody>
           </table>
 
-          <h3>총 가격: {getTotalPrice()}원</h3>
+          <h3>총 가격: {formatPrice(getTotalPrice())}원</h3>
 
           <button type="button" onClick={handleClearSelectedItems} style={{marginBottom:"10px"}}>
             선택 상품 전체 삭제
