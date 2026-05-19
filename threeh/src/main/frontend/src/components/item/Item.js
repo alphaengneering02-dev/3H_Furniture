@@ -11,10 +11,10 @@ function Item() {
 
   //알반 유저가 체크박스로 선택한 상품 목록 저장
   const [selectedItems, setSelectedItems] = useState([]);
-
   //북마크 상태 저장([201,223,230])
   const [bookmarkedItems, setBookmarkedItems] = useState([]);
-
+  //상품 상세페이지로 갔다가 아이템 목록으로 돌아오더라도 체킹 유지 및 체킹 목록 유지
+  const SELECTED_ITEMS_KEY = "selectedItems";
 
   //관리자 모드 여부
   //false: 일반 상품 목록 화면
@@ -56,9 +56,17 @@ function Item() {
 
    //컴포넌트가 처음 실행될 때 상품 목록 조회. 그리고 북마크
    //관리자 모드일때, ItemCreate.js또는 ItemUpdate.js에서 /item으로 돌아왔을 때, 상품관리 목록이 바로 열림.
+   //처음 화면 돌아왔을 때, 선택한 상품 복구
+
   useEffect(() => {
     getItems();
     getMyBookmarks();
+
+    const savedSelectedItems =JSON.parse(sessionStorage.getItem(SELECTED_ITEMS_KEY));
+
+    if(savedSelectedItems && Array.isArray(savedSelectedItems)){
+      setSelectedItems(savedSelectedItems);
+    }
 
     if(location.state?.adminMode){
       setAdminMode(true);
@@ -66,16 +74,29 @@ function Item() {
 
   }, [location.state]);
 
+  //selectedItems가 바뀔 때마다 자동으로 sessionStorage에 저장
+  useEffect(()=>{
+    sessionStorage.setItem(
+      SELECTED_ITEMS_KEY,
+      JSON.stringify(selectedItems)
+    );
+  },[selectedItems]);
+
 
   //상품 최종 가격 계산
   //백엔드에서 itemFinalPrice가 오면 그 값을 사용
   //없으면 원가-할인금액으로 계산
+  //천 단위 콤마 적용
   const getFinalPrice = (item) => {
     if (item.itemFinalPrice !== null && item.itemFinalPrice !== undefined) {
       return Number(item.itemFinalPrice);
     }
 
     return Number(item.itemPrice || 0) - Number(item.itemDiscountPrice || 0);
+  };
+
+  const formatPrice = (price) =>{
+    return Number(price || 0).toLocaleString();
   };
 
 
@@ -118,7 +139,7 @@ function Item() {
     }
   };
 
-
+//북마크 가져오기
   const getMyBookmarks = async()=>{
     const loginUser = getLoginUser();
  
@@ -613,12 +634,26 @@ function Item() {
       console.error("상품 삭제 실패", error);
 
       if (error.response) {
-        console.log(error.response.data);
+        console.log("상품 삭제 상태코드: ",error.response.status);
+        console.log("상품 삭제 응답: ",error.response.data);
       }
 
       alert("상품 삭제 실패");
     }
   };
+
+  //상품 목록 체킹 시, 선택한 목록에서 전체 삭제 기능 추가.
+  const handleClearSelectedItems =()=>{
+    const confirmClear = window.confirm("선택한 상품을 모두 삭세하시겠습니까?");
+
+    if(!confirmClear){
+      return;    
+    }
+
+    setSelectedItems([]);
+    sessionStorage.removeItem(SELECTED_ITEMS_KEY);
+  };
+
 
   //JSX부분^__________^
 
@@ -695,7 +730,7 @@ function Item() {
                     <td>{item.itemId}</td>
                     <td>{item.itemCategory}</td>
                     <td>{item.itemName}</td>
-                    <td>{item.itemPrice}</td>
+                    <td>{formatPrice(item.itemPrice)}원</td>
                     <td>{item.itemStock}</td>
                     <td>{item.itemSellStatus}</td>
                     <td>
@@ -758,8 +793,8 @@ function Item() {
                   <p>상품 설명: {item.itemDetail}</p>
                   <p>상품 색상: {item.itemColor}</p>
                   <p>상품 가격: {item.itemPrice}</p>
-                  <p>상품 할인가격: {item.itemDiscountPrice}</p>
-                  <p>상품 최종가격: {getFinalPrice(item)}</p>
+                  <p>상품 할인가격: {formatPrice(item.itemDiscountPrice)}원</p>
+                  <p>상품 최종가격: {formatPrice(getFinalPrice(item))}원</p>
                   <p>상품 재고: {item.itemStock}</p>
                   <p>판매 상태: {item.itemSellStatus}</p>
 
@@ -840,7 +875,11 @@ function Item() {
             <tbody>
               {selectedItems.map((item) => (
                 <tr key={item.itemId}>
-                  <td>{item.itemName}</td>
+                    <td>
+                      <Link to={`/item/${item.itemId}`}>
+                      {item.itemName}
+                    </Link>  
+                    </td>
                   <td>{item.itemFinalPrice}</td>
                   <td>
                     <input
@@ -868,8 +907,11 @@ function Item() {
             </tbody>
           </table>
 
-          <h3>총 가격: {getTotalPrice()}원</h3>
+          <h3>총 가격: {formatPrice(getTotalPrice())}원</h3>
 
+          <button type="button" onClick={handleClearSelectedItems} style={{marginBottom:"10px"}}>
+            선택 상품 전체 삭제
+          </button>
           <button type="button" onClick={handleAddSelectedCart}>
             선택 상품 장바구니 담기
           </button>
