@@ -94,6 +94,42 @@ const Cart = () => {
         }
     }
 
+    //체크박스 삭제기능 개선
+    const deleteItem = async (cartItemId) => {
+        if (window.confirm(`${selectedIds.length}개의 상품을 정말 삭제하시겠습니까?`)) {
+             try {
+                await axios.post(`/api/Member/cart/delete/${cartItemId}`, {}, {withCredentials:true})
+                alert("삭제되었습니다");
+                setCartItems(cartItems.filter(item => (item.cartItemId || item.cartItemId) !== cartItemId));
+             }catch (err) {
+                alert("삭제 처리 실패");
+             }    
+        }
+    };
+
+    //선택 삭제 기능(전체 체크박스 혹은 선택된 아이템 삭제용)
+    const deleteSelectedItems = async () => {
+        if(selectedIds.length === 0) return alert("삭제할 상품을 선택해주세요");
+
+        if(window.confirm(`${selectedIds.length}개의 상품을 삭제하시겠습니까?`)) {
+            try {
+                await Promise.all(
+                    selectedIds.map(id =>
+                        axios.post(`/api/Member/cart/delete/${id}`,{},{withCredentials:true})
+                    )
+                )
+                alert("선택한 상품이 삭제되었습니다");
+                setCartItems(prev => prev.filter(item =>
+                    !selectedIds.includes(item.cartItemId || item.cartItemId)
+                ));
+                setSelectedIds([]); //체크박스 초기화
+            }catch (err) {
+                alert("일부 상품 삭제에 실패했습니다.");
+            }
+        }
+    }
+                    
+    /*
     // 상품 삭제 로직
     const deleteItem = (cartItemId) => {
         if (window.confirm("상품을 삭제하시겠습니까?")) {
@@ -105,6 +141,7 @@ const Cart = () => {
                 .catch(err => alert("삭제 처리 실패"));
         }
     };
+    */
 
     // 수량 변경 로직 (대소문자 양방향 체킹 완벽 보완 완료)
     const updateCount = (cartItemId, newCount) => {
@@ -178,7 +215,18 @@ const Cart = () => {
         <div className="cart-container" style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
             <h1>{member?.name || member?.id || '고객'}님의 장바구니</h1>
             
-            {/* 💡 [수정/추가 완료] 상단 전체 선택 바 레이아웃 배치 */}
+            {/* [수정/추가 완료] 상단 전체 선택 바 레이아웃 배치 */}
+            <div style={{display:'flex',alignItems:'center',padding:'10px 0', borderBottom:'2px solid #ccc', marginBottom:'15px'}}>
+                <lebel style={{display:'flex',alignItems:'center',cursor:'pointer', marginRight:'15px'}}></lebel>
+                    <input
+                        type="checkbox"
+                        onChange={(e) => handleAllCheck(e.target.checked)}
+                        checked={selectedIds.length === cartItems.length && cartItems.length > 0}/>
+                        <span style={{marginLeft:'5px'}}>전체 선택 ({selectedIds.length}/{cartItems.length})</span>
+                        
+            </div>
+
+            {/*             
             {cartItems.length > 0 && (
                 <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '2px solid #ccc', marginBottom: '15px' }}>
                     <label style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
@@ -194,7 +242,8 @@ const Cart = () => {
                         </span>
                     </label>
                 </div>
-            )}
+            )} */}
+            
 
             {cartItems.length === 0 ? (
                 <p style={{ textAlign: 'center', padding: '30px 0' }}>장바구니가 비어 있습니다.</p>
@@ -204,7 +253,7 @@ const Cart = () => {
                     return (
                         <div key={itemId} className="cart-item" style={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #ddd', padding: '15px 0' }}>
                             
-                            {/* 💡 [수정/추가 완료] 개별 상품 왼쪽 수동 체크박스 주입 */}
+                            {/* [수정/추가 완료] 개별 상품 왼쪽 수동 체크박스 주입 */}
                             <input 
                                 type="checkbox" 
                                 // 현재 순회 중인 상품의 ID가 선택된 ID 보관함(selectedIds)에 포함되어 있는지 여부로 체크 판정
@@ -235,7 +284,7 @@ const Cart = () => {
                 })
             )}
 
-            {/* 💡 [수정/추가 완료] 실시간 동적 변수 totalOrderPrice를 매핑하여 체크 해제나 수량 변경 시 금액이 무조건 실시간 동기화됨 */}
+            {/* [수정/추가 완료] 실시간 동적 변수 totalOrderPrice를 매핑하여 체크 해제나 수량 변경 시 금액이 무조건 실시간 동기화됨 */}
             <div className="total-price-box" style={{ marginTop: '30px', borderTop: '2px solid #333', paddingTop: '20px', textAlign: 'right' }}>
                 <h3>총 결제 예상 금액: <span style={{ color: '#d9534f', fontSize: '24px' }}>{totalOrderPrice.toLocaleString()}</span>원</h3>
             </div>

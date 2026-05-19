@@ -92,7 +92,6 @@ const ItemDetail = () => {
         getItemImgs();
         getReviews();
         getReviewsSummary();
-
     },[itemId]);
 
 
@@ -133,7 +132,7 @@ const ItemDetail = () => {
     const getReviews = async()=>{
         try{
             const response = await axios.get(
-                `http://localhost:8080/api/reivews/item/${itemId}`,
+                `http://localhost:8080/api/reviews/item/${itemId}`,
                 {
                     withCredentials:true,
                 }
@@ -143,9 +142,15 @@ const ItemDetail = () => {
             setReviews(response.data);
         }catch(error){
             console.error("리뷰 조회 실패", error);
+
+            if(error.response){
+                console.log("리뷰 조회 상태코드:",error.response.status);
+                console.log("리뷰 조회 응답:",error.response.data);
+            }
         }
-    }
-    //평균 평점 조회 함수 추가
+    };
+
+    //리뷰 평균 평점 조회 함수 추가
     const getReviewsSummary = async()=>{
         try{
             const response = await axios.get(
@@ -158,6 +163,10 @@ const ItemDetail = () => {
             setReviewSummary(response.data);
         }catch(error){
             console.error("리뷰 평점 조회 실패",error);
+            if(error.response){
+                console.log("리뷰 평점 상태코드:",error.response.status);
+                console.log("리뷰 평점 응답:",error.response.data);
+            }
         }
     };
 
@@ -208,6 +217,8 @@ const ItemDetail = () => {
             console.error("리뷰 등록 실패",error);
             
             if(error.response){
+                console.log("리뷰 등록 상태코드:",error.response.status);
+                console.log("리뷰 등록 응답:",error.response.data);
                 alert(error.response.data);
                 return;
             }
@@ -216,6 +227,7 @@ const ItemDetail = () => {
     }
 
 
+    //삭제 관리......(admin에서)
     const handleDeleteClick = async () => {
         const confirmDelete = window.confirm("정말 이 상품을 삭제하시겠습니까?");
 

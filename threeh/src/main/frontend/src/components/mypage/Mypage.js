@@ -11,12 +11,19 @@ const Mypage = () => {
     //주문 목록을 담을 상태 상자
     const [orders, setOrders] = useState([]);
 
+    //추가_오현옥 리뷰 관리
+    const[myReviews, setMyReviews] = useState([]);
+    const[editReviewId, setEditReviewId] = useState(null);
+    const[editReviewScore,setEditReviewScore] = useState(5);
+    const[editReviewText, setEditReviewText] = useState("");
+
     useEffect(() => {
         //세션스토리지에서 user라는 이름으로 저장된 정보를 가져옴
         const savedUser = sessionStorage.getItem('user');
         if (savedUser) {
             const userObj = JSON.parse(savedUser);
             setMember(userObj);
+            getMyReviews(); //추가 오현옥_리뷰관리
 
             //서버에서 최신 정보(회원+주소목록) 가져와서 동기화
             axios.get('http://localhost:8080/Member/mypage.do', { withCredentials: true })
@@ -137,6 +144,111 @@ const Mypage = () => {
         }
     };
 
+    //코드 추가_오현옥(리뷰 목록 조회 함수)==========================
+    const getMyReviews = async() =>{
+        try{
+            const response = await axios.get(
+                "http://localhost:8080/api/reviews/my",
+                {
+                    withCredentials:true,
+                }
+            );
+
+            console.log("내 리류 목록:" , response.data);
+            setMyReviews(response.data);
+        }catch(error){
+            console.error("내 리뷰 조회 실패", error);
+
+            if(error.response?.status === 401){
+                alert("로그인이 필요합니다.");
+                navigate("/login");
+                return;
+            }
+        }
+    };
+
+    //리뷰 수정 함수_오현옥
+    const handleEditReviewStart = (review) =>{
+        setEditReviewId(review.reviewId);
+        setEditReviewScore(review.reviewScore);
+        setEditReviewText(review.reviewText);
+    };
+    
+    //리뷰 수정 저장 함수_오현옥
+    const handleUpdateReview =async(reviewId) =>{
+        if(!editReviewScore || editReviewScore <1 || editReviewScore>5){
+            alert("별점은 1점 이상 5점 이하로 선택해주세요.");
+            return;
+        }
+        if(!editReviewText.trim()){
+            alert("리뷰 내용을 입력해주세요.");
+            return;
+        }
+        if(editReviewText.length>255){
+            alert("리뷰 내용은 255자를 초과할 수 없습니다.");
+            return;
+        }
+        try{
+            await axios.put(
+                `http://localhost:8080/api/reviews/${reviewId}`,
+                {
+                    reviewScore: editReviewScore,
+                    reviewText: editReviewText,
+                },
+                {
+                    withCredentials:true,
+                }
+            );
+
+            alert("리뷰가 수정되었습니다.");
+            setEditReviewId(null);
+            setEditReviewScore(5);
+            setEditReviewText("");
+
+            getMyReviews();
+        }catch(error){
+            console.error("리뷰 수정 실패",error);
+
+            if(error.response){
+                alert(error.response.data);
+                return;
+            }
+            alert("리뷰 수정 실패");
+        }
+    };
+
+    //리뷰 삭제 함수 _ 오현옥
+    const handleDeleteReview = async(reviewId)=>{
+        const confirmDelete = window.confirm("리뷰를 삭제하시겠습니까?");
+        
+        if(!confirmDelete){
+            return;
+        }
+
+        try{
+            await axios.delete(
+                `http://localhost:8080/api/reivews/${reviewId}`,
+                {
+                    withCredentials:true,
+                }
+            );
+
+            alert("리뷰가 삭제되었습니다.");
+            getMyReviews();
+        }catch(error){
+            console.error("리뷰 삭제 실패",error);
+
+            if(error.response){
+                alert(error.response.data);
+                return;
+            }
+
+            alert("리뷰 삭제 실패");
+        }
+    }
+
+
+
     return (
         <div className="mypage-grid-container">
             {/* 상단 헤더 */}
@@ -252,6 +364,75 @@ const Mypage = () => {
                                     회원 탈퇴
                                 </button>
                             )}
+                        </div>
+
+                        {/* 리뷰영역_오현옥 */}
+                        <div style={{marginTop:"40px"}}>
+                            <h2>내가 작성한 리뷰</h2>
+                            
+                            {myReviews.length === 0?(
+                                <p>작성한 리뷰가 없습니다.</p>
+                            ):(
+                                myReviews.map((review)=>(
+                                    <div key={review.reviewId}
+                                    style={{
+                                        borderBottom:"1px solid #ddd",
+                                        padding: "15px 0",
+                                    }}>
+
+                                    <h3>{review.itemName}</h3>
+                                    {editReviewId === review.reviewId ? (
+                                        <div>
+                                            <select value={editReviewScore} onChange={(e)=>
+                                                setEditReviewScore(Number(e.target.value))}>
+                                                        <option value={5}>★★★★★ 5점</option>
+                                                        <option value={4}>★★★★☆ 4점</option>
+                                                        <option value={3}>★★★☆☆ 3점</option>
+                                                        <option value={2}>★★☆☆☆ 2점</option>
+                                                        <option value={1}>★☆☆☆☆ 1점</option>
+                                            </select>
+                                            <textarea value={editReviewText}
+                                            onChange={(e)=>setEditReviewText(e.target.value)} rows={4}
+                                            maxLength={255} style={{width:"100%", marginTop:"10px",padding:"10px"}}/>
+                                        
+                                        <p>{editReviewText.length}/255</p>
+
+                                            <button type="button" onClick={()=>handleUpdateReview(review.reviewId)}>
+                                                    저장
+                                            </button>
+
+                                            <button type="button" onClick={()=>setEditReviewId(null)} style={{marginLeft:"10px"}}>
+                                                    취소
+                                            </button>
+                                        </div>
+                                    ):(
+                                        <div>
+                                            <p style={{ color: "#f5a623", fontSize: "20px" }}>
+                                                {"★".repeat(review.reviewScore)}
+                                                {"☆".repeat(5 - review.reviewScore)}
+                                            </p>
+
+                                            <p>{review.reviewText}</p>
+                                            <small>
+                                                작성일:{""}
+                                                {review.createdAt ? String(review.createdAt).substring(0,10):""}
+                                            </small>
+                                            <div style={{marginTop:"10px"}}>
+                                                <button type="button" onClick={()=>handleEditReviewStart(review)}>
+                                                    수정
+                                                </button>
+                                                
+                                                <button type="button" onClick={()=>handleDeleteReview(review.reviewId)} style={{marginLeft:"10px"}}>
+                                                    삭제
+                                                </button>
+                                            </div>
+                                        </div>
+                                    )}
+                                    </div>
+                                ))
+                            )}
+
+
                         </div>
                     </main>
                 </div>
