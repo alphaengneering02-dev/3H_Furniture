@@ -90,10 +90,12 @@ const Header = () => {
     searchKey (다중 선택 가능)
     - category: [거실, 침실, 주방...] 
     - color: [책상, 의자, 책꽃이...]
+    - price: [200, 300]
     */
     const [searchKey, setSearchKey] = useState({
         "category": [],
         "color": [],
+        "price": [0, 500],
     })  //객체
 
     const [isSearchCondition, setIsSearchCondition] = useState(false)
@@ -104,7 +106,6 @@ const Header = () => {
 
     //검색 함수
     const doSearch = async() => {
-
         try {
             //1. Query String 생성 (예: ?searchValue=책상&space=거실,침실&size=1,6)
             const params = new URLSearchParams()  //파라미터를 생성하는 훅
@@ -133,7 +134,17 @@ const Header = () => {
         } catch (error) {
             console.error("검색 이동 중 오류 발생:", error)
         }
+    }
 
+
+    //엔터키로 검색하기
+    const onEnter = (evt) => {
+        if(evt.key==='Enter') {
+            //브라우저의 기본 폼 제출(새로고침) 방지
+            evt.preventDefault();
+
+            doSearch(evt)
+        }
     }
 
 
@@ -169,11 +180,11 @@ const Header = () => {
                             <form action="" method="get">
                                 {/* 검색창 */}
                                 <section className='bar'>
-                                    <button className="btn" type="button">
+                                    <button type="button" id="do" className="do">
                                         <img src={icon_search} alt="검색하기" onClick={doSearch} style={{width: 20}}/>
                                     </button>
-                                    <input type="text" id={searchValue} name={searchValue} value={searchValue} placeholder="검색어를 입력하세요" onChange={changeSearchValue}/>
-                                    <button className="hamburger" type="button">
+                                    <input type="text" id={searchValue} name={searchValue} value={searchValue} placeholder="검색어를 입력하세요" onChange={changeSearchValue} onKeyDown={onEnter}/>
+                                    <button type="button" className="hamburger">
                                         <img src={icon_hamburger} alt="검색 조건 선택창" onClick={toggleSearchCondition} style={{width: 20}}/>
                                     </button>
                                 </section>

@@ -1,16 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Slider } from "@mui/material";
 
-const Header_searchCondition = ({searchKey, setSearchKey}) => {
-
-
-    useEffect(() => {
-        resetSearchKey()
-    }, [])
+const SearchResult_filter = ({myFilter, setMyFilter}) => {
 
     //전체 삭제 및 초기화 함수
-    const resetSearchKey = () => {
-        setSearchKey({
+    const resetMyFilter = () => {
+        setMyFilter({
             category: [],
             color: [],
             price: [0, 500],
@@ -35,7 +30,7 @@ const Header_searchCondition = ({searchKey, setSearchKey}) => {
     const handleAllCheck = (type, options) => {  
         //type: category, color
         //options: 선택한 항목('거실', '하얀색', ...)
-        setSearchKey((prev) => {
+        setMyFilter((prev) => {
             //기존 선택값 가져오기
             const currentList = prev[type] || [];
             
@@ -52,7 +47,7 @@ const Header_searchCondition = ({searchKey, setSearchKey}) => {
 
     //개별 선택/해제 핸들러
     const handleSingleCheck = (type, value) => {
-        setSearchKey((prev) => {
+        setMyFilter((prev) => {
             const currentList = prev[type] || [];
             
             //해제/선택 토글
@@ -70,11 +65,12 @@ const Header_searchCondition = ({searchKey, setSearchKey}) => {
 
     //Range Slider
     const changePrice = (evt, range) => {
-        setSearchKey({
-            ...searchKey,
+        setMyFilter({
+            ...myFilter,
             price: range
         }) 
     }
+
     
 
 
@@ -82,7 +78,7 @@ const Header_searchCondition = ({searchKey, setSearchKey}) => {
          <section className='list'>
             <article>
                 <h3>검색 조건</h3>
-                <button type='button' onClick={resetSearchKey}>전체 삭제</button>
+                <button type='button' onClick={resetMyFilter}>전체 삭제</button>
             </article>
 
 
@@ -94,7 +90,7 @@ const Header_searchCondition = ({searchKey, setSearchKey}) => {
                         <div>
                             <input type="checkbox"
                             id="category_all"
-                            checked={searchKey.category.length === category_options.length}
+                            checked={myFilter.category.length === category_options.length}
                             onChange={() => handleAllCheck('category', category_options)}/>
                             <label>전체</label>
                         </div>
@@ -105,7 +101,7 @@ const Header_searchCondition = ({searchKey, setSearchKey}) => {
                                 <input 
                                     type="checkbox" 
                                     id={`category_${item}`}
-                                    checked={searchKey.category.includes(item)}
+                                    checked={myFilter.category.includes(item)}
                                     onChange={() => handleSingleCheck('category', item)}
                                 />
                                 <label htmlFor={`category_${item}`}>{item}</label>
@@ -122,7 +118,7 @@ const Header_searchCondition = ({searchKey, setSearchKey}) => {
                         <div>
                             <input type="checkbox"
                             id="color_all"
-                            checked={searchKey.color.length === color_options.length}
+                            checked={myFilter.color.length === color_options.length}
                             onChange={() => handleAllCheck('color', color_options)}/>
                             <label>전체</label>
                         </div>
@@ -133,7 +129,7 @@ const Header_searchCondition = ({searchKey, setSearchKey}) => {
                                 <input 
                                     type="checkbox" 
                                     id={`color_${item}`}
-                                    checked={searchKey.color.includes(item)}
+                                    checked={myFilter.color.includes(item)}
                                     onChange={() => handleSingleCheck('color', item)}
                                 />
                                 <label htmlFor={`color_${item}`}>{item}</label>
@@ -149,7 +145,7 @@ const Header_searchCondition = ({searchKey, setSearchKey}) => {
                     <Slider
                         aria-label="가격대 범위 설정"  //라벨 지정
                         min={0} max={500}
-                        value={searchKey.price}
+                        value={myFilter.price}
                         onChange={changePrice}
                         marks={price_options}
                         valueLabelDisplay="on"
@@ -162,4 +158,4 @@ const Header_searchCondition = ({searchKey, setSearchKey}) => {
     );
 };
 
-export default Header_searchCondition;
+export default SearchResult_filter;

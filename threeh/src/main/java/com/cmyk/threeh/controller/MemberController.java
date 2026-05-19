@@ -364,7 +364,7 @@ public class MemberController {
 		//3. 기존 pw가 현재 사용자의 pw와 일치하는지 검사한다.
 		if (!passwordEncoder.matches(oldPassword, member.getPassword())) {
 			//일치하지 않는다면, 오류를 발생시킨다.
-            errorMap.put("name", ErrorCode.PASSWORD_NOT_SAME.getMessage());
+            errorMap.put("oldPassword", ErrorCode.PASSWORD_NOT_SAME.getMessage());
             return ResponseEntity.badRequest().body(errorMap);
 		}
 
