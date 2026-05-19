@@ -32,6 +32,7 @@ import DriverPage from '../components/admin/DriverPage';
 import Mypage from '../components/mypage/Mypage';
 import Cart from '../components/mypage/Cart';
 import PaymentFail from '../components/payment/PaymentFail';
+import Schedule from '../components/mypage/Schedule';
 
 
 
@@ -57,6 +58,7 @@ const Router = () => {
                 <Route path='/cart' element={<Cart/>}/>
                 <Route path="/cart/return" element={<Refund />} />
                 <Route path="/member/update/:id" element={<MemberAddressUpdate />} />
+                <Route path="/mypage/schedule" element={<Schedule />} />
 
                 
                 <Route path="/admin" element={<AdminDashboard/>} />

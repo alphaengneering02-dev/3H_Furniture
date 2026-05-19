@@ -7,6 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+import javax.transaction.Transactional;
+
+//import org.apache.catalina.servlets.DefaultServlet.SortManager.Order;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,10 +20,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cmyk.threeh.domain.Member;
 import com.cmyk.threeh.domain.Orders;
+import com.cmyk.threeh.enums.OrderState;
+import com.cmyk.threeh.repository.OrderRepository;
 import com.cmyk.threeh.service.MemberAddressService;
 import com.cmyk.threeh.service.MemberService;
 
 import lombok.RequiredArgsConstructor;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -158,16 +165,29 @@ public class MemberAddressController {
     }
 
     //[중요] 교환/반품 버튼 클릭 시 실행 (강제 삭제 및 재고 복구)
+    @Autowired
+    private OrderRepository orderRepository;
     @PostMapping("/refund/process")
+    @Transactional
     public ResponseEntity<String> refundRequest(@RequestParam("orderId") Long orderId) {
-        try {
-            // Service에 있는 즉시 삭제 기능을 호출합니다.
-            memberAddressService.deleteOrderForce(orderId);
-            return ResponseEntity.ok("주문번호 " + orderId + "번 처리가 완료되었습니다.");
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("처리 중 오류 발생: " + e.getMessage());
+    try {
+        
+        Orders order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 주문을 찾을 수 없습니다."));
+
+        order.setOrderState(OrderState.CANCEL);
+        
+        if (order.getOrderItems() != null) {
+            order.getOrderItems().forEach(orderItem -> orderItem.cancel());
         }
+
+        orderRepository.save(order);
+
+        return ResponseEntity.ok("주문번호 " + orderId + "번 반품 처리가 완료되었습니다 (이력 보존).");
+    } catch (Exception e) {
+        return ResponseEntity.status(500).body("처리 중 오류 발생: " + e.getMessage());
     }
+}
 
     //[중요] 3일 시간제한 자동삭제/취소 로직 (시스템 호출용)
     @PostMapping("/refund/auto-check")
