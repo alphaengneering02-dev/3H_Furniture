@@ -98,7 +98,7 @@ public class ReviewController {
     }
 
     // 내가 작성한 리뷰 수정
-    // Mypage.js에서 사용
+    // Mypage.js에서 사용(최종주소:PUT/api/reviews/{reviewId})
     @PutMapping("/{reviewId}")
     public ResponseEntity<?> updateReview(
             @PathVariable Long reviewId,

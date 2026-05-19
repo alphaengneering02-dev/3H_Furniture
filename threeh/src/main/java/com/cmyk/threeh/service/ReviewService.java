@@ -54,7 +54,7 @@ public class ReviewService {
             throw new IllegalArgumentException("리뷰 내용은 255자를 초과할 수 없습니다.");
         }
 
-        // 실제 구매 여부 확인
+        // 실제 구매 여부 확인(구매여부랑, 중복 여부 확인_오더아이템레포지토리에서 가져오기.)
         boolean purchased = orderItemRepository.existsPurchasedItem(
                 member.getMemberId(),
                 itemId
@@ -64,7 +64,7 @@ public class ReviewService {
             throw new IllegalArgumentException("구매한 상품만 리뷰를 작성할 수 있습니다.");
         }
 
-        // 중복 리뷰 방지
+        // 중복 리뷰 방지(이미 리뷰가 작성된 상품에 또 리뷰를 작성하는것을 방지 )
         boolean alreadyReviewed =
                 reviewRepository.existsByMember_MemberIdAndItem_ItemId(
                         member.getMemberId(),
