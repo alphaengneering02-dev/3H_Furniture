@@ -27,6 +27,7 @@ import com.cmyk.threeh.dto.OrderFormDTO;
 import com.cmyk.threeh.dto.OrderRequestDTO;
 import com.cmyk.threeh.global.error.CustomException;
 import com.cmyk.threeh.global.error.ErrorCode;
+import com.cmyk.threeh.global.util.GetLoginId;
 import com.cmyk.threeh.repository.CartItemRepository;
 import com.cmyk.threeh.repository.OrderRepository;
 import com.cmyk.threeh.service.ItemImgService;
@@ -56,22 +57,11 @@ public class OrderController {
 
         
 
-        String loginId = "";
-        if (principal == null) {
+        String loginId = GetLoginId.getloginId(principal);
+
+        if(loginId == null){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
-        }
-
-        if(principal instanceof OAuth2AuthenticationToken){
-            OAuth2AuthenticationToken authToken = (OAuth2AuthenticationToken) principal;
-
-            Map<String, Object> attributes = authToken.getPrincipal().getAttributes();
-
-            loginId = String.valueOf(attributes.get("e3w3wq22mn  "));
-
-        }
-        else{
-            loginId = principal.getName();
-        }
+        } 
 
 
         Member member = memberService.getUser(loginId);
@@ -117,25 +107,16 @@ public class OrderController {
     @GetMapping("/{itemId}")
     public ResponseEntity getOrder(@PathVariable Long itemId, Principal principal) {
 
-        String loginId = "";
+        
         ItemResponseDTO item = itemService.getItem(itemId);
         ItemImgResponseDTO itemImage = itemImgService.getMainImg(itemId);
 
-        if (principal == null) {
+        String loginId = GetLoginId.getloginId(principal);
+
+        if(loginId == null){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
-        }
+        } 
 
-        if(principal instanceof OAuth2AuthenticationToken){
-            OAuth2AuthenticationToken authToken = (OAuth2AuthenticationToken) principal;
-
-            Map<String, Object> attributes = authToken.getPrincipal().getAttributes();
-
-            loginId = String.valueOf(attributes.get("e3w3wq22mn  "));
-
-        }
-        else{
-            loginId = principal.getName();
-        }
 
             Member member = memberService.getUser(loginId);
 
