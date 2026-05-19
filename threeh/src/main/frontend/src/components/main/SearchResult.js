@@ -18,12 +18,8 @@ const SearchResult = () => {
     const getSearchResult = async() => {
         //1. URL에서 필요한 데이터 꺼내기 (꺼낼 때 %2C는 자동으로 쉼표로 해석됨)
         const searchValue = searchParams.get("searchValue"); // "검색어"
-        const space = searchParams.get("space");             // "livingroom,bedroom"
-        const kind = searchParams.get("kind");               // "desk,chair"
-        const brand = searchParams.get("brand");             // "livart,hanssem"
-        const material = searchParams.get("material");       // "wood,fabric"
-        const size = searchParams.get("size");               // "1,2"
-        const price = searchParams.get("price");             // "0,50"
+        const category = searchParams.get("category");       // "livingroom,bedroom"
+        const color = searchParams.get("color");             // "white,black"
 
 
         //2. 백엔드(Spring Boot) API로 데이터 전송하기
@@ -32,12 +28,8 @@ const SearchResult = () => {
             const res = await axios.get("http://localhost:8080/api/main/searchResult", {  //*** itemController에 관련 메소드 추가건의
                 params: {
                     searchValue: searchValue,
-                    space: space,
-                    kind: kind,
-                    brand: brand,
-                    material: material,
-                    price: price,
-                    size: size
+                    category: category,
+                    color: color
                 }
             })
             
@@ -59,6 +51,11 @@ const SearchResult = () => {
     return (
         <div>
             검색결과 페이지
+
+            검색 필터
+
+
+            검색 결과
             {
                 searchResult && searchResult.length>0
                 ? (

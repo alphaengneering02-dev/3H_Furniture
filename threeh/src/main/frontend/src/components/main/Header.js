@@ -12,7 +12,6 @@ import icon_login from '../../assets/icon_login.png';
 import icon_signup from '../../assets/icon_signup.png';
 import axios, { all } from 'axios';
 import Header_searchCondition from './Header_searchCondition';
-import Header_searchCondition2 from './Header_searchCondition2';
 
 // 헤더
 const Header = () => {
@@ -89,12 +88,8 @@ const Header = () => {
     //검색 조건 선택
     /*
     searchKey (다중 선택 가능)
-    - "사용공간": [거실, 침실, 주방...] 
-    - "종류": [책상, 의자, 책꽃이...]
-    - "브랜드": [리바트, 한샘, 허먼밀러...]
-    - "소재": [패브릭, 메탈...]
-    - "사이즈": [min, max]
-    - "가격": [min, max]
+    - category: [거실, 침실, 주방...] 
+    - color: [책상, 의자, 책꽃이...]
     */
     const [searchKey, setSearchKey] = useState({
         "category": [],
@@ -118,16 +113,11 @@ const Header = () => {
                 params.append("searchValue", searchValue);
             }
 
-
             Object.keys(searchKey).forEach(key => {  //parameter - 다중 검색 조건(searchKey)을 순회하며 파라미터에 추가
                 const value = searchKey[key];  //검색조건 배열
-
-                // 1. 배열 안에서 "all"을 제거
-                const validValues = value.filter(val => val !== "all")
-
-                // 2. 나머지 유효한 값들만 params에 쉼표(,)로 연결해 추가 (예: ["거실", "주방"])
-                if (validValues.length > 0) {
-                    params.append(key, validValues.join(','))
+                
+                if (value.length > 0) {  //유효한 값들만 params에 쉼표(,)로 연결해 추가 (예: ["거실", "주방"])
+                    params.append(key, value.join(','))
                 }
             })
 
@@ -192,10 +182,7 @@ const Header = () => {
                                 {/* 검색 조건 선택창 */}
                                 {
                                     isSearchCondition &&
-                                    <>
-                                    {/* <Header_searchCondition searchKey={searchKey} setSearchKey={setSearchKey}/> */}
-                                    <Header_searchCondition2 searchKey={searchKey} setSearchKey={setSearchKey}/>
-                                    </>
+                                    <Header_searchCondition searchKey={searchKey} setSearchKey={setSearchKey}/>
                                 }
                             </form>
                         </div>
