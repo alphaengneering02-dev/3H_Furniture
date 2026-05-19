@@ -146,7 +146,12 @@ function OrderItemInfo( { orderData, orderType, zipCode, address, deliveryDate, 
                     {orderData?.items && orderData.items.length > 0 ? (
                     orderData.items.map((item, index) => (
                         <div key={item.itemId || index}>
-                            <img src={getUrl(item.itemImage)} alt={item.itemName} style={{ width: '100px' }} /> 
+                            <img src={getUrl(item.itemImage)} alt={item.itemName} style={{ 
+                                    width: '100px', 
+                                    height: '100px', 
+                                    maxWidth: '100px',
+                                    objectFit: 'cover'
+                                }} /> 
                             <p>상품명: {item.itemName}</p>
                             <p>가격: {item.price}원 (수량: {item.count}개)</p>
                             <p>설명: {item.itemDetail}</p>
@@ -157,7 +162,13 @@ function OrderItemInfo( { orderData, orderType, zipCode, address, deliveryDate, 
                     <div>
                      
                        
-                        <img src={getUrl(orderData?.itemImage)} alt={orderData.itemName} />
+                        <img src={getUrl(orderData?.itemImage)} alt={orderData.itemName} 
+                        style={{ 
+                                    width: '300px', 
+                                    height: '300px', 
+                                    maxWidth: '300px',
+                                    objectFit: 'cover'
+                                }}/>
                         <p>가격: {orderData.price}원</p> 
                         <p>설명: {orderData.itemDetail}</p>
                     </div>
