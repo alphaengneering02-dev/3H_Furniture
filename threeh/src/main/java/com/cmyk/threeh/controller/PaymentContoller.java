@@ -28,6 +28,7 @@ import com.cmyk.threeh.dto.PaymentResponseDTO;
 import com.cmyk.threeh.dto.SliceInfo;
 import com.cmyk.threeh.dto.SliceResponseDTO;
 import com.cmyk.threeh.global.config.TossPaymentsConfig;
+import com.cmyk.threeh.global.util.GetLoginId;
 import com.cmyk.threeh.service.PaymentMapper;
 import com.cmyk.threeh.service.TossPaymentService;
 
@@ -42,23 +43,13 @@ public class PaymentContoller {
     @PostMapping("/toss")
     public ResponseEntity requestTossPayment(Principal principal, @RequestBody PaymentDTO paymentDTO){
 
+        
 
-        String loginId = "";
-        if (principal == null) {
+        String loginId = GetLoginId.getloginId(principal);
+
+        if(loginId == null){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
-        }
-
-        if(principal instanceof OAuth2AuthenticationToken){
-            OAuth2AuthenticationToken authToken = (OAuth2AuthenticationToken) principal;
-
-            Map<String, Object> attributes = authToken.getPrincipal().getAttributes();
-
-            loginId = String.valueOf(attributes.get("e3w3wq22mn  "));
-
-        }
-        else{
-            loginId = principal.getName();
-        }
+        } 
 
         PaymentResponseDTO paymentResDTO = tossPaymentService.requestPayment(paymentDTO.toEntity(), loginId).toPaymentResponseDTO();
 
@@ -107,7 +98,14 @@ public class PaymentContoller {
     @GetMapping("/history")
     public ResponseEntity getChargingHistory(Principal principal, Pageable pageable) {
 
-        Slice<Payment> chargingHistories = tossPaymentService.findAllChargingHistroies(principal.getName(), pageable);
+        String loginId = GetLoginId.getloginId(principal);
+
+        if(loginId == null){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+        } 
+
+
+        Slice<Payment> chargingHistories = tossPaymentService.findAllChargingHistroies(loginId, pageable);
 
         List<ChargingHistoryDTO> content = mapper.chargingHistoryToChargingHistoryResponse(chargingHistories.getContent());
 
