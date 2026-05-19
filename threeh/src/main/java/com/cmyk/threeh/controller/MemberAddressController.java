@@ -84,6 +84,23 @@ public class MemberAddressController {
         return ResponseEntity.ok("배송 및 설치 일정 조회가 성공했습니다.");
     }
 
+    //회원탈퇴
+    @PostMapping("/delete")
+    public ResponseEntity<String> deleteMember(Principal principal) {
+        try {
+            String userid = (principal != null) ? principal.getName() : null;
+
+            if(userid == null) {
+                return ResponseEntity.status(401).body("로그인이 필요합니다.");
+            }
+            memberService.delete(userid);
+
+            return ResponseEntity.ok("탈퇴가 정상적으로 처리되었습니다");
+        }catch (Exception e) {
+            return ResponseEntity.status(500).body("탈퇴 처리 중 오류 발생:" + e.getMessage());
+        }
+    }
+
     //교환 및 반품 목록 조회
     @GetMapping("/order/refund-list")
     public ResponseEntity<?> refundList(Principal principal) {

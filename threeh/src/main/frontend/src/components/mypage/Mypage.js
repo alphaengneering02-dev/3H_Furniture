@@ -67,35 +67,32 @@ const Mypage = () => {
         }
     }
 
-    //새 배송지 추가(Order 포스트)
+    /**
+     * [조장님 참고용 - 새 배송지 추가 로직]
+     * 사용자가 입력한 주소 데이터를 리액트 상단 State인 'addresses' 배열에 실시간으로 누적(Push)합니다.
+     * 새로고침 없이 화면에 즉시 반영되며, 오더(주문서) 파트 개발 시 이 addresses 상태 배열을 
+     * 그대로 참조하거나 넘겨받아서 주문서 선택창(라디오 버튼/드롭다운 등)에 바인딩하시면 됩니다.
+     */
     const addAddress = () => {
-
         const city = prompt("도시 (예: 서울시)");
         const street = prompt("도로명 주소 (예: 강남대로)");
         const zipcode = prompt("우편번호 (예: 12345)");
         const addrDetail = prompt("상세 주소 (예: 101동 101호)");
 
+        // 필수 항목 유효성 체크
         if (!city || !street) return;
 
-        const user = JSON.parse(sessionStorage.getItem('user'));
-        const userId = user ? user.id : "user1"; //비로그인 테스트용
+        // 마이페이지 프론트단 UI 동기화를 위한 주소 객체 생성
+        const newAddressObj = {
+            id: Date.now(), // 삭제 처리 및 가상 DOM Key를 위한 고유 타임스탬프 ID
+            addressName: "추가된 배송지",
+            street: street,
+            addrDetail: addrDetail
+        };
 
-        const params = new URLSearchParams();
-
-        params.append('userid', userId);
-        params.append('city', city);
-        params.append('street', street);
-        params.append('zipcode', zipcode);
-        params.append('addrDetail', addrDetail);
-
-        params.append('addr', `${city} ${street}`);
-
-        axios.post('http://localhost:8080/Member/address/add', params, { withCredentials: true })
-            .then(() => {
-                alert("배송지가 등록되었습니다. 주문 시 선택 가능합니다")
-                window.location.reload();
-            })
-            .catch(err => alert("저장 실패"));
+        // 중요: 기존 주소 리스트 뒤에 신규 주소 객체를 불변성을 유지하며 병합 (여러 개 누적 가능)
+        setAddresses(prevAddresses => [...prevAddresses, newAddressObj]);
+        alert("배송지가 등록되었습니다!");
     };
 
     //배송지 수정
@@ -108,25 +105,34 @@ const Mypage = () => {
             .catch(err => alert("변경 실패"));
     };
 
-    //배송지 삭제
+    /**
+     * [조장님 참고용 - 배송지 삭제 로직]
+     * 화면상에 실시간 추가된 주소들을 addresses State 내에서 id 필터링을 통해 
+     * 클라이언트단에서 즉시 컴포넌트 갱신(삭제) 처리합니다.
+     */
     const deleteAddress = (addressId) => {
         if (window.confirm("배송지를 삭제하시겠습니까?")) {
-            axios.delete(`http://localhost:8080/address/delete/${addressId}`, { withCredentials: true })
-                .then(() => {
-                    setAddresses(addresses.filter(addr => addr.id !== addressId));
-                })
-                .catch(err => alert("삭제 실패"));
+            setAddresses(addresses.filter(addr => addr.id !== addressId));
         }
     };
 
-    //회원탈퇴
+    /**
+     * [조장님 참고용 - 회원탈퇴 로직]
+     * 팀 백엔드 대문자 공통 URL 규칙(/Member)에 맞춰 매핑 주소를 수정해 두었습니다.
+     * 탈퇴 성공 시 브라우저 세션 클리어 후 메인 화면으로 리다이렉트됩니다.
+     */
     const handleDelete = () => {
         if (window.confirm("정말로 탈퇴하시겠습니까?")) {
-            axios.delete(`http://localhost:8080/member/delete/${member.id}`, { withCredentials: true })
-                .then(() => {
-                    alert("탈퇴 완료");
+            // 💡 서버의 MemberAddressController 경로(/Member/delete)에 맞게 호출
+            axios.post('http://localhost:8080/Member/delete', {}, { withCredentials: true })
+                .then((res) => {
+                    alert("탈퇴가 완료되었습니다.");
                     sessionStorage.removeItem('user');
                     navigate('/');
+                })
+                .catch(err => {
+                    console.error("탈퇴 오류:", err);
+                    alert("탈퇴 실패: " + (err.response?.data || "서버 오류가 발생했습니다."));
                 });
         }
     };
@@ -186,40 +192,34 @@ const Mypage = () => {
                                 <p><strong>이메일:</strong> {member.email || "-"}</p>
                             </div>
 
-                            {/*
-                            <h3 className="into-section-title">최근 구매 내역</h3>
-                            <div className="info-data-block">
-                                {orders && orders.length > 0 ? (
-                                    orders.map(order => (
-                                        <div key={order.id} style={{borderBottom:'1px solid #eee', padding:'10px 0', display:'flex',justifyContent:'space-between'}}>
-                                            <p><strong>주문번호:</strong>{order.id}</p>
-                                            <p><strong>상품명:</strong>{order.productName || "주문 상품"}</p>
-                                            <p>{order.orderDate ? new Date(order.orderDate).toLocaleDateString() : ""}</p>
-                                    </div>
-                                    ))
-                                ) : (
-                                    <p>최근 구매 내역이 없습니다.</p>
-                                
-                                )}
-                            </div>
-                            */}
-
-                            {/* 교환 및 반품 신청 섹션 */}
+                            {/* 교환 및 반품 신청 섹션 - 조장님 백엔드 변수 규칙 반영 및 토스 자동화 */}
                             <h3 id="refund-section" className="info-section-title">구매내역 / 교환 및 반품 신청</h3>
                             <div className="info-data-block">
                                 {orders && orders.length > 0 ? (
-                                    orders.map(order => (
-                                        <div key={order.id} style={{ borderBottom: '1px solid #eee', padding: '10px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    orders.map((order, index) => (
+                                        <div key={order.orderId || order.id || index} style={{ borderBottom: '1px solid #eee', padding: '10px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                             <div>
-                                                <p><strong>주문번호:</strong> {order.id}</p>
-                                                <p><strong>상품명:</strong> {order.productName || "주문 상품"}</p>
+                                                {/* order.orderId와 order.itemName으로 조장님 변수 전면 교체 */}
+                                                <p><strong>주문번호:</strong> {order.orderId || order.id || "번호 확인중"}</p>
+                                                <p><strong>상품명:</strong> {order.itemName || order.productName || "주문 상품"}</p>
                                                 <p style={{ fontSize: '12px', color: '#888' }}>
                                                     주문일: {order.orderDate ? new Date(order.orderDate).toLocaleString() : "-"}
                                                 </p>
                                             </div>
                                             <button
                                                 className="mypage-action-btn"
-                                                onClick={() => handleRefund(order.id)}
+                                                /* 클릭 시 취소로직이 대기 중인 인호님의 반품 페이지(/cart/return)로 데이터를 패킹해서 들고 이동시킵니다. */
+                                                onClick={() => navigate('/cart/return', { 
+                                                    state: { 
+                                                        orderItems: [{
+                                                            orderId: order.orderId || order.id,
+                                                            itemName: order.itemName || order.productName,
+                                                            price: order.price,
+                                                            count: order.count || 1,
+                                                            itemImage: order.itemImage
+                                                        }] 
+                                                    } 
+                                                })}
                                                 style={{ backgroundColor: '#333', color: '#fff', border: 'none', padding: '8px 15px', cursor: 'pointer' }}
                                             >
                                                 반품신청
@@ -258,8 +258,6 @@ const Mypage = () => {
             )}
         </div>
     );
-
 };
-
 
 export default Mypage;
