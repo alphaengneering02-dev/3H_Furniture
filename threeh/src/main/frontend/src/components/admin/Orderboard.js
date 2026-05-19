@@ -26,18 +26,24 @@ const Orderboard = ({
 
         // 1. 주문 목록: 주문 취소나 구매 완료가 되지않은 모든 주문 목록
     const masterOrders = orders.filter(o => o.orderState === '주문' || o.orderState === 'ORDER');
+    const selectableOrders = masterOrders.filter(o => o.deliveryStatus !== 'COMPLETED');
+
     // 2. 배송 미배정: 관리자가 'READY'로 바꿨지만, 아직 기사를 안 붙인 주문
    const unassignedOrders = orders.filter(o => {  
-        const isReady = o.orderState === 'READY' || o.orderState === '배송 준비중';
-        const isUnassignedOrRejected = !o.deliveryStatus || o.deliveryStatus === 'REJECTED'; 
-        return isReady && isUnassignedOrRejected;
+    // 1. 주문 상태가 READY(배송 준비중)인 건만 대상
+    const isReady = o.orderState === 'READY' || o.orderState === '배송 준비중';
+    
+    const isUnassignedOrRejected = !o.deliveryId || o.deliveryStatus === 'REJECTED'; 
+    
+    return isReady && isUnassignedOrRejected;
+});
         //리로드 넣고 수정
         // const orderRes = await axios.get(`/admin/driver/${res.data.deliveryId}/orders`);
         //     const dbOrders = orderRes.data;
             
         //     setOrders(dbOrders.filter(o => o.deliveryStatus === 'WAITING'));
         //     setShippingOrders(dbOrders.filter(o => o.deliveryStatus === 'SHIPPING'));
-    });
+ 
 
     // 3. 배송 배정 완료 목록: 기사가 배정되어 있고 배송 상태가 정확히 'WAITING'인 건
     const assignedOrders = orders.filter(o => o.deliveryId && o.deliveryStatus === 'WAITING');
@@ -73,14 +79,13 @@ const renderDeliveryStatus = (status) => {
 
     // ✨ 전체 선택/해제 핸들러 수정 (ORDER 상태인 주문만 선택되도록 제한)
     const handleAllCheck = (e) => {
-        if (e.target.checked) {
-            // masterOrders(주문/ORDER 상태)의 ID만 추출해서 세팅
-            const activeIds = masterOrders.map(o => o.orderId);
-            setSelectedOrderIds(activeIds);
-        } else {
-            setSelectedOrderIds([]);
-        }
-    };
+    if (e.target.checked) {
+        const activeIds = selectableOrders.map(o => o.orderId);
+        setSelectedOrderIds(activeIds);
+    } else {
+        setSelectedOrderIds([]);
+    }
+};
 
     // 선택된 주문들을 일괄 'READY'로 변경하는 핸들러
     const handleBulkReady = () => {
@@ -126,20 +131,18 @@ const renderDeliveryStatus = (status) => {
                 <table className="table-style">
                     <thead>
                         <tr>
-                            {/* 💡 전체 선택 체크박스 열 추가 */}
                             <th>
                                 <input 
-                                    type="checkbox" 
-                                    onChange={handleAllCheck}
-                                    checked={orders.length > 0 && selectedOrderIds.length === orders.length}
-                                />
+                                type="checkbox" 
+                                onChange={handleAllCheck}
+                                checked={selectableOrders.length > 0 && selectableOrders.every(o => selectedOrderIds.includes(o.orderId))
+                                }/>
                             </th>
                             <th>번호</th>
                             <th>상품</th>
                             <th>수량</th>
                             <th>주문 타입</th>
                             <th>주소</th>
-                            <th>상태 변경</th>
                             <th>주문 상태</th>
                             <th>배송 상태</th>
                             <th>주문일</th>
@@ -148,7 +151,7 @@ const renderDeliveryStatus = (status) => {
                     <tbody>
                         {orders.map((order, index) => (
                             <tr key={order.orderId}>
-                                {/* 💡 개별 체크박스 열 추가 */}
+                                
                                 <td>
                                     <input 
                                         type="checkbox" 
@@ -163,19 +166,6 @@ const renderDeliveryStatus = (status) => {
                                 </td>
                                 <td>{renderOrderType(order.orderType)}</td>
                                 <td>{order.deliveryAddr} {order.deliveryAddrDetail}</td>
-                                <td>
-                                    <select
-                                        value={
-                                            order.orderState === '주문' || order.orderState === 'ORDER' ? 'ORDER' : 
-                                            order.orderState === '배송 준비중' || order.orderState === 'READY' ? 'READY' : 
-                                            order.orderState || 'ORDER'
-                                        }
-                                        onChange={(e) => handleStatusChange(order.orderId, e.target.value)}
-                                    >
-                                        <option value="ORDER">결제완료(ORDER)</option>
-                                        <option value="READY">상품준비완료(READY)</option>
-                                    </select>
-                                </td>
                                 <td>{order.orderState}</td>
                                 <td>{renderDeliveryStatus(order.deliveryStatus)}</td>
                                 <td>{order.orderDate?.split('T')[0]}</td>

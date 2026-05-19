@@ -249,7 +249,7 @@ public ResponseEntity<?> bulkInsert(
 
    
 
-    // 1. 주문 상태 단순 변경 (예: ORDER -> READY)
+    // 1. 주문 상태 단순 변경 (예: ORDER -> READY 변경, CANCEL시 기사 삭제 방지)
     @PutMapping("/orders/{orderId}/status")
 public ResponseEntity<?> updateOrderStatus(@PathVariable Long orderId, @RequestBody Map<String, String> payload) {
     String statusStr = payload.get("status");
@@ -261,9 +261,17 @@ public ResponseEntity<?> updateOrderStatus(@PathVariable Long orderId, @RequestB
         Orders order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
         
+        // 💡 [추가] 만약 변경하려는 상태가 주문 취소(CANCEL)라면 기사 배정 정보와 배송 상태를 초기화
+        if (newState == OrderState.CANCEL) {
+            System.out.println("⚠️ 주문 취소(CANCEL) 감지 - orderId: " + orderId + " 의 기사 배정 및 배송 상태를 초기화합니다.");
+            order.setDelivery(null);    
+            order.changeDeliveryStatus(null); 
+        }
+        
         order.changeOrderState(newState);
         orderRepository.save(order);
-        return ResponseEntity.ok("상태 변경 완료");
+        
+        return ResponseEntity.ok("상태 변경 완료" + (newState == OrderState.CANCEL ? " (기사 배정 취소 포함)" : ""));
     } catch (IllegalArgumentException e) {
         return ResponseEntity.badRequest().body("잘못된 상태 값입니다: " + statusStr);
     }
