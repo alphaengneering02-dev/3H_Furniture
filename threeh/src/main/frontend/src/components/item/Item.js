@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import axios from "axios";
 
 function Item() {
@@ -19,6 +19,8 @@ function Item() {
   //관리자 모드 여부
   //false: 일반 상품 목록 화면
   //ture: 관리자 상품 수정/삭제 테이블 화면
+  //상품 수정 및 등록 후 /item으로 돌아왔을 때, 바로 관리자 테이블(목록)이 보이도록(useLocation)
+  const location = useLocation();
   
   const getLoginUser = () => {
     
@@ -53,10 +55,16 @@ function Item() {
   };
 
    //컴포넌트가 처음 실행될 때 상품 목록 조회. 그리고 북마크
+   //관리자 모드일때, ItemCreate.js또는 ItemUpdate.js에서 /item으로 돌아왔을 때, 상품관리 목록이 바로 열림.
   useEffect(() => {
     getItems();
     getMyBookmarks();
-  }, []);
+
+    if(location.state?.adminMode){
+      setAdminMode(true);
+    }
+
+  }, [location.state]);
 
 
   //상품 최종 가격 계산
@@ -534,7 +542,7 @@ function Item() {
   };
 
   const handleAdminCreateClick = () => {
-    navigate("api/item/create");
+    navigate("/item/create");
   };
 
   //관리자 상품 수정/삭제 테이블 보기
@@ -587,14 +595,20 @@ function Item() {
       });
 
       alert("상품이 삭제되었습니다.");
-
-      //화면 목록에서도 삭제된 상품 제거
-      setItems(items.filter((item) => item.itemId !== itemId));
       
       //선택 목록에 있던 상품도 제거
       setSelectedItems(
         selectedItems.filter((item) => item.itemId !== itemId)
       );
+
+      //북마크 목록에 있는 상품도 제거
+      setBookmarkedItems(
+        bookmarkedItems.filter((id) => id !== itemId)
+      );
+
+      //삭제 후 최신 상품 목록 다시 조회
+      getItems();
+
     } catch (error) {
       console.error("상품 삭제 실패", error);
 
@@ -613,7 +627,7 @@ function Item() {
         {/*상품 목록 페이지 제목 */}
       <h1>상품 목록</h1>
 
-         {/*내 장바구니로 가기*/}
+         {/*내 장바구니로 가기_admin인경우 안보이게*/}
       {!isAdmin&&(
         <div style={{marginBottom:"20px"}}>
             <button type="button" onClick={handlGoMyCart}>
@@ -661,11 +675,11 @@ function Item() {
             <table
               border="1"
               cellPadding="10"
-              style={{ borderCollapse: "collapse" }}
+              style={{ borderCollapse: "collapse", width:"100%", }}
             >
               <thead>
                 <tr>
-                  <th>itemId</th>
+                  <th>ItemId</th>
                   <th>제품 카테고리</th>
                   <th>제품명</th>
                   <th>가격</th>

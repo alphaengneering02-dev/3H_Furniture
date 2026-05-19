@@ -73,6 +73,8 @@ const ItemDetail = () => {
     //리뷰 작성용 내용
     const[reviewText,setReviewText] = useState("");
 
+    
+    //admin 판별 코드
     const user = JSON.parse(sessionStorage.getItem("user"));
 
     const isAdmin = user && (
@@ -281,6 +283,8 @@ const ItemDetail = () => {
     };
 
    
+    //=================================JSX구역===========================
+
     return (
         <div>
             
@@ -345,6 +349,7 @@ const ItemDetail = () => {
                 </div>
             )}
 
+        {user&&!isAdmin &&(
             <div style={{ marginBottom: "30px" }}>
                 <h3>리뷰 작성</h3>
 
@@ -381,7 +386,7 @@ const ItemDetail = () => {
                 리뷰 등록
                 </button>
             </div>
-
+        )}
             <div>
                 {reviews.length === 0 ? (
                 <p>아직 작성된 리뷰가 없습니다.</p>
