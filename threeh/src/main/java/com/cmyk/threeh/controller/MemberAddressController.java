@@ -79,6 +79,7 @@ public class MemberAddressController {
                 orderMap.put("orderId", order.getOrderId());
                 orderMap.put("orderState", order.getOrderState() 
                 != null ? order.getOrderState().name():"");
+                orderMap.put("orderDate", order.getOrderDate());
                 orderMap.put("deliveryStatus", order.getDeliveryStatus() !=null ?
                 order.getDeliveryStatus().name():"WAITING");
                 
@@ -173,6 +174,7 @@ public class MemberAddressController {
                 orderMap.put("orderState", order.getOrderState() != null ? order.getOrderState().name() : "");
                 orderMap.put("status", order.getOrderState() != null ? order.getOrderState().name() : "");
                 orderMap.put("deliveryStatus", order.getDeliveryStatus() != null ? order.getDeliveryStatus().name() : "WAITING");
+                orderMap.put("orderDate", order.getOrderDate());
                 refundList.add(orderMap);
             }
         }
