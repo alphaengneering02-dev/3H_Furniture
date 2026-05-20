@@ -150,6 +150,31 @@ public class MemberController {
 
     }
 
+    //태양 orders에서 멤버에서 연락처 받아오는 용
+
+    @GetMapping("/seq/{memberId}")
+public MemberDTO getMemberBySeq(@PathVariable("memberId") Long memberId) {
+
+    // 1. memberService에 숫자 PK로 Member를 찾는 메서드가 없다면 아래처럼 repository를 활용하거나,
+    //    memberService에 findByMemberId(Long id)를 만들어 호출하세요.
+    Member entity = memberRepository.findById(memberId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원 번호입니다: " + memberId));
+    
+    MemberDTO dto = new MemberDTO();
+
+    dto.setMemberId(entity.getMemberId());
+    dto.setId(entity.getId());
+    dto.setName(entity.getName());
+    dto.setEmail(entity.getEmail());
+    dto.setPhone(entity.getPhone());
+    dto.setRole(entity.getRole());
+    dto.setRegNo(entity.getRegNo());
+    dto.setCreatedAt(entity.getCreatedAt());
+    dto.setUpdatedAt(entity.getUpdatedAt());
+
+    return dto;
+}
+
 
     //회원수정
     @PreAuthorize("isAuthenticated()")

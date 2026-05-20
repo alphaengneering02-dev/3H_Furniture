@@ -30,43 +30,71 @@ const DriverPage = () => {
 
     // 💡 백엔드 상태에 맞춘 데이터 필터링 정의
     const fetchDriverOrders = async (deliveryId) => {
-    try {
-        const orderRes = await axios.get(`/admin/driver/${deliveryId}/orders`);
-        const dbOrders = orderRes.data; 
-        
-        // 1. 신규 배정 및 배송중 필터링
-        const newOrders = dbOrders.filter(o => !o.deliveryStatus && o.orderState !== 'CANCEL');
-        const shipping = dbOrders.filter(o => o.deliveryStatus === 'SHIPPING' && o.orderState !== 'CANCEL');
-        
-        setOrders(newOrders);
-        setShippingOrders(shipping);
+        try {
+            const orderRes = await axios.get(`/admin/driver/${deliveryId}/orders`);
+            const dbOrders = orderRes.data; 
+            
+            // 1. 신규 배정 및 배송중 필터링
+            const newOrders = dbOrders.filter(o => !o.deliveryStatus && o.orderState !== 'CANCEL');
+            const shipping = dbOrders.filter(o => o.deliveryStatus === 'SHIPPING' && o.orderState !== 'CANCEL');
+            
+            setOrders(newOrders);
+            setShippingOrders(shipping);
 
-        // 💡 핵심 방어 로직: 
-        // 현재 화면의 acceptedOrders(수락대기)에 있던 주문 id가 백엔드에서 온 최신 목록(dbOrders)에 없다면?
-        // 어드민이 캔슬하여 매핑을 끊어버렸다는 뜻입니다!
-        if (acceptedOrders.length > 0) {
-            const dbOrderIds = dbOrders.map(o => o.orderId);
-            
-            // 백엔드 목록에서 사라진 주문들 찾아내기
-            const missingOrders = acceptedOrders.filter(ao => !dbOrderIds.includes(ao.orderId));
-            
-            if (missingOrders.length > 0) {
-                // 취소 리스트 알림창에 추가
-                setCanceledOrders(prev => {
-                    // 중복 등록 방지
-                    const prevIds = prev.map(p => p.orderId);
-                    const uniqueMissing = missingOrders.filter(m => !prevIds.includes(m.orderId));
-                    return [...prev, ...uniqueMissing];
-                });
+            // 💡 핵심 방어 로직
+            if (acceptedOrders.length > 0) {
+                const dbOrderIds = dbOrders.map(o => o.orderId);
+                const missingOrders = acceptedOrders.filter(ao => !dbOrderIds.includes(ao.orderId));
                 
-                // 수락 목록에서는 제거
-                setAcceptedOrders(prev => prev.filter(ao => dbOrderIds.includes(ao.orderId)));
+                if (missingOrders.length > 0) {
+                    setCanceledOrders(prev => {
+                        const prevIds = prev.map(p => p.orderId);
+                        const uniqueMissing = missingOrders.filter(m => !prevIds.includes(m.orderId));
+                        return [...prev, ...uniqueMissing];
+                    });
+                    setAcceptedOrders(prev => prev.filter(ao => dbOrderIds.includes(ao.orderId)));
+                }
             }
-        }
 
-    } catch (err) {
-        console.error("주문 목록 로드 실패", err);
-    }
+        } catch (err) {
+            console.error("주문 목록 로드 실패", err);
+        }
+    };
+
+    const DriverPhoneCell = ({ memberId }) => {
+    const [displayValue, setDisplayValue] = useState('조회 중...');
+
+    useEffect(() => {
+        if (!memberId) {
+            setDisplayValue('비회원');
+            return;
+        }
+        
+        axios.get(`/api/member/seq/${memberId}`, { withCredentials: true })
+            .then(res => {
+                const email = res.data?.email || '';
+                const phone = res.data?.phone || '';
+
+                // 1. 만약 phone 필드에 영어가 포함되어 있다면 (소셜 난수 ID나 이메일 오입력 등)
+                //    또는 phone 값이 아예 없다면 이메일 주소를 그대로 표기합니다.
+                if (/[a-zA-Z]/.test(phone) || !phone) {
+                    return setDisplayValue(email ? email : '연락처 없음');
+                }
+
+                // 2. phone 필드가 정상적인 숫자/하이픈 형태라면 전화번호를 표기합니다.
+                if (phone) {
+                    return setDisplayValue(phone);
+                }
+
+                setDisplayValue('연락처 없음');
+            })
+            .catch((err) => {
+                console.error(`${memberId}번 회원 조회 실패:`, err);
+                setDisplayValue('확인 불가');
+            });
+    }, [memberId]);
+
+    return <span>{displayValue}</span>;
 };
 
     // 로그인 핸들러 수정
@@ -281,9 +309,9 @@ const handleResetToWaiting = async () => {
             </div> 
         );
     }
-
-    return (
+return (
         <div className="driver-body-wrapper">
+            {/* 기사 상단 헤더 정보 바 */}
             <div className="driver-top-info-bar">
                 <div className="driver-top-info-list">
                     <p className="driver-info-text">
@@ -296,93 +324,149 @@ const handleResetToWaiting = async () => {
             </div>
 
             <div className="driver-container">
+                
+                {/* 1. 신규 배정 섹션 (4열 Grid 스타일 적용) */}
+                <h2 className="driver-headline">📌 신규 배정 (수락 대기 목록)</h2>
+                {orders.length === 0 ? (
+                    <p className="driver-empty-msg">새로운 배정 요청이 없습니다.</p>
+                ) : (
+                    <>
+                        <div className="driver-order-grid">
+    {orders.map(order => {
+        const isChecked = selectedOrders.includes(order.orderId);
 
-            {/* 1. 신규 배정 */}
-            <h2 className="driver-headline">📌 신규 배정(수락 대기 WAITING)</h2>
-            {orders.length === 0 ? <p className="driver-empty-msg">
-                새로운 배정 요청이 없습니다.</p> : 
-                orders.map(order => (
-                    <div key={order.orderId}>
-                        <input
-                            type="checkbox"
-                            checked={selectedOrders.includes(order.orderId)}
-                            onChange={() => toggleSelect(order.orderId)}
-                        />
-                        주문번호: {order.orderId} | 주소: {order.deliveryAddr}
-                    </div>
-                ))
+        // 💡 [해결 포인트] 소문자 orderitems와 대소문자 orderItems를 둘 다 받아오도록 통합
+        const currentItems = order.orderitems || order.orderItems || [];
+        
+        let itemDisplay = "상품 정보 없음";
+        
+        if (currentItems && currentItems.length > 0) {
+            // 내부 아이템 필드명도 대소문자(itemName, ItemName) 모두 방어
+            const firstItemName = currentItems[0].itemName || currentItems[0].ItemName || "이름 없는 상품";
+            const firstItemCount = currentItems[0].count || 0;
+
+            if (currentItems.length === 1) {
+                itemDisplay = `${firstItemName} (${firstItemCount}개)`;
+            } else {
+                // 전체 수량 총합 계산
+                const totalCount = currentItems.reduce((sum, item) => sum + (item.count || 0), 0);
+                itemDisplay = `${firstItemName} 외 ${currentItems.length - 1}건 (총 ${totalCount}개)`;
             }
-            {orders.length > 0 && (
-                <div>
-                    <button onClick={handleAccept}>선택 수락</button>
-                    <button onClick={handleReject}>선택 거절</button>
+        }
+
+        return (
+            <div key={order.orderId} className={`driver-order-card ${isChecked ? 'checked' : ''}`}>
+                <div className="driver-card-header">
+                    <input
+                        type="checkbox"
+                        className="driver-checkbox"
+                        checked={isChecked}
+                        onChange={() => toggleSelect(order.orderId)}
+                    />
+                    <span className="driver-order-id">NO. {order.orderId}</span>
+                    {order.orderType && (
+                        <span className={`driver-badge ${order.orderType.toLowerCase()}`}>
+                            {order.orderType === 'DELIVERY_WITH_INSTALLATION' ? '설치배송' : '일반배송'}
+                        </span>
+                    )}
                 </div>
-            )}
 
-            <hr />
+                <div className="driver-card-body">
+            {/* 1. 주문자 이름 */}
+            <p className="driver-order-name">
+                <strong>주문자:</strong> {order.memberName || '비회원'}
+            </p>
 
-            {/* 2. 수락 리스트 */}
-            <h2>📦 수락된 주문 (출발 전 WAITING에서 )</h2>
-            {acceptedOrders.length === 0 ? <p>수락 후 대기 중인 주문이 없습니다.</p> :
-                acceptedOrders.map(order => (
-                    <div key={order.orderId}>
-                        주문번호: {order.orderId} | 주소: {order.deliveryAddr}
-                    </div>
-                ))
-            }
-            {acceptedOrders.length > 0 && (
-                <button onClick={handleStartDelivery}>
-                    🚚 배송 출발 (상차 완료)
-                </button>
-            )}
+            {/* 📞 2. 주문자 연락처 (콘솔 추적 기능 및 매핑 방어 적용) */}
+                                            <p className="driver-order-phone">
+    <strong>연락처:</strong> <DriverPhoneCell memberId={order.memberId} />
+</p>
 
-            <hr />
-
-            {/* 3. 배송 중 리스트 💡 오타 수정 및 체크박스 기능 연동 완료 */}
-            <h2>🚚 배달중 (현재 배송 진행)</h2>
-            {shippingOrders.length === 0 ? <p>현재 진행 중인 배송이 없습니다.</p> :
-                shippingOrders.map(order => (
-                    <div key={order.orderId}>
-                        <input
-                            type="checkbox"
-                            checked={shippingCheckeds.includes(order.orderId)}
-                            onChange={() => toggleShippingSelect(order.orderId)}
-                        />
-                        주문번호: {order.orderId} | 주소: {order.deliveryAddr}
-                    </div>
-                ))
-            }
-            {shippingOrders.length > 0 && (
-                <button onClick={handlecomplete}>
-                    ✅ 선택 주문 배송 완료
-                </button>
-            )}
-
-            <hr />
-{shippingOrders.length === 0 && acceptedOrders.length === 0 && (
-    <div style={{ textAlign: 'center', margin: '20px 0' }}>
-        <p style={{ color: '#666' }}>💡 현재 진행 중인 배송 임무가 없습니다.</p>
-        <button 
-            onClick={handleResetToWaiting} 
-            style={{ 
-                backgroundColor: '#4CAF50', 
-                color: 'white', 
-                padding: '12px 24px', 
-                fontSize: '16px', 
-                fontWeight: 'bold',
-                border: 'none',
-                borderRadius: '5px',
-                cursor: 'pointer'
-            }}
-        >
-            🔄 다음 배송 받기 (대기 상태 전환)
-        </button>
-    </div>
-)}
-
+            {/* 3. 상품명 정보 */}
+            <p className="driver-order-items">
+                <strong>상품명:</strong> {itemDisplay}
+            </p>
+            
+            {/* 4. 배송지 주소 */}
+            <p className="driver-order-addr">
+                <strong>주소:</strong> {order.deliveryAddr} {order.deliveryAddrDetail || ''}
+            </p>
+        </div>
+            </div>
+        );
+    })}
 </div>
+                        <div className="driver-btn-group">
+                            <button className="driver-btn" onClick={handleAccept}>선택 주문 수락</button>
+                            <button className="driver-btn driver-btn-danger" onClick={handleReject}>선택 주문 거절</button>
+                        </div>
+                    </>
+                )}
 
+                {/* 2. 수락 리스트 섹션 (정갈한 로우 스타일 적용) */}
+                <h2 className="driver-headline">📦 수락된 주문 (상차 및 출발 대기)</h2>
+                {acceptedOrders.length === 0 ? (
+                    <p className="driver-empty-msg">수락 후 상차 대기 중인 주문이 없습니다.</p>
+                ) : (
+                    <div style={{marginBottom: '20px'}}>
+                        {acceptedOrders.map(order => (
+                            <div key={order.orderId} className="driver-list-row">
+                                <span className="driver-order-id" style={{fontSize: '14px'}}>주문번호: {order.orderId}</span>
+                                <span className="driver-order-addr" style={{margin: 0, minHeight: 'auto'}}>{order.deliveryAddr}</span>
+                            </div>
+                        ))}
+                        <div style={{marginTop: '20px'}}>
+                            <button className="driver-btn-primary" onClick={handleStartDelivery}>
+                                🚚 선택 목록 일괄 배송 출발 (상차 완료 확인)
+                            </button>
+                        </div>
+                    </div>
+                )}
 
+                {/* 3. 배송 중 리스트 섹션 (4열 Grid 스타일 적용) */}
+                <h2 className="driver-headline">🚚 배달중 (현재 실시간 배송 진행)</h2>
+                {shippingOrders.length === 0 ? (
+                    <p className="driver-empty-msg">현재 진행 중인 배송 임무가 없습니다.</p>
+                ) : (
+                    <>
+                        <div className="driver-order-grid">
+                            {shippingOrders.map(order => {
+                                const isChecked = shippingCheckeds.includes(order.orderId);
+                                return (
+                                    <div key={order.orderId} className={`driver-order-card ${isChecked ? 'checked' : ''}`}>
+                                        <div className="driver-card-header">
+                                            <input
+                                                type="checkbox"
+                                                className="driver-checkbox"
+                                                checked={isChecked}
+                                                onChange={() => toggleShippingSelect(order.orderId)}
+                                            />
+                                            <span className="driver-order-id">NO. {order.orderId}</span>
+                                        </div>
+                                        <p className="driver-order-addr">{order.deliveryAddr}</p>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                        <button className="driver-btn-primary" style={{backgroundColor: '#1A1A1A'}} onClick={handlecomplete}>
+                            ✅ 선택 주문 배송 완료 처리
+                        </button>
+                    </>
+                )}
+
+                {/* 다음 배송 받기 대기 전환 상태 구역 */}
+                {shippingOrders.length === 0 && acceptedOrders.length === 0 && (
+                    <div className="driver-reset-box">
+                        <p style={{ color: '#666', marginBottom: '15px', fontSize: '14px' }}>
+                            💡 완료되지 않은 진행 중 배송 임무가 없습니다. 다음 업무를 인계받으시겠습니까?
+                        </p>
+                        <button className="driver-btn-success" onClick={handleResetToWaiting}>
+                            🔄 다음 배송 받기 (대기 상태 전환)
+                        </button>
+                    </div>
+                )}
+
+            </div>
         </div>
     );
 };

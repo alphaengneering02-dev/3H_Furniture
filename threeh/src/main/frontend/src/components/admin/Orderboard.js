@@ -76,10 +76,47 @@ const getDeliveryStatusStyle = (status) => {
 };
 
 const MemberNameCell = ({ memberName }) => {
-  const displayName = memberName ? memberName : '비회원';  
-  
-  return <span>{displayName}</span>;
+    const displayName = memberName ? memberName : '비회원';  
+    return <span>{displayName}</span>;
 };
+
+const OrderMemberInfoCell = ({ memberId, type }) => {
+    const [info, setInfo] = useState({ phone: '조회 중...', email: '조회 중...' });
+
+    useEffect(() => {
+        if (!memberId) {
+            setInfo({ phone: '비회원', email: '비회원' });
+            return;
+        }
+        
+        axios.get(`/api/member/seq/${memberId}`, { withCredentials: true })
+            .then(res => {
+                const rawEmail = res.data?.email || '';
+                const rawPhone = res.data?.phone || '번호 없음';
+
+                if (rawEmail.includes('kakao')) {
+                    
+                    setInfo({
+                        phone: 'kakao',
+                        email: 'kakao'
+                    });
+                } else {
+                    // 일반 유저라면 기존 데이터 그대로 세팅
+                    setInfo({
+                        phone: rawPhone,
+                        email: rawEmail || '이메일 없음'
+                    });
+                }
+            })
+            .catch((err) => {
+                console.error(`${memberId}번 회원 조회 실패:`, err.response || err);
+                setInfo({ phone: '확인 불가', email: '확인 불가' });
+            });
+    }, [memberId]);
+
+    return <span>{type === 'email' ? info.email : info.phone}</span>;
+};
+
 const Orderboard = ({
     orders = [],
     items = [],
@@ -91,6 +128,7 @@ const Orderboard = ({
 
 
     const [selectedOrderIds, setSelectedOrderIds] = useState([]);
+
 
     const { handleAutoAssign } = useDriverAuto({
         orders,
@@ -155,10 +193,10 @@ const renderOrderType = (type) => {
     };
 
 const renderDeliveryStatus = (status) => {
-        if (status === 'WAITING') return '대기 (WAITING)';
+        if (status === 'WAITING') return '배송 대기 (WAITING)';
         if (status === 'SHIPPING') return '배송중 (SHIPPING)';
-        if (status === 'COMPLETED') return '완료 (COMPLETED)';
-        if (status === 'REJECTED') return '거절 (REJECTED)';
+        if (status === 'COMPLETED') return '배송 완료 (COMPLETED)';
+        if (status === 'REJECTED') return '배송 거절 (REJECTED)';
         return status || '-';
 };
 
@@ -224,15 +262,6 @@ const renderDeliveryStatus = (status) => {
                 <div style={{ marginBottom: '10px', textAlign: 'right' }}>
                     <button 
                         onClick={handleAutoAssign}
-                        style={{
-                            padding: '8px 12px',
-                            backgroundColor: '#00B0FF',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '4px',
-                            cursor: 'pointer',
-                            fontWeight: 'bold'
-                        }}
                     >
                         선택 상품 자동 배정 ({selectedOrderIds.length}건)
                     </button>
@@ -250,6 +279,8 @@ const renderDeliveryStatus = (status) => {
                             </th>
                             <th>번호</th>
                             <th>주문자</th>
+                            <th>연락처</th>
+                            <th>E-mail</th>
                             <th>상품</th>
                             <th>수량</th>                            
                             <th>주문 타입</th>
@@ -260,45 +291,55 @@ const renderDeliveryStatus = (status) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {orders.map((order, index) => (
-                            <tr key={order.orderId}>
-                                
-                                <td>
-                                    <input 
-                                        type="checkbox" 
-                                        checked={selectedOrderIds.includes(order.orderId)}
-                                        onChange={() => handleCheckOrder(order.orderId)}
-                                    />
-                                </td>
-                                <td>{index + 1}</td>
+    {orders.map((order, index) => {
+        
+        const exactMemberId = order.MEMBER_ID || order.memberId || order.member_id;
 
-                                <td>
-                                    <strong>
-                                        <MemberNameCell memberName={order.memberName} />
-                                    </strong>
-                                </td>
+        return (
+            <tr key={order.orderId || order.ORDER_ID}>
+                <td>
+                    <input 
+                        type="checkbox" 
+                        checked={selectedOrderIds.includes(order.orderId || order.ORDER_ID)}
+                        onChange={() => handleCheckOrder(order.orderId || order.ORDER_ID)}
+                    />
+                </td>
+                <td>{index + 1}</td>
 
-                                <td>{renderItemName(order.orderitems || order.orderItems)}</td>
-                                <td>
-                                    {(order.orderitems || order.orderItems)?.reduce((sum, item) => sum + (item.count || 0), 0) || 0}개
-                                </td>
-                                <td>{renderOrderType(order.orderType)}</td>
-                                <td>{order.deliveryAddr} {order.deliveryAddrDetail}</td>
-                                <td>
-    <span style={getOrderStateStyle(order.orderState, order.deliveryStatus)}>
-        {order.orderState}
-    </span>
-</td>
+                <td>
+                    <strong>
+                        <MemberNameCell memberName={order.memberName || order.MEMBER_NAME} />
+                    </strong>
+                </td>
 
-<td>
-    <span style={getDeliveryStatusStyle(order.deliveryStatus)}>
-        {renderDeliveryStatus(order.deliveryStatus)}
-    </span>
-</td>
-                                <td>{order.orderDate?.split('T')[0]}</td>
-                            </tr>
-                        ))}
-                    </tbody>
+                <td>
+                    <OrderMemberInfoCell memberId={exactMemberId} type="phone" />
+                </td>
+                <td>
+                    <OrderMemberInfoCell memberId={exactMemberId} type="email" />
+                </td>
+
+                <td>{renderItemName(order.orderitems || order.orderItems || order.ORDERITEMS)}</td>
+                <td>
+                    {(order.orderitems || order.orderItems || order.ORDERITEMS)?.reduce((sum, item) => sum + (item.count || item.COUNT || 0), 0) || 0}개
+                </td>
+                <td>{renderOrderType(order.orderType || order.ORDER_TYPE)}</td>
+                <td>{order.deliveryAddr || order.DELIVERY_ADDR} {order.deliveryAddrDetail || order.DELIVERY_ADDR_DETAIL}</td>
+                <td>
+                    <span style={getOrderStateStyle(order.orderState || order.ORDER_STATE, order.deliveryStatus || order.DELIVERY_STATUS)}>
+                        {order.orderState || order.ORDER_STATE}
+                    </span>
+                </td>
+                <td>
+                    <span style={getDeliveryStatusStyle(order.deliveryStatus || order.DELIVERY_STATUS)}>
+                        {renderDeliveryStatus(order.deliveryStatus || order.DELIVERY_STATUS)}
+                    </span>
+                </td>
+                <td>{(order.orderDate || order.ORDER_DATE)?.split('T')[0]}</td>
+            </tr>
+        );
+    })}
+</tbody>
                 </table>
             </div>
 

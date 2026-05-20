@@ -31,6 +31,8 @@ public class OrderResponseDTO {
 
     //태양 order에 delivery_status 필요
     private String deliveryStatus;
+    //태양 전화번호 email 필요
+    private Long memberId;
 
     @Getter
     @Builder
@@ -49,6 +51,7 @@ public class OrderResponseDTO {
     public static OrderResponseDTO from (Orders orders){
         return OrderResponseDTO.builder()
                 .orderId(orders.getOrderId())
+                .memberId(orders.getMember() != null ? orders.getMember().getMemberId() : null)
                 .deliveryId(
                 orders.getDelivery() != null
                     ? orders.getDelivery().getDeliveryId() : null)
