@@ -277,7 +277,7 @@ const renderDeliveryStatus = (status) => {
                                 checked={selectableOrders.length > 0 && selectableOrders.every(o => selectedOrderIds.includes(o.orderId))
                                 }/>
                             </th>
-                            <th>번호</th>
+                            <th>주문 번호</th>
                             <th>주문자</th>
                             <th>연락처</th>
                             <th>E-mail</th>
@@ -287,7 +287,8 @@ const renderDeliveryStatus = (status) => {
                             <th>주소</th>
                             <th>주문 상태</th>
                             <th>배송 상태</th>
-                            <th>주문일</th>
+                            <th>주문일/</th>
+                            <th>배송 신청일</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -304,7 +305,7 @@ const renderDeliveryStatus = (status) => {
                         onChange={() => handleCheckOrder(order.orderId || order.ORDER_ID)}
                     />
                 </td>
-                <td>{index + 1}</td>
+                <td>{order.orderId}</td>
 
                 <td>
                     <strong>
@@ -335,7 +336,8 @@ const renderDeliveryStatus = (status) => {
                         {renderDeliveryStatus(order.deliveryStatus || order.DELIVERY_STATUS)}
                     </span>
                 </td>
-                <td>{(order.orderDate || order.ORDER_DATE)?.split('T')[0]}</td>
+                <td>{(order.orderDate || order.ORDER_DATE)?.split('T')[0]}/</td>
+                <td>{order.installDate}</td>
             </tr>
         );
     })}

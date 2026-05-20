@@ -14,6 +14,9 @@ const DriverPage = () => {
     const [shippingOrders, setShippingOrders] = useState([]);
     const [shippingCheckeds, setShippingCheckeds] = useState([]);
 
+    const [pickupOrders, setPickupOrders] = useState([]);
+    const [pickupCheckeds, setPickupCheckeds] = useState([]);
+
     const [canceledOrders, setCanceledOrders] = useState([]);
 
     const [loginInfo, setLoginInfo] = useState({ phone: '', carSuffix: '' });
@@ -37,9 +40,15 @@ const DriverPage = () => {
             // 1. 신규 배정 및 배송중 필터링
             const newOrders = dbOrders.filter(o => !o.deliveryStatus && o.orderState !== 'CANCEL');
             const shipping = dbOrders.filter(o => o.deliveryStatus === 'SHIPPING' && o.orderState !== 'CANCEL');
+
+            //2. 교환, 반품 필터링
+            const pickups = dbOrders.filter(o => 
+                o.deliveryStatus === 'PICKUP' && (o.orderState === 'EXCHANGE' || o.orderState === 'CANCEL')
+            );
             
             setOrders(newOrders);
             setShippingOrders(shipping);
+            setPickupOrders(pickups);
 
             // 💡 핵심 방어 로직
             if (acceptedOrders.length > 0) {
@@ -132,6 +141,8 @@ const handleLogin = async () => {
         setAcceptedOrders([]);
         setShippingOrders([]);
         setShippingCheckeds([]);
+        setPickupOrders([]);
+        setPickupCheckeds([]);
 
         alert("로그아웃 되었습니다.");
     };
@@ -150,7 +161,14 @@ const handleLogin = async () => {
         );
     };
 
-    // 선택 수락 (화면 상의 '수락된 주문'으로 임시 이동)
+    // 🔄 회수 목록 체크박스 토글 함수 추가
+    const togglePickupSelect = (id) => {
+        setPickupCheckeds(prev =>
+            prev.includes(id) ? prev.filter(v => v !== id) : [...prev, id]
+        );
+    };
+
+    // 선택 수락
     const handleAccept = async () => {
         if (selectedOrders.length === 0) return;
 
@@ -208,12 +226,10 @@ const handleLogin = async () => {
 
         alert("배송 출발!");
 
-        // 2. 💡 수동으로 상태를 옮기지 말고, 백엔드에서 최신 데이터를 새로고침(Reload) 합니다.
         if (driver && driver.deliveryId) {
             await fetchDriverOrders(driver.deliveryId);
         }
 
-        // 3. 출발 처리가 끝났으므로 수락 리스트(화면)는 비워줍니다.
         setAcceptedOrders([]);
 
     } catch (err) {
@@ -221,17 +237,20 @@ const handleLogin = async () => {
         alert("배송 출발 실패");
     }
 };
+
+
+
 // 기사 상태만 WAITING으로 돌려서 화면 비우기
 const handleResetToWaiting = async () => {
     try {
-        // 1. post를 put으로 변경
-        // 2. 따옴표(') 대신 키보드 1번 왼쪽의 백틱(`)을 사용해 ${}가 작동하도록 수정
         await axios.put(`/admin/driver/${driver.deliveryId}/reset-status`);
         
         // 프론트엔드 기사 화면 초기화
         setAcceptedOrders([]);    
         setShippingOrders([]);    
         setShippingCheckeds([]);
+        setPickupOrders([]);
+        setPickupCheckeds([]);
         
         alert("대기 상태로 전환되었습니다. 새로운 배정을 받을 수 있습니다!");
         
@@ -262,15 +281,38 @@ const handleResetToWaiting = async () => {
             setShippingOrders(prev => 
                 prev.filter(o => !shippingCheckeds.includes(o.orderId))
             );
-
-            
-            
+        
             // 체크박스 선택 초기화
             setShippingCheckeds([]);
             alert("선택하신 주문의 배송 완료 처리가 되었습니다.");
 
         } catch (err) {
             alert("배송 완료 처리 실패");
+        }
+    };
+
+    const handlePickupComplete = async () => {
+        if (pickupCheckeds.length === 0) {
+            alert("회수 완료 처리할 주문을 선택해 주세요.");
+            return;
+        }
+
+        try {
+            await Promise.all(
+                pickupCheckeds.map(id =>
+                    axios.post(`/admin/orders/${id}/complete`) // 백엔드 설계에 따라 pickup 혹은 complete 호출
+                )
+            );
+
+            setPickupOrders(prev => 
+                prev.filter(o => !pickupCheckeds.includes(o.orderId))
+            );
+
+            setPickupCheckeds([]);
+            alert("선택하신 주문의 회수(물건 수거) 완료 처리가 되었습니다.");
+
+        } catch (err) {
+            alert("회수 완료 처리 실패");
         }
     };
 
@@ -454,10 +496,48 @@ return (
                     </>
                 )}
 
+                {/* 🔄 4. 회수 목록 섹션 추가 (조건: PICKUP 상태 && EXCHANGE 또는 CANCEL) */}
+                <h2 className="driver-headline" style={{ marginTop: '40px' }}>🔄 회수 (교환 및 반품 수거 목록)</h2>
+                {pickupOrders.length === 0 ? (
+                    <p className="driver-empty-msg">현재 예정된 교환/반품 회수 건이 없습니다.</p>
+                ) : (
+                    <>
+                        <div className="driver-order-grid">
+                            {pickupOrders.map(order => {
+                                const isChecked = pickupCheckeds.includes(order.orderId);
+                                return (
+                                    <div key={order.orderId} className={`driver-order-card ${isChecked ? 'checked' : ''}`}>
+                                        <div className="driver-card-header" style={{ backgroundColor: '#fff3cd' }}>
+                                            <input
+                                                type="checkbox"
+                                                className="driver-checkbox"
+                                                checked={isChecked}
+                                                onChange={() => togglePickupSelect(order.orderId)}
+                                            />
+                                            <span className="driver-order-id" style={{ color: '#856404' }}>NO. {order.orderId}</span>
+                                            <span className="driver-badge" style={{ backgroundColor: '#dc3545', color: '#fff' }}>
+                                                {order.orderState === 'EXCHANGE' ? '교환회수' : '반품회수'}
+                                            </span>
+                                        </div>
+                                        <div className="driver-card-body">
+                                            <p className="driver-order-name"><strong>요청자:</strong> {order.memberName || '비회원'}</p>
+                                            <p className="driver-order-phone"><strong>연락처:</strong> <DriverPhoneCell memberId={order.memberId} /></p>
+                                            <p className="driver-order-addr"><strong>회수지:</strong> {order.deliveryAddr} {order.deliveryAddrDetail || ''}</p>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                        <button className="driver-btn-primary" onClick={handlePickupComplete}>
+                            🔄 선택 주문 회수 완료 처리
+                        </button>
+                    </>
+                )}
+
                 {/* 다음 배송 받기 대기 전환 상태 구역 */}
                 {shippingOrders.length === 0 && acceptedOrders.length === 0 && (
                     <div className="driver-reset-box">
-                        <p style={{ color: '#666', marginBottom: '15px', fontSize: '14px' }}>
+                        <p>
                             💡 완료되지 않은 진행 중 배송 임무가 없습니다. 다음 업무를 인계받으시겠습니까?
                         </p>
                         <button className="driver-btn-success" onClick={handleResetToWaiting}>
