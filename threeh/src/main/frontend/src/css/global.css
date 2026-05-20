@@ -1,168 +1,23 @@
+/* 폰트 임포트 */
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,500;0,600;1,400&display=swap');
 
-/* 핵심 변수 설정 (이미지 기반 추출) */
-:root {
-  --color-black: #000000;
-  --color-charcoal: #2B2D2F;
-  --color-warm-grey: #8C7A6B;
-  --color-accent-gold: #D4B26F;
-  --color-casamia-red: #FF3B30;      /* 할인율 및 가격 강조용 */
-  
-  --bg-ivory: #F9F8F6;               /* 서브 네비게이션 및 백그라운드용 */
-  --bg-white: #FFFFFF;
-  
-  --border-light: #E5E2DC;           /* 얇고 정갈한 격자 구분선 */
-  --border-dark: #1A1A1A;            /* 굵은 헤드라인 구분선 */
-
-  --font-sans: 'Noto Sans KR', sans-serif;
-  --font-serif: 'Playfair Display', serif;
-}
-
-/* 기본 세팅 초기화 */
+/* 전체 초기화 및 배경색 설정 */
 * {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 body {
-  font-family: var(--font-sans);
-  background-color: var(--bg-white);
-  color: #1A1A1A;
-  -webkit-font-smoothing: antialiased;
-  letter-spacing: -0.02em;
+    font-family: 'Noto Sans KR', sans-serif;
+    background-color: #F9F8F6; /* 은은한 아이보리 배경색 */
 }
 
-/* 전체 감싸는 콘텐트 컨테이너 */
+/* 테스트용 컨테이너 배경 */
 .casamia-container {
-  max-width: 1240px;
-  margin: 0 auto;
-  padding: 0 20px;
-}
-
-/* ==========================================
-   공통 카테고리 헤더 탭 (까1.PNG, 까3.PNG 상단 참고)
-   ========================================== */
-.top-category-bar {
-  background-color: var(--bg-ivory);
-  border-bottom: 1px solid var(--border-light);
-  width: 100%;
-}
-
-.top-category-list {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  list-style: none;
-  max-width: 1240px;
-  margin: 0 auto;
-  height: 50px;
-  padding: 0 20px;
-}
-
-.top-category-item {
-  font-size: 14px;
-  font-weight: 500;
-  color: #1A1A1A;
-  margin-right: 40px;
-  cursor: pointer;
-  transition: color 0.2s ease;
-}
-
-.top-category-item:hover, .top-category-item.active {
-  color: var(--color-warm-grey);
-}
-
-.top-category-item.catalog {
-  margin-left: auto; /* 우측 정렬 */
-  font-family: var(--font-serif);
-  font-weight: 600;
-  letter-spacing: 0.05em;
-}
-
-/* ==========================================
-   정갈한 4열 상품 격자 레이아웃 (Grid - 까1, 까2, 까5 참고)
-   ========================================== */
-.casamia-product-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  column-gap: 24px;
-  row-gap: 48px;
-  margin: 40px 0;
-}
-
-/* 개별 상품 카드 공통 레이아웃 */
-.product-card {
-  display: flex;
-  flex-direction: column;
-  background-color: var(--bg-white);
-}
-
-.product-image-wrapper {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 1 / 1; /* 정사각형 비율 유지 */
-  background-color: #F4F4F4;
-  overflow: hidden;
-  margin-bottom: 16px;
-}
-
-.product-image-wrapper img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* 상품 브랜드/카테고리 텍스트 */
-.product-brand {
-  font-size: 12px;
-  color: #999999;
-  margin-bottom: 4px;
-}
-
-/* 상품 이름 (까사미아 스타일 - 군더더기 없는 두 줄 제한 혹은 한 줄 정렬) */
-.product-title {
-  font-size: 14px;
-  font-weight: 400;
-  color: #1A1A1A;
-  line-height: 1.4;
-  margin-bottom: 8px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-}
-
-/* 가격 레이아웃 (세일 비율 레드 포인트 처리) */
-.product-price-info {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 15px;
-  font-weight: 700;
-}
-
-.discount-rate {
-  color: var(--casamia-red);
-}
-
-.current-price {
-  color: var(--color-black);
-}
-
-/* ==========================================
-   디테일 타이포그래피 포인트 및 경계선 효과
-   ========================================== */
-/* 굵고 정갈한 메인 섹션 하단 선 (주문서, 타이틀 하단용) */
-.border-headline {
-  border-bottom: 2px solid var(--border-dark);
-  padding-bottom: 12px;
-  margin-bottom: 24px;
-}
-
-/* 얇은 리스트 구분선 */
-.border-row {
-  border-bottom: 1px solid var(--border-light);
-  padding: 16px 0;
+    max-width: 1240px;
+    margin: 0 auto;
+    background-color: #FFFFFF; /* 흰색 컨텐츠 박스 */
+    min-height: 100vh;
+    padding: 20px;
 }

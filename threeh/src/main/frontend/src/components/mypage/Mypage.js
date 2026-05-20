@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import '../../css/myPageCss/myPage.Css';
 
 const Mypage = () => {
     //[페이지 이동 도구] useNavigate를 Navigate로 사용함
@@ -47,6 +48,25 @@ const Mypage = () => {
             setMember(null);
         }
     }, []);
+
+    // [구매확정 로직]
+    const handleConfirmPurchase = async (orderId) => {
+        if (window.confirm("구매를 확정하시겠습니까?")) {
+            try {
+                const params = new URLSearchParams();
+                params.append('orderId', orderId);
+                
+                // 백엔드 주소 수정 완료_오현옥
+                await axios.post('http://localhost:8080/Member/purchase/confirm', params, { withCredentials: true });
+                
+                alert("구매가 확정되었습니다.");
+                window.location.reload(); 
+            } catch (err) {
+                console.error("구매 확정 오류:", err);
+                alert("구매 확정 처리 중 오류가 발생했습니다.");
+            }
+        }
+    };
 
     //[추가] 교환 및 반품
     const handleRefund = (orderId) => {
@@ -226,8 +246,9 @@ const Mypage = () => {
         }
 
         try{
+            // 철자 오류 수정 완료_오현옥
             await axios.delete(
-                `http://localhost:8080/api/reivews/${reviewId}`,
+                `http://localhost:8080/api/reviews/${reviewId}`,
                 {
                     withCredentials:true,
                 }
@@ -246,8 +267,6 @@ const Mypage = () => {
             alert("리뷰 삭제 실패");
         }
     }
-
-
 
     return (
         <div className="mypage-grid-container">
@@ -282,7 +301,7 @@ const Mypage = () => {
                 <div style={{ display: 'flex' }}>
                     <aside className="mypage-sidebar">
                         <button className="sidebar-btn" onClick={() => navigate('/mypage/schedule')}>배송/설치 시간 내역</button>
-                        <button className="sidebar-btn" onClick={() => navigate('/cart/return')}>구매내역 / 교환 및 반품</button>
+                        <button className="sidebar-btn" onClick={() => navigate('/cart/return')}>교환 및 반품</button>
                         <button className="sidebar-btn" onClick={() => navigate('/cart')}>장바구니 목록</button>
                     </aside>
 
@@ -311,31 +330,48 @@ const Mypage = () => {
                                     orders.map((order, index) => (
                                         <div key={order.orderId || order.id || index} style={{ borderBottom: '1px solid #eee', padding: '10px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                             <div>
-                                                {/* order.orderId와 order.itemName으로 조장님 변수 전면 교체 */}
                                                 <p><strong>주문번호:</strong> {order.orderId || order.id || "번호 확인중"}</p>
                                                 <p><strong>상품명:</strong> {order.itemName || order.productName || "주문 상품"}</p>
                                                 <p style={{ fontSize: '12px', color: '#888' }}>
                                                     주문일: {order.orderDate ? new Date(order.orderDate).toLocaleString() : "-"}
                                                 </p>
                                             </div>
-                                            <button
-                                                className="mypage-action-btn"
-                                                /* 클릭 시 취소로직이 대기 중인 인호님의 반품 페이지(/cart/return)로 데이터를 패킹해서 들고 이동시킵니다. */
-                                                onClick={() => navigate('/cart/return', { 
-                                                    state: { 
-                                                        orderItems: [{
-                                                            orderId: order.orderId || order.id,
-                                                            itemName: order.itemName || order.productName,
-                                                            price: order.price,
-                                                            count: order.count || 1,
-                                                            itemImage: order.itemImage
-                                                        }] 
-                                                    } 
-                                                })}
-                                                style={{ backgroundColor: '#333', color: '#fff', border: 'none', padding: '8px 15px', cursor: 'pointer' }}
-                                            >
-                                                반품신청
-                                            </button>
+                                            
+                                            <div style={{ display: 'flex', gap: '5px' }}>
+                                                {order.orderState === 'PURCHASED' ? (
+                                                    <button 
+                                                        onClick={() => navigate('/review/write', { state: { orderId: order.orderId } })}
+                                                        style={{ backgroundColor: '#2196F3', color: '#fff', border: 'none', padding: '8px 15px', cursor: 'pointer' }}
+                                                    >
+                                                        리뷰쓰기
+                                                    </button>
+                                                ) : (
+                                                    <button 
+                                                        onClick={() => handleConfirmPurchase(order.orderId || order.id)}
+                                                        style={{ backgroundColor: '#4CAF50', color: '#fff', border: 'none', padding: '8px 15px', cursor: 'pointer' }}
+                                                    >
+                                                        구매확정
+                                                    </button>
+                                                )}
+
+                                                <button
+                                                    className="mypage-action-btn"
+                                                    onClick={() => navigate('/cart/return', { 
+                                                        state: { 
+                                                            orderItems: [{
+                                                                orderId: order.orderId || order.id,
+                                                                itemName: order.itemName || order.productName,
+                                                                price: order.price,
+                                                                count: order.count || 1,
+                                                                itemImage: order.itemImage
+                                                            }] 
+                                                        } 
+                                                    })}
+                                                    style={{ backgroundColor: '#333', color: '#fff', border: 'none', padding: '8px 15px', cursor: 'pointer' }}
+                                                >
+                                                    반품신청
+                                                </button>
+                                            </div>
                                         </div>
                                     ))
                                 ) : (
@@ -395,15 +431,14 @@ const Mypage = () => {
                                             onChange={(e)=>setEditReviewText(e.target.value)} rows={4}
                                             maxLength={255} style={{width:"100%", marginTop:"10px",padding:"10px"}}/>
                                         
-                                        <p>{editReviewText.length}/255</p>
+                                            <p>{editReviewText.length}/255</p>
+                                                <button type="button" onClick={()=>handleUpdateReview(review.reviewId)}>
+                                                        저장
+                                                </button>
 
-                                            <button type="button" onClick={()=>handleUpdateReview(review.reviewId)}>
-                                                    저장
-                                            </button>
-
-                                            <button type="button" onClick={()=>setEditReviewId(null)} style={{marginLeft:"10px"}}>
-                                                    취소
-                                            </button>
+                                                <button type="button" onClick={()=>setEditReviewId(null)} style={{marginLeft:"10px"}}>
+                                                        취소
+                                                </button>
                                         </div>
                                     ):(
                                         <div>
@@ -431,8 +466,6 @@ const Mypage = () => {
                                     </div>
                                 ))
                             )}
-
-
                         </div>
                     </main>
                 </div>
