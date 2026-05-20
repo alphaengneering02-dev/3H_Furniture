@@ -138,7 +138,7 @@ const Mypage = () => {
 
     
 
-    return (
+   return (
         <div className="mypage-grid-container">
             <header className="mypage-header-box" style={{ display: 'flex', justifyContent: 'space-between', padding: '10px', borderBottom: '1px solid #ccc' }}>
                 <div className="mypage-logo-box" onClick={() => navigate('/')} style={{ cursor: 'pointer', fontWeight: 'bold' }}>PROJECT CMYK</div>
@@ -159,15 +159,17 @@ const Mypage = () => {
             ) : (
                 <div style={{ display: 'flex' }}>
                     <aside className="mypage-sidebar">
-                        <button className="sidebar-btn" onClick={() => navigate('/mypage/schedule')}>배송/설치 시간 내역</button>
+                        <button className="sidebar-btn" onClick={() => navigate('/mypage/schedule')}>추가될 기능</button>
                         <button className="sidebar-btn" onClick={() => navigate('/cart/return')}>교환 및 반품</button>
                         <button className="sidebar-btn" onClick={() => navigate('/cart')}>장바구니 목록</button>
                     </aside>
 
                     <main className="mypage-main-content" style={{ flex: 1, padding: '20px' }}>
                         <div className="profile-icon-box">
-                            <div className="profile-avatar-circle">{member.name ? member.name : "U"}</div>
-                            <p style={{ margin: '10px' }}><strong>{member?.name}</strong>님 환영합니다</p>
+                            <div className="profile-avatar-circle">{member.name ? member.name +"님" : "U"}</div>
+                            {/* <p style={{ margin: '10px' }}><strong>{member?.name}</strong>님 환영합니다</p> */}
+                            {/* 프로필 옆 북마크 버튼 추가 */}
+                            <button className="mypage-action-btn" style={{marginRight: '5px'}}>북마크</button>
                             <button className="mypage-action-btn" onClick={() => navigate(`/member/update/${member.id}`)}>정보 수정</button>
                         </div>
 
@@ -187,7 +189,8 @@ const Mypage = () => {
                                             <div>
                                                 <p><strong>주문번호:</strong> {order.orderId || order.id || "번호 확인중"}</p>
                                                 <p><strong>상품명:</strong> {order.itemName || order.productName || "주문 상품"}</p>
-                                                {/* 주문 날짜 표시 추가 */}
+                                                {/* 주문 상태 추가 */}
+                                                <p><strong>주문상태:</strong> {order.orderState}</p>
                                                 <p style={{ fontSize: '12px', color: '#888' }}>
                                                     주문일: {order.orderDate ? new Date(order.orderDate).toLocaleString() : "-"}
                                                 </p>
@@ -218,7 +221,7 @@ const Mypage = () => {
                                                         구매확정
                                                     </button>
                                                 ):(
-                                                    <span style={{color:"#888",fontSize:"13px"}}>
+                                                    <span style={{color:"#888",fontSize:"13px", alignSelf: 'center'}}>
                                                         배송완료 후 구매확정 가능
                                                     </span>
                                                 )}
