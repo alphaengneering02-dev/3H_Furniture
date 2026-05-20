@@ -42,19 +42,19 @@ const Main = () => {
 
 
     return (
-        <div className="Main_wrapper">
+        <div className="main_wrapper">
             {/* Header 영역 */}
             <Header/>
 
             {/* Contents 영역 */}
             {/* global.css의 공통 레이아웃인 casamia-container를 사용하여 규격을 강제합니다. */}
-            <div className="casamia-container Main_inner">
-                <div className="Main_banner_section">
+            <div className="casamia-container main_inner">
+                <div className="main_banner_section">
                     <Main_mainBanner/>  {/* 메인 배너 */}
                 </div>
             
 
-                <div className="Main_item_section">
+                <div className="main_item_section">
                     <Item/>  {/* 상품 목록 */}
                 </div>
             </div>

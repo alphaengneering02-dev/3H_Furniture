@@ -1,24 +1,24 @@
 /* main.css */
 
 /* 전체 Main 컴포넌트를 감싸는 래퍼 (global.css의 배경색 변수 사용) */
-.Main_wrapper {
+.main_wrapper {
   background-color: var(--bg-white);
   width: 100%;
 }
 
 /* 기존 'inner'를 대체하며, global.css의 casamia-container와 함께 쓰여 추가적인 상하 여백을 제어합니다. */
-.Main_inner {
+.main_inner {
   padding-top: 40px;
   padding-bottom: 80px;
 }
 
 /* 메인 배너 영역 */
-.Main_banner_section {
+.main_banner_section {
   margin-bottom: 60px; /* 배너와 상품 목록 사이의 간격 */
 }
 
 /* 상품 목록 영역 */
-.Main_item_section {
+.main_item_section {
   /* 필요에 따라 추가적인 Main 전용 스타일을 여기에 작성합니다. */
   width: 100%;
 }
