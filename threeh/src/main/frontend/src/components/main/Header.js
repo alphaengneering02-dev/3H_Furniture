@@ -15,12 +15,8 @@ import Header_searchCondition from './Header_searchCondition';
 
 // 헤더
 const Header = () => {
-
     const navigate = useNavigate();
-
-
-    //로그인한 회원정보 가져오기
-    const [user, setUser] = useState({})  //회원정보 저장객체
+    const [user, setUser] = useState({});  //로그인한 회원정보 저장객체
 
     const getSession = () => {
         try {
@@ -29,10 +25,7 @@ const Header = () => {
 
             //sessionStorage에서 회원정보를 가져옴
             const rawData = sessionStorage.getItem("user")
-
-            if(!rawData) {
-                return
-            }
+            if(!rawData) return
 
             const sessionData = JSON.parse(rawData)  //JSON ---> 객체 형태
             setUser(sessionData)
@@ -40,7 +33,6 @@ const Header = () => {
             console.log("[로그인 데이터 로드 완료]"  + "\n"
                 + rawData
             )
-
             // debugger;  //디버깅 모드 on
 
         } catch (error) {
@@ -54,10 +46,8 @@ const Header = () => {
     }, [])
 
 
-
     //로그아웃
     const logout = async() => {
-
         try {
             //로그아웃 요청
             await axios.post("http://localhost:8080/api/member/logout")
@@ -65,13 +55,11 @@ const Header = () => {
             //로그아웃 성공 후, 프론트 세션 삭제
             sessionStorage.clear()
             setUser(null) // 상태 초기화
-            
             console.log("로그아웃 성공!")
             alert("로그아웃 되었습니다.")
             
             //메인 페이지로 이동
             navigate("/")
-            
         } catch (error) {
             console.error("로그아웃 실패! 서버 연결 실패 혹은 네트워크 오류:", error)
         }
@@ -81,23 +69,18 @@ const Header = () => {
 
 
     //상품 통합검색
-    //검색어 입력
-    const [searchValue, setSearchValue] = useState("")  //String값
+    //검색어
+    const [searchValue, setSearchValue] = useState("")
     const changeSearchValue = (evt) => {setSearchValue(evt.target.value)}
 
-    //검색 조건 선택
-    /*
-    searchKey (다중 선택 가능)
-    - category: [거실, 침실, 주방...] 
-    - color: [책상, 의자, 책꽃이...]
-    - price: [200, 300]
-    */
+    //검색조건
     const [searchKey, setSearchKey] = useState({
         "category": [],
         "color": [],
         "price": [0, 500],
-    })  //객체
+    })
 
+    //검색 조건창 열림 상태
     const [isSearchCondition, setIsSearchCondition] = useState(false)
     const toggleSearchCondition = () => {
         setIsSearchCondition(!isSearchCondition)
@@ -109,25 +92,21 @@ const Header = () => {
         try {
             //1. Query String 생성 (예: ?searchValue=책상&space=거실,침실&size=1,6)
             const params = new URLSearchParams()  //파라미터를 생성하는 훅
-
             if (searchValue.trim() !== "") {  //parameter - 검색어
                 params.append("searchValue", searchValue);
             }
 
             Object.keys(searchKey).forEach(key => {  //parameter - 다중 검색 조건(searchKey)을 순회하며 파라미터에 추가
                 const value = searchKey[key];  //검색조건 배열
-                
                 if (value.length > 0) {  //유효한 값들만 params에 쉼표(,)로 연결해 추가 (예: ["거실", "주방"])
                     params.append(key, value.join(','))
                 }
             })
 
-
             //2. 완성된 Query String 확인 (디버깅용)
             const queryString = params.toString()
             console.log("현재 searchKey 상태:", searchKey);
             console.log("검색 쿼리:", queryString)
-
 
             //3. 프론트엔드 라우터(SearchResult 페이지)로 이동
             navigate(`/searchResult?${queryString}`)
@@ -142,7 +121,6 @@ const Header = () => {
         if(evt.key==='Enter') {
             //브라우저의 기본 폼 제출(새로고침) 방지
             evt.preventDefault();
-
             doSearch(evt)
         }
     }
@@ -151,46 +129,55 @@ const Header = () => {
 
     return (
         <header>
-            <div className="inner">
-                {/* 상단 헤더 */}
-                <section className="topBox">
-                    {/* 좌측 영역 : sns 바로가기 */}
-                    <div className="left">
-                        <ul className="sns">
-                            <li> <Link to="https://www.facebook.com" target="_blank">
-                                <img src={icon_facebook} alt="페이스북 바로가기" style={{width: 30}}/>
-                            </Link> </li>
-                            <li> <Link to="https://www.instagram.com" target="_blank">
-                                <img src={icon_instagram} alt="인스타그램 바로가기" style={{width: 30}}/>
-                            </Link> </li>
-                            <li> <Link to="https://pf.kakao.com/_TsIAE" target="_blank">
-                                <img src={icon_kakao} alt="카카오톡 공식채널 바로가기" style={{width: 30}}/>
-                            </Link> </li>
-                        </ul>   {/* sns 끝 */}
+            <div>
+                {/* 1. 상단 레이아웃 박스 */}
+                <section className="main-header-topBox">
+                    {/* 좌측 SNS 아이콘 영역 */}
+                    <div className="main-header-left">
+                        <ul className="main-header-sns">
+                            <li><Link to="https://www.facebook.com"><img src={icon_facebook} alt="facebook" /></Link></li>
+                            <li><Link to="https://www.instagram.com"><img src={icon_instagram} alt="instagram" /></Link></li>
+                            <li><Link to="https://pf.kakao.com/_TsIAE"><img src={icon_kakao} alt="kakao" /></Link></li>
+                        </ul>
                     </div>
 
 
-                    {/* <!-- 중앙 영역 : 로고와 검색창 --> */}
-                    <div className="center">
-                        <h1 className='logo'> 
-                            <Link to="/"><img src={null} alt="웹사이트 로고"/></Link> 
+                    {/* 중앙 브랜드 로고 및 검색바 영역 */}
+                    <div className="main-header-center">
+                        <h1 className='main-header-logo'> 
+                            <Link to="/">
+                                <img src={null} alt="logo"/>
+                            </Link> 
                         </h1>
 
-                        <div className="search">
-                            <form action="" method="get">
+                        <div className="main-header-search">
+                            <form method="get">
                                 {/* 검색창 */}
                                 <section className='bar'>
                                     <button type="button" id="do" className="do">
-                                        <img src={icon_search} alt="검색하기" onClick={doSearch} style={{width: 20}}/>
+                                        <img 
+                                            src={icon_search} alt="검색" 
+                                            onClick={doSearch} 
+                                            style={{width: 20}}
+                                        />
                                     </button>
-                                    <input type="text" id={searchValue} name={searchValue} value={searchValue} placeholder="검색어를 입력하세요" onChange={changeSearchValue} onKeyDown={onEnter}/>
+                                    <input className='input'
+                                        type="text" 
+                                        id={searchValue} name={searchValue} value={searchValue} 
+                                        placeholder="검색어를 입력하세요" 
+                                        onChange={changeSearchValue} 
+                                        onKeyDown={onEnter}
+                                    />
                                     <button type="button" className="hamburger">
-                                        <img src={icon_hamburger} alt="검색 조건 선택창" onClick={toggleSearchCondition} style={{width: 20}}/>
+                                        <img 
+                                            src={icon_hamburger} alt="검색조건 선택창" 
+                                            onClick={toggleSearchCondition} style={{width: 20}}
+                                        />
                                     </button>
                                 </section>
 
 
-                                {/* 검색 조건 선택창 */}
+                                {/* 검색조건 선택창 팝업 */}
                                 {
                                     isSearchCondition &&
                                     <Header_searchCondition searchKey={searchKey} setSearchKey={setSearchKey}/>
@@ -200,9 +187,9 @@ const Header = () => {
                     </div>
 
 
-                    {/* <!-- 우측 영역 : 사용자 메뉴들(로그인, 회원가입) --> */}
-                    <div className="right">
-                        <ul className="userMenu">
+                    {/* 우측 회원 메뉴 영역 */}
+                    <div className="main-header-right">
+                        <ul className="main-header-userMenu">
                             {
                                 user && user!=null
                                 //로그인 한 상태의 화면
@@ -278,22 +265,22 @@ const Header = () => {
 
 
 
-                {/* <!-- 하단 헤더: 네비게이션 바 --> */}
-                <section className="bottomBox">
-                    <nav className="GNB">
+                {/* 2. 하단 네비게이션 박스(GNB) */}
+                <section className="main-header-bottomBox">
+                    <nav className="main-header-GNB">
                         <ul>
                             {/* <!-- 메인메뉴1 --> */}
-                            <li> <Link to="#">홈</Link> </li>
+                            <li> <Link to="/">홈</Link> </li>
 
 
                             {/* <!-- 메인메뉴2 --> */}
                             <li>
                                 <Link to="#">거실</Link>
-                                <ul className="sub1">
-                                    <li> <Link to="#">서브메뉴1</Link> </li>
-                                    <li> <Link to="#">서브메뉴2</Link> </li>
-                                    <li> <Link to="#">서브메뉴3</Link> </li>
-                                    <li> <Link to="#">서브메뉴4</Link> </li>
+                                <ul className="main-header-sub1">
+                                    <li> <Link to="#"><p>서브메뉴1</p></Link> </li>
+                                    <li> <Link to="#"><p>서브메뉴2</p></Link> </li>
+                                    <li> <Link to="#"><p>서브메뉴3</p></Link> </li>
+                                    <li> <Link to="#"><p>서브메뉴4</p></Link> </li>
                                 </ul>
                             </li>
 
@@ -301,24 +288,24 @@ const Header = () => {
                             {/* <!-- 메인메뉴3 --> */}
                             <li>
                                 <Link to="#">침실</Link>
-                                <ul className="sub1">
+                                <ul className="main-header-sub1">
                                     <li>
-                                        <Link to="#">서브메뉴1</Link>
-                                        <ul className="sub2">
-                                            <li> <Link to="#">서브-서브메뉴1</Link> </li>
-                                            <li> <Link to="#">서브-서브메뉴2</Link> </li>
-                                            <li> <Link to="#">서브-서브메뉴3</Link> </li>
-                                            <li> <Link to="#">서브-서브메뉴4</Link> </li>
+                                        <Link to="#"><p>서브메뉴1</p></Link>
+                                        <ul className="main-header-sub2">
+                                            <li> <Link to="#"><p>서브-서브메뉴1</p></Link> </li>
+                                            <li> <Link to="#"><p>서브-서브메뉴2</p></Link> </li>
+                                            <li> <Link to="#"><p>서브-서브메뉴3</p></Link> </li>
+                                            <li> <Link to="#"><p>서브-서브메뉴4</p></Link> </li>
                                         </ul>
                                     </li>
                                     
                                     <li>
-                                        <Link to="#">서브메뉴2</Link>
-                                        <ul className="sub2">
-                                            <li> <Link to="#">서브-서브메뉴1</Link> </li>
-                                            <li> <Link to="#">서브-서브메뉴2</Link> </li>
-                                            <li> <Link to="#">서브-서브메뉴3</Link> </li>
-                                            <li> <Link to="#">서브-서브메뉴4</Link> </li>
+                                        <Link to="#"><p>서브메뉴2</p></Link>
+                                        <ul className="main-header-sub2">
+                                            <li> <Link to="#"><p>서브-서브메뉴1</p></Link> </li>
+                                            <li> <Link to="#"><p>서브-서브메뉴2</p></Link> </li>
+                                            <li> <Link to="#"><p>서브-서브메뉴3</p></Link> </li>
+                                            <li> <Link to="#"><p>서브-서브메뉴4</p></Link> </li>
                                         </ul>
                                     </li>
                                 </ul>
@@ -327,7 +314,7 @@ const Header = () => {
 
                         
                         {/* <!-- 배경색 박스 --> */}
-                        <div className="menuBg"></div>
+                        <div className="main-header-menuBg"></div>
                     </nav>
                 </section>
             </div>  {/* <!-- 헤더 이너 끝 --> */}

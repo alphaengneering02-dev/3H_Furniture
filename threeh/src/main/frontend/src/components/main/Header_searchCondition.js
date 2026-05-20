@@ -31,14 +31,13 @@ const Header_searchCondition = ({searchKey, setSearchKey}) => {
     ]
 
 
-    //전체 선택/해제 핸들러
+    //전체 선택 핸들러
     const handleAllCheck = (type, options) => {  
         //type: category, color
         //options: 선택한 항목('거실', '하얀색', ...)
         setSearchKey((prev) => {
             //기존 선택값 가져오기
             const currentList = prev[type] || [];
-            
             //해제/선택 토글
             const nextList = currentList.length===options.length ? [] : [...options];
 
@@ -50,12 +49,10 @@ const Header_searchCondition = ({searchKey, setSearchKey}) => {
     }
 
 
-    //개별 선택/해제 핸들러
+    //개별 선택 핸들러
     const handleSingleCheck = (type, value) => {
         setSearchKey((prev) => {
             const currentList = prev[type] || [];
-            
-            //해제/선택 토글
             const nextList = currentList.includes(value)
                 ? currentList.filter((item) => item!==value)
                 : [...currentList, value];
@@ -68,7 +65,7 @@ const Header_searchCondition = ({searchKey, setSearchKey}) => {
     }
 
 
-    //Range Slider
+    //가격대 변경 핸들러
     const changePrice = (evt, range) => {
         setSearchKey({
             ...searchKey,
@@ -79,23 +76,26 @@ const Header_searchCondition = ({searchKey, setSearchKey}) => {
 
 
     return (
-         <section className='list'>
+         <section className='main-header-list'>
+            {/* 조건창 상단바 */}
             <article>
                 <h3>검색 조건</h3>
                 <button type='button' onClick={resetSearchKey}>전체 삭제</button>
             </article>
 
 
+            {/* 필터 세부조건 선택 영역 */}
             <article>
-                {/* 카테고리 */}
+                {/* 카테고리 그룹 */}
                 <div>
                     <p>카테고리</p>
                     <div>
                         <div>
                             <input type="checkbox"
-                            id="category_all"
-                            checked={searchKey.category.length === category_options.length}
-                            onChange={() => handleAllCheck('category', category_options)}/>
+                                id="category_all"
+                                checked={searchKey.category.length === category_options.length}
+                                onChange={() => handleAllCheck('category', category_options)}
+                            />
                             <label>전체</label>
                         </div>
 
@@ -115,15 +115,16 @@ const Header_searchCondition = ({searchKey, setSearchKey}) => {
                 </div>
 
 
-                {/* 색상 */}
+                {/* 색상 그룹 */}
                 <div>
                     <p>색상</p>
                     <div>
                         <div>
                             <input type="checkbox"
-                            id="color_all"
-                            checked={searchKey.color.length === color_options.length}
-                            onChange={() => handleAllCheck('color', color_options)}/>
+                                id="color_all"
+                                checked={searchKey.color.length === color_options.length}
+                                onChange={() => handleAllCheck('color', color_options)}
+                            />
                             <label>전체</label>
                         </div>
 
@@ -143,7 +144,7 @@ const Header_searchCondition = ({searchKey, setSearchKey}) => {
                 </div>
 
 
-                {/* 가격대 */}
+                {/* 가격대 슬라이더 그룹 */}
                 <div>
                     <h4>가격대</h4>
                     <Slider
