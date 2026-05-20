@@ -29,8 +29,7 @@ public class ReviewService {
     private final OrderItemRepository orderItemRepository;
     private final MemberService memberService;
 
-    // 리뷰 작성
-    @Transactional
+    
     public ReviewDTO createReview(
             String loginId,
             Long itemId,

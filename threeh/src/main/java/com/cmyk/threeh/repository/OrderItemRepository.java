@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.cmyk.threeh.domain.OrderItem;
+import com.cmyk.threeh.enums.OrderState;
 
 public interface OrderItemRepository extends JpaRepository<OrderItem,Long> {
 
@@ -22,5 +23,19 @@ public interface OrderItemRepository extends JpaRepository<OrderItem,Long> {
         @Param("memberId")Long memberId,
         @Param("itemId")Long itemId
     );
-    
+
+    //코딩 추가: 오현옥_리뷰관련
+
+    @Query(
+        "SELECT CASE WHEN COUNT(oi) > 0 THEN true ELSE false END " +
+        "FROM OrderItem oi " +
+        "WHERE oi.orders.member.memberId = :memberId " +
+        "AND oi.item.itemId = :itemId " +
+        "AND oi.orders.orderState = :orderState"
+    )
+    boolean existsPurchasedItemByState(
+        @Param("memberId")Long memberId,
+        @Param("itemId")Long itemId,
+        @Param("orderState")OrderState orderState
+    );
 }

@@ -374,7 +374,7 @@ const ItemDetail = () => {
             )}
 
             {/*관리자 모드일때 상품 리뷰가 상품리뷰관리로 보이도록 */}
-            div style={{ marginTop: "40px", borderTop: "1px solid #ddd", paddingTop: "30px" }}
+            <div style={{ marginTop: "40px", borderTop: "1px solid #ddd", paddingTop: "30px" }}>
             <h2>상{isAdmin ?"상품 리뷰 관리":"상품 리뷰"}</h2>
 
             {reviewSummary && (
@@ -471,7 +471,8 @@ const ItemDetail = () => {
                 ))
                 )}
             </div>
-            </div>
+        </div>
+       </div> 
     );
 };
 
