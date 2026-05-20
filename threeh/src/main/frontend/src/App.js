@@ -1,5 +1,6 @@
 import axios from 'axios';
 import Router from './router/Router';
+import './css/global.css';
 
 axios.defaults.withCredentials = true;
 

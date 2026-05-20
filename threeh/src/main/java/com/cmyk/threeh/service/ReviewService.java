@@ -11,6 +11,7 @@ import com.cmyk.threeh.domain.Member;
 import com.cmyk.threeh.domain.Review;
 import com.cmyk.threeh.dto.ReviewDTO;
 import com.cmyk.threeh.dto.ReviewSummaryDTO;
+import com.cmyk.threeh.enums.OrderState;
 import com.cmyk.threeh.global.error.CustomException;
 import com.cmyk.threeh.global.error.ErrorCode;
 import com.cmyk.threeh.repository.ItemRepository;
@@ -54,9 +55,10 @@ public class ReviewService {
         }
 
         // 실제 구매 여부 확인(구매여부랑, 중복 여부 확인_오더아이템레포지토리에서 가져오기.)
-        boolean purchased = orderItemRepository.existsPurchasedItem(
+        boolean purchased = orderItemRepository.existsPurchasedItemByState(
                 member.getMemberId(),
-                itemId
+                itemId,
+                OrderState.PURCHASED
         );
 
         if (!purchased) {
