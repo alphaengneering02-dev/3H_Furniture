@@ -75,18 +75,28 @@ public class MemberAddressController {
             for (Orders order : member.getOrdersList()) {
                 Map<String, Object> orderMap = new HashMap<>();
 
+                //코딩 추가_오현옥_리뷰쓰기에서 오더상태랑 딜리버리 상태 가져오기.
                 orderMap.put("orderId", order.getOrderId());
+                orderMap.put("orderState", order.getOrderState() 
+                != null ? order.getOrderState().name():"");
+                orderMap.put("deliveryStatus", order.getDeliveryStatus() !=null ?
+                order.getDeliveryStatus().name():"WAITING");
                 
                 // 코딩 추가_오현옥: 상품명 추출 로직
+                Long itemId = null;
                 String itemName = "상품 정보 없음";
+ 
                 if (order.getOrderItems() != null && !order.getOrderItems().isEmpty()) {
-                    itemName = order.getOrderItems().get(0).getItem().getItemName();
-                }
-                orderMap.put("itemName", itemName);
+                    OrderItem firsOrderItem = order.getOrderItems().get(0);
 
-                //코딩 추가_오현옥
-                orderMap.put("orderState", order.getOrderState() !=null ? order.getOrderState().name():"");
-                orderMap.put("deliveryStatus", order.getDeliveryStatus() != null ? order.getDeliveryStatus().name() : "대기중");
+                    if(firsOrderItem.getItem() != null){
+                        itemId = firsOrderItem.getItem().getItemId();
+                        itemName = firsOrderItem.getItem().getItemName();
+                    }
+                }
+
+                orderMap.put("itemId", itemId);
+                orderMap.put("itemName", itemName);
                 
                 recentOrdersMapList.add(orderMap);
             }
@@ -169,19 +179,41 @@ public class MemberAddressController {
         return ResponseEntity.ok(refundList);
     }
 
-    //구매확정_코딩추가
+    //구매확정_코딩추가_오현옥
     @PostMapping("/purchase/confirm")
     @Transactional
-    public ResponseEntity<String> confResponseEntity(@RequestParam("orderId") Long orderId, Principal principal) {
-        String loginId = getLoginIdOrNull(principal);
-        if (loginId == null) {
-            return ResponseEntity.status(401).body("로그인이 필요합니다.");
-        }
+    public ResponseEntity<String> confResponseEntity(
+        @RequestParam("orderId") Long orderId, Principal principal) 
+        {
+            String loginId = getLoginIdOrNull(principal);
 
-        Orders order = orderRepository.findById(orderId).orElseThrow(() -> new IllegalArgumentException("주문을 찾을 수 없습니다."));
-        order.setOrderState(OrderState.PURCHASED);
-        return ResponseEntity.ok("구매가 확정되었습니다");
-    }
+            if (loginId == null) {
+                return ResponseEntity.status(401).body("로그인이 필요합니다.");
+            }
+
+            Orders order = orderRepository.findById(orderId)
+                    .orElseThrow(() -> new IllegalArgumentException("주문을 찾을 수 없습니다."));
+            
+            if(order.getOrderState() == OrderState.CANCEL){
+                return ResponseEntity.badRequest().body("취소된 주문은 구매확정할 수 없습니다.");
+            }
+
+            if(order.getOrderState() == OrderState.PURCHASED){
+                return ResponseEntity.badRequest().body("이미 구매확정된 주문입니다.");
+            }
+
+            if(order.getOrderState() != OrderState.READY){
+                return ResponseEntity.badRequest().body("배송 준비중 상태의 주문만 구매확정 할 수 있습니다.");
+            }
+
+            if(order.getDeliveryStatus()==null|| !"COMPLETED".equals(order.getDeliveryStatus().name())){
+                return ResponseEntity.badRequest().body("배송완료된 주문만 구매확정 할 수 있습니다.");
+            }
+
+            order.setOrderState(OrderState.PURCHASED);
+
+            return ResponseEntity.ok("구매가 확정되었습니다.");
+        }
 
     // 반품 처리_코딩추가
     @PostMapping("/refund/process")
