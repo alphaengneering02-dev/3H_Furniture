@@ -199,41 +199,36 @@ const handleAssignDriver = async (orderId) => {
 
 const handleStatusChange = async (orderId, nextState) => {
     try {
-        // 💡 백엔드 컨트롤러(@RequestBody Map<String, String> payload) 포맷에 맞춤
+        // 1. 백엔드 API 명세에 맞춰 PUT 요청 전송
         const payload = { status: nextState };
-
-        // 백엔드 URL 스펙: /admin/orders/{orderId}/status
         await axios.put(`/admin/orders/${orderId}/status`, payload);
         
-        // 💡 알림 메시지를 상태에 따라 분기하면 사용자 경험이 더 좋아집니다.
+        // 2. 상태별 알림 메시지 분기 (EXCHANGE 상태 추가)
         if (nextState === 'CANCEL') {
             alert("주문 취소 및 기사 배정 해제가 완료되었습니다.");
         } else if (nextState === 'READY') {
             alert("상품 준비 완료 상태로 변경되었습니다.");
+        } else if (nextState === 'EXCHANGE') {
+            alert("교환 요청으로 변경되었습니다. 기사 수거(PICKUP) 상태가 적용됩니다.");
+        } else if (nextState === 'PURCHASED') {
+            alert("구매 확정 처리가 완료되었습니다.");
         } else {
-            alert(`주문 상태가 변경되었습니다.`);
+            alert(`주문 상태가 [${nextState}]로 변경되었습니다.`);
         }
 
-        // 목록 새로고침 함수 호출 (예: fetchOrders())
+        // 3. 목록 새로고침
         if (typeof fetchOrders === 'function') {
             fetchOrders();
         }
         
     } catch (error) {
-        console.error("상태 변경 실패:", error);
-        alert("상태 변경 중 오류가 발생했습니다.");
-    }
-    try {
-        // [중요] axios.post -> axios.put으로 변경
-        await axios.put(`/admin/orders/${orderId}/status`, {
-            status: nextState
-        });       
-        fetchOrders(); 
-    } catch (error) {
-        console.error("상태 변경 실패 상세 정보 ---");
-        console.error(error.response?.data);
-        alert("상태 변경 중 오류가 발생했습니다. (PUT 메서드 확인 필요)");
-        fetchOrders();
+        console.error("❌ 상태 변경 실패 상세 정보 ---");
+        console.error(error.response?.data || error.message);
+        alert(`상태 변경 중 오류가 발생했습니다: ${error.response?.data || "서버 오류"}`);
+        
+        if (typeof fetchOrders === 'function') {
+            fetchOrders();
+        }
     }
 };
 

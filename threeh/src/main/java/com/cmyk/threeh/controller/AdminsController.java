@@ -255,28 +255,76 @@ public ResponseEntity<?> updateOrderStatus(@PathVariable Long orderId, @RequestB
     String statusStr = payload.get("status");
     
     try {
-        // Enum에 존재하는지 먼저 체크
         OrderState newState = OrderState.valueOf(statusStr.toUpperCase()); 
         
         Orders order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
         
-        // 💡 [추가] 만약 변경하려는 상태가 주문 취소(CANCEL)라면 기사 배정 정보와 배송 상태를 초기화
+        // 현재 주문에 연동된 기사 정보 및 배송 상태 추출
+        Delivery delivery = order.getDelivery();
+        // order.getDeliveryStatus()를 기준으로 현재 배송 단계 체크
+        DeliveryStatus currentDeliveryStatus = order.getDeliveryStatus(); 
+
+        // ==========================================
+        // [CASE 1] 주문 취소 (CANCEL) 요청이 왔을 때
+        // ==========================================
         if (newState == OrderState.CANCEL) {
-            System.out.println("⚠️ 주문 취소(CANCEL) 감지 - orderId: " + orderId + " 의 기사 배정 및 배송 상태를 초기화합니다.");
-            order.setDelivery(null);    
-            order.changeDeliveryStatus(null); 
+            
+            // 규칙 A: 배송 전 (기사 배정 전 null 이거나 대기 중 WAITING) 일 때만 일반 취소 가능
+            if (currentDeliveryStatus == null || currentDeliveryStatus == DeliveryStatus.WAITING) {
+                System.out.println("⚠️ [배송 전 취소] 기사 배정 및 배송 상태를 초기화합니다.");
+                order.setDelivery(null);    
+                order.changeDeliveryStatus(null); 
+            } 
+            // 규칙 B: 이미 배송 완료(COMPLETED)된 상태에서 취소 요청이 온 경우 -> 수거(PICKUP) 전환
+            else if (currentDeliveryStatus == DeliveryStatus.COMPLETED) {
+                System.out.println("🔄 [배송 후 취소] 배송 완료 상품이므로 기사 수거(PICKUP) 상태로 전환합니다.");
+                
+                order.changeDeliveryStatus(DeliveryStatus.PICKUP);
+                if (delivery != null) {
+                    delivery.setStatus(DeliveryStatus.PICKUP); // 기사 entity 상태도 동기화
+                }
+            } 
+            // 규칙 C: 배송 중(SHIPPING) 등 중간 단계일 때는 취소 거부
+            else {
+                return ResponseEntity.badRequest().body("현재 배송 진행 중(" + currentDeliveryStatus + ")이므로 취소가 불가능합니다. 배송 완료 후 처리해주세요.");
+            }
         }
         
+        // ==========================================
+        // [CASE 2] 교환 (EXCHANGE) 요청이 왔을 때
+        // ==========================================
+        else if (newState == OrderState.EXCHANGE) {
+            // 교환은 무조건 배송이 완료된 상태에서만 수거(PICKUP) 프로세스로 진입 가능
+            if (currentDeliveryStatus == DeliveryStatus.COMPLETED) {
+                System.out.println("🔄 [교환 요청] 배송 완료 상품이므로 기사 수거(PICKUP) 상태로 전환합니다.");
+                
+                order.changeDeliveryStatus(DeliveryStatus.PICKUP);
+                if (delivery != null) {
+                    delivery.setStatus(DeliveryStatus.PICKUP);
+                }
+            } else {
+                return ResponseEntity.badRequest().body("배송 완료(COMPLETED) 상태의 주문만 교환 신청이 가능합니다.");
+            }
+        }
+
+        // 최종 주문 상태 변경 후 저장
         order.changeOrderState(newState);
         orderRepository.save(order);
         
-        return ResponseEntity.ok("상태 변경 완료" + (newState == OrderState.CANCEL ? " (기사 배정 취소 포함)" : ""));
+        // 💡 JPA 영속성 컨텍스트 특성상 영속 상태의 delivery 변경점도 함께 저장됩니다.
+        if (delivery != null) {
+            deliveryRepository.save(delivery); 
+        }
+        
+        return ResponseEntity.ok("주문 상태가 [" + newState + "]로 변경되었습니다.");
+        
     } catch (IllegalArgumentException e) {
         return ResponseEntity.badRequest().body("잘못된 상태 값입니다: " + statusStr);
+    } catch (Exception e) {
+        return ResponseEntity.internalServerError().body("서버 오류: " + e.getMessage());
     }
 }
-
 
 // --- 기사 전용 기능 (Admin 경로 내 통합) ---
 
