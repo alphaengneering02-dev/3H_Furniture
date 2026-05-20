@@ -12,7 +12,7 @@ const Refund = () => {
         if (location.state && location.state.orderItems) {
             setOrders(location.state.orderItems);
         } else {
-            axios.get('http://localhost:8080/Member/order/refund-list', { withCredentials: true })
+            axios.get('http://localhost:8080/Member/order/list', { withCredentials: true })
                 .then(res => setOrders(res.data || []))
                 .catch(err => {
                     console.error("목록 로드 실패", err);
@@ -31,7 +31,7 @@ const Refund = () => {
                 .then(res => {
                     alert(res.data || "반품 신청이 완료되었습니다.");
                     setOrders(prevOrders => prevOrders.map(order => (order.orderId || order.id) === orderId
-                    ? {...order, status:'CANCEL'}
+                    ? {...order, status:'CANCEL',orderState:'CANCEL'} //코드추가_오현옥
                     : order
                 ));
                 })
@@ -81,7 +81,8 @@ const Refund = () => {
                 orders.map((order, index) => {
                     const currentOrderId = order.orderId || order.id;
                     const currentItemName = order.itemName || order.productName || "주문 상품";
-                    const isCancelled = order.status === 'CANCEL'; // 취소 상태 확인
+                    //코드 추가_오현옥
+                    const isCancelled = order.status === 'CANCEL'||order.orderState==='CANCEL'; // 취소 상태 확인
 
                     return (
                         <div key={currentOrderId || index} style={{
