@@ -71,6 +71,7 @@ const Mypage = () => {
                 .catch(err => alert("처리 중 오류 발생"))
         }
     }
+    
 
     const handleLogout = () => {
         if (window.confirm("로그아웃 하시겠습니까?")) {
@@ -191,6 +192,7 @@ const Mypage = () => {
                                                 <p><strong>상품명:</strong> {order.itemName || order.productName || "주문 상품"}</p>
                                                 {/* 주문 상태 추가 */}
                                                 <p><strong>주문상태:</strong> {order.orderState}</p>
+                                                <p><strong>주문상태:</strong> {order.deliveryStatus}</p>
                                                 <p style={{ fontSize: '12px', color: '#888' }}>
                                                     주문일: {order.orderDate ? new Date(order.orderDate).toLocaleString() : "-"}
                                                 </p>
@@ -210,7 +212,7 @@ const Mypage = () => {
                                                     >
                                                         리뷰쓰기
                                                     </button>
-                                                ): order.orderState === "READY" && order.deliveryStaus ==="COMPLETED"?(
+                                                ): order.orderState === "READY" && order.deliveryStatus ==="COMPLETED"?(
                                                     <button onClick={()=>handleConfirmPurchase(order.orderId||order.id)}
                                                     style={{backgroundColor:"#4CAF50",
                                                         color:"#fff",
