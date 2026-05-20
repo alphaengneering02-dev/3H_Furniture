@@ -8,6 +8,21 @@ const ItemDetail = () => {
     const {itemId} = useParams();
     const navigate = useNavigate();
 
+    //상품 상태 관리
+    const [item,setItem] = useState(null);
+    //이미지 상태 관리
+    const [itemImgs,setItemImgs] = useState([]);
+    
+    //상품 리뷰 상태 관리
+    const[reviews, setReviews] = useState([]);
+    //리뷰 평균 평점, 리뷰 개수
+    const[reviewSummary, setReviewSummary] = useState(null);
+    //리뷰 작성용 별점
+    const[reviewScore,setReviewScore] = useState(5);
+    //리뷰 작성용 내용
+    const[reviewText,setReviewText] = useState("");
+
+
     //로그인 확인
     const getLoginUser = () => {
         return JSON.parse(sessionStorage.getItem("user"))
@@ -57,22 +72,7 @@ const ItemDetail = () => {
             return;
         }
         navigate(`/order/${itemId}`);
-    }
-    
-    //상품 상태 관리
-    const [item,setItem] = useState(null);
-    //이미지 상태 관리
-    const [itemImgs,setItemImgs] = useState([]);
-    
-    //상품 리뷰 상태 관리
-    const[reviews, setReviews] = useState([]);
-    //리뷰 평균 평점, 리뷰 개수
-    const[reviewSummary, setReviewSummary] = useState(null);
-    //리뷰 작성용 별점
-    const[reviewScore,setReviewScore] = useState(5);
-    //리뷰 작성용 내용
-    const[reviewText,setReviewText] = useState("");
-
+    }   
     
     //admin 판별 코드
     const user = JSON.parse(sessionStorage.getItem("user"));
@@ -93,7 +93,7 @@ const ItemDetail = () => {
         getItem();
         getItemImgs();
         getReviews();
-        getReviewsSummary();
+        getReviewSummary();
     },[itemId]);
 
 
@@ -153,7 +153,7 @@ const ItemDetail = () => {
     };
 
     //리뷰 평균 평점 조회 함수 추가
-    const getReviewsSummary = async()=>{
+    const getReviewSummary = async()=>{
         try{
             const response = await axios.get(
                 `http://localhost:8080/api/reviews/summary/${itemId}`,
@@ -179,6 +179,11 @@ const ItemDetail = () => {
         if(!user){
             alert("로그인이 필요합니다.");
             navigate("/login");
+            return;
+        }
+
+         if(isAdmin){
+            alert("관리자는 리뷰를 작성할 수 없습니다.");
             return;
         }
 
@@ -214,7 +219,8 @@ const ItemDetail = () => {
             setReviewText("");
 
             getReviews();
-            getReviewsSummary();
+            getReviewSummary();
+
         }catch(error){
             console.error("리뷰 등록 실패",error);
             
@@ -247,7 +253,7 @@ const ItemDetail = () => {
             alert("리뷰가 삭제되었습니다.");
             
             getReviews();
-            getReviewsSummary();
+            getReviewSummary();
         }catch(error){
             console.error("관리자 리뷰 삭제 실패", error);
 
@@ -308,6 +314,7 @@ const ItemDetail = () => {
 
     const renderStars = (score) => {
         
+        const safeScore = Math.max(0,Math.min(5,Number(score||0)));
         const full = "★".repeat(score || 0);
         const empty = "☆".repeat(5 - (score || 0));
 
@@ -375,7 +382,7 @@ const ItemDetail = () => {
 
             {/*관리자 모드일때 상품 리뷰가 상품리뷰관리로 보이도록 */}
             <div style={{ marginTop: "40px", borderTop: "1px solid #ddd", paddingTop: "30px" }}>
-            <h2>상{isAdmin ?"상품 리뷰 관리":"상품 리뷰"}</h2>
+            <h2>{isAdmin ?"상품 리뷰 관리":"상품 리뷰"}</h2>
 
             {reviewSummary && (
                 <div style={{ marginBottom: "20px" }}>

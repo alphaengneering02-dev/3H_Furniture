@@ -23,10 +23,10 @@ const Mypage = () => {
         const savedUser = sessionStorage.getItem('user');
         if (savedUser) {
             const userObj = JSON.parse(savedUser);
-            setMember(userObj);
-            getMyReviews(); //추가 오현옥_리뷰관리
 
-            //서버에서 최신 정보(회원+주소목록) 가져와서 동기화
+            setMember(userObj);
+
+            //서버에서 최신 정보(회원+주소목록) 가져와서 동기화_코딩추가 오현옥
             axios.get('http://localhost:8080/Member/mypage.do', { withCredentials: true })
                 .then(res => {
                     setMember(res.data.member);
@@ -34,6 +34,8 @@ const Mypage = () => {
                     setOrders(res.data.recentOrders || []);
 
                     sessionStorage.setItem('user', JSON.stringify(res.data.member));
+
+                    getMyReviews();
                 })
                 .catch(err => {
                     console.error("최신 데이터 로드 실패", err);
@@ -49,23 +51,39 @@ const Mypage = () => {
         }
     }, []);
 
-    // [구매확정 로직]
+    // [구매확정 로직]_코딩 추가 오현옥
     const handleConfirmPurchase = async (orderId) => {
         if (window.confirm("구매를 확정하시겠습니까?")) {
+            return;
+        }
             try {
                 const params = new URLSearchParams();
                 params.append('orderId', orderId);
                 
-                // 백엔드 주소 수정 완료_오현옥
-                await axios.post('http://localhost:8080/Member/purchase/confirm', params, { withCredentials: true });
-                
-                alert("구매가 확정되었습니다.");
-                window.location.reload(); 
+                const response = await axios.post(
+                    "http://localhost:8080/Member/purchase/confirm",
+                    params,
+                    {
+                        withCredentials:true,
+                    }
+                );
+
+                alert(response.data ||"구매가 확정되었습니다.");
+
+                 setOrders((prevOrders)=> prevOrders.map((order)=>(order.orderId||order.id)
+                ===orderId ? {...order,orderState:"PURCHASED"}:order
+                    )
+                );
+                 
             } catch (err) {
                 console.error("구매 확정 오류:", err);
+
+                if(err.response){
+                    alert(err.response.data);
+                    return;
+                }
                 alert("구매 확정 처리 중 오류가 발생했습니다.");
             }
-        }
     };
 
     //[추가] 교환 및 반품
@@ -174,7 +192,7 @@ const Mypage = () => {
                 }
             );
 
-            console.log("내 리류 목록:" , response.data);
+            console.log("내 리뷰 목록:" , response.data);
             setMyReviews(response.data);
         }catch(error){
             console.error("내 리뷰 조회 실패", error);
@@ -336,9 +354,10 @@ const Mypage = () => {
                                                     주문일: {order.orderDate ? new Date(order.orderDate).toLocaleString() : "-"}
                                                 </p>
                                             </div>
-                                            
+                                            {/*코드 추가_오현옥 주문상태가 레디고, 배송상태가 완료일때만 구매확정 버튼이 보이도록 수정 */}
                                             <div style={{ display: 'flex', gap: '5px' }}>
                                                 {order.orderState === 'PURCHASED' ? (
+    
                                                     <button 
                                                         onClick={() => navigate('/review/write', { state: { orderId: order.orderId } })}
                                                         style={{ backgroundColor: '#2196F3', color: '#fff', border: 'none', padding: '8px 15px', cursor: 'pointer' }}
@@ -443,8 +462,8 @@ const Mypage = () => {
                                     ):(
                                         <div>
                                             <p style={{ color: "#f5a623", fontSize: "20px" }}>
-                                                {"★".repeat(review.reviewScore)}
-                                                {"☆".repeat(5 - review.reviewScore)}
+                                                {"★".repeat(Number(review.reviewScore || 0))}
+                                                {"☆".repeat(5 - Number(review.reviewScore || 0))}
                                             </p>
 
                                             <p>{review.reviewText}</p>
