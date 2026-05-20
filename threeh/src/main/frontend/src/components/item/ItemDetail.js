@@ -21,6 +21,10 @@ const ItemDetail = () => {
     const[reviewScore,setReviewScore] = useState(5);
     //리뷰 작성용 내용
     const[reviewText,setReviewText] = useState("");
+    //가격 정형화.
+    const formatPrice = (price) =>{
+        return Number(price || 0).toLocaleString();
+    };
 
 
     //로그인 확인
@@ -357,9 +361,9 @@ const ItemDetail = () => {
             <p>카테고리: {item.itemCategory}</p>
             <p>상품 설명: {item.itemDetail}</p>
             <p>상품 색상: {item.itemColor}</p>
-            <p>상품 가격: {item.itemPrice}</p>
-            <p>상품 할인가격: {item.itemDiscountPrice}</p>
-            <p>상품 최종가격: {item.itemFinalPrice}</p>
+            <p>상품 가격: {formatPrice(item.itemPrice)}원</p>
+            <p>상품 할인가격: {formatPrice(item.itemDiscountPrice)}원</p>
+            <p>상품 최종가격: {formatPrice(item.itemFinalPrice)}원</p>
             <p>상품 재고: {item.itemStock}</p>
 
             {isAdmin &&(
