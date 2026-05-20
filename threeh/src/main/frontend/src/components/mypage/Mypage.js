@@ -281,7 +281,7 @@ const Mypage = () => {
                 // 로그인 상태
                 <div style={{ display: 'flex' }}>
                     <aside className="mypage-sidebar">
-                        <button className="sidebar-btn" onClick={() => navigate('/schedule')}>배송/설치 시간 내역</button>
+                        <button className="sidebar-btn" onClick={() => navigate('/mypage/schedule')}>배송/설치 시간 내역</button>
                         <button className="sidebar-btn" onClick={() => navigate('/cart/return')}>구매내역 / 교환 및 반품</button>
                         <button className="sidebar-btn" onClick={() => navigate('/cart')}>장바구니 목록</button>
                     </aside>
