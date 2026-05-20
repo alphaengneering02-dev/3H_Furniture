@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import banner_main1 from '../../assets/banner_main1.png';
 import banner_main2 from '../../assets/banner_main2.png';
 import banner_main3 from '../../assets/banner_main3.png';
+import icon_prev from '../../assets/icon_prev.png';
+import icon_next from '../../assets/icon_next.png';
 import { Link } from 'react-router-dom';
 
 const Main_mainBanner = () => {
@@ -47,7 +49,7 @@ const Main_mainBanner = () => {
             <ul className="slide"
                 style={{ 
                     transform: `translateX(-${currentIndex * 100}%)`,
-                    transition: 'transform 0.8s ease-in-out',
+                    transition: 'transform 2s ease-in-out',
                     display: 'flex',
                     padding: 0,
                     margin: 0,
@@ -62,15 +64,19 @@ const Main_mainBanner = () => {
                     > 
                         <Link to={slide.link}>
                             <img src={slide.src} alt={slide.alt} style={{width: '100%', display: 'block'}} />
-                        </Link> 
+                        </Link>
                     </li>
                 ))}
             </ul>
 
             {/* 이전/다음 버튼 */}
             <div className="main-banner-btn-once">
-                <button id="prev" name="prev" className="prev" onClick={handlePrev}> &lt; </button>
-                <button id="next" name="next" className="next" onClick={handleNext}> &gt; </button>
+                <button id="prev" name="prev" className="prev" onClick={handlePrev}>
+                    <img src={icon_prev} alt='이전으로'/>
+                </button>
+                <button id="next" name="next" className="next" onClick={handleNext}>
+                    <img src={icon_next} alt='다음으로'/>
+                </button>
             </div>
 
             {/* 하단 인디케이터 버튼 */}

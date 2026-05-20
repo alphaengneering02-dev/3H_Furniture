@@ -1,8 +1,16 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,500;0,600;1,400&display=swap');
+/* ================================
+   Main Page CSS
+   기준: global.css
+   - body 배경: #F9F8F6
+   - 컨텐츠 박스: #FFFFFF
+   - 기본 폰트: Noto Sans KR
+   - 포인트 폰트: Playfair Display
+================================ */
 
 :root {
   --main-black: #000000;
   --main-charcoal: #2B2D2F;
+  --main-dark-brown: #2F2A25;
   --main-dark-beige: #8C7A6B;
   --main-light-beige: #eee8e0;
   --main-accent-gold: #D4B26F;
@@ -40,7 +48,7 @@
   border-bottom: 1px solid var(--main-border-light);
   top: 0;
   z-index: 1000;
-  font-family: var(--main-font-sans);
+  font-family: var(--main-font-serif);
 }
 
 .main-header .main-inner {
@@ -125,12 +133,14 @@
   outline: none;
   font-size: 14px;
   padding: 6px 10px;
+  font-family: var(--main-font-serif);
   color: var(--main-charcoal);
   background: none;
 }
 
 .main-header-topBox .main-header-search .bar input::placeholder {
   color: #B2B2B2;
+  font-weight: bold;
 }
 
 .main-header-topBox .main-header-search .bar button {
@@ -184,7 +194,7 @@
   margin: 0;
   font-size: 13px;
   color: #666;
-  font-weight: 400;
+  font-weight: 600;
 }
 
 .main-header-topBox .main-header-userMenu li a:hover img {
@@ -340,7 +350,7 @@
 
 .main-header-GNB > ul > li > a {
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--main-charcoal);
   text-decoration: none;
   letter-spacing: -0.01em;
@@ -358,7 +368,7 @@
   top: 100%;
   left: 50%;
   transform: translateX(-50%);
-  background-color: var(--main-light-beige);
+  background-color: var(--main-dark-brown);
   border: 1px solid var(--main-border-light);
   box-shadow: 0 3px 10px rgba(0,0,0,0.5);
   list-style: none;
@@ -376,14 +386,14 @@
   height: 36px;
   padding: 8px 18px;
   font-size: 13px;
-  color: #555;
+  color: var(--main-bg-ivory);
   text-decoration: none;
   text-align: center;
   white-space: nowrap;
 }
 
-.main-header-GNB .main-header-sub1 li a > p:hover {
-    border-bottom: 2px solid var(--main-charcoal);
+.main-header-GNB .main-header-sub1 li > a:hover {
+    /* border-bottom: 2px solid var(--main-charcoal); */
     font-weight: 900;
 }
 
@@ -395,7 +405,11 @@
 
 /* sub2 영역은 회색 상속을 끊고 흰색으로 채우기 */
 .main-header-GNB .main-header-sub2 {
-  background-color: var(--main-bg-white);
+    background-color: var(--main-bg-white);
+}
+
+.main-header-GNB .main-header-sub2 p {
+    color: var(--main-charcoal);
 }
 
 
@@ -422,15 +436,31 @@
   position: relative;
   overflow: hidden; 
   width: 100%;
+  position: relative;
 }
 
 
-/*메인 배너 - 슬라이드 버튼*/
+/*메인 배너 - 이전/다음 버튼*/
 .main-banner-btn-once {
-
+    position: absolute;
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: space-between;
+    width: 90%;
+}
+.main-banner-btn-once button {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+.main-banner-btn-once button img {
+    width: 45px;
 }
 
+/*메인 배너 - 인디케이터 버튼*/
 .main-banner-btn-indicater {
+    position: absolute;
+    bottom: 3%; left: 50%; transform: translate(-50%, -50%);
     display: flex;
     justify-content: center;
     gap: 10px;
@@ -450,124 +480,12 @@
     background-color: var(--main-black, #000); /* 현재 활성화된 버튼 색상 */
 }
 
-
+/* /========================================== */
 
 /* 상품 목록 영역 */
 .main-item-section {
   width: 100%;
 }
-
-/* 섹션 타이틀 (Ex. 햋살 짙어지는 5월의 식탁) */
-.section-title-area {
-  text-align: center;
-  margin-bottom: 35px;
-}
-
-.section-title-area .subtitle {
-  font-family: var(--main-font-serif);
-  font-size: 13px;
-  color: #999;
-  letter-spacing: 0.15em;
-  display: block;
-  margin-bottom: 10px;
-  font-weight: 500;
-}
-
-.section-title-area .section-title {
-  font-size: 26px;
-  font-weight: 400; /* 까사미아는 너무 두껍지 않은 서체를 선호합니다 */
-  color: #111;
-}
-
-/* 카테고리 해시태그 탭 메뉴 */
-.category-tab-container {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 45px;
-}
-
-.category-tab-container .tab-btn {
-  background: #F5F5F5;
-  border: none;
-  padding: 10px 22px;
-  border-radius: 30px;
-  font-size: 14px;
-  color: #666;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.category-tab-container .tab-btn.active,
-.category-tab-container .tab-btn:hover {
-  background: var(--main-black);
-  color: var(--main-bg-white);
-  font-weight: 500;
-}
-
-
-/* 찜(하트) 버튼 */
-.casamia-item-card .wish-btn {
-  position: absolute;
-  bottom: 12px;
-  right: 12px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10;
-}
-
-
-
-/* 상품 텍스트 정보 영역 */
-.casamia-item-card .info-box {
-  display: flex;
-  flex-direction: column;
-  text-align: left;
-}
-
-.casamia-item-card .brand-name {
-  font-size: 11px;
-  color: var(--main-dark-beige);
-  font-weight: 500;
-  margin-bottom: 5px;
-  text-transform: uppercase;
-}
-
-.casamia-item-card .item-name {
-  font-size: 13px;
-  color: var(--main-charcoal);
-  line-height: 1.4;
-  margin: 0 0 8px 0;
-  height: 36px; /* 두 줄 제한 효과 */
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-/* 가격 및 할인율 구조 */
-.casamia-item-card .price-area {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.casamia-item-card .discount-rate {
-  color: var(--main-alert-red);
-  font-weight: 700;
-  font-size: 14px;
-}
-
-.casamia-item-card .current-price {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--main-black);
-}
-
 
 
 /* ==========================================

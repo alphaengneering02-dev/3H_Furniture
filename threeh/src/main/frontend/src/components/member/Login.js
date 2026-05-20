@@ -5,6 +5,10 @@ import icon_google from '../../assets/icon_google.png';
 import icon_kakao from '../../assets/icon_kakao.png';
 import icon_naver from '../../assets/icon_naver.png';
 
+//Login 전용 CSS 임포트
+import '../../css/memberPageCss/login.css';
+import Header from '../main/Header';
+
 const Login = () => {
 
     const navigate = useNavigate();
@@ -31,19 +35,16 @@ const Login = () => {
 
     //로그인 상태 유지 기능
     const [isChecked, setIsChecked] = useState(false);
-
     const changeChecked = (evt) => {
         setIsChecked(!isChecked)
         
     };
 
-
     const [loginResultMsg, setLoginResultMsg] = useState("");
-     const expireTime = 30 * 60 * 1000  //세션 만료시간(밀리초 단위, 30분)
+    const expireTime = 30 * 60 * 1000  //세션 만료시간(밀리초 단위, 30분)
 
 
-
-    //제출
+    //제출 처리
     const onSubmit = async(evt) => {
 
         //브라우저의 기본 폼 제출(새로고침) 방지
@@ -165,65 +166,97 @@ const Login = () => {
 
     return (
         <div>
-            Login 페이지
-            
-            <h1> <Link to="/">로고</Link> </h1>
-
-            <h2>회원 로그인</h2>
-
-
-            <form>
-                {/* 아이디 */}
-                <div>
-                    <input type='text' value={id} id='id' name='id' placeholder='아이디' onChange={changeInput}/>
-                </div>
-
-                {/* 비밀번호 */}
-                <div>
-                    <input type='password' value={password} id='password' name='password' placeholder='비밀번호' onChange={changeInput}/>
-                </div>
-            </form>
-
-
-            <article>
-                <p> <input type='checkbox' checked={isChecked} onChange={changeChecked}/>로그인 상태 유지 </p>
-                <p> 
-                    <span onClick={() => navigate("/findId")}>아이디 찾기</span>
-                    <span onClick={() => navigate("/changePw")}>비밀번호 찾기</span>
-                </p>
-            </article>
-
-
-            <button onClick={onSubmit}>로그인</button>
-
-
-            
-            {/* oauth2 소셜 로그인 */}
-            <div>
-                <p> 
-                    <Link to="http://localhost:8080/oauth2/authorization/google">
-                        <img src={icon_google} alt='구글' style={{width: 70}}/>
-                    </Link>
-                </p>
-                <p> 
-                    <Link to="http://localhost:8080/oauth2/authorization/naver">
-                        <img src={icon_naver} alt='네이버'/>
-                    </Link>
-                </p>
-                <p> 
-                    <Link to="http://localhost:8080/oauth2/authorization/kakao">
-                        <img src={icon_kakao} alt='카카오'/>
-                    </Link>
-                </p>
+            {/* Header 영역 */}
+            <div className="main-header">
+                <Header/>
             </div>
 
 
+            <div className="login-container">
+                {/* 상단 타이틀 */}
+                <h2 className="login-title">회원 로그인</h2>
 
-            <article>
-                <p>계정이 없으신가요? 지금 바로 만들어 보세요.</p>
-                <button onClick={() => navigate("/signup")}>회원가입</button>  {/* Link */}
-            </article>
 
+                {/* 로그인 입력 폼 */}
+                <form className="login-form">
+                    {/* 아이디 */}
+                    <div className="login-input-group">
+                        <input 
+                            type='text' 
+                            value={id} id='id' name='id' 
+                            placeholder='아이디' 
+                            onChange={changeInput}
+                            className="login-input-field"
+                        />
+                    </div>
+
+                    {/* 비밀번호 */}
+                    <div className="login-input-group">
+                        <input 
+                            type='password' 
+                            value={password} id='password' name='password' 
+                            placeholder='비밀번호' 
+                            onChange={changeInput}
+                            className="login-input-field"
+                        />
+                    </div>
+                </form>
+
+
+                {/* 아이디 / 비밀번호 찾기 */}
+                <article className="login-utility-box">
+                    <p> <input type='checkbox' checked={isChecked} onChange={changeChecked}/>로그인 상태 유지 </p>
+                    <p> 
+                        <span className="login-utility-link" onClick={() => navigate("/findId")}>아이디 찾기</span>
+                        <span className="login-utility-divider">|</span>
+                        <span className="login-utility-link" onClick={() => navigate("/changePw")}>비밀번호 찾기</span>
+                    </p>
+                </article>
+
+                {/* 로그인 버튼 */}
+                <button onClick={onSubmit}>로그인</button>
+
+                
+
+                {/* ===================oauth2 소셜 로그인=================== */}
+                <div>
+                    <hr className="login-social-divider"/>
+
+                    {/* 소셜 로그인 간편 아이콘 */}
+                    <div className="login-social-group">
+                        <p> 
+                            <Link to="http://localhost:8080/oauth2/authorization/google">
+                                <img src={icon_google} alt='구글' className="login-social-icon"/>
+                            </Link>
+                        </p>
+                        <p> 
+                            <Link to="http://localhost:8080/oauth2/authorization/naver">
+                                <img src={icon_naver} alt='네이버' className="login-social-icon"/>
+                            </Link>
+                        </p>
+                        <p> 
+                            <Link to="http://localhost:8080/oauth2/authorization/kakao">
+                                <img src={icon_kakao} alt='카카오' className="login-social-icon"/>
+                            </Link>
+                        </p>
+                    </div>
+
+                    <hr className="login-social-divider"/>
+                </div>
+
+
+                {/* 하단 회원가입 유도 가이드 박스 */}
+                <article className="login-signup-notice-box">
+                    <p className="login-signup-desc">계정이 없으신가요? 지금 바로 만들어 보세요.</p>
+                    <button 
+                        onClick={() => navigate("/signup")} 
+                        className="login-signup-link-btn"
+                    >
+                        회원가입
+                    </button>
+                </article>
+
+            </div>
         </div>
     );
 };

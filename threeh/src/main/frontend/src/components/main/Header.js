@@ -277,10 +277,10 @@ const Header = () => {
                             <li>
                                 <Link to="#">거실</Link>
                                 <ul className="main-header-sub1">
-                                    <li> <Link to="#"><p>서브메뉴1</p></Link> </li>
-                                    <li> <Link to="#"><p>서브메뉴2</p></Link> </li>
-                                    <li> <Link to="#"><p>서브메뉴3</p></Link> </li>
-                                    <li> <Link to="#"><p>서브메뉴4</p></Link> </li>
+                                    <li> <Link to="#">서브메뉴1</Link> </li>
+                                    <li> <Link to="#">서브메뉴2</Link> </li>
+                                    <li> <Link to="#">서브메뉴3</Link> </li>
+                                    <li> <Link to="#">서브메뉴4</Link> </li>
                                 </ul>
                             </li>
 
@@ -290,7 +290,7 @@ const Header = () => {
                                 <Link to="#">침실</Link>
                                 <ul className="main-header-sub1">
                                     <li>
-                                        <Link to="#"><p>서브메뉴1</p></Link>
+                                        <Link to="#">서브메뉴1</Link>
                                         <ul className="main-header-sub2">
                                             <li> <Link to="#"><p>서브-서브메뉴1</p></Link> </li>
                                             <li> <Link to="#"><p>서브-서브메뉴2</p></Link> </li>
@@ -300,7 +300,7 @@ const Header = () => {
                                     </li>
                                     
                                     <li>
-                                        <Link to="#"><p>서브메뉴2</p></Link>
+                                        <Link to="#">서브메뉴2</Link>
                                         <ul className="main-header-sub2">
                                             <li> <Link to="#"><p>서브-서브메뉴1</p></Link> </li>
                                             <li> <Link to="#"><p>서브-서브메뉴2</p></Link> </li>
