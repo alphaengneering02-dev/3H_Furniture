@@ -1,0 +1,269 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,500;0,600;1,400&display=swap');
+
+/* 배송 기사 페이지 전용 변수 및 초기화 */
+:root {
+  --driver-black: #000000;
+  --driver-charcoal: #2B2D2F;
+  --driver-warm-grey: #8C7A6B;
+  --driver-accent-gold: #D4B26F;
+  --driver-alert-red: #FF3B30;      
+  --driver-success-green: #4CAF50;
+  
+  --driver-bg-ivory: #F9F8F6;       
+  --driver-bg-white: #FFFFFF;
+  
+  --driver-border-light: #E5E2DC;   
+  --driver-border-dark: #1A1A1A;    
+
+  --driver-font-sans: 'Noto Sans KR', sans-serif;
+  --driver-font-serif: 'Playfair Display', serif;
+}
+
+.driver-body-wrapper {
+  font-family: var(--driver-font-sans);
+  background-color: var(--driver-bg-white);
+  color: #1A1A1A;
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.02em;
+  padding-bottom: 60px;
+}
+
+/* 전체 감싸는 콘텐트 컨테이너 */
+.driver-container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* ==========================================
+   기사 상단 정보 바 (Header)
+   ========================================== */
+.driver-top-info-bar {
+  background-color: var(--driver-bg-ivory);
+  border-bottom: 1px solid var(--driver-border-light);
+  width: 100%;
+  margin-bottom: 30px;
+}
+
+.driver-top-info-list {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1240px;
+  margin: 0 auto;
+  height: 60px;
+  padding: 0 20px;
+}
+
+.driver-info-text {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--driver-charcoal);
+}
+
+.driver-info-text strong {
+  color: var(--driver-warm-grey);
+}
+
+/* ==========================================
+   로그인 섹션 스타일
+   ========================================== */
+.driver-login-section {
+  max-width: 400px;
+  margin: 100px auto;
+  padding: 40px;
+  border: 1px solid var(--driver-border-light);
+  background-color: var(--driver-bg-ivory);
+  text-align: center;
+}
+
+.driver-login-title {
+  font-family: var(--driver-font-sans);
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 24px;
+  color: var(--driver-charcoal);
+  letter-spacing: 0.05em;
+}
+
+.driver-login-input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 12px;
+  border: 1px solid var(--driver-border-light);
+  font-size: 14px;
+  font-family: var(--driver-font-sans);
+}
+
+.driver-login-input:focus {
+  outline: none;
+  border-color: var(--driver-charcoal);
+}
+
+/* ==========================================
+   섹션 타이틀 및 헤드라인 
+   ========================================== */
+.driver-headline {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--driver-charcoal);
+  border-bottom: 2px solid var(--driver-border-dark);
+  padding-bottom: 12px;
+  margin-top: 40px;
+  margin-bottom: 20px;
+}
+
+.driver-empty-msg {
+  font-size: 14px;
+  color: #999999;
+  padding: 20px 0;
+}
+
+/* ==========================================
+   정갈한 주문 리스트 격자 레이아웃 (Grid)
+   ========================================== */
+.driver-order-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  column-gap: 24px;
+  row-gap: 24px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 1024px) {
+  .driver-order-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+  .driver-order-grid { grid-template-columns: 1fr; }
+}
+
+/* 개별 주문 카드 레이아웃 */
+.driver-order-card {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--driver-bg-white);
+  border: 1px solid var(--driver-border-light);
+  padding: 20px;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.driver-order-card.checked {
+  border-color: var(--driver-warm-grey);
+  background-color: var(--driver-bg-ivory);
+}
+
+/* 카드 상단 체크박스 및 라벨 구역 */
+.driver-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.driver-checkbox {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--driver-warm-grey);
+  cursor: pointer;
+}
+
+.driver-order-id {
+  font-size: 12px;
+  font-family: var(--driver-font-serif);
+  font-weight: 600;
+  color: var(--driver-warm-grey);
+}
+
+/* 주문 내용 (주소 등) */
+.driver-order-addr {
+  font-size: 14px;
+  font-weight: 400;
+  color: #1A1A1A;
+  line-height: 1.5;
+  margin-bottom: 8px;
+  min-height: 42px;
+}
+
+/* ================= "수락된 주문" 전용 가로형 리스트 레이아웃 ================= */
+.driver-list-row {
+  border-bottom: 1px solid var(--driver-border-light);
+  padding: 16px 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* ==========================================
+   공통 버튼 디자인 시스템
+   ========================================== */
+.driver-btn-group {
+  display: flex;
+  gap: 12px;
+  margin-top: 15px;
+}
+
+.driver-btn {
+  font-family: var(--driver-font-sans);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 12px 24px;
+  border: 1px solid var(--driver-border-dark);
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+  background-color: var(--driver-bg-white);
+  color: var(--driver-black);
+}
+
+.driver-btn:hover {
+  background-color: var(--driver-black);
+  color: var(--driver-bg-white);
+}
+
+/* 메인 강조 버튼 (배송출발 등) */
+.driver-btn-primary {
+  background-color: var(--driver-charcoal);
+  color: var(--driver-bg-white);
+  border: none;
+  width: 100%;
+  padding: 14px;
+  font-size: 15px;
+  letter-spacing: 0.05em;
+}
+
+.driver-btn-primary:hover {
+  background-color: var(--driver-black);
+}
+
+/* 거절/취소 버튼 */
+.driver-btn-danger {
+  border-color: var(--driver-alert-red);
+  color: var(--driver-alert-red);
+}
+.driver-btn-danger:hover {
+  background-color: var(--driver-alert-red);
+  color: white;
+}
+
+/* 대기전환 전용 중앙 배치 구역 */
+.driver-reset-box {
+  text-align: center;
+  margin: 50px 0;
+  padding: 30px;
+  background-color: var(--driver-bg-ivory);
+  border: 1px dashed var(--driver-border-light);
+}
+
+.driver-btn-success {
+  background-color: var(--driver-success-green);
+  color: white;
+  border: none;
+  padding: 14px 28px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.driver-btn-success:hover {
+  background-color: #45a049;
+}

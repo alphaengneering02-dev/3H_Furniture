@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import '../../css/adminCss/driverPage.css';
 
 const DriverPage = () => {
     const [driver, setDriver] = useState(null);
@@ -24,14 +25,6 @@ const DriverPage = () => {
         setDriver(driverData);
         setIsLoggedIn(true);
         fetchDriverOrders(driverData.deliveryId);
-
-        // 💡 [추가] 3초(3000ms)마다 (자동 리로드)
-        const interval = setInterval(() => {
-            fetchDriverOrders(driverData.deliveryId);
-        }, 3000); 
-
-        // 컴포넌트가 닫힐 때 타이머를 청소해 줍니다. (에러 방지)
-        return () => clearInterval(interval);
             }
         }, []);
 
@@ -39,7 +32,7 @@ const DriverPage = () => {
     const fetchDriverOrders = async (deliveryId) => {
     try {
         const orderRes = await axios.get(`/admin/driver/${deliveryId}/orders`);
-        const dbOrders = orderRes.data; // 현재 나에게 배정 유지된 주문들만 옴
+        const dbOrders = orderRes.data; 
         
         // 1. 신규 배정 및 배송중 필터링
         const newOrders = dbOrders.filter(o => !o.deliveryStatus && o.orderState !== 'CANCEL');
@@ -255,27 +248,59 @@ const handleResetToWaiting = async () => {
 
     if (!isLoggedIn) {
         return (
-            <div>
-                <h2>기사 로그인</h2>
-                <input placeholder="전화번호"
-                    onChange={e => setLoginInfo({ ...loginInfo, phone: e.target.value })} />
-                <input placeholder="차량번호"
-                    onChange={e => setLoginInfo({ ...loginInfo, carSuffix: e.target.value })} />
-                <button onClick={handleLogin}>로그인</button>
-            </div>
+            <div className="driver-body-wrapper">
+               <div className="driver-login-section"> 
+                <h2 className="driver-login-title">기사 로그인</h2>
+                <input className="driver-login-input"
+                    type="text"
+                    inputMode="numeric"
+                    maxLength={11}
+                    placeholder="전화번호(010 0000 0000)"
+                    value={loginInfo.phone}
+                    onChange={e => {
+                        const onlyNums = e.target.value.replace(/[^0-9]/g, '');
+                        setLoginInfo({ ...loginInfo, phone: onlyNums });
+                                }} 
+                            />
+                    <input 
+                    className="driver-login-input"
+                    type="text"
+                    inputMode="numeric"
+                    maxLength={4}
+                    placeholder="차량번호 (4자리)"
+                    value={loginInfo.carSuffix}
+                    onChange={e => {
+                        const onlyNums = e.target.value.replace(/[^0-9]/g, '');
+                        setLoginInfo({ ...loginInfo, carSuffix: onlyNums });
+                            }} 
+                        />
+            <button className="driver-btn driver-btn-primary" 
+            style={{marginTop: '10px'}} onClick={handleLogin}>
+            로그인</button>
+                </div>
+            </div> 
         );
     }
 
     return (
-        <div>
-            <div className="driver-info">
-                <p>기사명: {driver.deliveryName} ({driver.deliveryCarNo})</p>
-                <button onClick={handleLogout}>로그아웃</button>
+        <div className="driver-body-wrapper">
+            <div className="driver-top-info-bar">
+                <div className="driver-top-info-list">
+                    <p className="driver-info-text">
+                        배송 파트너: <strong>{driver.deliveryName}</strong> 기사님 ({driver.deliveryCarNo})
+                    </p>
+                    <button className="driver-btn" style={{padding: '6px 16px', fontSize: '12px'}} onClick={handleLogout}>
+                        로그아웃
+                    </button>
+                </div>
             </div>
 
+            <div className="driver-container">
+
             {/* 1. 신규 배정 */}
-            <h2>📌 신규 배정 (수락 대기 WAITING)</h2>
-            {orders.length === 0 ? <p>새로운 배정 요청이 없습니다.</p> : 
+            <h2 className="driver-headline">📌 신규 배정(수락 대기 WAITING)</h2>
+            {orders.length === 0 ? <p className="driver-empty-msg">
+                새로운 배정 요청이 없습니다.</p> : 
                 orders.map(order => (
                     <div key={order.orderId}>
                         <input
@@ -355,7 +380,7 @@ const handleResetToWaiting = async () => {
     </div>
 )}
 
-
+</div>
 
 
         </div>

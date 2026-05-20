@@ -137,6 +137,9 @@ const AdminDashboard = () => {
 const handleAssignDriver = async (orderId) => {
     const deliveryIdRaw = selectedDrivers[orderId];
 
+    // 미배정 확인 로그
+    console.log(`[기사배정 시도] 주문ID: ${orderId} ➡️ 선택된 기사 ID: ${deliveryIdRaw}`);
+
     if (!deliveryIdRaw) {
         alert("기사를 선택해주세요.");
         return;
@@ -183,10 +186,15 @@ const handleAssignDriver = async (orderId) => {
             ? `${firstName} 외 ${extraCount}개 상품`
             : firstName;
     };
-
+//미배정 콘솔 확인용
     const fetchOrders = async () => {
-  const res = await axios.get("/admin/orders");
-  setOrders(res.data);
+    try {
+        const response = await axios.get('/admin/orders');
+        
+        setOrders(response.data);
+    } catch(err) {
+        console.error("어드민 데이터 로드 에러:", err);
+    }
 };
 
 const handleStatusChange = async (orderId, nextState) => {
