@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import axios from "axios";
+import '../../css/itemPageCss/itemPage.css';
 
 function Item() {
   const navigate = useNavigate();
@@ -658,7 +659,7 @@ function Item() {
   //JSX부분^__________^
 
   return (
-    <div>
+    <div >
         {/*상품 목록 페이지 제목 */}
       <h1>상품 목록</h1>
 

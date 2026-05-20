@@ -1,0 +1,62 @@
+/* src/css/itemPageCss/itemPage.css */
+
+/* 전체 레이아웃 */
+.item-page-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #F9F8F6;
+}
+
+/* 상품 목록 및 관리 영역 */
+.item-list-section {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.item-card {
+    background: #FFFFFF;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    width: calc(33.333% - 20px);
+}
+
+/* 관리자 테이블 스타일 */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: #FFFFFF;
+}
+
+th, td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+/* 버튼 스타일 */
+button {
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+button:hover {
+    background-color: #eee;
+}
+
+/* 선택한 상품 영역 */
+.selected-items-section {
+    border: 2px solid #333 !important;
+    padding: 20px;
+    margin-top: 30px;
+    background-color: #fff;
+}
