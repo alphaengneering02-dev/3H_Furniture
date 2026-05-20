@@ -110,7 +110,6 @@
     width: 100%;
     max-width: 420px;
     position: relative;
-    background: var(--main-bg-white);
 }
 
 .main-header-topBox .main-header-search .bar {
@@ -127,6 +126,7 @@
   font-size: 14px;
   padding: 6px 10px;
   color: var(--main-charcoal);
+  background: none;
 }
 
 .main-header-topBox .main-header-search .bar input::placeholder {
@@ -200,7 +200,7 @@
 /* ==========================================
    2. 고급 검색 조건 창 (Header_searchCondition)
    ========================================== */
-.main-header-topBox .main-header-search .main-header-list {
+.main-header-topBox .main-header-search .main-header-searchCondition {
   position: absolute;
   top: calc(100% + 12px);
   left: 50%;
@@ -211,11 +211,10 @@
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
   padding: 24px;
   z-index: 500;
-  border-radius: 4px;
 }
 
 /* 검색 조건 상단 타이틀 바 */
-.main-header-topBox .main-header-search .main-header-list article:first-child {
+.main-header-topBox .main-header-search .main-header-searchCondition article:first-child {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -224,14 +223,14 @@
   margin-bottom: 18px;
 }
 
-.main-header-topBox .main-header-search .main-header-list h3 {
+.main-header-topBox .main-header-search .main-header-searchCondition h3 {
   font-size: 16px;
   font-weight: 500;
   margin: 0;
   color: var(--main-black);
 }
 
-.main-header-topBox .main-header-search .main-header-list button[type='button'] {
+.main-header-topBox .main-header-search .main-header-searchCondition button[type='button'] {
   background: none;
   border: none;
   font-size: 12px;
@@ -240,24 +239,24 @@
   cursor: pointer;
 }
 
-.main-header-topBox .main-header-search .main-header-list button[type='button']:hover {
+.main-header-topBox .main-header-search .main-header-searchCondition button[type='button']:hover {
   color: var(--main-black);
 }
 
 /* 카테고리, 색상 개별 아이템 그룹화 */
-.main-header-topBox .main-header-search .main-header-list article:last-child {
+.main-header-topBox .main-header-search .main-header-searchCondition article:last-child {
   display: flex;
   flex-direction: column;
   gap: 22px;
 }
 
-.main-header-topBox .main-header-search .main-header-list article:last-child > div {
+.main-header-topBox .main-header-search .main-header-searchCondition article:last-child > div {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.main-header-topBox .main-header-search .main-header-list article:last-child p {
+.main-header-topBox .main-header-search .main-header-searchCondition article:last-child p {
   margin: 0;
   font-size: 13px;
   font-weight: 600;
@@ -265,14 +264,14 @@
 }
 
 /* 체크박스 정렬 행 */
-.main-header-topBox .main-header-search .main-header-list article:last-child div > div {
+.main-header-topBox .main-header-search .main-header-searchCondition article:last-child div > div {
   display: flex;
   flex-wrap: wrap;
   gap: 14px;
 }
 
 /* 체크박스 커스텀 정돈 (정갈한 사각형 스타일) */
-.main-header-topBox .main-header-search .main-header-list input[type="checkbox"] {
+.main-header-topBox .main-header-search .main-header-searchCondition input[type="checkbox"] {
   accent-color: var(--main-black); /* 체크 시 검은색 채우기 */
   width: 15px;
   height: 15px;
@@ -280,7 +279,7 @@
   vertical-align: middle;
 }
 
-.main-header-topBox .main-header-search .main-header-list label {
+.main-header-topBox .main-header-search .main-header-searchCondition label {
   font-size: 13px;
   color: var(--main-charcoal);
   cursor: pointer;
@@ -290,7 +289,7 @@
 }
 
 /* 가격대 레이아웃 전용 디자인 */
-.main-header-topBox .main-header-search .main-header-list h4 {
+.main-header-topBox .main-header-search .main-header-searchCondition h4 {
   margin: 0 0 6px 0;
   font-size: 13px;
   font-weight: 600;
@@ -298,13 +297,13 @@
 }
 
 /* Material UI Slider 컨테이너 규격 조정 */
-.main-header-topBox .main-header-search .main-header-list .MuiSlider-root {
+.main-header-topBox .main-header-search .main-header-searchCondition .MuiSlider-root {
   margin: 25px auto 10px auto !important; /* 중요: 슬라이더 밸류 팝업 공간 확보 */
   width: 88% !important;
   color: var(--main-black) !important; /* 슬라이더 바 컬러 매칭 */
 }
 
-.main-header-topBox .main-header-search .main-header-list .MuiSlider-valueLabel {
+.main-header-topBox .main-header-search .main-header-searchCondition .MuiSlider-valueLabel {
   background-color: var(--main-black) !important;
   font-size: 11px !important;
 }
@@ -413,9 +412,45 @@
 }
 
 /* 메인 배너 영역 */
-.main-banner-section {
-  margin-bottom: 90px;
+.main-banner {
+    width: 100%;
+    background: blue;
 }
+
+/* 부모 영역에서 넘치는 슬라이드 숨기기 */
+.main-banner-mainSlide {
+  position: relative;
+  overflow: hidden; 
+  width: 100%;
+}
+
+
+/*메인 배너 - 슬라이드 버튼*/
+.main-banner-btn-once {
+
+}
+
+.main-banner-btn-indicater {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    list-style: none;
+    padding: 0;
+}
+.main-banner-btn-indicater li {
+    width: 12px;
+    height: 12px;
+    background-color: #ccc;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+/* 현재 보여주는 슬라이드의 버튼 강조 */
+.main-banner-btn-indicater li.active {
+    background-color: var(--main-black, #000); /* 현재 활성화된 버튼 색상 */
+}
+
+
 
 /* 상품 목록 영역 */
 .main-item-section {
