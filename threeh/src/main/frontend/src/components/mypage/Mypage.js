@@ -195,9 +195,32 @@ const Mypage = () => {
                                             
                                             <div style={{ display: 'flex', gap: '5px' }}>
                                                 {order.orderState === 'PURCHASED' ? (
-                                                    <button onClick={() => navigate('/review/write', { state: { orderId: order.orderId } })} style={{ backgroundColor: '#2196F3', color: '#fff', border: 'none', padding: '8px 15px', cursor: 'pointer' }}>리뷰쓰기</button>
-                                                ) : (
-                                                    <button onClick={() => handleConfirmPurchase(order.orderId || order.id)} style={{ backgroundColor: '#4CAF50', color: '#fff', border: 'none', padding: '8px 15px', cursor: 'pointer' }}>구매확정</button>
+                                                    <button onClick={()=>navigate(`/item/${order.itemId}`)}
+                                                    disabled={!order.itemId}
+                                                    style={{
+                                                        backgroundColor:"#2196F3",
+                                                        color:"#fff",
+                                                        border:"none",
+                                                        padding:"8px 15px",
+                                                        cursor:order.itemId ? "pointer":"not-allowed",
+                                                    }}
+                                                    >
+                                                        리뷰쓰기
+                                                    </button>
+                                                ): order.orderState === "READY" && order.deliveryStaus ==="COMPLETED"?(
+                                                    <button onClick={()=>handleConfirmPurchase(order.orderId||order.id)}
+                                                    style={{backgroundColor:"#4CAF50",
+                                                        color:"#fff",
+                                                        border:"none",
+                                                        padding:"8px 15px",
+                                                        cursor:"pointer",
+                                                    }}>
+                                                        구매확정
+                                                    </button>
+                                                ):(
+                                                    <span style={{color:"#888",fontSize:"13px"}}>
+                                                        배송완료 후 구매확정 가능
+                                                    </span>
                                                 )}
                                             </div>
                                         </div>
