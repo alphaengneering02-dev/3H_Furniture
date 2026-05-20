@@ -3,6 +3,8 @@ import { useNavigate, Link, useLocation } from "react-router-dom";
 import axios from "axios";
 import '../../css/itemPageCss/itemPage.css';
 
+//상품목록,관리자테이블,선택상품영역이 모두 코딩되어 있는 곳입니다. 망가지면 큰일나요.
+
 function Item() {
   const navigate = useNavigate();
 
@@ -656,16 +658,16 @@ function Item() {
   };
 
 
-  //JSX부분^__________^
+  //JSX부분^__________^===================================================
 
   return (
-    <div >
+    <div className="item-page">
         {/*상품 목록 페이지 제목 */}
-      <h1>상품 목록</h1>
+      <h1 className="item-title">상품 목록</h1>
 
          {/*내 장바구니로 가기_admin인경우 안보이게*/}
       {!isAdmin&&(
-        <div style={{marginBottom:"20px"}}>
+        <div className="item-action-area">
             <button type="button" onClick={handlGoMyCart}>
                 장바구니 보기
             </button>
@@ -674,7 +676,7 @@ function Item() {
 
       {/*관리자 로그인 시에만 상품 등록/수정삭제 버튼 표시 */}
       {isAdmin && (
-        <div style={{ marginBottom: "20px" }}>
+        <div className="item-action-area">
           <button type="button" onClick={handleAdminCreateClick}>
             상품 등록하기
           </button>
@@ -702,17 +704,13 @@ function Item() {
 
     {/*adminMode가 true이고 관리자라면 관리자용 테이블 표시 */}
       {adminMode && isAdmin ? (
-        <div>
-          <h2>관리자 상품 관리</h2>
+        <div className="item-admin-section">
+          <h2 className="item-section-title">관리자 상품 관리</h2>
 
           {items.length === 0 ? (
             <p>등록된 상품이 없습니다.</p>
           ) : (
-            <table
-              border="1"
-              cellPadding="10"
-              style={{ borderCollapse: "collapse", width:"100%", }}
-            >
+            <table className="item-table">
               <thead>
                 <tr>
                   <th>ItemId</th>
@@ -737,6 +735,7 @@ function Item() {
                     <td>
                       <button
                         type="button"
+                        className="item-button item-sub-button"
                         onClick={() => handleUpdateClick(item.itemId)}
                       >
                         수정
@@ -744,8 +743,8 @@ function Item() {
 
                       <button
                         type="button"
+                        className="item-button item-danger-button"
                         onClick={() => handleDeleteClick(item.itemId)}
-                        style={{ marginLeft: "10px" }}
                       >
                         삭제
                       </button>
@@ -759,15 +758,16 @@ function Item() {
       ) : (
         <div>
           {items.length === 0 ? (
-            <p>상품이 없습니다.</p>
+            <p className="item-empty-text">상품이 없습니다.</p>
           ) : (
             items.map((item) => {
               const selectable = canSelectItem(item, false);
 
               return (
-                <div key={item.itemId} style={{ marginBottom: "30px" }}>
+                <div key={item.itemId} className="item-card">
                   {!isAdmin && (
                     <input
+                      className="item-checkbox"
                       type="checkbox"
                       checked={isSelected(item.itemId)}
                       disabled={!selectable}
@@ -777,30 +777,30 @@ function Item() {
 
                   {item.itemImgUrl ? (
                     <img
+                      className="item-image"
                       src={`http://localhost:8080${item.itemImgUrl}`}
                       alt={item.itemName}
-                      width="200"
                     />
                   ) : (
-                    <p>이미지 없음</p>
+                    <p className="item-no-image">이미지 없음</p>
                   )}
 
-                <div>
-                  <Link to={`/item/${item.itemId}`}>
-                    <h2>{item.itemName}</h2>
+                <div className="item-info">
+                  <Link className="item-link" to={`/item/${item.itemId}`}>
+                    <h2 className="item-name">{item.itemName}</h2>
                   </Link>
 
-                  <p>카테고리: {item.itemCategory}</p>
-                  <p>상품 설명: {item.itemDetail}</p>
-                  <p>상품 색상: {item.itemColor}</p>
-                  <p>상품 가격: {formatPrice(item.itemPrice)}원</p>
-                  <p>상품 할인가격: {formatPrice(item.itemDiscountPrice)}원</p>
-                  <p>상품 최종가격: {formatPrice(getFinalPrice(item))}원</p>
-                  <p>상품 재고: {item.itemStock}</p>
-                  <p>판매 상태: {item.itemSellStatus}</p>
+                  <p className="item-text">카테고리: {item.itemCategory}</p>
+                  <p className="item-text">상품 설명: {item.itemDetail}</p>
+                  <p className="item-text">상품 색상: {item.itemColor}</p>
+                  <p className="item-text">상품 가격: {formatPrice(item.itemPrice)}원</p>
+                  <p className="item-text">상품 할인가격: {formatPrice(item.itemDiscountPrice)}원</p>
+                  <p className="item-text item-price">상품 최종가격: {formatPrice(getFinalPrice(item))}원</p>
+                  <p className="item-text">상품 재고: {item.itemStock}</p>
+                  <p className="item-text">판매 상태: {item.itemSellStatus}</p>
 
                   {!selectable && (
-                    <p style={{ color: "red" }}>
+                    <p className="item-warning">
                       현재 선택할 수 없는 상품입니다.
                     </p>
                   )}
@@ -809,22 +809,18 @@ function Item() {
                     <button
                       type="button"
                       onClick={()=>handleToggleBookmark(item.itemId)}
-                      style={{
-                        border:"none",
-                        background:"transparent",
-                        fontSize:"26px",
-                        cursor:"pointer",
-                        color:isBookmarked(item.itemId) ? "red" : "black",
-                      }}
-                     >
+                     className={`item-bookmark-button ${
+                      isBookmarked(item.itemId)?"item-bookmark-active":""
+                     }`}>
                       {isBookmarked(item.itemId) ?"♥" : "♡"} 
                     </button>
                   )}
                  </div> 
                   {!isAdmin && (
-                    <div>
+                    <div className="item-card-button-area">
                       <button
                         type="button"
+                        className="item-button"
                         disabled={!selectable}
                         onClick={() => handleAddOneCart(item)}
                       >
@@ -833,9 +829,9 @@ function Item() {
 
                       <button
                         type="button"
+                        className="item-button item-sub-button"
                         disabled={!selectable}
                         onClick={() => handleBuyNow(item)}
-                        style={{ marginLeft: "10px" }}
                       >
                         구매하기
                       </button>
@@ -849,20 +845,10 @@ function Item() {
       )}
 
       {!isAdmin && selectedItems.length > 0 && (
-        <div
-          style={{
-            border: "2px solid black",
-            padding: "20px",
-            marginTop: "30px",
-          }}
-        >
-          <h2>선택한 상품</h2>
+        <div className="item-selected-box">
+          <h2 className="item-section-title">선택한 상품</h2>
 
-          <table
-            border="1"
-            cellPadding="10"
-            style={{ borderCollapse: "collapse", width: "100%" }}
-          >
+          <table className="item-table">
             <thead>
               <tr>
                 <th>상품명</th>
@@ -877,13 +863,14 @@ function Item() {
               {selectedItems.map((item) => (
                 <tr key={item.itemId}>
                     <td>
-                      <Link to={`/item/${item.itemId}`}>
+                      <Link className="item-table-link" to={`/item/${item.itemId}`}>
                       {item.itemName}
                     </Link>  
                     </td>
                   <td>{item.itemFinalPrice}</td>
                   <td>
                     <input
+                      className="item-count-input"
                       type="number"
                       min="1"
                       max={item.itemStock}
@@ -892,7 +879,7 @@ function Item() {
                         handleCountChange(item.itemId, e.target.value)
                       }
                     />
-                    <span> / 재고 {item.itemStock}</span>
+                    <span className="item-stock-text"> / 재고 {item.itemStock}</span>
                   </td>
                   <td>{item.itemFinalPrice * item.count}</td>
                   <td>
@@ -908,22 +895,24 @@ function Item() {
             </tbody>
           </table>
 
-          <h3>총 가격: {formatPrice(getTotalPrice())}원</h3>
+          <h3 className="item-total-price">총 가격: {formatPrice(getTotalPrice())}원</h3>
 
-          <button type="button" onClick={handleClearSelectedItems} style={{marginBottom:"10px"}}>
+          <div className="item-selecte-button-area">
+          <button type="button" onClick={handleClearSelectedItems} className="item-button item-danger-button">
             선택 상품 전체 삭제
           </button>
-          <button type="button" onClick={handleAddSelectedCart}>
+          <button type="button" onClick={handleAddSelectedCart} className="item-button">
             선택 상품 장바구니 담기
           </button>
-
+          
           <button
             type="button"
+            className="item-button item-sub-button"
             onClick={handleBuySelectedItems}
-            style={{ marginLeft: "10px" }}
           >
             선택 상품 구매하기
           </button>
+          </div>
         </div>
       )}
     </div>

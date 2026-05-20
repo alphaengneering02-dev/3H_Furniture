@@ -76,7 +76,7 @@ const Header_searchCondition = ({searchKey, setSearchKey}) => {
 
 
     return (
-         <section className='main-header-list'>
+         <section className='main-header-searchCondition'>
             {/* 조건창 상단바 */}
             <article>
                 <h3>검색 조건</h3>
