@@ -160,7 +160,7 @@ const Mypage = () => {
             ) : (
                 <div style={{ display: 'flex' }}>
                     <aside className="mypage-sidebar">
-                        <button className="sidebar-btn" onClick={() => navigate('/mypage/schedule')}>추가될 기능</button>
+                        <button className="sidebar-btn" onClick={() => navigate('/mypage/schedule')}>추가될기능/구매확정내역</button>
                         <button className="sidebar-btn" onClick={() => navigate('/cart/return')}>교환 및 반품</button>
                         <button className="sidebar-btn" onClick={() => navigate('/cart')}>장바구니 목록</button>
                     </aside>
@@ -192,7 +192,7 @@ const Mypage = () => {
                                                 <p><strong>상품명:</strong> {order.itemName || order.productName || "주문 상품"}</p>
                                                 {/* 주문 상태 추가 */}
                                                 <p><strong>주문상태:</strong> {order.orderState}</p>
-                                                <p><strong>주문상태:</strong> {order.deliveryStatus}</p>
+                                                <p><strong>배송상태:</strong> {order.deliveryStatus}</p>
                                                 <p style={{ fontSize: '12px', color: '#888' }}>
                                                     주문일: {order.orderDate ? new Date(order.orderDate).toLocaleString() : "-"}
                                                 </p>
