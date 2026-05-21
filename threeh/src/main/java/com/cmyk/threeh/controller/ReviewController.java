@@ -3,8 +3,6 @@ package com.cmyk.threeh.controller;
 import java.security.Principal;
 import java.util.List;
 import java.util.Map;
-
-import org.springframework.data.jpa.repository.query.QueryParameterSetter.ErrorHandling;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -173,12 +171,14 @@ public class ReviewController {
             }
 
             if(!principal.isAdmin()){
-                throw new CustomException(ErrorCode.FORBIDDEN);
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body("관리자만 리뷰를 삭제할 수 있습니다.");
             }
             try{
                 //서비스에 있는 관리자 삭제 메서드 호출
                 reviewService.adminDeleteReview(reviewId);
                 return ResponseEntity.ok("관리자가 리뷰를 삭제했습니다.");
+
             }catch(Exception e){
                 return ResponseEntity.badRequest().body(e.getMessage());
             }
