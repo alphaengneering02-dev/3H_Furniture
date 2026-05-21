@@ -239,6 +239,7 @@ const ItemDetail = () => {
     }
 
     //admin리뷰 삭제 함수 추가(어드민이 상품리뷰 관리할 수 있게_삭제)
+    //리뷰컨트롤러의 관리자 삭제 api주소와 프론트 주소를 꼭 맞춰서 실행.
     const handleAdminDeleteReview = async(reviewId)=>{
         const confirmDelete = window.confirm("이 리뷰를 삭제하시겠습니다?");
 

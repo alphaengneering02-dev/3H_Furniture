@@ -15,6 +15,7 @@ import com.cmyk.threeh.enums.OrderState;
 import com.cmyk.threeh.global.error.CustomException;
 import com.cmyk.threeh.global.error.ErrorCode;
 import com.cmyk.threeh.repository.ItemRepository;
+import com.cmyk.threeh.repository.MemberRepository;
 import com.cmyk.threeh.repository.OrderItemRepository;
 import com.cmyk.threeh.repository.ReviewRepository;
 
@@ -29,6 +30,7 @@ public class ReviewService {
     private final ItemRepository itemRepository;
     private final OrderItemRepository orderItemRepository;
     private final MemberService memberService;
+    private final MemberRepository memberRepository;
 
     
     public ReviewDTO createReview(
@@ -124,7 +126,6 @@ public class ReviewService {
     }
 
     // 리뷰 수정
-    @Transactional
     public ReviewDTO updateReview(
             String loginId,
             Long reviewId,
@@ -146,7 +147,6 @@ public class ReviewService {
     }
 
     // 리뷰 삭제
-    @Transactional
     public void deleteReview(String loginId, Long reviewId) {
         Member member = memberService.getUser(loginId);
 
@@ -158,5 +158,19 @@ public class ReviewService {
         }
 
         reviewRepository.delete(review);
+    }
+
+    //관리자 삭제 메서드
+    public void adminDeleteReview(String loginId, Long reviewId){
+        Member member = memberService.getUser(loginId);
+
+        if(!member.getRole().name().equals("ADMIN")&&
+            !member.getRole().name().equals("ROLE_ADMIN")){
+                throw new RuntimeException("관리자만 리뷰를 삭제할 수 있습니다.");
+            }
+        Review review = reviewRepository.findById(reviewId)
+            .orElseThrow(()->new RuntimeException("리뷰를 찾을 수 없습니다."));
+            
+            reviewRepository.delete(review);
     }
 }
