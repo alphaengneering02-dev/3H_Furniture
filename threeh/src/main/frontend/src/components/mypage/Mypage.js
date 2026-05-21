@@ -23,7 +23,7 @@ const Mypage = () => {
     /* ⚡ [슬라이더 전용 핵심 상태] 현재 어떤 카드 인덱스 위치를 바라보고 있는지 카운팅 */
     const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
 
-    useEffect(() => {
+        useEffect(() => {
         const savedUser = sessionStorage.getItem('user');
         if (savedUser) {
             const userObj = JSON.parse(savedUser);
@@ -49,7 +49,12 @@ const Mypage = () => {
                     const activeOrders = allOrders.filter(order => order.orderState !== 'CANCEL');
                     setOrders(activeOrders);
 
-                    sessionStorage.setItem('user', JSON.stringify(res.data.member));
+                    // ⚡ [세션 유실 방지 핵심 해결책]
+                    // 기존 로그인 세션 데이터(userObj)를 파괴하지 않고, 마이페이지에서 새로 받아온 데이터(res.data.member)만 겹쳐서 저장합니다.
+                    // 이렇게 하면 메인페이지 장바구니 제어에 필요한 기존 인증 정보(role, provider 등)가 지워지지 않고 완벽하게 보존됩니다.
+                    const mergedUser = { ...userObj, ...res.data.member };
+                    sessionStorage.setItem('user', JSON.stringify(mergedUser));
+                    
                     getMyReviews();
                 })
                 .catch(err => {
@@ -63,6 +68,7 @@ const Mypage = () => {
             setMember(null);
         }
     }, []);
+
 
     const handleConfirmPurchase = async (orderId) => {
         if (!window.confirm("구매를 확정하시겠습니까?")) return;
