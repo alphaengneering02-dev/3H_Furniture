@@ -1,61 +1,106 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,500;0,600;1,400&display=swap');
-
-:root {
-  --myPage-black: #000000;
-  --myPage-charcoal: #2B2D2F;
-  --myPage-warm-grey: #8C7A6B;
-  --myPage-accent-gold: #D4B26F;
-  --myPage-alert-red: #FF3B30;
-  --myPage-success-green: #4CAF50;
-
-  --myPage-bg-ivory: #F9F8F6;
-  --myPage-bg-white: #FFFFFF;
-
-  --myPage-border-light: #E5E2DC;
-  --myPage-border-dark: #1A1A1A;
-
-  --myPage-font-sans: 'Noto Sans KR', sans-serif;
-  --myPage-font-serif: 'Playfair Display', serif;
+/* 1. 최상단 배경 전체를 부드럽고 세련된 아이보리 톤으로 강제 전환 */
+/* 1. 상단 헤더 박스 - 요청하신 부드럽고 차분한 베이지색 적용 */
+.mypage-header-box {
+  background-color: #E6DCD2 !important; /* 모던하고 안정감 있는 웜 베이지(Beige) 컬러 */
+  border-bottom: 1px solid #C8B9A6 !important; /* 베이지와 톤을 맞춘 정갈한 경계선 */
+  padding: 14px 24px !important; /* 상하 여백을 약간 넓혀 가독성 확보 */
 }
 
-.myPage-body-wrapper {
-  font-family: var(--myPage-font-sans);
-  background-color: var(--myPage-bg-white);
-  color: #1A1A1A;
-  -webkit-font-smoothing: antialiased;
-  letter-spacing: -0.02em;
-  padding-bottom: 60px;
+.mypage-logo-box {
+  color: #1A1A1A !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.5px;
 }
 
-.myPage-container {
-  max-width: 1240px;
-  margin: 0 auto;
-  padding: 0 20px;
+/* 2. 최상단 배경 전체 - 아늑한 아이보리 바탕화면 유지 */
+.mypage-grid-container {
+  background-color: #F9F8F6; 
+  min-height: 100vh;
+  color: #000000;
+  padding-bottom: 80px;
 }
 
-.myPage-top-info-bar {
-  background-color: var(--myPage-bg-ivory);
-  border-bottom: 1px solid var(--myPage-border-light);
-  width: 100%;
-  margin-bottom: 30px;
-}
-
-.myPage-top-info-list {
+/* 3. 왼쪽 사이드바 디자인 */
+.mypage-sidebar {
+  background-color: #ffffff;
+  border-right: 1px solid #E5E2DC;
+  padding: 20px;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 1240px;
-  margin: 0 auto;
-  height: 60px;
-  padding: 0 20px;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.myPage-info-text {
-  font-size: 16px;
+/* 4. 구매내역 및 정보가 들어가는 개별 흰색 카드 박스 정의 */
+.info-data-block {
+  background-color: #ffffff; 
+  border: 1px solid #E5E2DC !important; 
+  border-radius: 0px !important; /* 캡처본 스퀘어 감성에 맞춰 직각 처리 */
+  padding: 24px !important;
+  margin-bottom: 24px;
+}
+
+/* 데이터 블록 안의 각 정렬 행(Row) */
+.info-data-block > div {
+  border-bottom: 1px solid #F2EFE9 !important;
+  padding: 16px 0 !important;
+}
+
+/* 소제목 (회원정보, 구매내역 등) */
+.info-section-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #000000;
+  margin-top: 30px;
+  margin-bottom: 12px;
+}
+
+/* 5. 버튼 스타일 일치화 */
+.mypage-action-btn, .sidebar-btn {
+  padding: 10px 20px !important;
+  font-size: 13.5px;
   font-weight: 500;
-  color: var(--myPage-charcoal);
+  border-radius: 0px !important; /* 모서리가 둥글지 않은 스퀘어 스타일 */
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.myPage-info-text strong {
-  color: var(--myPage-warm-grey);
+/* 리뷰쓰기, 구매확정 등 메인 기능 버튼 */
+.info-data-block button {
+  border-radius: 0px !important;
+  font-weight: 600;
+}
+
+.info-data-block button:hover {
+  filter: brightness(0.9); 
+  transform: translateY(-1px);
+}
+
+/* 일반 화이트/그레이 버튼 (헤더 내부 버튼 포함) */
+header .mypage-action-btn, 
+.profile-icon-box .mypage-action-btn,
+.sidebar-btn {
+  background-color: #ffffff !important;
+  color: #2B2D2F !important;
+  border: 1px solid #CCCCCC !important;
+}
+
+/* 헤더 내의 버튼은 베이지 배경 위에서 더 깔끔해 보이도록 호버 효과 부여 */
+header .mypage-action-btn:hover, 
+.profile-icon-box .mypage-action-btn:hover,
+.sidebar-btn:hover {
+  background-color: #F9F8F6 !important;
+  color: #000000 !important;
+  border-color: #8C7A6B !important;
+}
+
+/* 프로필 원형 아바타 직각 감성 보정 */
+.profile-avatar-circle {
+  border-radius: 4px !important;
+  background-color: #2B2D2F !important;
+  color: #ffffff !important;
+  font-weight: 700;
 }

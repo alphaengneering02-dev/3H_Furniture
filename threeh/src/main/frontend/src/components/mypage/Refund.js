@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 // 필요에 따라 CSS 경로 수정
+import '../../css/mypagecss/refund.css';
 
 const RefundPage = () => {
     const navigate = useNavigate();
@@ -35,29 +36,29 @@ const RefundPage = () => {
     }
 
     return (
-        <div className="refund-page-container" style={{ padding: '20px' }}>
-            <h2 className="info-section-title">교환 및 반품 신청</h2>
-            <div className="info-data-block" style={{ border: '1px solid #ddd', padding: '15px', borderRadius: '5px' }}>
+        <div className="refund-container">
+            <h2 className="refund-title">교환 및 반품 신청</h2>
+            <div className="refund-item-list">
                 {orders.length > 0 ? orders.map((order) => (
-                    <div key={order.orderId || order.id} style={{ borderBottom: '1px solid #eee', padding: '10px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <div>
-                            <span><strong>{order.itemName || order.productName}</strong></span>
-                            <p style={{ fontSize: '12px', color: '#666' }}>주문번호: {order.orderId || order.id}</p>
+                    <div key={order.orderId || order.id} className="refund-item-card">
+                        <div className="refund-info-group">
+                            <span className="refund-product-name"><strong>{order.itemName || order.productName}</strong></span>
+                            <p className="refund-order-number">주문번호: {order.orderId || order.id}</p>
                         </div>
                         
-                        <div style={{ display: 'flex', gap: '10px' }}>
+                        <div className="refund-button-group">
                             {/* 교환 버튼: 상품 상세페이지로 이동 (itemId 활용) */}
                             <button 
+                                className="refund-btn refund-btn-exchange"
                                 onClick={() => navigate(`/item/detail/${order.itemId}`)} 
-                                style={{ backgroundColor: '#ff9800', color: '#fff', border: 'none', padding: '8px 15px', cursor: 'pointer' }}
                             >
                                 교환 신청
                             </button>
                             
                             {/* 반품 버튼: 기존 로직 유지 */}
                             <button 
+                                className="refund-btn refund-btn-return"
                                 onClick={() => handleRefund(order.orderId || order.id)} 
-                                style={{ backgroundColor: '#f44336', color: '#fff', border: 'none', padding: '8px 15px', cursor: 'pointer' }}
                             >
                                 반품 접수
                             </button>
