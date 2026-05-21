@@ -292,9 +292,9 @@ public ResponseEntity<?> updateOrderStatus(@PathVariable Long orderId, @RequestB
         }
         
         // ==========================================
-        // [CASE 2] 교환 (EXCHANGE) 요청이 왔을 때
+        // [CASE 2] 교환 (EXCHANGEorREFUND) 요청이 왔을 때
         // ==========================================
-        else if (newState == OrderState.EXCHANGE) {
+        else if (newState == OrderState.EXCHANGEorREFUND) {
             // 교환은 무조건 배송이 완료된 상태에서만 수거(PICKUP) 프로세스로 진입 가능
             if (currentDeliveryStatus == DeliveryStatus.COMPLETED) {
                 System.out.println("🔄 [교환 요청] 배송 완료 상품이므로 기사 수거(PICKUP) 상태로 전환합니다.");
@@ -389,20 +389,19 @@ public ResponseEntity<?> handleDriverResponse(
             .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
 
     if ("ACCEPT".equals(action)) {
-        // 수락 시 WAITING 상태 유지
-        order.changeDeliveryStatus(DeliveryStatus.WAITING);
+        order.changeDeliveryStatus(DeliveryStatus.WAITING); 
+        
     } else if ("REJECT".equals(action)) {
-        // 거절 시 기사 연결 해제 및 배송 상태를 REJECTED로 명시적 변경
-        order.setDelivery(null); 
-        order.changeOrderState(OrderState.READY); 
-        order.changeDeliveryStatus(DeliveryStatus.REJECTED); // 💡 프론트가 즉시 인지하도록 처리
-    } else {
-        return ResponseEntity.badRequest().body("잘못된 action 값입니다.");
+        // 기사가 거절했을 때의 처리
+        order.setDelivery(null); // 배정되었던 기사 연결 해제
+        order.changeOrderState(OrderState.READY); // 주문은 다시 '배송 준비중'으로 변경
+        order.changeDeliveryStatus(DeliveryStatus.REJECTED); // 💡 가지고 계신 REJECTED 활용!
     }
-
+    
     orderRepository.save(order);
     return ResponseEntity.ok("처리되었습니다.");
 }
+
 // 배송 출발(waiting -> SHIPPING)
 @PostMapping("/orders/{orderId}/start")
 public ResponseEntity<?> startDelivery(@PathVariable Long orderId) {

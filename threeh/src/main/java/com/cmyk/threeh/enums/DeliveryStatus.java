@@ -6,4 +6,5 @@ public enum DeliveryStatus {
     COMPLETED,   //배송완료
     PICKUP,     //수거(교환 및 환불시)RETURNING
     REJECTED;    //기사거절
+    
 }

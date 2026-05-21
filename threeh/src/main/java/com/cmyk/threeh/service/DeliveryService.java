@@ -152,32 +152,16 @@ public class DeliveryService {
 
 @Transactional
 public void assignDelivery(Long orderId, Long deliveryId) {
-/* 
-    Orders order = ordersRepository.findById(orderId)
-            .orElseThrow(() -> new RuntimeException("주문 없음"));
-*/
+
     Delivery delivery = deliveryRepository.findById(deliveryId)
             .orElseThrow(() -> new RuntimeException("기사 없음"));
-/* 
-    // 이미 배정된 경우 방지
-    if (order.getDelivery() != null) {
-        throw new RuntimeException("이미 배정된 주문입니다.");
-    }
-*/
+
     // 기사 상태 체크
     if (delivery.getStatus() != DeliveryStatus.WAITING) {
         throw new RuntimeException("배정 불가능한 기사입니다.");
     }
-/* 
-    // 핵심 연결
-    order.setDelivery(delivery);
-    order.setOrderState(OrderState.SHIPPING);
 
-    delivery.setStatus(DeliveryStatus.SHIPPING);
-*/
     }
-
-
 
 }
 

@@ -15,63 +15,35 @@ const getOrderStateStyle = (orderState, deliveryStatus) => {
     switch(orderState) {
         case 'ORDER':
         case '주문':
-            return {
-                color: '#1976D2',
-                fontWeight: 'bold'
-            };
-
+            return { color: '#1976D2', fontWeight: 'bold' };
         case 'READY':
         case '배송 준비중':
-            return {
-                color: '#F57C00',
-                fontWeight: 'bold'
-            };
-
+            return { color: '#F57C00', fontWeight: 'bold' };
         case 'PURCHASED':
-            return {
-                color: '#2E7D32',
-                fontWeight: 'bold'
-            };
-
+            return { color: '#2E7D32', fontWeight: 'bold' };
+        case 'EXCHANGEorREFUND':
+            return { color: '#E65100', fontWeight: 'bold' };
+        case 'CANCEL':
+            return { color: '#C62828', fontWeight: 'bold' };
         default:
-            return {
-                color: '#555'
-            };
+            return { color: '#555' };
     }
 };
 
 const getDeliveryStatusStyle = (status) => {
-
     switch(status) {
-
         case 'WAITING':
-            return {
-                color: '#7B1FA2',
-                fontWeight: 'bold'
-            };
-
+            return { color: '#7B1FA2', fontWeight: 'bold' };
         case 'SHIPPING':
-            return {
-                color: '#009688',
-                fontWeight: 'bold'
-            };
-
+            return { color: '#009688', fontWeight: 'bold' };
         case 'COMPLETED':
-            return {
-                color: '#616161',
-                fontWeight: 'bold'
-            };
-
+            return { color: '#616161', fontWeight: 'bold' };
         case 'REJECTED':
-            return {
-                color: '#D32F2F',
-                fontWeight: 'bold'
-            };
-
+            return { color: '#D32F2F', fontWeight: 'bold' };
+        case 'PICKUP':
+            return { color: '#E040FB', fontWeight: 'bold' };
         default:
-            return {
-                color: '#777'
-            };
+            return { color: '#777' };
     }
 };
 
@@ -197,8 +169,9 @@ const renderDeliveryStatus = (status) => {
         if (status === 'SHIPPING') return '배송중 (SHIPPING)';
         if (status === 'COMPLETED') return '배송 완료 (COMPLETED)';
         if (status === 'REJECTED') return '배송 거절 (REJECTED)';
+        if (status === 'PICKUP') return '회수/픽업 (PICKUP)';
         return status || '-';
-};
+    };
 
 // 개별 체크박스 변경 핸들러
     const handleCheckOrder = (orderId) => {

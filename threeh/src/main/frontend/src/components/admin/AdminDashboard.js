@@ -203,12 +203,12 @@ const handleStatusChange = async (orderId, nextState) => {
         const payload = { status: nextState };
         await axios.put(`/admin/orders/${orderId}/status`, payload);
         
-        // 2. 상태별 알림 메시지 분기 (EXCHANGE 상태 추가)
+        // 2. 상태별 알림 메시지 분기 (EXCHANGEorREFUND 상태 추가)
         if (nextState === 'CANCEL') {
             alert("주문 취소 및 기사 배정 해제가 완료되었습니다.");
         } else if (nextState === 'READY') {
             alert("상품 준비 완료 상태로 변경되었습니다.");
-        } else if (nextState === 'EXCHANGE') {
+        } else if (nextState === 'EXCHANGEorREFUND') {
             alert("교환 요청으로 변경되었습니다. 기사 수거(PICKUP) 상태가 적용됩니다.");
         } else if (nextState === 'PURCHASED') {
             alert("구매 확정 처리가 완료되었습니다.");

@@ -33,42 +33,40 @@ const DriverPage = () => {
 
     // 💡 백엔드 상태에 맞춘 데이터 필터링 정의
     const fetchDriverOrders = async (deliveryId) => {
-        try {
-            const orderRes = await axios.get(`/admin/driver/${deliveryId}/orders`);
-            const dbOrders = orderRes.data; 
-            
-            // 1. 신규 배정 및 배송중 필터링
-            const newOrders = dbOrders.filter(o => !o.deliveryStatus && o.orderState !== 'CANCEL');
-            const shipping = dbOrders.filter(o => o.deliveryStatus === 'SHIPPING' && o.orderState !== 'CANCEL');
+    try {
+        const orderRes = await axios.get(`/admin/driver/${deliveryId}/orders`);
+        const dbOrders = orderRes.data; 
+        
+        // 1. 신규 배정: deliveryStatus가 아예 없거나(null), 관리자가 막 배정한 상태(WAITING)인 것
+        const newOrders = dbOrders.filter(o => 
+            (!o.deliveryStatus || o.deliveryStatus === 'WAITING') && o.orderState !== 'CANCEL'
+        );
+        
+        // 2. 수락된 주문: 기사님이 수락 버튼을 눌러서 백엔드에 'ACCEPTED'로 저장된 것
+        const accepted = dbOrders.filter(o => 
+            o.deliveryStatus === 'ACCEPTED' && o.orderState !== 'CANCEL'
+        );
 
-            //2. 교환, 반품 필터링
-            const pickups = dbOrders.filter(o => 
-                o.deliveryStatus === 'PICKUP' && (o.orderState === 'EXCHANGE' || o.orderState === 'CANCEL')
-            );
-            
-            setOrders(newOrders);
-            setShippingOrders(shipping);
-            setPickupOrders(pickups);
+        // 3. 배송중 필터링
+        const shipping = dbOrders.filter(o => 
+            o.deliveryStatus === 'SHIPPING' && o.orderState !== 'CANCEL'
+        );
 
-            // 💡 핵심 방어 로직
-            if (acceptedOrders.length > 0) {
-                const dbOrderIds = dbOrders.map(o => o.orderId);
-                const missingOrders = acceptedOrders.filter(ao => !dbOrderIds.includes(ao.orderId));
-                
-                if (missingOrders.length > 0) {
-                    setCanceledOrders(prev => {
-                        const prevIds = prev.map(p => p.orderId);
-                        const uniqueMissing = missingOrders.filter(m => !prevIds.includes(m.orderId));
-                        return [...prev, ...uniqueMissing];
-                    });
-                    setAcceptedOrders(prev => prev.filter(ao => dbOrderIds.includes(ao.orderId)));
-                }
-            }
+        // 4. 교환/반품 필터링
+        const pickups = dbOrders.filter(o => 
+            o.deliveryStatus === 'PICKUP' && (o.orderState === 'EXCHANGEorREFUND' || o.orderState === 'CANCEL')
+        );
+        
+        // State에 각각 안전하게 정착시킵니다. 이제 새로고침해도 안 섞입니다!
+        setOrders(newOrders);
+        setAcceptedOrders(accepted); 
+        setShippingOrders(shipping);
+        setPickupOrders(pickups);
 
-        } catch (err) {
-            console.error("주문 목록 로드 실패", err);
-        }
-    };
+    } catch (err) {
+        console.error("주문 목록 로드 실패", err);
+    }
+};
 
     const DriverPhoneCell = ({ memberId }) => {
     const [displayValue, setDisplayValue] = useState('조회 중...');
@@ -217,27 +215,43 @@ const handleLogin = async () => {
     // 배송 시작 (수락 목록 전체 출발 -> 배송 중 목록으로 이동)
     const handleStartDelivery = async () => {
     try {
-        // 1. 모든 선택된 주문에 대해 배송 출발 API 호출
+        // 1. [선택 구현] 만약 신규 배정 목록(orders)에 남아있는 것들을 자동으로 거절하고 싶다면:
+        if (orders.length > 0) {
+            const rejectConfirm = window.confirm("수락하지 않은 신규 배정 주문들이 있습니다. 모두 거절 처리하고 배송을 출발하시겠습니까?");
+            
+            if (rejectConfirm) {
+                // 신규 목록에 있는 모든 orderId 추출하여 거절 API 일괄 호출
+                await Promise.all(
+                    orders.map(o =>
+                        axios.patch(`/admin/driver/orders/${o.orderId}/response`, {
+                            action: 'REJECT'
+                        })
+                    )
+                );
+            }
+        }
+
+        // 2. 수락된 주문들 배송 출발 API 호출 (o.id 제거하고 o.orderId로 명확히 통일)
         await Promise.all(
             acceptedOrders.map(o =>
-                axios.post(`/admin/orders/${o.orderId || o.id}/start`) // 혹시 모를 id 키값 대응
+                axios.post(`/admin/orders/${o.orderId}/start`) 
             )
         );
 
-        alert("배송 출발!");
+        alert("배송 출발 처리가 완료되었습니다!");
 
+        // 3. 서버 최신 데이터로 리로드 및 프론트 상태 초기화
         if (driver && driver.deliveryId) {
             await fetchDriverOrders(driver.deliveryId);
         }
-
         setAcceptedOrders([]);
+        setSelectedOrders([]); // 체크박스 초기화 추가
 
     } catch (err) {
         console.error("배송 출발 처리 중 에러 발생:", err);
-        alert("배송 출발 실패");
+        alert("배송 출발 처리 중 오류가 발생했습니다.");
     }
 };
-
 
 
 // 기사 상태만 WAITING으로 돌려서 화면 비우기
@@ -496,7 +510,7 @@ return (
                     </>
                 )}
 
-                {/* 🔄 4. 회수 목록 섹션 추가 (조건: PICKUP 상태 && EXCHANGE 또는 CANCEL) */}
+                {/* 🔄 4. 회수 목록 섹션 추가 (조건: PICKUP 상태 && EXCHANGEorREFUND 또는 CANCEL) */}
                 <h2 className="driver-headline" style={{ marginTop: '40px' }}>🔄 회수 (교환 및 반품 수거 목록)</h2>
                 {pickupOrders.length === 0 ? (
                     <p className="driver-empty-msg">현재 예정된 교환/반품 회수 건이 없습니다.</p>
@@ -516,7 +530,7 @@ return (
                                             />
                                             <span className="driver-order-id" style={{ color: '#856404' }}>NO. {order.orderId}</span>
                                             <span className="driver-badge" style={{ backgroundColor: '#dc3545', color: '#fff' }}>
-                                                {order.orderState === 'EXCHANGE' ? '교환회수' : '반품회수'}
+                                                {order.orderState === 'EXCHANGEorREFUND' ? '교환회수' : '반품회수'}
                                             </span>
                                         </div>
                                         <div className="driver-card-body">
