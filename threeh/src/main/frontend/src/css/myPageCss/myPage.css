@@ -1,0 +1,292 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,500;0,600;1,400&display=swap');
+/* ===================================================
+   🩵 PROJECT CMYK 마이페이지 - 가로 슬라이더 스퀘어 테마
+   =================================================== */
+
+/* 1. 최상단 배경 전체 - 아늑하고 눈이 편안한 아이보리 바탕화면 */
+.mypage-grid-container {
+  background-color: #F9F8F6; 
+  min-height: 100vh;
+  font-family: 'Noto Sans KR', -apple-system, sans-serif;
+  color: #1A1A1A;
+  padding-bottom: 80px;
+}
+
+/* 2. 상단 헤더 박스 - 묵직하고 따뜻한 웜 베이지 밸런스 */
+.mypage-header-box {
+  background-color: #E6DCD2 !important; 
+  border-bottom: 1px solid #C8B9A6 !important; 
+  padding: 16px 28px !important; 
+  align-items: center;
+}
+
+.mypage-logo-box {
+  color: #1A1A1A !important;
+  font-weight: 700 !important;
+  font-size: 18px;
+  letter-spacing: 0.05em;
+}
+
+/* 3. 왼쪽 독립형 사이드바 메뉴 디자인 */
+.mypage-sidebar {
+  background-color: #fff;
+  border: 1px solid #E5E2DC;
+  padding: 24px 16px;
+  width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 30px 0 0 20px;
+}
+
+.sidebar-btn {
+  width: 100%;
+  text-align: left;
+  padding: 12px 16px !important;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #4A4A4A !important;
+  background-color: transparent !important;
+  border: none !important;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+}
+
+.sidebar-btn:hover {
+  background-color: #F9F8F6 !important;
+  color: #000000 !important;
+  font-weight: 600;
+}
+
+/* 4. 우측 메인 콘텐츠 레이아웃 가독성 패킹 */
+.mypage-main-content {
+  padding: 30px 24px 30px 30px !important;
+}
+
+.profile-icon-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 45px; 
+}
+
+.profile-avatar-circle {
+  width: 48px;
+  height: 48px;
+  border-radius: 0px !important; 
+  background-color: #2B2D2F;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 각 구역 대제목 (회원정보, 구매내역 등) */
+.info-section-title, .mypage-main-content h2 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #2B2D2F;
+  margin-top: 35px;
+  margin-bottom: 14px;
+  letter-spacing: -0.3px;
+}
+
+/* 5. 정보가 포장되어 담기는 기본 흰색 대시보드 상자 (회원정보, 배송지 전용) */
+.info-data-block {
+  background-color: #ffffff; 
+  border: 1px solid #E5E2DC !important; 
+  border-radius: 0px !important; 
+  padding: 26px !important;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.01);
+}
+
+.info-data-block > div {
+  border-bottom: 1px solid #F2EFE9 !important;
+  padding: 18px 4px !important;
+}
+
+.info-data-block > div:last-child {
+  border-bottom: none !important;
+  padding-bottom: 0 !important;
+}
+
+.info-data-block p {
+  margin: 0 0 6px 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.info-data-block strong {
+  color: #64748b; 
+  font-weight: 500;
+}
+
+
+/* ===================================================
+   ⚡ [신규 고도화] 구매내역 가로 슬라이더 & 정사각형 카드 스타일 구역
+   =================================================== */
+
+/* 슬라이더 전체를 감싸는 부모 윈도우 (화살표 버튼 정렬용 포지셔닝) */
+.order-slider-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 30px;
+}
+
+/* 카드가 넘어가다가 잘리는 것을 숨겨주는 가로 창 설정 */
+.order-slider-container {
+  overflow: hidden;
+  width: 100%;
+  padding: 10px 0;
+}
+
+/* 가로로 낱개 카드들을 길게 한 줄로 늘어뜨리는 기차 레일 */
+.order-slider-track {
+  display: flex;
+  gap: 16px; /* 정사각형 카드 간 격차 */
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); /* 넘길 때 부드러운 슬라이딩 감성 */
+  will-change: transform;
+}
+
+/* ⚡ 핵심: 요청하신 하나하나 독립된 낱개 구조의 "작은 정사각형" 주문 카드 디자인 */
+.order-square-card {
+  flex: 0 0 calc(25% - 12px); /* 4열 배치를 기본으로 한 정밀 스퀘어 너비 계산 */
+  aspect-ratio: 1 / 1; /* 💡 가로세로 비율을 1:1로 강제 고정하여 완벽한 정사각형 유지 */
+  background-color: #E6DCD2 !important; /* 상단 헤더와 동일한 웜 베이지 채우기 */
+  border: 1px solid #C8B9A6 !important; 
+  padding: 18px !important;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* 텍스트는 위, 버튼은 아래로 찢어서 배치 */
+  position: relative;
+}
+
+/* 화면 크기가 좁아질 때 반응형 지원 (태블릿/모바일 방어) */
+@media (max-width: 1024px) { .order-square-card { flex: 0 0 calc(33.33% - 11px); } }
+@media (max-width: 768px) { .order-square-card { flex: 0 0 calc(50% - 8px); } }
+
+/* 정사각형 카드 내부 텍스트 구성 */
+.order-square-card p {
+  margin: 0 0 4px 0;
+  font-size: 13px;
+  line-height: 1.4;
+  color: #1A1A1A;
+  word-break: keep-all;
+}
+
+.order-square-card strong {
+  color: #4A4A4A;
+  font-weight: 600;
+}
+
+/* ⚡ 좌우 슬라이드 이동 화살표 컨트롤러 단추 스타일 */
+.slider-arrow-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  background-color: #2B2D2F !important; /* 시크한 차콜 블랙 */
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 0px !important; /* 직각 디자인 아이덴티티 통일 */
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  transition: all 0.2s;
+}
+
+.slider-arrow-btn:hover {
+  background-color: #000000 !important;
+  transform: translateY(-50%) scale(1.05);
+}
+
+/* 화살표 배치 위치 선정 */
+.slider-arrow-btn.prev { left: -18px; }
+.slider-arrow-btn.next { right: -18px; }
+
+/* 데이터가 맨 처음이거나 맨 끝일 때 화살표 숨김/비활성화 처리 대응 */
+.slider-arrow-btn:disabled {
+  background-color: #E5E2DC !important;
+  color: #A1A1A1 !important;
+  cursor: not-allowed;
+  transform: translateY(-50%) scale(1);
+  box-shadow: none;
+}
+
+
+/* ===================================================
+   공통 버튼 & 기타 요소 정의
+   =================================================== */
+.mypage-action-btn, .info-data-block button, .order-square-card button {
+  padding: 8px 14px !important;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 0px !important; 
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+  width: 100%; /* 정사각형 카드 내부에서 가득 차도록 채움 */
+  text-align: center;
+}
+
+/* 메인 블랙 단추 */
+.info-data-block button[style*="backgroundColor:#2196F3"],
+.info-data-block button[style*="backgroundColor:#4CAF50"],
+.order-square-card button {
+  background-color: #2B2D2F !important;
+  color: #ffffff !important;
+  border: 1px solid #2B2D2F !important;
+}
+
+/* 서브 화이트 단추 */
+header .mypage-action-btn,
+.profile-icon-box .mypage-action-btn,
+.btn-set-default {
+  background-color: #ffffff !important;
+  color: #2B2D2F !important;
+  border: 1px solid #CCCCCC !important;
+}
+
+.mypage-action-btn:hover, 
+.info-data-block button:hover,
+.order-square-card button:hover,
+.btn-set-default:hover {
+  background-color: #F2EFE9 !important;
+  color: #000000 !important;
+  border-color: #8C7A6B !important;
+}
+
+/* 기본배송지 배지 및 아바타 */
+.default-address-badge {
+  background-color: #2B2D2F !important;
+  color: #ffffff !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  padding: 3px 8px !important;
+  border-radius: 0px !important;
+  margin-left: 10px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.info-data-block select, .info-data-block input[type="text"] {
+  border: 1px solid #CBD5E1;
+  border-radius: 0px;
+  padding: 8px 12px;
+  font-family: inherit;
+  font-size: 14px;
+  background-color: #ffffff;
+  outline: none;
+}

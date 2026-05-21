@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-
+// 필요에 따라 CSS 경로 수정
 import '../../css/myPageCss/refund.css';
 
 const RefundPage = () => {

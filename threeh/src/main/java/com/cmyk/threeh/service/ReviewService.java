@@ -15,7 +15,6 @@ import com.cmyk.threeh.enums.OrderState;
 import com.cmyk.threeh.global.error.CustomException;
 import com.cmyk.threeh.global.error.ErrorCode;
 import com.cmyk.threeh.repository.ItemRepository;
-import com.cmyk.threeh.repository.MemberRepository;
 import com.cmyk.threeh.repository.OrderItemRepository;
 import com.cmyk.threeh.repository.ReviewRepository;
 
@@ -30,9 +29,9 @@ public class ReviewService {
     private final ItemRepository itemRepository;
     private final OrderItemRepository orderItemRepository;
     private final MemberService memberService;
-    private final MemberRepository memberRepository;
 
-    
+    //저장,수정,삭제 메서드만 트랜젝셔널 적용.
+    @Transactional
     public ReviewDTO createReview(
             String loginId,
             Long itemId,
@@ -91,7 +90,6 @@ public class ReviewService {
     }
 
     // 특정 상품 리뷰 목록 조회
-    @Transactional(readOnly = true)
     public List<ReviewDTO> getItemReviews(Long itemId) {
         return reviewRepository.findByItem_ItemIdOrderByCreatedAtDesc(itemId)
                 .stream()
@@ -100,7 +98,6 @@ public class ReviewService {
     }
 
     // 내가 작성한 리뷰 목록 조회
-    @Transactional(readOnly = true)
     public List<ReviewDTO> getMyReviews(String loginId) {
         Member member = memberService.getUser(loginId);
 
@@ -113,7 +110,6 @@ public class ReviewService {
     }
 
     // 상품 리뷰 평균 평점 / 리뷰 개수 조회
-    @Transactional(readOnly = true)
     public ReviewSummaryDTO getReviewSummary(Long itemId) {
         Double averageScore = reviewRepository.getAverageScoreByItemId(itemId);
         Long reviewCount = reviewRepository.getReviewCountByItemId(itemId);
@@ -126,6 +122,7 @@ public class ReviewService {
     }
 
     // 리뷰 수정
+    @Transactional
     public ReviewDTO updateReview(
             String loginId,
             Long reviewId,
@@ -147,6 +144,7 @@ public class ReviewService {
     }
 
     // 리뷰 삭제
+    @Transactional
     public void deleteReview(String loginId, Long reviewId) {
         Member member = memberService.getUser(loginId);
 
@@ -160,18 +158,11 @@ public class ReviewService {
         reviewRepository.delete(review);
     }
 
-    //관리자 삭제 메서드(관리자는 멤버를 찾을 필요가 없음)
+    //관리자 삭제 메서드(관리자는 멤버를 찾을 필요가 없음 즉, 관리자가 리뷰를 쓸 일 없으니까.)
+    @Transactional
     public void adminDeleteReview(Long reviewId){
         Review review = reviewRepository.findById(reviewId)
             .orElseThrow(()-> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
-
-        if(!member.getRole().name().equals("ADMIN")&&
-            !member.getRole().name().equals("ROLE_ADMIN")){
-                throw new RuntimeException("관리자만 리뷰를 삭제할 수 있습니다.");
-            }
-        Review review = reviewRepository.findById(reviewId)
-            .orElseThrow(()->new RuntimeException("리뷰를 찾을 수 없습니다."));
-            
             reviewRepository.delete(review);
     }
 }
