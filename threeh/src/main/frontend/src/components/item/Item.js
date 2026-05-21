@@ -693,6 +693,11 @@ function Item() {
   return (
     <div className="item-page">
         {/*상품 목록 페이지 제목 */}
+        <div className="item-page">
+          <button type="button" onClick={()=>navigate("/")}>
+            메인으로가기
+          </button>
+        </div>
       <h1 className="item-title">상품 목록</h1>
 
          {/*내 장바구니로 가기_admin인경우 안보이게 기존 !isAdmin 이였는데 isUser로 변경*/}
