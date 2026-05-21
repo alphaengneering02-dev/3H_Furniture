@@ -4,10 +4,10 @@ import { Link, useNavigate } from 'react-router-dom'
 import icon_google from '../../assets/icon_google.png';
 import icon_kakao from '../../assets/icon_kakao.png';
 import icon_naver from '../../assets/icon_naver.png';
+import Header from '../main/Header';
 
 //Login 전용 CSS 임포트
 import '../../css/memberPageCss/login.css';
-import Header from '../main/Header';
 
 const Login = () => {
 
@@ -212,21 +212,24 @@ const Login = () => {
 
                 {/* 아이디 / 비밀번호 찾기 */}
                 <article className="login-utility-box">
-                    <p> <input type='checkbox' checked={isChecked} onChange={changeChecked}/>로그인 상태 유지 </p>
-                    <p> 
-                        <span className="login-utility-link" onClick={() => navigate("/findId")}>아이디 찾기</span>
-                        <span className="login-utility-divider">|</span>
-                        <span className="login-utility-link" onClick={() => navigate("/changePw")}>비밀번호 찾기</span>
+                    <p className='staying'> 
+                        <input className='check' type='checkbox' checked={isChecked} onChange={changeChecked}/>
+                        <span className='label'>로그인 상태 유지</span>
+                    </p>
+                    <p className='finding'> 
+                        <span className="link" onClick={() => navigate("/findId")}>아이디 찾기</span>
+                        <span className="divider">|</span>
+                        <span className="link" onClick={() => navigate("/changePw")}>비밀번호 찾기</span>
                     </p>
                 </article>
 
                 {/* 로그인 버튼 */}
-                <button onClick={onSubmit}>로그인</button>
+                <button className='login-submit-btn' onClick={onSubmit}>로그인</button>
 
                 
 
                 {/* ===================oauth2 소셜 로그인=================== */}
-                <div>
+                <div className='login-social'>
                     <hr className="login-social-divider"/>
 
                     {/* 소셜 로그인 간편 아이콘 */}
@@ -259,7 +262,7 @@ const Login = () => {
                         onClick={() => navigate("/signup")} 
                         className="login-signup-link-btn"
                     >
-                        회원가입
+                        회원가입 <span className='right-arrow'>&gt;</span>
                     </button>
                 </article>
 

@@ -9,6 +9,8 @@
 
 :root {
   --main-black: #000000;
+  --main-middle-gray: #777;
+  --main-light-gray: #999;
   --main-charcoal: #2B2D2F;
   --main-dark-brown: #2F2A25;
   --main-dark-beige: #8C7A6B;
@@ -48,7 +50,6 @@
   border-bottom: 1px solid var(--main-border-light);
   top: 0;
   z-index: 1000;
-  font-family: var(--main-font-serif);
 }
 
 .main-header .main-inner {
@@ -70,15 +71,17 @@
   position: relative;
 }
 
+/* ------------------------------------ */
+
 /* 1-1. 좌측 SNS 영역 */
 .main-header-topBox .main-header-left {
     flex: 1;
-    margin-left: 80px;
 }
 
 .main-header-topBox .main-header-sns {
   display: flex;
-  gap: 14px;
+  justify-content: center;  /*가로 중앙정렬*/
+  gap: 7%;
   list-style: none;
   padding: 0;
   margin: 0;
@@ -94,6 +97,8 @@
 .main-header-topBox .main-header-sns img:hover {
   opacity: 1;
 }
+
+/* ------------------------------------ */
 
 /* 1-2. 중앙 로고 및 검색창 영역 */
 .main-header-topBox .main-header-center {
@@ -115,7 +120,7 @@
 
 /* 검색바 (Bar) 스타일 디자인 */
 .main-header-topBox .main-header-search {
-    width: 100%;
+    width: 85%;
     max-width: 420px;
     position: relative;
 }
@@ -133,13 +138,12 @@
   outline: none;
   font-size: 14px;
   padding: 6px 10px;
-  font-family: var(--main-font-serif);
   color: var(--main-charcoal);
   background: none;
 }
 
 .main-header-topBox .main-header-search .bar input::placeholder {
-  color: #B2B2B2;
+  color: var(--main-light-gray);
   font-weight: bold;
 }
 
@@ -158,21 +162,21 @@
   opacity: 0.8;
 }
 
+/* ------------------------------------ */
+
 /* 1-3. 우측 유저 메뉴 영역 (로그인/회원가입/장바구니) */
 .main-header-topBox .main-header-right {
   flex: 1;
-  display: flex;
-  justify-content: flex-end;
-  margin-right: 80px;
 }
 
 .main-header-topBox .main-header-userMenu {
   display: flex;
-  gap: 28px;
+  gap: 8%;
   list-style: none;
   padding: 0;
   margin: 0;
   align-items: flex-end;  /*세로 하단정렬*/
+  justify-content: center;  /*가로 중앙정렬*/
 }
 
 .main-header-topBox .main-header-userMenu li a {
@@ -336,7 +340,7 @@
 
 .main-header-GNB > ul {
   display: flex;
-  gap: 70px; /* 대형 메뉴 간 서치 여백 */
+  gap: 70px; /* 대형 메뉴 간 여백 */
   list-style: none;
   padding: 0;
   margin: 0;
@@ -353,62 +357,122 @@
   color: var(--main-charcoal);
   text-decoration: none;
   letter-spacing: -0.01em;
+  padding-bottom: 4px; /* 밑줄 여백 공간 확보 */
 }
+
+/* 메인 카테고리 호버 시 텍스트 밑줄 효과 */
 .main-header-GNB > ul > li:hover > a {
-    border-bottom: 2px solid var(--main-charcoal);
-    font-weight: 900;
+  border-bottom: 2px solid var(--main-charcoal);
 }
 
 
-/* 드롭다운 네비게이션 서브메뉴 (CSS 트리거 기초 설계) */
+/* ==========================================
+   드롭다운 네비게이션 서브메뉴 (sub1)
+   ========================================== */
 .main-header-GNB .main-header-sub1 {
-  display: none;
+  display: none; 
   position: absolute;
   top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  border: 1px solid var(--main-border-light);
-  box-shadow: 0 3px 10px rgba(0,0,0,0.5);
-  background-color: var(--main-dark-brown);
+  left: 0; /* 이미지처럼 메인 메뉴 왼쪽에 맞춰 떨어지도록 수정 */
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08); /* 부드러운 그림자 효과 */
   list-style: none;
   margin: 0;
+  padding: 0;
   z-index: 10;
+  
+  /* [크기 합산] 자식들의 크기 총합만큼 가로/세로 동적 계산 */
+  width: max-content;
+  height: max-content;
 }
 
-.main-header-GNB .main-header-sub1 li {
-  position: relative;
+/* 마우스 호버 시 상위 서브메뉴(sub1) 노출 (Flexbox 구조 활성화) */
+.main-header-GNB > ul > li:hover > .main-header-sub1 {
   display: flex;
+  flex-direction: column;
+  background: var(--main-bg-ivory);
 }
 
-.main-header-GNB .main-header-sub1 li a {
+/* sub1 내부의 li (sub1 텍스트 버튼과 sub2 박스를 가로로 나란히 배열) */
+.main-header-GNB .main-header-sub1 > li {
+  position: relative;
+  display: flex; 
+  align-items: stretch; /* sub1과 sub2의 높이를 동일하게 맞춤 */
+  width: 100%;
+}
+
+/* sub1 직속 a 태그 (침대, 매트리스/토퍼 등) */
+.main-header-GNB .main-header-sub1 > li > a {
   display: block;
-  height: 36px;
-  padding: 8px 18px;
-  font-size: 13px;
-  color: var(--main-bg-ivory);
+  width: 160px; /* 이미지 비율에 맞춰 너비 확장 */
+  padding: 15px 20px; /* 사방 여백 확보 */
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--main-charcoal);
   text-decoration: none;
-  text-align: center;
+  text-align: left; /* 이미지처럼 좌측 정렬 */
   white-space: nowrap;
+  background: var(--main-light-beige); /* 이미지 특유의 살짝 더 어두운 베이지 배경색 */
+  box-sizing: border-box;
 }
 
-.main-header-GNB .main-header-sub1 li > a:hover {
-    /* border-bottom: 2px solid var(--main-charcoal); */
-    font-weight: 900;
+/* sub1 항목 호버 시에도 글자 진해짐 및 하단 border 효과 */
+.main-header-GNB .main-header-sub1 > li:hover > a {
+  font-weight: 800;
 }
 
-/* 마우스 호버 시 상위 서브메뉴 노출 */
-.main-header-GNB > ul > li:hover .main-header-sub1 {
-  display: block;
+/* 글자 바로 밑에만 줄이 생기도록 호버 효과 변경 */
+.main-header-GNB .main-header-sub1 > li > a:hover span {
+  border-bottom: 1.5px solid var(--main-charcoal);
+  font-weight: 700;
 }
 
 
-/* sub2 영역은 회색 상속을 끊고 흰색으로 채우기 */
+/* ==========================================
+   sub2 영역 스타일 정돈 및 독립 제어
+   ========================================== */
 .main-header-GNB .main-header-sub2 {
-    background-color: var(--main-bg-white);
+  display: none; 
+  background: var(--main-bg-ivory); /* 이미지 특유의 밝은 아이보리/화이트 배경색 */
+  list-style: none;
+  margin: 0;   
+  padding: 10px 0; /* 위아래 안쪽 여백 추가 */
+  box-sizing: border-box;
+  border-left: 1px solid rgba(0,0,0,0.03); /* 경계 구분을 위한 미세한 선 */
 }
 
-.main-header-GNB .main-header-sub2 p {
-    color: var(--main-charcoal);
+/* 호버 시 sub2를 블록 형태로 노출 */
+.main-header-GNB .main-header-sub1 > li:hover > .main-header-sub2 {
+  display: block; 
+}
+
+.main-header-GNB .main-header-sub2 li {
+  display: block; 
+  width: 180px; /* 오른쪽 칸(sub2) 너비 설정 */
+  height: auto;  
+}
+
+.main-header-GNB .main-header-sub2 a {
+  display: block;
+  width: 100%;
+  padding: 10px 25px; /* 왼쪽 여백을 충분히 주어 정렬 */
+  text-decoration: none;
+  box-sizing: border-box; 
+  text-align: left; /* 좌측 정렬 */
+}
+
+/* sub2 내부의 핵심 글자 디자인 */
+.main-header-GNB .main-header-sub2 span {
+  display: inline-block; /* 너비가 글자 크기만큼만 잡히도록 inline-block 설정 */
+  color: var(--main-charcoal);
+  font-size: 13px;
+  font-weight: 500;
+  padding-bottom: 2px; /* 밑줄이 생길 여백 공간 확보 */
+}
+
+/* 글자 바로 밑에만 줄이 생기도록 호버 효과 변경 */
+.main-header-GNB .main-header-sub2 a:hover span {
+  border-bottom: 1.5px solid var(--main-charcoal);
+  font-weight: 700;
 }
 
 

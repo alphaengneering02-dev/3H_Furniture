@@ -1,0 +1,230 @@
+/* ==========================================
+   FindId & FindId_result Page CSS
+   기준: global.css
+   - body 배경: #F9F8F6
+   - 컨텐츠 박스: #FFFFFF
+   - 기본 폰트: Noto Sans KR
+   - 포인트 폰트: Playfair Display
+========================================== */
+
+:root {
+  --findId-black: #000000;
+  --findId-middle-gray: #777;
+  --findId-light-gray: #999;
+  --findId-charcoal: #2B2D2F;
+  --findId-dark-brown: #2F2A25;
+  --findId-dark-beige: #8C7A6B;
+  --findId-light-beige: #eee8e0;
+  --findId-accent-gold: #D4B26F;
+  --findId-alert-red: #FF3B30;
+  --findId-success-green: #4CAF50;
+
+  --findId-bg-ivory: #F9F8F6;
+  --findId-bg-white: #FFFFFF;
+
+  --findId-border-light: #E5E2DC;
+  --findId-border-dark: #1A1A1A;
+
+  --findId-font-sans: 'Noto Sans KR', sans-serif;
+  --findId-font-serif: 'Playfair Display', serif;
+}
+
+
+/* ==========================================
+   아이디 찾기 전체 컨테이너 (중앙 정렬)
+   ========================================== */
+.find-id-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 80vh;
+    padding: 40px 20px;
+    background: var(--findId-bg-white);
+    font-family: var(--findId-font-sans);
+}
+
+
+/* 상단 네비게이션 탭 (아이디 찾기 / 비밀번호 재설정) */
+.find-id-nav-tabs {
+    display: flex;
+    width: 100%;
+    max-width: 400px;
+    border-bottom: 1px solid var(--findId-border-light);
+    margin-bottom: 40px;
+}
+
+.find-id-nav-tabs a {
+    flex: 1;
+    padding: 12px 0;
+    text-align: center;
+    font-size: 14px;
+    text-decoration: none;
+    color: var(--findId-light-gray);
+    transition: all 0.3s;
+}
+
+/* 현재 활성화된 탭 (아이디 찾기 스타일) */
+.find-id-nav-tabs a.tab-active {
+    color: var(--findId-black);
+    font-weight: 500;
+    border: 1px solid var(--findId-black);
+    border-bottom: 1px solid var(--findId-bg-white);
+    margin-bottom: -1px;
+    background-color: var(--findId-bg-white);
+}
+
+
+/* ==========================================
+   아이디 찾기 폼 및 입력 필드
+   ========================================== */
+.find-id-form {
+    width: 100%;
+    max-width: 400px;
+}
+
+.find-id-input-group {
+    margin-bottom: 35px;
+}
+
+/* 입력 필드 위 라벨 텍스트 ('이름', '전화번호 또는 이메일') */
+.find-id-input-group p {
+    font-size: 12px;
+    color: var(--findId-middle-gray);
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+/* 입력 필드 (하단 라인만 렌더링됩니다) */
+.find-id-input-field {
+    width: 100%;
+    padding: 14px 0;
+    font-size: 14px;
+    border: none;
+    border-bottom: 1px solid var(--findId-border-light);
+    background-color: transparent;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.find-id-input-field:focus {
+    border-bottom: 1px solid var(--findId-black);
+}
+
+.find-id-input-field::placeholder {
+    color: var(--findId-light-gray);
+}
+
+
+/* ==========================================
+   버튼 및 하단 링크
+   ========================================== */
+/* 블랙 메인 버튼 */
+.find-id-submit-btn {
+    width: 100%;
+    max-width: 400px;
+    height: 55px;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--findId-bg-white);
+    background-color: var(--findId-black);
+    border: none;
+    cursor: pointer;
+    margin-top: 50px;
+    margin-bottom: 25px;
+    transition: background-color 0.3s;
+}
+
+.find-id-submit-btn:hover {
+    background-color: var(--findId-middle-gray);
+}
+
+
+/* 하단 로그인 페이지 이동 링크 */
+.find-id-footer-link {
+    display: block;
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+    font-size: 14px;
+    color: var(--findId-middle-gray);
+    text-decoration: none;
+    margin-top: 10px;
+    transition: color 0.2s;
+}
+
+.find-id-footer-link:hover {
+    color: var(--findId-black);
+}
+
+
+/* ==========================================
+   FindId_result (결과 화면)
+   ========================================== */
+.find-id-result-box {
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    padding: 20px 0;
+}
+
+.find-id-result-title {
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: var(--findId-black);
+    margin-bottom: 35px;
+    letter-spacing: -0.5px;
+}
+
+/* 완료 후 노출되는 아이디 강조 필드 */
+.find-id-result-field {
+    width: 100%;
+    padding: 16px 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--findId-dark-brown, #2F2A25);
+    text-align: center;
+    border: none;
+    border-bottom: 2px solid var(--findId-black, #000000);
+    background-color: transparent;
+    margin-bottom: 40px;
+    outline: none;
+}
+
+/* 하단 버튼 2개 가로 정렬 */
+.find-id-result-actions {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+}
+
+.find-id-result-actions button {
+    flex: 1;
+    height: 50px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid var(--findId-black, #000000);
+    transition: all 0.3s;
+}
+
+/* 로그인 버튼 (블랙) */
+.find-id-btn-primary {
+    color: var(--findId-bg-white, #FFFFFF);
+    background-color: var(--findId-black, #000000);
+}
+
+.find-id-btn-primary:hover {
+    background-color: var(--findId-middle-gray, #777777);
+    border-color: var(--findId-middle-gray, #777777);
+}
+
+/* 비밀번호 찾기 버튼 (아웃라인 스타일) */
+.find-id-btn-secondary {
+    color: var(--findId-black, #000000);
+    background-color: var(--findId-bg-white, #FFFFFF);
+}
+
+.find-id-btn-secondary:hover {
+    background-color: var(--findId-bg-ivory, #F9F8F6);
+}

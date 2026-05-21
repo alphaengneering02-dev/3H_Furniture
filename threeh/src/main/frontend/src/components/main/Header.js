@@ -277,10 +277,10 @@ const Header = () => {
                             <li>
                                 <Link to="#">거실</Link>
                                 <ul className="main-header-sub1">
-                                    <li> <Link to="#">서브메뉴1</Link> </li>
-                                    <li> <Link to="#">서브메뉴2</Link> </li>
-                                    <li> <Link to="#">서브메뉴3</Link> </li>
-                                    <li> <Link to="#">서브메뉴4</Link> </li>
+                                    <li> <Link to="#"><span>서브메뉴1</span></Link> </li>
+                                    <li> <Link to="#"><span>서브메뉴2</span></Link> </li>
+                                    <li> <Link to="#"><span>서브메뉴3</span></Link> </li>
+                                    <li> <Link to="#"><span>서브메뉴4</span></Link> </li>
                                 </ul>
                             </li>
 
@@ -290,22 +290,22 @@ const Header = () => {
                                 <Link to="#">침실</Link>
                                 <ul className="main-header-sub1">
                                     <li>
-                                        <Link to="#">서브메뉴1</Link>
+                                        <Link to="#"><span>서브메뉴1</span></Link>
                                         <ul className="main-header-sub2">
-                                            <li> <Link to="#"><p>서브-서브메뉴1</p></Link> </li>
-                                            <li> <Link to="#"><p>서브-서브메뉴2</p></Link> </li>
-                                            <li> <Link to="#"><p>서브-서브메뉴3</p></Link> </li>
-                                            <li> <Link to="#"><p>서브-서브메뉴4</p></Link> </li>
+                                            <li> <Link to="#"><span>서브-서브메뉴1</span></Link> </li>
+                                            <li> <Link to="#"><span>서브-서브메뉴2</span></Link> </li>
+                                            <li> <Link to="#"><span>서브-서브메뉴3</span></Link> </li>
+                                            <li> <Link to="#"><span>서브-서브메뉴4</span></Link> </li>
                                         </ul>
                                     </li>
                                     
                                     <li>
-                                        <Link to="#">서브메뉴2</Link>
+                                        <Link to="#"><span>서브메뉴2</span></Link>
                                         <ul className="main-header-sub2">
-                                            <li> <Link to="#"><p>서브-서브메뉴1</p></Link> </li>
-                                            <li> <Link to="#"><p>서브-서브메뉴2</p></Link> </li>
-                                            <li> <Link to="#"><p>서브-서브메뉴3</p></Link> </li>
-                                            <li> <Link to="#"><p>서브-서브메뉴4</p></Link> </li>
+                                            <li> <Link to="#"><span>서브-서브메뉴1</span></Link> </li>
+                                            <li> <Link to="#"><span>서브-서브메뉴2</span></Link> </li>
+                                            <li> <Link to="#"><span>서브-서브메뉴3</span></Link> </li>
+                                            <li> <Link to="#"><span>서브-서브메뉴4</span></Link> </li>
                                         </ul>
                                     </li>
                                 </ul>
@@ -317,22 +317,22 @@ const Header = () => {
                                 <Link to="#">주방</Link>
                                 <ul className="main-header-sub1">
                                     <li>
-                                        <Link to="#">서브메뉴1</Link>
+                                        <Link to="#"><span>서브메뉴1</span></Link>
                                         <ul className="main-header-sub2">
-                                            <li> <Link to="#"><p>서브-서브메뉴1</p></Link> </li>
-                                            <li> <Link to="#"><p>서브-서브메뉴2</p></Link> </li>
-                                            <li> <Link to="#"><p>서브-서브메뉴3</p></Link> </li>
-                                            <li> <Link to="#"><p>서브-서브메뉴4</p></Link> </li>
+                                            <li> <Link to="#"><span>서브-서브메뉴1</span></Link> </li>
+                                            <li> <Link to="#"><span>서브-서브메뉴2</span></Link> </li>
+                                            <li> <Link to="#"><span>서브-서브메뉴3</span></Link> </li>
+                                            <li> <Link to="#"><span>서브-서브메뉴4</span></Link> </li>
                                         </ul>
                                     </li>
                                     
                                     <li>
-                                        <Link to="#">서브메뉴2</Link>
+                                        <Link to="#"><span>서브메뉴2</span></Link>
                                         <ul className="main-header-sub2">
-                                            <li> <Link to="#"><p>서브-서브메뉴1</p></Link> </li>
-                                            <li> <Link to="#"><p>서브-서브메뉴2</p></Link> </li>
-                                            <li> <Link to="#"><p>서브-서브메뉴3</p></Link> </li>
-                                            <li> <Link to="#"><p>서브-서브메뉴4</p></Link> </li>
+                                            <li> <Link to="#"><span>서브-서브메뉴1</span></Link> </li>
+                                            <li> <Link to="#"><span>서브-서브메뉴2</span></Link> </li>
+                                            <li> <Link to="#"><span>서브-서브메뉴3</span></Link> </li>
+                                            <li> <Link to="#"><span>서브-서브메뉴4</span></Link> </li>
                                         </ul>
                                     </li>
                                 </ul>
@@ -344,22 +344,22 @@ const Header = () => {
                                 <Link to="#">욕실</Link>
                                 <ul className="main-header-sub1">
                                     <li>
-                                        <Link to="#">서브메뉴1</Link>
+                                        <Link to="#"><span>서브메뉴1</span></Link>
                                         <ul className="main-header-sub2">
-                                            <li> <Link to="#"><p>서브-서브메뉴1</p></Link> </li>
-                                            <li> <Link to="#"><p>서브-서브메뉴2</p></Link> </li>
-                                            <li> <Link to="#"><p>서브-서브메뉴3</p></Link> </li>
-                                            <li> <Link to="#"><p>서브-서브메뉴4</p></Link> </li>
+                                            <li> <Link to="#"><span>서브-서브메뉴1</span></Link> </li>
+                                            <li> <Link to="#"><span>서브-서브메뉴2</span></Link> </li>
+                                            <li> <Link to="#"><span>서브-서브메뉴3</span></Link> </li>
+                                            <li> <Link to="#"><span>서브-서브메뉴4</span></Link> </li>
                                         </ul>
                                     </li>
                                     
                                     <li>
-                                        <Link to="#">서브메뉴2</Link>
+                                        <Link to="#"><span>서브메뉴2</span></Link>
                                         <ul className="main-header-sub2">
-                                            <li> <Link to="#"><p>서브-서브메뉴1</p></Link> </li>
-                                            <li> <Link to="#"><p>서브-서브메뉴2</p></Link> </li>
-                                            <li> <Link to="#"><p>서브-서브메뉴3</p></Link> </li>
-                                            <li> <Link to="#"><p>서브-서브메뉴4</p></Link> </li>
+                                            <li> <Link to="#"><span>서브-서브메뉴1</span></Link> </li>
+                                            <li> <Link to="#"><span>서브-서브메뉴2</span></Link> </li>
+                                            <li> <Link to="#"><span>서브-서브메뉴3</span></Link> </li>
+                                            <li> <Link to="#"><span>서브-서브메뉴4</span></Link> </li>
                                         </ul>
                                     </li>
                                 </ul>
