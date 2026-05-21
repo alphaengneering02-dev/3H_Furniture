@@ -116,7 +116,7 @@ const FindId = () => {
                             </div>
                         
 
-                            {/* 찾기/로그인으로 돌아가기 버튼 */}
+                            {/* 찾기 제출 / 로그인으로 돌아가기 버튼 컴포넌트군 */}
                             <button onClick={onSubmit} className="find-id-submit-btn">아이디 찾기</button>
                             <Link to="/login" className="find-id-footer-link">로그인</Link>
                         </form>

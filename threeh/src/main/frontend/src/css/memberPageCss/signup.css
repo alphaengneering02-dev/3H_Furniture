@@ -1,0 +1,172 @@
+/* ==========================================
+   Signup Select Page CSS
+   기준: global.css
+   - body 배경: #F9F8F6
+   - 컨텐츠 박스: #FFFFFF
+   - 기본 폰트: Noto Sans KR
+   - 포인트 폰트: Playfair Display
+========================================== */
+
+:root {
+  --signup-black: #000000;
+  --signup-middle-gray: #777;
+  --signup-light-gray: #999;
+  --signup-charcoal: #2B2D2F;
+  --signup-dark-brown: #2F2A25;
+  --signup-dark-beige: #8C7A6B;
+  --signup-light-beige: #eee8e0;
+  --signup-accent-gold: #D4B26F;
+  --signup-alert-red: #FF3B30;
+  --signup-success-green: #4CAF50;
+
+  --signup-bg-ivory: #F9F8F6;
+  --signup-bg-white: #FFFFFF;
+
+  --signup-border-light: #E5E2DC;
+  --signup-border-dark: #1A1A1A;
+
+  --signup-font-sans: 'Noto Sans KR', sans-serif;
+  --signup-font-serif: 'Playfair Display', serif;
+}
+
+
+/* 1. 전체 레이아웃 컨테이너 (중앙 정렬) */
+.signup-select-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 85vh;
+    padding: 40px 20px;
+    background: var(--signup-bg-white);
+    font-family: var(--signup-font-sans);
+}
+
+
+/* 메인 타이틀 안내 문구 */
+.signup-select-title {
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: var(--signup-black, #000000);
+    margin-bottom: 40px;
+    letter-spacing: -0.5px;
+    text-align: center;
+}
+
+
+/* ==========================================
+   자체 회원가입 (사이트 회원가입 버튼)
+   ========================================== */
+.signup-method-box {
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* 시안의 회색 박스 형태를 세련된 까사미아 시그니처 블랙 스타일로 가공 */
+.signup-btn-site {
+    width: 100%;
+    height: 55px;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--signup-bg-white, #FFFFFF);
+    background-color: var(--signup-black, #000000);
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    letter-spacing: -0.3px;
+    margin-bottom: 40px;
+}
+
+.signup-btn-site:hover {
+    background-color: var(--signup-light-gray, #999999);
+    color: var(--signup-charcoal, #2B2D2F);
+}
+
+
+/* ==========================================
+   소셜 로그인 구분선 영역 (—— OR ——)
+   ========================================== */
+.signup-divider-zone {
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 35px;
+}
+
+.signup-divider-line {
+    flex: 1;
+    height: 1px;
+    background-color: var(--signup-border-light);
+    border: none;
+}
+
+.signup-divider-text {
+    font-size: 13px;
+    color: var(--signup-light-gray);
+    padding: 0 15px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+
+/* ==========================================
+   소셜 가입 계정 아이콘 그룹
+   ========================================== */
+.signup-social-wrapper {
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin-bottom: 50px;
+}
+
+.signup-social-item {
+    display: block;
+    transition: transform 0.2s, opacity 0.2s;
+}
+
+.signup-social-item:hover {
+    transform: translateY(-2px);
+    opacity: 0.85;
+}
+
+/* 소셜 로고 이미지 원형 규격화 */
+.signup-social-img {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+
+/* ==========================================
+   하단 로그인 안내 링크 푸터
+   ========================================== */
+.signup-select-footer {
+    width: 100%;
+    max-width: 400px;
+    padding-top: 20px;
+    border-top: 1px solid var(--signup-border-light, #E5E2DC);
+    text-align: center;
+    font-size: 13.5px;
+    color: var(--signup-middle-gray, #777777);
+}
+
+.signup-select-footer-link {
+    color: var(--signup-black, #000000);
+    font-weight: 700;
+    text-decoration: underline;
+    margin-left: 8px;
+    transition: color 0.2s;
+}
+
+.signup-select-footer-link:hover {
+    color: var(--signup-dark-beige, #8C7A6B);
+}

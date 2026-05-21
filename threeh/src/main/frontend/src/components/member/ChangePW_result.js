@@ -7,13 +7,26 @@ const ChangePw_result = ({resultPw}) => {
 
 
     return (
-        <div>
-            <h3>비밀번호 재설정이 완료되었습니다.</h3>
+        <div className="change-pw-result-box">
+            <h3 className="change-pw-result-title">비밀번호 재설정이 완료되었습니다.</h3>
 
-            <input type='text' value={resultPw} id='resultPw' name='resultPw' placeholder='사용자 비밀번호'/>
+            {/* 변경 완료된 정보 필드 */}
+            <input 
+                type='text' 
+                value={resultPw} id='resultPw' name='resultPw' 
+                placeholder='사용자 비밀번호'
+                readOnly
+                className="change-pw-result-field"
+            />
 
 
-            <button onClick={() => navigate("/login")}>로그인</button>
+            {/* 로그인으로 가기 버튼 */}
+            <button 
+                className="change-pw-btn-primary"
+                onClick={() => navigate("/login")}
+            >
+                로그인
+            </button>
         </div>
     );
 };

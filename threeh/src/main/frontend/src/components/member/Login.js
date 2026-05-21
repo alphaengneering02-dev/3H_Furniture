@@ -229,30 +229,29 @@ const Login = () => {
                 
 
                 {/* ===================oauth2 소셜 로그인=================== */}
-                <div className='login-social'>
-                    <hr className="login-social-divider"/>
-
-                    {/* 소셜 로그인 간편 아이콘 */}
-                    <div className="login-social-group">
-                        <p> 
-                            <Link to="http://localhost:8080/oauth2/authorization/google">
-                                <img src={icon_google} alt='구글' className="login-social-icon"/>
-                            </Link>
-                        </p>
-                        <p> 
-                            <Link to="http://localhost:8080/oauth2/authorization/naver">
-                                <img src={icon_naver} alt='네이버' className="login-social-icon"/>
-                            </Link>
-                        </p>
-                        <p> 
-                            <Link to="http://localhost:8080/oauth2/authorization/kakao">
-                                <img src={icon_kakao} alt='카카오' className="login-social-icon"/>
-                            </Link>
-                        </p>
+                <article>
+                    {/* 시안의 수평 분할 라인 존 ( —— OR —— ) */}
+                    <div className="login-divider-zone">
+                        <hr className="login-divider-line" />
+                        <span className="login-divider-text">OR</span>
+                        <hr className="login-divider-line" />
                     </div>
-
-                    <hr className="login-social-divider"/>
-                </div>
+                    
+                    {/* OAuth2 연동 소셜 회원가입 아이콘 그룹 */}
+                    <div className="login-social-wrapper">
+                        <Link to="http://localhost:8080/oauth2/authorization/google" className="login-social-item">
+                            <img src={icon_google} alt='구글 로그인' className="login-social-img" />
+                        </Link>
+                        
+                        <Link to="http://localhost:8080/oauth2/authorization/naver" className="login-social-item">
+                            <img src={icon_naver} alt='네이버 로그인' className="login-social-img" />
+                        </Link>
+                        
+                        <Link to="http://localhost:8080/oauth2/authorization/kakao" className="login-social-item">
+                            <img src={icon_kakao} alt='카카오 로그인' className="login-social-img" />
+                        </Link>
+                    </div>
+                </article>
 
 
                 {/* 하단 회원가입 유도 가이드 박스 */}

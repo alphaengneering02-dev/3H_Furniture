@@ -2,14 +2,18 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
+import Header from '../main/Header';
+
+//Signup_site 전용 CSS 임포트
+import '../../css/memberPageCss/signup_site.css';
 
 const Signup_site = () => {
 
     const navigate = useNavigate();
 
 
-    //회원가입 member 보내기(request)
-    const { register, handleSubmit, setError, clearErrors, formState: {errors} } = useForm();  //유효성 검사(validation) 활성화 : 각 입력 필드 등록, 폼 제출 함수 정의, 에러 setter, validation 에러 객체
+    //회원가입 전송용 react-hook-form 세팅
+    const { register, handleSubmit, setError, clearErrors, formState: {errors} } = useForm();  //각 입력 필드, 폼 제출 함수 정의, 에러 setter, validation 에러 객체
 
     const [emailId, setEmailId] = useState("")  //입력값 상태
     const [emailSite, setEmailSite] = useState("")
@@ -93,89 +97,143 @@ const Signup_site = () => {
 
     return (
         <div>
-            Signup_site 페이지
-            
-            <h1> <Link to="/">로고</Link> </h1>
-
-            <h2>사이트 회원가입</h2>
-
-
-            <form onSubmit={handleSubmit(onSubmit, onInvalid)}>
-                {/* 아이디 */}
-                <div>
-                    <input type='text' {...register('id')} placeholder='아이디'/>
-                    {errors.id && <p>{errors.id.message}</p>}
-                </div>
-
-                {/* 비밀번호 */}
-                <div>
-                    <input type='password' {...register('password1')} placeholder='비밀번호'/>
-                    {errors.password1 && <p>{errors.password1.message}</p>}
-                </div>
-
-                {/* 비밀번호 재확인 */}
-                <div>
-                    <input type='password' {...register('password2')} placeholder='비밀번호 재확인'/>
-                    {errors.password2 && <p>{errors.password2.message}</p>}
-                </div>
-
-
-                {/* 이름 또는 회사명 */}
-                <div>
-                    <input type='text' {...register('name')} placeholder='이름 또는 회사명'/>
-                    {errors.name && <p>{errors.name.message}</p>}
-                </div>
-
-                {/* 전화번호 또는 사업장 전화번호 */}
-                <div>
-                    <input type='tel' {...register('phone')} placeholder='전화번호 또는 사업장 전화번호'/>
-                    {errors.phone && <p>{errors.phone.message}</p>}
-                </div>
-                
-                {/* 이메일 */}
-                <div>
-                    <div>
-                        <input type='text' value={emailId} id='emailId' name='emailId' onChange={changeEmailId} placeholder='이메일'/>
-                    </div>
-                    @
-                    <div>
-                        <input type='text' value={emailSite} id='emailSite' name='emailSite' onChange={inputYourself} placeholder='사이트' readOnly={isReadOnly}/>
-                    </div>
-                    
-                    <select onChange={changeEmailSite}>
-                        <option selected disabled>사이트</option>
-                        <option id="gmail" name="gmail" value="gmail.com">gmail</option>
-                        <option id="naver" name="naver" value="naver.com">naver</option>
-                        <option value="inputYourself">직접입력</option>
-                    </select>
-
-                    {errors.email && <p>{errors.email.message}</p>}
-                </div>
-
-                {/* 주민등록번호 */}
-                <div>
-                    <input type='text' {...register('regNo')} placeholder='주민등록번호'/>
-                    {errors.regNo && <p>{errors.regNo.message}</p>}
-                </div>
-
-
-                <article>
-                    <button onClick={() => navigate("/signup")}>취소</button>
-                    <button type='submit'>회원가입</button>
-                </article>
-            </form>
-            
-
-            {/* 기타 에러 메세지 */}
-            <div>
-                <p>기타 에러가 있을 경우 아래에 보여집니다.</p>
-                {errors.global && <p>{errors.global.message}</p>}
-                {errors.others && <p>{errors.others.message}</p>}
+            {/* Header 영역 */}
+            <div className="main-header">
+                <Header/>
             </div>
 
 
-            
+            <div className="signup-container">
+                <h2 className="signup-title">사이트 회원가입</h2>
+
+
+                <form className="signup-form" onSubmit={handleSubmit(onSubmit, onInvalid)}>
+                    {/* 아이디 필드 */}
+                    <div className="signup-input-group">
+                        <input 
+                            type='text' 
+                            {...register('id')} 
+                            placeholder='아이디' 
+                            className="signup-input-field"
+                        />
+                        {errors.id && <p className="signup-error-msg">{errors.id.message}</p>}
+                    </div>
+
+                    {/* 비밀번호 필드 */}
+                    <div className="signup-input-group">
+                        <input 
+                            type='password' 
+                            {...register('password1')} 
+                            placeholder='비밀번호' 
+                            className="signup-input-field"
+                        />
+                        {errors.password1 && <p className="signup-error-msg">{errors.password1.message}</p>}
+                    </div>
+
+                    {/* 비밀번호 재확인 필드 */}
+                    <div className="signup-input-group">
+                        <input 
+                            type='password' 
+                            {...register('password2')} 
+                            placeholder='비밀번호 재확인' 
+                            className="signup-input-field"
+                        />
+                        {errors.password2 && <p className="signup-error-msg">{errors.password2.message}</p>}
+                    </div>
+
+
+                    {/* 이름 또는 회사명 필드 */}
+                    <div className="signup-input-group">
+                        <input 
+                            type='text' 
+                            {...register('name')} 
+                            placeholder='이름 또는 회사명' 
+                            className="signup-input-field"
+                        />
+                        {errors.name && <p className="signup-error-msg">{errors.name.message}</p>}
+                    </div>
+
+                    {/* 전화번호 필드 */}
+                    <div className="signup-input-group">
+                        <input 
+                            type='tel' 
+                            {...register('phone')} 
+                            placeholder='전화번호 또는 사업장 전화번호' 
+                            className="signup-input-field"
+                        />
+                        {errors.phone && <p className="signup-error-msg">{errors.phone.message}</p>}
+                    </div>
+                    
+                    {/* 이메일 주소 결합형 필드 */}
+                    <div className="signup-input-group">
+                        <div className="signup-email-row">
+                            <div className="signup-email-cell cell-id">
+                                <input 
+                                    type='text' 
+                                    value={emailId} 
+                                    id='emailId' 
+                                    name='emailId' 
+                                    onChange={changeEmailId} 
+                                    placeholder='이메일' 
+                                    className="signup-email-field"
+                                />
+                            </div>
+                            <div className="signup-email-cell cell-at">@</div>
+                            <div className="signup-email-cell cell-site">
+                                <input 
+                                    type='text' 
+                                    value={emailSite} id='emailSite' name='emailSite' 
+                                    onChange={inputYourself} 
+                                    placeholder='사이트 주소' 
+                                    readOnly={isReadOnly}
+                                    className="signup-email-field"
+                                />
+                            </div>
+                            
+                            <div className="signup-email-cell cell-select">
+                                <select onChange={changeEmailSite} className="signup-email-select">
+                                    <option selected disabled>사이트</option>
+                                    <option id="gmail" name="gmail" value="gmail.com">gmail</option>
+                                    <option id="naver" name="naver" value="naver.com">naver</option>
+                                    <option value="inputYourself">직접입력</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        {errors.email && <p>{errors.email.message}</p>}
+                    </div>
+
+                    {/* 주민등록번호 필드 */}
+                    <div className="signup-input-group">
+                        <input 
+                            type='text' 
+                            {...register('regNo')} 
+                            placeholder='주민등록번호' 
+                            className="signup-input-field"
+                        />
+                        {errors.regNo && <p className="signup-error-msg">{errors.regNo.message}</p>}
+                    </div>
+
+
+                    {/* 취소 / 회원가입 하단 버튼 컴포넌트군 */}
+                    <article className="signup-action-group">
+                        <button onClick={() => navigate("/signup")} className="signup-btn-cancel">취소</button>
+                        <button type='submit' className="signup-btn-submit">회원가입</button>
+                    </article>
+                </form>
+                
+
+                {/* 글로벌 핸들러 혹은 서버 네트워크 통신 예외 에러메세지 */}
+                {(errors.global || errors.others) && (
+                    <div className="signup-global-error-box">
+                        {errors.global && <p>{errors.global.message}</p>}
+                        {errors.others && <p>{errors.others.message}</p>}
+                    </div>
+                )}
+            </div>
+
         </div>
+
     );
 };
 
