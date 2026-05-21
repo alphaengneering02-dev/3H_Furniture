@@ -162,8 +162,7 @@ public class ReviewService {
 
     //관리자 삭제 메서드
     public void adminDeleteReview(String loginId, Long reviewId){
-        Member member = memberRepository.findByMemberLoginId(loginId)
-            .orElseThrow(()->new RuntimeException("회원 정보를 찾을 수 없습니다."));
+        Member member = memberService.getUser(loginId);
 
         if(!member.getRole().name().equals("ADMIN")&&
             !member.getRole().name().equals("ROLE_ADMIN")){
