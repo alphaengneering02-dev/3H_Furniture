@@ -17,7 +17,6 @@ const Review = ({ itemId, isAdmin }) => {
     if (!itemId) {
       return;
     }
-
     getReviews();
     getReviewSummary();
   }, [itemId]);
