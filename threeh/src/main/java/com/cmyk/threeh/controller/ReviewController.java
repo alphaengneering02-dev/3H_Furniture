@@ -134,7 +134,7 @@ public class ReviewController {
         }
     }
 
-    // 내가 작성한 리뷰 삭제
+    // 내가 작성한 리뷰만 삭제가능
     // Mypage.js에서 사용
     @DeleteMapping("/{reviewId}")
     public ResponseEntity<?> deleteReview(
@@ -152,6 +152,25 @@ public class ReviewController {
             return ResponseEntity.ok("리뷰가 삭제되었습니다.");
 
         } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    //admin이 리뷰 삭제할때 사용하는 api
+    @DeleteMapping("/admin/{reviewId")
+    public ResponseEntity<?> adminDeleteReview(
+        @PathVariable Long reviewId,
+        Principal principal
+    ){
+        String loginId = GetLoginId.getloginId(principal);
+
+        if(loginId == null){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+        }
+        try{
+            reviewService.adminDeleteReview(loginId,reviewId);
+            return ResponseEntity.ok("리뷰가 삭제되었습니다.");
+        }catch(Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
