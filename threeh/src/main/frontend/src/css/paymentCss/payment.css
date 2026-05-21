@@ -1,0 +1,85 @@
+.payment-wrapper{
+    margin: 80px auto;
+    max-width: 580px;
+    margin: 80px auto;
+    padding: 50px 40px;
+    background-color: #ffffff;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    text-align: center;
+    font-family: 'Noto Sans KR', sans-serif;
+    color: #333333;
+}
+
+
+payment-checklogo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    margin-bottom: 24px;
+    border: 2px solid #888888;
+    border-radius: 50%;
+    font-size: 28px;
+    color: #555555;
+    font-weight: 300;
+}
+
+/* 메인 타이틀 (~~님 결제가 완료되었습니다) */
+.payment-headline {
+    font-size: 24px;
+    font-weight: 500;
+    color: #111111;
+    margin: 0 0 35px 0;
+    letter-spacing: -0.5px;
+}
+
+/* 상세 주문 내역이 들어가는 그림판 형태의 사각형 박스 */
+.payment-info-box {
+    background-color: #fafafa;
+    border: 1px solid #e1e1e1;
+    padding: 25px 30px;
+    margin-bottom: 40px;
+    text-align: left; /* 내역 텍스트는 보기 좋게 좌측 정렬 */
+}
+
+/* 내역 내부 텍스트 라인 */
+.payment-label {
+    font-size: 15px;
+    line-height: 1.8;
+    color: #444444;
+    margin: 8px 0;
+    display: flex;
+    align-items: flex-start;
+}
+
+/* 결제금액 라인 강조 (선택 사항) */
+.payment-label:last-of-type {
+    font-weight: 600;
+    color: #111111;
+    border-top: 1px dashed #e1e1e1;
+    padding-top: 12px;
+    margin-top: 12px;
+}
+
+/* 홈으로 가기 버튼 (까사미아 감성의 딥 차콜 배경 + 흰색 글씨) */
+.payment-btn {
+    width: 180px;
+    height: 48px;
+    background-color: #2b2b2b; /* 고급스러운 딥 차콜 */
+    color: #ffffff;            /* ✨ 글자 색상 흰색 */
+    font-size: 15px;
+    font-weight: 500;
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* 버튼 호버 효과 */
+.payment-btn:hover {
+    background-color: #000000;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
