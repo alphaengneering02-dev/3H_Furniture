@@ -26,35 +26,43 @@ function Item() {
   const location = useLocation();
   
   const getLoginUser = () => {
-    
-    //sesstionStroage에 저장된 로그인 사용자 정보 가져오기
+    try{
+      //sesstionStroage에 저장된 로그인 사용자 정보 가져오기
     return JSON.parse(sessionStorage.getItem("user"));
+    }catch(error){
+      console.error("user 파싱 실패",error);
+      sessionStorage.removeItem("user");
+      return null;
+    }
+  };
+
+  const getUserRole = (user)=>{
+    if(!user){
+      return null;
+    }
+
+    if(typeof user.role === "string"){
+      return user.role;
+    }
+
+    if(user.role?.key){
+      return user.role.key;
+    }
+    return null;
   };
 
   //로그인한 사용자가 관리자인지 확인
   const isAdminRole = (user) => {
-    return (
-      user &&
-      (
-        user.role === "ADMIN" ||
-        user.role === "ROLE_ADMIN" ||
-        user.role?.key === "ADMIN" ||
-        user.role?.key === "ROLE_ADMIN"
-      )
-    );
+    const role = getUserRole(user);
+
+    return role === "ADMIN" || role === "ROLE_ADMIN";
   };
 
   //로그인한 사용자가 일반 회원인지 확인
-  const isUserRole = (user) => {
-    return (
-      user &&
-      (
-        user.role === "USER" ||
-        user.role === "ROLE_USER" ||
-        user.role?.key === "USER" ||
-        user.role?.key === "ROLE_USER"
-      )
-    );
+   const isUserRole = (user) => {
+   const role = getUserRole(user);
+
+   return role === "USER"||role === "ROLE_USER";
   };
 
    //컴포넌트가 처음 실행될 때 상품 목록 조회. 그리고 북마크
@@ -65,11 +73,26 @@ function Item() {
     getItems();
     getMyBookmarks();
 
-    const savedSelectedItems =JSON.parse(sessionStorage.getItem(SELECTED_ITEMS_KEY));
+    //세션 유지 코드 보강
+   // const savedSelectedItems =JSON.parse(sessionStorage.getItem(SELECTED_ITEMS_KEY));
 
-    if(savedSelectedItems && Array.isArray(savedSelectedItems)){
-      setSelectedItems(savedSelectedItems);
-    }
+   // if(savedSelectedItems && Array.isArray(savedSelectedItems)){
+   //   setSelectedItems(savedSelectedItems);
+   //}
+
+   let savedSelectedItems = [];
+
+   try{
+    savedSelectedItems = JSON.parse(sessionStorage.getItem(SELECTED_ITEMS_KEY))||[];
+   }catch(error){
+    console.error("selectedItems 파싱 실패", error);
+    sessionStorage.removeItem(SELECTED_ITEMS_KEY);
+    savedSelectedItems = [];
+   }
+
+   if(Array.isArray(savedSelectedItems)){
+    setSelectedItems(savedSelectedItems);
+   }
 
     if(location.state?.adminMode){
       setAdminMode(true);
@@ -182,6 +205,8 @@ function Item() {
   const user = getLoginUser();
   //현재 로그인한 사용자가 admin인지 여부
   const isAdmin = isAdminRole(user);
+  //비로그인 유저 확인
+  const isUser = isUserRole(user);
 
   //북마크 여부 확인 함수
   const isBookmarked = (itemId) =>{
@@ -341,6 +366,11 @@ function Item() {
   //선택 상품 장바구니/구매처리 전 검증
   const validateSelectedItems = () => {
     const loginUser = getLoginUser();
+
+   //  console.log("validateSelectedItems loginUser:", loginUser);
+   //  console.log("loginUser.role:", loginUser?.role);
+   //  console.log("loginUser.role.key:", loginUser?.role?.key);
+   //  console.log("isUserRole:", isUserRole(loginUser));
 
     //비로그인 검사
     if (!loginUser) {
@@ -665,8 +695,8 @@ function Item() {
         {/*상품 목록 페이지 제목 */}
       <h1 className="item-title">상품 목록</h1>
 
-         {/*내 장바구니로 가기_admin인경우 안보이게*/}
-      {!isAdmin&&(
+         {/*내 장바구니로 가기_admin인경우 안보이게 기존 !isAdmin 이였는데 isUser로 변경*/}
+      {isUser&&(
         <div className="item-action-area">
             <button type="button" onClick={handlGoMyCart}>
                 장바구니 보기
@@ -765,7 +795,8 @@ function Item() {
 
               return (
                 <div key={item.itemId} className="item-card">
-                  {!isAdmin && (
+                  {/*기존은 !isAdmin이였는데 일반 유저면 보이게 바꿈*/}
+                  {isUser && (
                     <input
                       className="item-checkbox"
                       type="checkbox"
@@ -804,8 +835,8 @@ function Item() {
                       현재 선택할 수 없는 상품입니다.
                     </p>
                   )}
-
-                  {!isAdmin && (
+                  {/*기존은 !isAdmin이였는데 일반 유저면 보이게 바꿈*/}
+                  {isUser && (
                     <button
                       type="button"
                       onClick={()=>handleToggleBookmark(item.itemId)}
@@ -816,7 +847,8 @@ function Item() {
                     </button>
                   )}
                  </div> 
-                  {!isAdmin && (
+                 {/*기존은 !isAdmin이였는데 일반 유저면 보이게 바꿈*/}
+                  {isUser && (
                     <div className="item-card-button-area">
                       <button
                         type="button"
@@ -843,8 +875,8 @@ function Item() {
           )}
         </div>
       )}
-
-      {!isAdmin && selectedItems.length > 0 && (
+      {/*기존은 !isAdmin이였는데 일반 유저면 보이게 바꿈*/}
+      {isUser && selectedItems.length > 0 && (
         <div className="item-selected-box">
           <h2 className="item-section-title">선택한 상품</h2>
 

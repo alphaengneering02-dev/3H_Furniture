@@ -16,8 +16,8 @@ public class CustomMemberDetails implements UserDetails, Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final transient Admins admins;
-    private final transient Member member;
+    private final  Admins admins;
+    private final  Member member;
 
 
     //Admins용 생성자
