@@ -159,6 +159,15 @@ const Mypage = () => {
         }
     };
 
+    /* =========================================================================
+     * 📝 [오현옥 개발파트] 리뷰 관리 시스템 핵심 비즈니스 로직 연동 핸들러 정의 구역
+     * ========================================================================= */
+
+    /**
+     * [오현옥] 1. 내 리뷰 목록 조회 기능
+     * - 현재 로그인한 세션 회원이 과거에 작성했던 전체 리뷰 내역을 스프링 서버로부터 비동기 방식으로 fetch합니다.
+     * - 성공 시 리액트 상태 변수인 `myReviews` 배열에 통째로 적재하여 화면 하단에 바인딩합니다.
+     */
     const getMyReviews = async() =>{
         try{
             const response = await axios.get("http://localhost:8080/api/reviews/my", { withCredentials:true });
@@ -166,8 +175,18 @@ const Mypage = () => {
         }catch(error){ console.error("내 리뷰 조회 실패", error); }
     };
 
+    /**
+     * [오현옥] 2. 리뷰 수정 모드 진입 전환 핸들러
+     * - 유저가 특정 리뷰 열에서 [수정] 단추를 클릭하면 호출되는 제어 흐름입니다.
+     * - 기존에 작성되어 있던 별점(`reviewScore`)과 본문 텍스트(`reviewText`) 데이터를 가산 상태 훅에 세팅하여 입력창에 자동 매핑합니다.
+     */
     const handleEditReviewStart = (review) => { setEditReviewId(review.reviewId); setEditReviewScore(review.reviewScore); setEditReviewText(review.reviewText); };
     
+    /**
+     * [오현옥] 3. 수정 완료 처리 및 백엔드 반영 기능 (PUT API)
+     * - 유저가 수정한 새로운 별점 스코어와 텍스트 문자열을 RESTful API 규격에 맞춰 서버에 갱신 처리 요청을 전송합니다.
+     * - 완료 시 수정 폼 인터페이스 레이어를 비활성화(`null`)하고 `getMyReviews`를 리로드하여 실시간 무전환 동기화를 처리합니다.
+     */
     const handleUpdateReview = async(reviewId) => {
         try{
             await axios.put(`http://localhost:8080/api/reviews/${reviewId}`, { reviewScore: editReviewScore, reviewText: editReviewText }, { withCredentials:true });
@@ -175,6 +194,11 @@ const Mypage = () => {
         }catch(error){ alert("리뷰 수정 실패"); }
     };
 
+    /**
+     * [오현옥] 4. 리뷰 완전 삭제 기능 (DELETE API)
+     * - 유저의 삭제 의사를 더블 체킹하는 윈도우 컨펌(`confirm`) 창을 트리거합니다.
+     * - 승인 시 백엔드 데이터베이스의 해당 리뷰 고유 시퀀스 번호(`reviewId`) 레코드를 지우고 목록을 실시간 새로고침합니다.
+     */
     const handleDeleteReview = async(reviewId) => {
         if(!window.confirm("리뷰를 삭제하시겠습니까?")) return;
         try{
@@ -364,13 +388,85 @@ const Mypage = () => {
                             <button className="mypage-action-btn" onClick={handleDelete} style={{ color: 'red', marginTop: '30px' }}>회원 탈퇴</button>
                         </div>
 
+                        {/* =========================================================================
+                         * 📝 [오현옥 렌더링 파트] 내가 작성한 리뷰 데이터 루프 바인딩 출력 구역
+                         * ========================================================================= */}
                         <div style={{marginTop:"40px"}}>
                             <h2>내가 작성한 리뷰</h2>
-                            {myReviews.map((review)=>(
-                                <div key={review.reviewId} style={{ borderBottom:"1px solid"}}>
-                                    {/* 기존 하단 리뷰 루프 연동 유지 */}
-                                </div>
-                            ))}
+                            {myReviews && myReviews.length > 0 ? (
+                                myReviews.map((review) => (
+                                    <div key={review.reviewId} style={{ borderBottom: "1px solid #eee", padding: '15px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        
+                                        {/* [오현옥] 현재 행이 일반 보기 모드인지, 혹은 유저가 [수정]을 눌러 진입한 에디팅 상태인지 분기 처리 */}
+                                        {editReviewId === review.reviewId ? (
+                                            /* 💡 1단계: [오현옥] 수정 모드 활성화 시 인풋창 인터페이스 노출 */
+                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', flex: 1, marginRight: '20px' }}>
+                                                <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                                                    <span style={{ fontSize: '14px', fontWeight: '600' }}>별점 수정:</span>
+                                                    <select 
+                                                        value={editReviewScore} 
+                                                        onChange={(e) => setEditReviewScore(Number(e.target.value))}
+                                                        style={{ padding: '4px 8px' }}
+                                                    >
+                                                        <option value={5}>⭐⭐⭐⭐⭐ (5점)</option>
+                                                        <option value={4}>⭐⭐⭐⭐ (4점)</option>
+                                                        <option value={3}>⭐⭐⭐ (3점)</option>
+                                                        <option value={2}>⭐⭐ (2점)</option>
+                                                        <option value={1}>⭐ (1점)</option>
+                                                    </select>
+                                                </div>
+                                                <input 
+                                                    type="text" 
+                                                    value={editReviewText} 
+                                                    onChange={(e) => setEditReviewText(e.target.value)}
+                                                    style={{ width: '100%', padding: '8px', border: '1px solid #ccc' }}
+                                                />
+                                                <div style={{ display: 'flex', gap: '5px' }}>
+                                                    <button onClick={() => handleUpdateReview(review.reviewId)} style={{ padding: '4px 12px', backgroundColor: '#4CAF50', color: '#fff', border: 'none', cursor: 'pointer' }}>저장</button>
+                                                    <button onClick={() => setEditReviewId(null)} style={{ padding: '4px 12px', backgroundColor: '#bbb', color: '#fff', border: 'none', cursor: 'pointer' }}>취소</button>
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            /* 💡 2단계: [오현옥] 평소 화면에 뿌려지는 텍스트 본문 및 평점 레이아웃 */
+                                            <div style={{ flex: 1 }}>
+                                                <p style={{ margin: '0 0 6px 0', fontSize: '14px', color: '#ff9800', fontWeight: 'bold' }}>
+                                                    {/* 점수 정수값을 기반으로 별 아이콘 개수를 출력하는 오현옥 로직 매핑 */}
+                                                    {"⭐".repeat(review.reviewScore || 5)} ({review.reviewScore}점)
+                                                </p>
+                                                <p style={{ margin: 0, fontSize: '15px', color: '#333' }}>
+                                                    {review.reviewText || "작성된 리뷰 내용이 없습니다."}
+                                                </p>
+                                                <p style={{ margin: '4px 0 0 0', fontSize: '11px', color: '#999' }}>
+                                                    리뷰 고유키: {review.reviewId}
+                                                </p>
+                                            </div>
+                                        )}
+
+                                        {/* [오현옥] 우측에 상시 대기하는 수정 / 삭제 제어 버튼 셋 레이어 */}
+                                        <div style={{ display: 'flex', gap: '5px', flexShrink: 0 }}>
+                                            {editReviewId !== review.reviewId && (
+                                                <button 
+                                                    className="mypage-action-btn" 
+                                                    onClick={() => handleEditReviewStart(review)}
+                                                    style={{ padding: '4px 10px', fontSize: '12px', cursor: 'pointer' }}
+                                                >
+                                                    수정
+                                                </button>
+                                            )}
+                                            <button 
+                                                className="mypage-action-btn" 
+                                                onClick={() => handleDeleteReview(review.reviewId)}
+                                                style={{ padding: '4px 10px', fontSize: '12px', color: 'red', cursor: 'pointer' }}
+                                            >
+                                                삭제
+                                            </button>
+                                        </div>
+
+                                    </div>
+                                ))
+                            ) : (
+                                <p style={{ color: '#888', padding: '15px 0' }}>내가 작성한 리뷰 내역이 존재하지 않습니다.</p>
+                            )}
                         </div>
                     </main>
                 </div>
