@@ -1,292 +1,296 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,500;0,600;1,400&display=swap');
-/* ===================================================
-   🩵 PROJECT CMYK 마이페이지 - 가로 슬라이더 스퀘어 테마
-   =================================================== */
 
-/* 1. 최상단 배경 전체 - 아늑하고 눈이 편안한 아이보리 바탕화면 */
+/* ==========================================
+   [까사미아 스타일] 전체 레이아웃 (폰트 제외)
+   ========================================== */
 .mypage-grid-container {
-  background-color: #F9F8F6; 
-  min-height: 100vh;
-  font-family: 'Noto Sans KR', -apple-system, sans-serif;
-  color: #1A1A1A;
-  padding-bottom: 80px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    color: #111111;
+    box-sizing: border-box;
 }
 
-/* 2. 상단 헤더 박스 - 묵직하고 따뜻한 웜 베이지 밸런스 */
+/* 🤎 [상단 헤더 박스] 노란빛이 살짝 감오는 찐 샌드 베이지 */
 .mypage-header-box {
-  background-color: #E6DCD2 !important; 
-  border-bottom: 1px solid #C8B9A6 !important; 
-  padding: 16px 28px !important; 
-  align-items: center;
+    background-color: #ede2d5 !important; /* 핑크기 제로, 차분한 까사미아풍 샌드 베이지 */
+    border-bottom: 1px solid #111111 !important; /* 얇고 강한 직선 강조 */
+    padding: 25px 20px !important;
 }
 
 .mypage-logo-box {
-  color: #1A1A1A !important;
-  font-weight: 700 !important;
-  font-size: 18px;
-  letter-spacing: 0.05em;
+    font-size: 22px;
+    letter-spacing: 1.5px;
 }
 
-/* 3. 왼쪽 독립형 사이드바 메뉴 디자인 */
+/* 본문 flex 레이아웃 */
+.mypage-grid-container > div[style*="display: flex"] {
+    margin-top: 40px;
+    gap: 50px;
+}
+
+/* ==========================================
+   좌측 사이드바 영역
+   ========================================== */
 .mypage-sidebar {
-  background-color: #fff;
-  border: 1px solid #E5E2DC;
-  padding: 24px 16px;
-  width: 220px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin: 30px 0 0 20px;
+    width: 210px !important;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0px; 
 }
 
-.sidebar-btn {
-  width: 100%;
-  text-align: left;
-  padding: 12px 16px !important;
-  font-size: 13.5px;
-  font-weight: 500;
-  color: #4A4A4A !important;
-  background-color: transparent !important;
-  border: none !important;
-  cursor: pointer;
-  transition: all 0.15s ease-in-out;
+/* 사이드바 메뉴 상단 인사말 박스 */
+.mypage-sidebar > div:first-child {
+    background-color: #ede2d5 !important; /* 헤더와 동일한 베이지 */
+    padding: 20px !important;
+    border-bottom: 2px solid #111111 !important;
+    margin-bottom: 15px;
 }
 
-.sidebar-btn:hover {
-  background-color: #F9F8F6 !important;
-  color: #000000 !important;
-  font-weight: 600;
+/* 🤎 [좌측 기능 리스트 박스] 헤더와 오차 없는 샌드 베이지 통일 */
+.mypage-sidebar .sidebar-btn {
+    display: block;
+    background-color: #ede2d5 !important; /* 분홍기 없는 베이지 */
+    border: none;
+    text-align: left;
+    padding: 12px 20px !important; 
+    cursor: pointer;
+    font-size: 13px;
+    color: #444444;
+    width: 100%;
+    box-sizing: border-box;
+    border-bottom: 1px solid #dfd1c0; /* 내부 베이지 톤 구분선 */
+    transition: all 0.2s ease;
 }
 
-/* 4. 우측 메인 콘텐츠 레이아웃 가독성 패킹 */
+/* 기능 리스트 박스의 최상단 메뉴 테두리 마감 */
+.mypage-sidebar .sidebar-btn:first-of-type {
+    border-top: 1px solid #111111;
+}
+
+/* 기능 리스트 박스의 최하단 메뉴 테두리 마감 */
+.mypage-sidebar .sidebar-btn:last-of-type {
+    border-bottom: 1px solid #111111;
+    margin-bottom: 30px;
+}
+
+.mypage-sidebar .sidebar-btn:hover {
+    color: #111111;
+    background-color: #dfd1c0 !important; /* 호버 시 한 단계 차분해지는 브라운-베이지 */
+    font-weight: 500;
+}
+
+/* ==========================================
+   우측 메인 콘텐츠 및 프로필 섹션
+   ========================================== */
 .mypage-main-content {
-  padding: 30px 24px 30px 30px !important;
+    flex: 1;
+    padding: 0 0 0 20px !important;
 }
 
+/* 프로필 상단 요약 아바타 구역 */
 .profile-icon-box {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 45px; 
+    display: flex;
+    align-items: center;
+    background-color: #f8f9fa;
+    padding: 30px 40px;
+    margin-bottom: 40px;
+    border-radius: 0px;
 }
 
 .profile-avatar-circle {
-  width: 48px;
-  height: 48px;
-  border-radius: 0px !important; 
-  background-color: #2B2D2F;
-  color: #ffffff;
-  font-weight: 700;
-  font-size: 15px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    font-size: 22px;
+    font-weight: 700;
+    color: #111111;
+    background: none;
+    width: auto;
+    height: auto;
+    border-radius: 0;
+    margin-right: auto;
 }
 
-/* 각 구역 대제목 (회원정보, 구매내역 등) */
-.info-section-title, .mypage-main-content h2 {
-  font-size: 18px;
-  font-weight: 700;
-  color: #2B2D2F;
-  margin-top: 35px;
-  margin-bottom: 14px;
-  letter-spacing: -0.3px;
+/* 타이틀 라벨 스타일 */
+.info-section-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #111111;
+    margin: 40px 0 15px 0 !important;
+    letter-spacing: -0.5px;
 }
 
-/* 5. 정보가 포장되어 담기는 기본 흰색 대시보드 상자 (회원정보, 배송지 전용) */
+/* 회원정보 데이터 블록 */
 .info-data-block {
-  background-color: #ffffff; 
-  border: 1px solid #E5E2DC !important; 
-  border-radius: 0px !important; 
-  padding: 26px !important;
-  margin-bottom: 24px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.01);
-}
-
-.info-data-block > div {
-  border-bottom: 1px solid #F2EFE9 !important;
-  padding: 18px 4px !important;
-}
-
-.info-data-block > div:last-child {
-  border-bottom: none !important;
-  padding-bottom: 0 !important;
+    display: flex;
+    gap: 40px;
+    padding: 20px 10px;
+    border-top: 1px solid #111111;
+    border-bottom: 1px solid #eeeeee;
+    margin-bottom: 30px;
+    background-color: #ffffff;
 }
 
 .info-data-block p {
-  margin: 0 0 6px 0;
-  font-size: 14px;
-  line-height: 1.5;
+    margin: 0;
+    font-size: 14px;
+    color: #111111;
 }
 
-.info-data-block strong {
-  color: #64748b; 
-  font-weight: 500;
+.info-data-block p strong {
+    font-weight: 400;
+    color: #666666;
+    margin-right: 8px;
 }
 
+.info-data-block > div {
+    width: 100%;
+}
 
-/* ===================================================
-   ⚡ [신규 고도화] 구매내역 가로 슬라이더 & 정사각형 카드 스타일 구역
-   =================================================== */
-
-/* 슬라이더 전체를 감싸는 부모 윈도우 (화살표 버튼 정렬용 포지셔닝) */
+/* ==========================================
+   ⚡ 구매내역 가로형 슬라이더 시스템
+   ========================================== */
 .order-slider-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-  width: 100%;
-  margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    border-top: 1px solid #111111;
+    border-bottom: 1px solid #eeeeee;
+    padding: 30px 0;
+    margin-bottom: 40px;
+    background: #ffffff;
 }
 
-/* 카드가 넘어가다가 잘리는 것을 숨겨주는 가로 창 설정 */
-.order-slider-container {
-  overflow: hidden;
-  width: 100%;
-  padding: 10px 0;
-}
-
-/* 가로로 낱개 카드들을 길게 한 줄로 늘어뜨리는 기차 레일 */
-.order-slider-track {
-  display: flex;
-  gap: 16px; /* 정사각형 카드 간 격차 */
-  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); /* 넘길 때 부드러운 슬라이딩 감성 */
-  will-change: transform;
-}
-
-/* ⚡ 핵심: 요청하신 하나하나 독립된 낱개 구조의 "작은 정사각형" 주문 카드 디자인 */
-.order-square-card {
-  flex: 0 0 calc(25% - 12px); /* 4열 배치를 기본으로 한 정밀 스퀘어 너비 계산 */
-  aspect-ratio: 1 / 1; /* 💡 가로세로 비율을 1:1로 강제 고정하여 완벽한 정사각형 유지 */
-  background-color: #E6DCD2 !important; /* 상단 헤더와 동일한 웜 베이지 채우기 */
-  border: 1px solid #C8B9A6 !important; 
-  padding: 18px !important;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between; /* 텍스트는 위, 버튼은 아래로 찢어서 배치 */
-  position: relative;
-}
-
-/* 화면 크기가 좁아질 때 반응형 지원 (태블릿/모바일 방어) */
-@media (max-width: 1024px) { .order-square-card { flex: 0 0 calc(33.33% - 11px); } }
-@media (max-width: 768px) { .order-square-card { flex: 0 0 calc(50% - 8px); } }
-
-/* 정사각형 카드 내부 텍스트 구성 */
-.order-square-card p {
-  margin: 0 0 4px 0;
-  font-size: 13px;
-  line-height: 1.4;
-  color: #1A1A1A;
-  word-break: keep-all;
-}
-
-.order-square-card strong {
-  color: #4A4A4A;
-  font-weight: 600;
-}
-
-/* ⚡ 좌우 슬라이드 이동 화살표 컨트롤러 단추 스타일 */
+/* 슬라이더 화살표 버튼 */
 .slider-arrow-btn {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 36px;
-  height: 36px;
-  background-color: #2B2D2F !important; /* 시크한 차콜 블랙 */
-  color: #ffffff !important;
-  border: none !important;
-  border-radius: 0px !important; /* 직각 디자인 아이덴티티 통일 */
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-  transition: all 0.2s;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 0 10px;
+    color: #111111;
 }
 
-.slider-arrow-btn:hover {
-  background-color: #000000 !important;
-  transform: translateY(-50%) scale(1.05);
-}
-
-/* 화살표 배치 위치 선정 */
-.slider-arrow-btn.prev { left: -18px; }
-.slider-arrow-btn.next { right: -18px; }
-
-/* 데이터가 맨 처음이거나 맨 끝일 때 화살표 숨김/비활성화 처리 대응 */
 .slider-arrow-btn:disabled {
-  background-color: #E5E2DC !important;
-  color: #A1A1A1 !important;
-  cursor: not-allowed;
-  transform: translateY(-50%) scale(1);
-  box-shadow: none;
+    color: #dddddd;
+    cursor: default;
 }
 
-
-/* ===================================================
-   공통 버튼 & 기타 요소 정의
-   =================================================== */
-.mypage-action-btn, .info-data-block button, .order-square-card button {
-  padding: 8px 14px !important;
-  font-size: 12px;
-  font-weight: 600;
-  border-radius: 0px !important; 
-  border: none;
-  cursor: pointer;
-  transition: all 0.15s ease-in-out;
-  width: 100%; /* 정사각형 카드 내부에서 가득 차도록 채움 */
-  text-align: center;
+.order-slider-container {
+    flex: 1;
+    overflow: hidden;
 }
 
-/* 메인 블랙 단추 */
-.info-data-block button[style*="backgroundColor:#2196F3"],
-.info-data-block button[style*="backgroundColor:#4CAF50"],
+/* 슬라이더 트랙 */
+.order-slider-track {
+    display: flex;
+    gap: 16px;
+    transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* 🤎 [구매내역 카드 박스] 헤더 및 메뉴바와 완벽 동기화된 찐 베이지 */
+.order-square-card {
+    flex: 0 0 calc(25% - 12px) !important;
+    box-sizing: border-box;
+    border: 1px solid #dfd1c0; /* 베이지 라인 경계선 */
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 190px;
+    background-color: #ede2d5 !important; 
+}
+
+.order-square-card p {
+    margin: 0;
+}
+
+/* 🎨 ⚡ [간섭 원인 완전 초기화 구역]
+   리액트의 삼항연산자 인라인 컬러 스타일이 브라우저 화면에 
+   왜곡 없이 100% 1순위로 다이렉트 투과되도록 강제 상속 처리 적용 */
+.order-square-card > div > p {
+    color: inherit; 
+}
+
+/* 배송 단락 구역 가독성 전용 그레이 톤 처리 마감 */
+.order-square-card > div > p:nth-child(4) {
+    color: #55483c !important; /* 기본 배송 색상: 차분한 웜 챠콜 */
+}
+
+/* 카드 내부 기능 버튼 */
 .order-square-card button {
-  background-color: #2B2D2F !important;
-  color: #ffffff !important;
-  border: 1px solid #2B2D2F !important;
+    width: 100%;
+    padding: 8px 0;
+    font-size: 12px;
+    cursor: pointer;
+    border: 1px solid #111111;
+    background-color: #ffffff;
+    color: #111111;
+    transition: all 0.2s ease;
 }
 
-/* 서브 화이트 단추 */
-header .mypage-action-btn,
-.profile-icon-box .mypage-action-btn,
-.btn-set-default {
-  background-color: #ffffff !important;
-  color: #2B2D2F !important;
-  border: 1px solid #CCCCCC !important;
+.order-square-card button:hover {
+    background-color: #111111;
+    color: #ffffff;
 }
 
-.mypage-action-btn:hover, 
-.info-data-block button:hover,
-.order-square-card button:hover,
-.btn-set-default:hover {
-  background-color: #F2EFE9 !important;
-  color: #000000 !important;
-  border-color: #8C7A6B !important;
+.order-square-card button:disabled {
+    color: #999999;
+    background-color: #f8f9fa;
+    border: 1px solid #e5e5e5;
+    cursor: default;
 }
 
-/* 기본배송지 배지 및 아바타 */
-.default-address-badge {
-  background-color: #2B2D2F !important;
-  color: #ffffff !important;
-  font-size: 11px !important;
-  font-weight: 600 !important;
-  padding: 3px 8px !important;
-  border-radius: 0px !important;
-  margin-left: 10px;
-  display: inline-block;
-  vertical-align: middle;
+/* ==========================================
+   공통 버튼 디자인 (로그아웃, 정보수정, 북마크 등)
+   ========================================== */
+.mypage-action-btn {
+    border: 1px solid #cccccc !important;
+    background-color: #ffffff !important;
+    padding: 6px 14px !important;
+    font-size: 12px !important;
+    cursor: pointer;
+    color: #555555 !important;
+    border-radius: 0px !important;
+    transition: all 0.2s ease;
 }
 
-.info-data-block select, .info-data-block input[type="text"] {
-  border: 1px solid #CBD5E1;
-  border-radius: 0px;
-  padding: 8px 12px;
-  font-family: inherit;
-  font-size: 14px;
-  background-color: #ffffff;
-  outline: none;
+.mypage-action-btn:hover {
+    border-color: #111111 !important;
+    color: #111111 !important;
+}
+
+/* ==========================================
+   [까사미아 스타일] 하단 푸터 영역
+   ========================================== */
+.mypage-footer {
+    width: 100%;
+    border-top: 1px solid #111111;
+    margin-top: 100px;
+    padding: 40px 0 60px 0;
+    background-color: #ffffff;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.footer-logo {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin: 0 0 15px 0;
+    color: #111111;
+}
+
+.footer-info {
+    font-size: 12px;
+    color: #666666;
+    line-height: 1.6;
+    margin: 0 0 8px 0;
+}
+
+.footer-copy {
+    font-size: 11px;
+    color: #999999;
+    margin: 0;
 }

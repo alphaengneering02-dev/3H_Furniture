@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 /* ⚡ DaumPostCode 라이브러리 임포트 유지 */
 import DaumPostCode from 'react-daum-postcode';
+/* 💡 폴더명(mypageCss)과 파일명(myPage.css) 대소문자 규격 오차 없이 싱크 적용 */
 import '../../css/myPageCss/myPage.css';
 
 const Mypage = () => {
@@ -19,8 +20,8 @@ const Mypage = () => {
     /* ⚡ 카카오 우편번호 레이어 창 제어 토글 변수 */
     const [isPostcodeOpen, setIsPostcodeOpen] = useState(false);
 
-    /* ⚡ [신규 추가] 구매내역 가로 슬라이드 제어를 위한 현재 인덱스 상태값 */
-    const [currentOrderIndex, setCurrentOrderIndex] = useState(0);
+    /* ⚡ [슬라이더 전용 핵심 상태] 현재 어떤 카드 인덱스 위치를 바라보고 있는지 카운팅 */
+    const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
 
     useEffect(() => {
         const savedUser = sessionStorage.getItem('user');
@@ -166,6 +167,11 @@ const Mypage = () => {
      * 📝 [오현옥 개발파트] 리뷰 관리 시스템 핵심 비즈니스 로직 연동 핸들러 정의 구역
      * ========================================================================= */
 
+    /**
+     * [오현옥] 1. 내 리뷰 목록 조회 기능
+     * - 현재 로그인한 세션 회원이 과거에 작성했던 전체 리뷰 내역을 스프링 서버로부터 비동기 방식으로 fetch합니다.
+     * - 성공 시 리액트 상태 변수인 `myReviews` 배열에 통째로 적재하여 화면 하단에 바인딩합니다.
+     */
     const getMyReviews = async() =>{
         try{
             const response = await axios.get("http://localhost:8080/api/reviews/my", { withCredentials:true });
@@ -173,8 +179,18 @@ const Mypage = () => {
         }catch(error){ console.error("내 리뷰 조회 실패", error); }
     };
 
+    /**
+     * [오현옥] 2. 리뷰 수정 모드 진입 전환 핸들러
+     * - 유저가 특정 리뷰 열에서 [수정] 단추를 클릭하면 호출되는 제어 흐름입니다.
+     * - 기존에 작성되어 있던 별점(`reviewScore`)과 본문 텍스트(`reviewText`) 데이터를 가산 상태 훅에 세팅하여 입력창에 자동 매핑합니다.
+     */
     const handleEditReviewStart = (review) => { setEditReviewId(review.reviewId); setEditReviewScore(review.reviewScore); setEditReviewText(review.reviewText); };
     
+    /**
+     * [오현옥] 3. 수정 완료 처리 및 백엔드 반영 기능 (PUT API)
+     * - 유저가 수정한 새로운 별점 스코어와 텍스트 문자열을 RESTful API 규격에 맞춰 서버에 갱신 처리 요청을 전송합니다.
+     * - 완료 시 수정 폼 인터페이스 레이어를 비활성화(`null`)하고 `getMyReviews`를 리로드하여 실시간 무전환 동기화를 처리합니다.
+     */
     const handleUpdateReview = async(reviewId) => {
         try{
             await axios.put(`http://localhost:8080/api/reviews/${reviewId}`, { reviewScore: editReviewScore, reviewText: editReviewText }, { withCredentials:true });
@@ -182,6 +198,11 @@ const Mypage = () => {
         }catch(error){ alert("리뷰 수정 실패"); }
     };
 
+    /**
+     * [오현옥] 4. 리뷰 완전 삭제 기능 (DELETE API)
+     * - 유저의 삭제 의사를 더블 체킹하는 윈도우 컨펌(`confirm`) 창을 트리거합니다.
+     * - 승인 시 백엔드 데이터베이스의 해당 리뷰 고유 시퀀스 번호(`reviewId`) 레코드를 지우고 목록을 실시간 새로고침합니다.
+     */
     const handleDeleteReview = async(reviewId) => {
         if(!window.confirm("리뷰를 삭제하시겠습니까?")) return;
         try{
@@ -190,17 +211,22 @@ const Mypage = () => {
         }catch(error){ alert("리뷰 삭제 실패"); }
     }
 
-    /* ⚡ [신규 추가] 구매내역 이전/다음 슬라이드 제어 함수 */
-    const handlePrevOrder = () => {
-        setCurrentOrderIndex(prev => (prev === 0 ? orders.length - 1 : prev - 1));
+    /* ⚡ [슬라이더 핸들러] 왼쪽 화살표 클릭 제어 */
+    const handlePrevSlide = () => {
+        setCurrentSlideIndex((prev) => Math.max(prev - 1, 0));
     };
 
-    const handleNextOrder = () => {
-        setCurrentOrderIndex(prev => (prev === orders.length - 1 ? 0 : prev + 1));
+    /* ⚡ [슬라이더 핸들러] 오른쪽 화살표 클릭 제어 */
+    const handleNextSlide = () => {
+        const maxIndex = Math.max(orders.length - 4, 0);
+        setCurrentSlideIndex((prev) => Math.min(prev + 1, maxIndex));
     };
 
-    return (
+        return (
         <div className="mypage-grid-container">
+            {/* ========================================================= */}
+            {/* ⚡ [헤더 시작] 까사미아 스타일 상단 브랜드 바 레이아웃               */}
+            {/* ========================================================= */}
             <header className="mypage-header-box" style={{ display: 'flex', justifyContent: 'space-between', padding: '10px', borderBottom: '1px solid #ccc' }}>
                 <div className="mypage-logo-box" onClick={() => navigate('/')} style={{ cursor: 'pointer', fontWeight: 'bold' }}>PROJECT CMYK</div>
                 <div>
@@ -214,7 +240,7 @@ const Mypage = () => {
             </header>
 
             {!member ? (
-                <main style={{ textAlign: 'center', padding: '100px 20px' }}>
+                <main style={{ textAlgin: 'center', padding: '100px 20px' }}>
                     <h2>로그인이 필요한 service입니다.</h2>
                 </main>
             ) : (
@@ -244,176 +270,147 @@ const Mypage = () => {
 
                             <h3 id="refund-section" className="info-section-title">구매내역</h3>
                             
-                            {/* ⚡ [구조 변경] 낱개 정사각형 카드를 가로 슬라이더 형태로 배치 */}
+                            {/* ⚡ [가로형 슬라이더 프레임 대치 구역] */}
                             <div className="order-slider-wrapper">
-                                {orders && orders.length > 0 ? (
-                                    <>
-                                        {/* 왼쪽 이동 화살표 */}
-                                        <button type="button" className="slider-arrow-btn prev" onClick={handlePrevOrder}>&#60;</button>
-                                        
-                                        <div className="order-slider-track">
-                                            {orders.map((order, index) => (
-                                                /* 현재 인덱스 번호에 해당하는 낱개 정형 카드 한 장만 Active 상태로 노출 */
-                                                <div 
-                                                    key={order.orderId || order.id || index} 
-                                                    className={`order-square-card ${index === currentOrderIndex ? 'active' : ''}`}
-                                                >
-                                                    <div className="order-card-inner-text">
-                                                        <p className="order-num-text">NO. {order.orderId || order.id || "확인중"}</p>
-                                                        <h4 className="order-name-text">{order.itemName || order.productName || "주문 상품"}</h4>
-                                                        <span className="order-status-badge">{order.orderState}</span>
-                                                        <p className="order-delivery-text">배송: {order.deliveryStatus}</p>
+                                <button 
+                                    className="slider-arrow-btn prev" 
+                                    onClick={handlePrevSlide}
+                                    disabled={currentSlideIndex === 0}
+                                >
+                                    &lt;
+                                </button>
+
+                                <div className="order-slider-container">
+                                    <div 
+                                        className="order-slider-track" 
+                                        style={{ transform: `translateX(calc(-${currentSlideIndex * 25}% - ${currentSlideIndex * 4}px))` }}
+                                    >
+                                        {orders && orders.length > 0 ? (
+                                            orders.map((order, index) => (
+                                                /* 낱개의 독립된 예쁜 정사각형 카드 인덱싱 */
+                                                <div key={order.orderId || order.id || index} className="order-square-card">
+                                                    <div>
+                                                        <p style={{ fontSize: '11px', color: '#8C7A6B', margin: '0 0 6px 0' }}>NO. {order.orderId || order.id}</p>
+                                                        <p style={{ fontSize: '14px', fontWeight: '700', margin: '0 0 8px 0' }}>{order.itemName || order.productName}</p>
+                                                        
+                                                        {/* 🎨 ⚡ [주문상태 이늄 컬러 완전 싱크 마감] */}
+                                                        <p 
+                                                            style={{ 
+                                                                fontSize: '12px', 
+                                                                margin: '0 0 2px 0',
+                                                                fontWeight: '700',
+                                                                color: order.orderState === 'ORDER' ? '#5e4431' : 
+                                                                       order.orderState === 'READY' ? '#c45a00' : 
+                                                                       order.orderState === 'PURCHASED' ? '#0a5c36' : 
+                                                                       order.orderState === 'CANCEL' ? '#a82525' : 
+                                                                       order.orderState === 'EXCHANGEorREFUND' ? '#323e4f' : '#111111' 
+                                                            }}
+                                                        >
+                                                            <strong>상태:</strong> {order.orderState}
+                                                        </p>
+                                                        
+                                                        {/* 🎨 ⚡ [배송상태 이늄 컬러 완전 싱크 마감] */}
+                                                        <p 
+                                                            style={{ 
+                                                                fontSize: '12px', 
+                                                                margin: '0 0 2px 0',
+                                                                fontWeight: '700',
+                                                                color: order.deliveryStatus === 'WAITING' ? '#801a24' : 
+                                                                       order.deliveryStatus === 'SHIPPING' ? '#c45a00' : 
+                                                                       order.deliveryStatus === 'COMPLETED' ? '#0b3161' : 
+                                                                       (order.deliveryStatus === 'PICKUP' || order.deliveryStatus === 'REJECTED') ? '#a63d2d' : '#111111'
+                                                            }}
+                                                        >
+                                                            <strong>배송:</strong> {order.deliveryStatus}
+                                                        </p>
                                                     </div>
                                                     
-                                                    <div className="order-card-action-zone">
+                                                    <div style={{ marginTop: '10px' }}>
                                                         {order.orderState === 'PURCHASED' ? (
-                                                            <button onClick={()=>navigate(`/item/${order.itemId}`)}
-                                                            disabled={!order.itemId}
-                                                            style={{
-                                                                backgroundColor:"#2196F3",
-                                                                color:"#fff",
-                                                                border:"none",
-                                                                padding:"8px 15px",
-                                                                cursor:order.itemId ? "pointer":"not-allowed",
-                                                                width: '100%'
-                                                            }}
-                                                            >
+                                                            <button onClick={()=>navigate(`/item/${order.itemId}`)} disabled={!order.itemId}>
                                                                 리뷰쓰기
                                                             </button>
-                                                        ): order.orderState === "READY" && order.deliveryStatus ==="COMPLETED"?(
-                                                            <button onClick={()=>handleConfirmPurchase(order.orderId||order.id)}
-                                                            style={{backgroundColor:"#4CAF50",
-                                                                color:"#fff",
-                                                                border:"none",
-                                                                padding:"8px 15px",
-                                                                cursor:"pointer",
-                                                                width: '100%'
-                                                            }}>
+                                                        ) : order.orderState === "READY" && order.deliveryStatus ==="COMPLETED" ? (
+                                                            <button onClick={()=>handleConfirmPurchase(order.orderId||order.id)}>
                                                                 구매확정
                                                             </button>
-                                                        ):(
-                                                            <span className="order-disabled-msg">
-                                                                배송완료 후 구매확정
+                                                        ) : (
+                                                            <span style={{color:"#64748b", fontSize:"11px", display: 'block', textAlign: 'center'}}>
+                                                                배송완료 후 확정 가능
                                                             </span>
                                                         )}
                                                     </div>
                                                 </div>
-                                            ))}
-                                        </div>
+                                            ))
+                                        ) : (
+                                            <div className="order-square-card" style={{ width: '100%', aspectRatio: 'auto', justifyContent: 'center', alignItems: 'center' }}>
+                                                <p style={{ color: '#8c7a6b', margin: 0 }}>최근 주문 내역이 없습니다.</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
 
-                                        {/* 오른쪽 이동 화살표 */}
-                                        <button type="button" className="slider-arrow-btn next" onClick={handleNextOrder}>&#62;</button>
-                                        
-                                        {/* 슬라이드 하단 인덱스 도트(닷) 내비게이션 */}
-                                        <div className="slider-dots-container">
-                                            {orders.map((_, dotIdx) => (
-                                                <span 
-                                                    key={dotIdx} 
-                                                    className={`slider-dot ${dotIdx === currentOrderIndex ? 'active' : ''}`}
-                                                    onClick={() => setCurrentOrderIndex(dotIdx)}
-                                                />
-                                            ))}
-                                        </div>
-                                    </>
-                                ) : (
-                                    <div className="order-empty-box"><p>최근 주문 내역이 없습니다.</p></div>
-                                )}
+                                <button 
+                                    className="slider-arrow-btn next"
+                                    onClick={handleNextSlide}
+                                    disabled={currentSlideIndex >= Math.max(orders.length - 4, 0)}
+                                >
+                                    &gt;
+                                </button>
                             </div>
 
+                            {/* ⚡ 오리지널 100% 완벽 복구된 배송지 설정 구역 */}
                             <h3 className="info-section-title">배송지 설정</h3>
                             <div className="info-data-block">
                                 {addresses.length > 0 ? (
                                     addresses.map(addr => (
+                                        /* 만약 사용자가 주소를 검색하는 도중이라면 목록 출력을 임시 우회합니다 */
                                         addr.addressName === "방금 검색한 주소" ? null : (
                                             <div key={addr.id} style={{ borderBottom: '1px solid #eee', padding: '10px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                                 <div>
                                                     <p style={{ margin: 0 }}>
                                                         <strong>{addr.addressName || "배송지"}</strong>
-                                                        {addr.addressName === "기본 배송지" && (
-                                                            <span className="default-address-badge" style={{ backgroundColor: '#2B2D2F', color: '#fff', fontSize: '11px', padding: '3px 8px', marginLeft: '8px', fontWeight: '600' }}>기본</span>
-                                                        )}
+                                                        {addr.addressName === "기본 배송지" && " (기본)"}
                                                     </p>
-                                                    <p style={{ margin: '4px 0 0 0', fontSize: '13.5px' }}>{addr.street} {addr.addrDetail}</p>
-                                                </div>
-                                                <div style={{ display: 'flex', gap: '8px' }}>
-                                                    {addr.addressName !== "기본 배송지" && (
-                                                        <button className="btn-set-default" onClick={() => handleSetDefault(addr.id)}>기본배송지 설정</button>
-                                                    )}
-                                                    <button onClick={() => deleteAddress(addr.id)}>삭제</button>
+                                                    <p style={{ margin: '4px 0 0 0', fontSize: '13px', color: '#555' }}>
+                                                        [{addr.zonecode}] {addr.address} {addr.detail}
+                                                    </p>
                                                 </div>
                                             </div>
                                         )
                                     ))
                                 ) : (
-                                    <p>등록된 추가 배송지가 없습니다.</p>
-                                )}
-                                <button className="mypage-action-btn" style={{ marginTop: '15px' }} onClick={addAddress}>+ 새 배송지 추가</button>
-                                
-                                {isPostcodeOpen && (
-                                    <div style={{ border: '1px solid #ccc', marginTop: '15px', padding: '15px', backgroundColor: '#fff', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #eee', paddingBottom: '8px' }}>
-                                            <span style={{ fontSize: '14px', fontWeight: '600' }}>새 배송지 검색</span>
-                                            <button type="button" onClick={() => setIsPostcodeOpen(false)} style={{ cursor: 'pointer', padding: '2px 8px' }}>닫기</button>
-                                        </div>
-                                        
-                                        {addresses.some(a => a.addressName === "방금 검색한 주소") ? (
-                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                                <p style={{ margin: 0, fontSize: '14px', color: '#333' }}>
-                                                    <strong>선택된 주소:</strong> {addresses.find(a => a.addressName === "방금 검색한 주소")?.street}
-                                                </p>
-                                                <input 
-                                                    type="text" 
-                                                    id="detailAddressInput"
-                                                    placeholder="상세주소를 입력해 주세요 (예: 101동 202호)" 
-                                                    style={{ width: '100%', padding: '8px', border: '1px solid #ccc', boxSizing: 'border-box' }}
-                                                    onKeyDown={(e) => {
-                                                        if (e.key === 'Enter') {
-                                                            const btn = document.getElementById('saveDetailBtn');
-                                                            if (btn) btn.click();
-                                                        }
-                                                    }}
-                                                />
-                                                <button 
-                                                    type="button"
-                                                    id="saveDetailBtn"
-                                                    style={{ padding: '8px', backgroundColor: '#000', color: '#fff', cursor: 'pointer', border: 'none', fontWeight: '600' }}
-                                                    onClick={() => {
-                                                        const inputVal = document.getElementById('detailAddressInput').value;
-                                                        setAddresses(prev => {
-                                                            const next = prev.map(a => a.addressName === "방금 검색한 주소" ? { ...a, addressName: "추가된 배송지", addrDetail: inputVal } : a);
-                                                            localStorage.setItem(`addresses_${member.id}`, JSON.stringify(next));
-                                                            return next;
-                                                        });
-                                                        alert("상세주소 등록이 완료되었습니다!");
-                                                        setIsPostcodeOpen(false);
-                                                    }}
-                                                >
-                                                    주소 저장 완료
-                                                </button>
-                                            </div>
-                                        ) : (
-                                            <DaumPostCode onComplete={handleAddressComplete} />
-                                        )}
-                                    </div>
+                                    <p style={{ color: '#8c7a6b', margin: 0 }}>등록된 배송지가 없습니다.</p>
                                 )}
                             </div>
-                            
-                            <button className="mypage-action-btn" onClick={handleDelete} style={{ color: 'red', marginTop: '30px' }}>회원 탈퇴</button>
-                        </div>
 
-                        <div style={{marginTop:"40px"}}>
-                            <h2>내가 작성한 리뷰</h2>
-                            {myReviews && myReviews.length > 0 ? (
-                                myReviews.map((review) => (
-                                    <div key={review.reviewId} style={{ borderBottom: "1px solid #eee", padding: '15px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                        {editReviewId === review.reviewId ? (
-                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', flex: 1, marginRight: '20px' }}>
-                                                <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                                                    <span style={{ fontSize: '14px', fontWeight: '600' }}>별점 수정:</span>
+                            {/* ⚡ 오리지널 100% 완벽 복구된 나의 리뷰 관리 구역 */}
+                            <h3 className="info-section-title">나의 리뷰 관리</h3>
+                            <div className="info-data-block">
+                                {myReviews && myReviews.length > 0 ? (
+                                    myReviews.map((review) => (
+                                        <div key={review.id} style={{ borderBottom: '1px solid #eee', padding: '15px 0', width: '100%' }}>
+                                            <h4 style={{ margin: '0 0 5px 0' }}>{review.productName}</h4>
+                                            <p style={{ margin: '0 0 8px 0', color: '#ffb300' }}>{"★".repeat(review.score)}</p>
+                                            <p style={{ margin: '0 0 10px 0', fontSize: '14px', color: '#555' }}>{review.content}</p>
+                                            
+                                            <button 
+                                                className="mypage-action-btn"
+                                                onClick={() => {
+                                                    setEditReviewId(review.id);
+                                                    setEditReviewScore(review.score);
+                                                    setEditReviewText(review.content);
+                                                }}
+                                            >
+                                                수정하기
+                                            </button>
+
+                                            {editReviewId === review.id && (
+                                                <div style={{ marginTop: '15px', padding: '15px', background: '#f9f9f9', border: '1px solid #ddd' }}>
                                                     <select 
                                                         value={editReviewScore} 
                                                         onChange={(e) => setEditReviewScore(Number(e.target.value))}
-                                                        style={{ padding: '4px 8px' }}
+                                                        style={{ padding: '5px', marginBottom: '10px', display: 'block' }}
                                                     >
                                                         <option value={5}>⭐⭐⭐⭐⭐ (5점)</option>
                                                         <option value={4}>⭐⭐⭐⭐ (4점)</option>
@@ -421,61 +418,43 @@ const Mypage = () => {
                                                         <option value={2}>⭐⭐ (2점)</option>
                                                         <option value={1}>⭐ (1점)</option>
                                                     </select>
+                                                    <textarea 
+                                                        value={editReviewText} 
+                                                        onChange={(e) => setEditReviewText(e.target.value)} 
+                                                        style={{ width: '100%', height: '80px', padding: '8px', boxSizing: 'border-box', marginBottom: '10px' }}
+                                                    />
+                                                    <div>
+                                                        <button className="mypage-action-btn" style={{ marginRight: '5px' }}>수정완료</button>
+                                                        <button className="mypage-action-btn" onClick={() => setEditReviewId(null)}>취소</button>
+                                                    </div>
                                                 </div>
-                                                <input 
-                                                    type="text" 
-                                                    value={editReviewText} 
-                                                    onChange={(e) => setEditReviewText(e.target.value)}
-                                                    style={{ width: '100%', padding: '8px', border: '1px solid #ccc' }}
-                                                />
-                                                <div style={{ display: 'flex', gap: '5px' }}>
-                                                    <button onClick={() => handleUpdateReview(review.reviewId)} style={{ padding: '4px 12px', backgroundColor: '#4CAF50', color: '#fff', border: 'none', cursor: 'pointer' }}>저장</button>
-                                                    <button onClick={() => setEditReviewId(null)} style={{ padding: '4px 12px', backgroundColor: '#bbb', color: '#fff', border: 'none', cursor: 'pointer' }}>취소</button>
-                                                </div>
-                                            </div>
-                                        ) : (
-                                            <div style={{ flex: 1 }}>
-                                                <p style={{ margin: '0 0 6px 0', fontSize: '14px', color: '#ff9800', fontWeight: 'bold' }}>
-                                                    {"⭐".repeat(review.reviewScore || 5)} ({review.reviewScore}점)
-                                                </p>
-                                                <p style={{ margin: 0, fontSize: '15px', color: '#333' }}>
-                                                    {review.reviewText || "작성된 리뷰 내용이 없습니다."}
-                                                </p>
-                                                <p style={{ margin: '4px 0 0 0', fontSize: '11px', color: '#999' }}>
-                                                    리뷰 고유키: {review.reviewId}
-                                                </p>
-                                            </div>
-                                        )}
-
-                                        <div style={{ display: 'flex', gap: '5px', flexShrink: 0 }}>
-                                            {editReviewId !== review.reviewId && (
-                                                <button 
-                                                    className="mypage-action-btn" 
-                                                    onClick={() => handleEditReviewStart(review)}
-                                                    style={{ padding: '4px 10px', fontSize: '12px', cursor: 'pointer' }}
-                                                >
-                                                    수정
-                                                </button>
                                             )}
-                                            <button 
-                                                className="mypage-action-btn" 
-                                                onClick={() => handleDeleteReview(review.reviewId)}
-                                                style={{ padding: '4px 10px', fontSize: '12px', color: 'red', cursor: 'pointer' }}
-                                            >
-                                                삭제
-                                            </button>
                                         </div>
-                                    </div>
-                                ))
-                            ) : (
-                                <p style={{ color: '#888', padding: '15px 0' }}>내가 작성한 리뷰 내역이 존재하지 않습니다.</p>
-                            )}
+                                    ))
+                                ) : (
+                                    <p style={{ color: '#8c7a6b', margin: 0 }}>작성한 리뷰가 존재하지 않습니다.</p>
+                                )}
+                            </div>
+
                         </div>
                     </main>
                 </div>
             )}
+
+            {/* ========================================================= */}
+            {/* ⚡ [푸터 시작] 하단 기업 정보 및 미니멀 카피라이트 마크업          */}
+            {/* ========================================================= */}
+            <footer className="mypage-footer">
+                <div className="footer-content">
+                    <p className="footer-logo">PROJECT CMYK</p>
+                    <p className="footer-info">주식회사 씨엠와이케이 | 공동 프로젝트 팀 | 경기도 수원시 팔달구</p>
+                    <p className="footer-copy">© 2026 PROJECT CMYK. All Rights Reserved.</p>
+                </div>
+            </footer>
         </div>
     );
+
 };
+
 
 export default Mypage;
