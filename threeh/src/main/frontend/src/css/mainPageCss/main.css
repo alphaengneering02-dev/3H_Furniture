@@ -326,7 +326,6 @@
 .main-header-bottomBox {
   border-top: 1px solid var(--main-border-light);
   display: flex;
-  /* background: cyan; */
 }
 
 .main-header-GNB {
@@ -368,9 +367,9 @@
   top: 100%;
   left: 50%;
   transform: translateX(-50%);
-  background-color: var(--main-dark-brown);
   border: 1px solid var(--main-border-light);
   box-shadow: 0 3px 10px rgba(0,0,0,0.5);
+  background-color: var(--main-dark-brown);
   list-style: none;
   margin: 0;
   z-index: 10;
@@ -422,13 +421,11 @@
   max-width: 1240px;
   margin: 0 auto;
   padding: 0 20px;
-  border: 1px solid red;
 }
 
 /* 메인 배너 영역 */
 .main-banner {
     width: 100%;
-    background: blue;
 }
 
 /* 부모 영역에서 넘치는 슬라이드 숨기기 */
