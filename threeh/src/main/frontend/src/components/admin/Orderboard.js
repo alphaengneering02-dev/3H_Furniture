@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useDriverAuto } from './DriverAuto';
+import '../../css/adminCss/AdminDashboard.css';
 
 const getOrderStateStyle = (orderState, deliveryStatus) => {
 
@@ -155,8 +156,15 @@ const Orderboard = ({
     // 4. 배송 진행 중 목록: 배송 상태가 'SHIPPING'인 건
     const shippingOrders = orders.filter(o => o.deliveryStatus === 'SHIPPING');
 
+    //추가 교환 취소로 인한 픽업
+    const pickupOrders = orders.filter(o => 
+        o.deliveryStatus === 'COMPLETED' && (o.orderState === 'EXCHANGE' || o.orderState === 'CANCEL')
+    );
+
     // 5. 최종 배송 완료 목록: 배송 상태가 'COMPLETED'인 건
-    const completedOrders = orders.filter(o => o.deliveryStatus === 'COMPLETED');
+    const completedOrders = orders.filter(o => 
+        o.deliveryStatus === 'COMPLETED' && o.orderState !== 'EXCHANGE' && o.orderState !== 'CANCEL'
+    );
 
 const renderOrderType = (type) => {
         if (type === 'DELIVERY_WITH_INSTALLATION') return '*설치 배송*';
@@ -212,27 +220,18 @@ const renderDeliveryStatus = (status) => {
         <div>
 
             {/* 주문 목록 */}
-                <div className="content-box">
+                <div className="admin-content-box">
 
                     <h3>주문 목록 (전체 접수 건)</h3>
                 {/* 💡 일괄 변경 버튼 추가 */}
-                <div style={{ marginBottom: '10px', textAlign: 'right' }}>
+                <div>
                     <button 
                         onClick={handleBulkReady}
-                        style={{
-                            padding: '8px 12px',
-                            backgroundColor: '#4CAF50',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '4px',
-                            cursor: 'pointer',
-                            fontWeight: 'bold'
-                        }}
                     >
                         선택 상품 준비 완료 처리 ({selectedOrderIds.length}건)
                     </button>
                 </div>
-                <div style={{ marginBottom: '10px', textAlign: 'right' }}>
+                <div>
                     <button 
                         onClick={handleAutoAssign}
                     >
@@ -240,7 +239,7 @@ const renderDeliveryStatus = (status) => {
                     </button>
                 </div>
 
-                <table className="table-style">
+                <table className="admin-table-style">
                     <thead>
                         <tr>
                             <th>
@@ -322,7 +321,7 @@ const renderDeliveryStatus = (status) => {
             <div>
                 <h3>배송 배정 완료 목록</h3>
 
-                <table className="table-style">
+                <table className="admin-table-style">
                     <thead>
                         <tr>
                             <th>번호</th>
@@ -348,13 +347,13 @@ const renderDeliveryStatus = (status) => {
                             </strong>
                         </td>
                         <td>
-                            <span style={{ color: 'blue', fontWeight: 'bold' }}>배송 대기중 (수락 확인)</span>
+                            <span>배송 대기중 (수락 확인)</span>
                         </td>
                         <td>{order.orderDate?.split('T')[0]}</td>
                     </tr>
                 ))}
             {orders.filter(order => order.deliveryId && order.deliveryStatus === 'WAITING').length === 0 && (
-                <tr><td colSpan="6" style={{ textAlign: 'center', padding: '10px' }}>배정 완료된 주문이 없습니다.</td></tr>
+                <tr><td colSpan="6">배정 완료된 주문이 없습니다.</td></tr>
             )}
         </tbody>
                 </table>
@@ -363,7 +362,7 @@ const renderDeliveryStatus = (status) => {
             {/* 배송 미배정 */}
             <div>
                 <h3>배송 미배정</h3>
-                <table className="table-style">
+                <table className="admin-table-style">
                     <thead>
                         <tr>
                             <th>번호</th>
@@ -389,7 +388,7 @@ const renderDeliveryStatus = (status) => {
                 {order.deliveryId && (!order.deliveryStatus || order.deliveryStatus === 'WAITING_FOR_ACCEPT') ? (
                     <div>
                         <strong>{items.find(d => d.deliveryId === Number(order.deliveryId))?.deliveryName} 기사님 </strong>
-                        <span style={{ color: 'darkorange', fontWeight: 'bold', marginLeft: '5px' }}>
+                        <span>
                             배송 대기중 (수락 대기중)
                         </span>
                     </div>
@@ -406,11 +405,11 @@ const renderDeliveryStatus = (status) => {
                                 </option>
                             ))}
                         </select>
-                        <button onClick={() => handleAssignDriver(order.orderId)} style={{ marginLeft: '5px' }}>
+                        <button onClick={() => handleAssignDriver(order.orderId)}>
                             {order.deliveryStatus === 'REJECTED' ? '재배정' : '배정'}
                         </button>
                         {order.deliveryStatus === 'REJECTED' && (
-                            <span style={{ color: 'red', marginLeft: '8px', fontSize: '12px', fontWeight: 'bold' }}>
+                            <span>
                                 (기사가 거절한 주문입니다)
                             </span>
                         )}
@@ -421,7 +420,7 @@ const renderDeliveryStatus = (status) => {
         </tr>
     );
 }) : (
-    <tr><td colSpan="6" style={{ textAlign: 'center', padding: '10px' }}>배정할 주문이 없습니다.</td></tr>
+    <tr><td colSpan="6">배정할 주문이 없습니다.</td></tr>
 )}
                     </tbody>
                 </table>
@@ -429,7 +428,7 @@ const renderDeliveryStatus = (status) => {
              {/* 배송 완료 status(COMPLETED)*/}
                 <div>
                     <h3>🚚 배송 진행 중 목록</h3>
-                <table className="table-style" style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <table className="admin-table-style">
                     <thead>
                         <tr>
                             <th>번호</th>
@@ -458,14 +457,14 @@ const renderDeliveryStatus = (status) => {
                                         </strong>
                                     </td>
                                     <td>
-                                        <span style={{ color: 'orange', fontWeight: 'bold' }}>배송중</span>
+                                        <span>배송중</span>
                                     </td>
                                     <td>{order.orderDate?.split('T')[0]}</td>
                                 </tr>
                             ))}
                         {orders.filter(order => order.deliveryStatus === 'SHIPPING').length === 0 && (
                             <tr>
-                                <td colSpan="7" style={{ textAlign: 'center', padding: '10px', color: '#999' }}>
+                                <td colSpan="7">
                                     현재 도로 위에서 배송 중인 주문이 없습니다.
                                 </td>
                             </tr>
@@ -474,10 +473,63 @@ const renderDeliveryStatus = (status) => {
                 </table>
             </div>
 
+            {/* ✨ 추가 반품/교환 픽업 신청 목록 (새로 추가된 섹션) */}
+            <div className="admin-content-box">
+                <h3>🔄 반품/교환 픽업 신청 목록</h3>
+                <table className="admin-table-style">
+                    <thead>
+                        <tr>
+                            <th>번호</th>
+                            <th>상품</th>
+                            <th>수량</th>
+                            <th>회수 주소</th>
+                            <th>주문 상태</th>
+                            <th>기사 배정 및 픽업 신청</th>
+                            <th>주문일</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {pickupOrders.length > 0 ? pickupOrders.map((order, index) => {
+                            const currentItems = order.orderitems || order.orderItems || [];
+                            return (
+                                <tr key={order.orderId}>
+                                    <td>{index + 1}</td>
+                                    <td>{renderItemName(currentItems)}</td>
+                                    <td>{currentItems.reduce((sum, i) => sum + (i.count || 0), 0)}개</td>
+                                    <td>{order.deliveryAddr} {order.deliveryAddrDetail}</td>
+                                    <td>
+                                        <span>
+                                            {order.orderState === 'EXCHANGE' ? '교환 접수' : '취소 접수'}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <select value={selectedDrivers[order.orderId] || ""} onChange={(e) => handleDriverSelect(order.orderId, e.target.value)}>
+                                            <option value="">픽업 기사 선택</option>
+                                            {items.map(driver => (
+                                                <option key={driver.deliveryId} value={driver.deliveryId}>{driver.deliveryName}</option>
+                                            ))}
+                                        </select>
+                                        <button 
+                                            onClick={() => {
+                                                handleAssignDriver(order.orderId);
+                                            }}>
+                                            픽업 배정
+                                        </button>
+                                    </td>
+                                    <td>{order.orderDate?.split('T')[0]}</td>
+                                </tr>
+                            );
+                        }) : (
+                            <tr><td colSpan="7">현재 반품/교환 회수 대상 주문이 없습니다.</td></tr>
+                        )}
+                    </tbody>
+                </table>
+            </div>
+
             {/* 4. ✅ 배송 완료 목록 (COMPLETED) */}
-            <div className="content-box" style={{ marginTop: '20px' }}>
+            <div className="admin-content-box">
                 <h3>✅ 최종 배송 완료 목록</h3>
-                <table className="table-style" style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <table className="admin-table-style">
                     <thead>
                         <tr>
                             <th>번호</th>
@@ -501,19 +553,19 @@ const renderDeliveryStatus = (status) => {
                                     </td>
                                     <td>{order.deliveryAddr} {order.deliveryAddrDetail}</td>
                                     <td>
-                                        <span style={{ color: '#555' }}>
+                                        <span>
                                             {items.find(d => d.deliveryId === Number(order.deliveryId))?.deliveryName || "담당 기사"}
                                         </span>
                                     </td>
                                     <td>
-                                        <span style={{ color: 'green', fontWeight: 'bold' }}>배송완료</span>
+                                        <span>배송완료</span>
                                     </td>
                                     <td>{order.orderDate?.split('T')[0]}</td>
                                 </tr>
                             ))}
                         {orders.filter(order => order.deliveryStatus === 'COMPLETED').length === 0 && (
                             <tr>
-                                <td colSpan="7" style={{ textAlign: 'center', padding: '10px', color: '#999' }}>
+                                <td colSpan="7">
                                     완료된 배송 내역이 없습니다.
                                 </td>
                             </tr>

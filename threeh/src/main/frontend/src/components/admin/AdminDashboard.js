@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import axios from 'axios';
 import AddCompany from './AddCompany';
 import Orderboard from './Orderboard';
+import '../../css/adminCss/AdminDashboard.css';
 
 const AdminDashboard = () => {
 
@@ -248,20 +249,20 @@ const fetchDeliveries = async () => {
 };
 
     return (
-        <div className="dashboard-container">
+        <div className="admin-dashboard-container">
 
             {/* 왼쪽 */}
-            <div className="side-box">
+            <div className="admin-side-box">
 
-                <div className="welcome-message">
+                <div className="admin-welcome-message">
                     <span>👤 {adminId}님 접속을 환영합니다.</span>
                 </div>
 
-                <div className="date-text">
+                <div className="admin-date-text">
                     {formatDate(currentTime)}
                 </div>
 
-                <div className="time-text">
+                <div className="admin-time-text">
                     {formatTime(currentTime)}
                 </div>
 
@@ -269,10 +270,10 @@ const fetchDeliveries = async () => {
                     value={memo1}
                     onChange={(e) => setMemo1(e.target.value)}
                     placeholder="메모를 입력하세요"
-                    className="memo-textarea"
+                    className="admin-memo-textarea"
                 />
 
-                <button onClick={saveMemo} className="save-btn">
+                <button onClick={saveMemo} className="admin-save-btn">
                     메모 저장
                 </button>
 
@@ -281,7 +282,7 @@ const fetchDeliveries = async () => {
                     contentEditable
                     onKeyDown={handleBulletKeyDown}
                     suppressContentEditableWarning
-                    className="memo-editor"
+                    className="admin-memo-editor"
                 >
                     <div>• </div>
                 </div>
@@ -289,11 +290,11 @@ const fetchDeliveries = async () => {
             </div>
 
             {/* 오른쪽 */}
-            <div className="main-content">
+            <div className="admin-main-content">
 
                 <h1>Admin Dashboard</h1>
 
-                <div className="button-group">
+                <div className="admin-button-group">
                     <Link to="/item/create">
                     <button>상품 추가</button>
                     </Link>
@@ -304,7 +305,7 @@ const fetchDeliveries = async () => {
                 
 
   {/* 기사 리스트 */}
-                <div>
+                <div className="admin-content-box">
                     <h3>기사 리스트</h3>
                     <Link to="/admin/delivery">
                         <button>기사 추가</button>
@@ -315,7 +316,7 @@ const fetchDeliveries = async () => {
    <AddCompany onSuccess={fetchDeliveries} />
 </div>
 
-                    <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                    <table className="admin-table-style">
                         <thead>
                             <tr>
                                 <th>회사</th>
