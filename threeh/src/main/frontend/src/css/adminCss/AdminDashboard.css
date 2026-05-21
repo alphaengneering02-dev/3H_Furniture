@@ -18,13 +18,13 @@
     max-width: 1600px; /* 대시보드 특성상 넓은 화면 확보 */
     margin: 0 auto;
     min-height: 100vh;
-    gap: 24px;
+    gap: 8px;
     padding: 24px;
 }
 
 /* 왼쪽 사이드바 */
 .admin-side-box {
-    flex: 0 0 280px;
+    flex: 0 0 230px;
     background-color: #FFFFFF;
     border-radius: 12px;
     padding: 24px;
@@ -347,4 +347,23 @@
     display: flex;
     gap: 8px;
     margin-bottom: 12px;
+}
+
+/* 가로 스크롤 영역 */
+.admin-table-scroll {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+/* 테이블 최소 너비 강제 */
+.admin-table-scroll .admin-table-style {
+    min-width: 1600px; /* 필요하면 1800px */
+    width: max-content;
+}
+
+/* 글자 줄바꿈 방지 */
+.admin-table-style th,
+.admin-table-style td {
+    white-space: nowrap;
 }

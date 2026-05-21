@@ -296,6 +296,7 @@ const renderDeliveryStatus = (status) => {
                     </button>
                 </div>
 
+                <div className="admin-table-scroll">
                 <table className="admin-table-style">
                     <thead>
                         <tr>
@@ -380,6 +381,7 @@ const renderDeliveryStatus = (status) => {
     currentPage={page1}
     setCurrentPage={setPage1}
 />
+            </div>
             </div>
 
             {/* 배송 배정 완료 */}

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 /* ⚡ DaumPostCode 라이브러리 임포트 유지 */
 import DaumPostCode from 'react-daum-postcode';
-import '../../css/mypagecss/mypage.css';
+import '../../css/myPageCss/myPage.css';
 
 const Mypage = () => {
     const navigate = useNavigate();
