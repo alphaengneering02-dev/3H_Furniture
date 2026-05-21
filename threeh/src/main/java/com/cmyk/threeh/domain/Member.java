@@ -73,8 +73,8 @@ public class Member implements Serializable {
 	private List<MemberAddress> memberAddressList;
 
     //Review 테이블
-	@OneToOne(mappedBy = "member", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    private Review review;
+	@OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private List<Review> reviewList;
     
     //Article 테이블
 	// @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
