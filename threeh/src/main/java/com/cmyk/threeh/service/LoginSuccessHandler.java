@@ -13,6 +13,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -118,6 +119,11 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         String id = authentication.getName();
         String passMessage = "로그인에 성공하였습니다.";
 
+        String role = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .findFirst()
+                .orElse("ROLE_USER");
+
         response.setStatus(HttpStatus.OK.value());
         response.setContentType("application/json;charset=UTF-8");
 
@@ -125,6 +131,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         responseData.put("status", true);
         responseData.put("id", id);
         responseData.put("message", passMessage);
+        responseData.put("role", role);
         // 일반 로그인이므로 isNewOAuth2User는 무조건 false로 전송
         responseData.put("isNewOAuth2User", false); 
 

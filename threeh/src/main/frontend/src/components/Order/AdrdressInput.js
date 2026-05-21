@@ -5,19 +5,17 @@ import { Box, Button, TextField, Collapse } from '@mui/material';
 function AdrdressInput({ address, setAddress, zipCode, setZipcode, detailedAddress, setDetailedAddress }) {
     
     const [isOpen, setIsOpen] = useState(false);
+    const [mapKey, setMapKey] = useState(0);
     
 
     const completeHandler = (data) => {
-        console.log("카카오데이터", data);
+        setIsOpen(true);
 
 
         const { address, zipCode } = data;
         setZipcode(data.zonecode);
         setAddress(data.address);
-
-
-        console.log("zipCode:", zipCode);
-        console.log("address:", address);
+        setIsOpen(false);
     };
 
     const closeHandler = (state) => {
@@ -29,7 +27,14 @@ function AdrdressInput({ address, setAddress, zipCode, setZipcode, detailedAddre
     };
 
     const toggleHandler = () => {
-        setIsOpen((prevOpenState)  => !prevOpenState);
+        setIsOpen((prevOpenState) => {
+        const nextState = !prevOpenState;
+        // 💡 주소창을 '열 때'만 key 값을 1씩 증가시켜 내부 DaumPostCode를 강제 초기화시킵니다.
+        if (nextState) {
+            setMapKey(prev => prev + 1);
+        }
+        return nextState;
+      });
     };
 
     const inputChangeHandler = (event) => {
@@ -53,7 +58,7 @@ function AdrdressInput({ address, setAddress, zipCode, setZipcode, detailedAddre
       {/* 다음 주소창 (애니메이션 효과 포함 펼침) */}
       <Collapse in={isOpen}>
         <Box sx={{ border: '1px solid', borderColor: 'divider', p: 1, backgroundColor: '#ffffff', maxWidth: '500px' }}>
-          <DaumPostCode onComplete={completeHandler} onClose={closeHandler} />
+          <DaumPostCode key={mapKey} onComplete={completeHandler} onClose={closeHandler} />
         </Box>
       </Collapse>
 
