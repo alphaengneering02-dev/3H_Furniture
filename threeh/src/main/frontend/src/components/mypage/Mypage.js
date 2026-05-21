@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 /* ⚡ DaumPostCode 라이브러리 임포트 유지 */
 import DaumPostCode from 'react-daum-postcode';
-import '../../css/mypagecss/mypage.css';
+import '../../css/myPageCss/myPage.css';
 
 const Mypage = () => {
     const navigate = useNavigate();
@@ -18,6 +18,9 @@ const Mypage = () => {
 
     /* ⚡ 카카오 우편번호 레이어 창 제어 토글 변수 */
     const [isPostcodeOpen, setIsPostcodeOpen] = useState(false);
+
+    /* ⚡ [신규 추가] 구매내역 가로 슬라이드 제어를 위한 현재 인덱스 상태값 */
+    const [currentOrderIndex, setCurrentOrderIndex] = useState(0);
 
     useEffect(() => {
         const savedUser = sessionStorage.getItem('user');
@@ -163,11 +166,6 @@ const Mypage = () => {
      * 📝 [오현옥 개발파트] 리뷰 관리 시스템 핵심 비즈니스 로직 연동 핸들러 정의 구역
      * ========================================================================= */
 
-    /**
-     * [오현옥] 1. 내 리뷰 목록 조회 기능
-     * - 현재 로그인한 세션 회원이 과거에 작성했던 전체 리뷰 내역을 스프링 서버로부터 비동기 방식으로 fetch합니다.
-     * - 성공 시 리액트 상태 변수인 `myReviews` 배열에 통째로 적재하여 화면 하단에 바인딩합니다.
-     */
     const getMyReviews = async() =>{
         try{
             const response = await axios.get("http://localhost:8080/api/reviews/my", { withCredentials:true });
@@ -175,18 +173,8 @@ const Mypage = () => {
         }catch(error){ console.error("내 리뷰 조회 실패", error); }
     };
 
-    /**
-     * [오현옥] 2. 리뷰 수정 모드 진입 전환 핸들러
-     * - 유저가 특정 리뷰 열에서 [수정] 단추를 클릭하면 호출되는 제어 흐름입니다.
-     * - 기존에 작성되어 있던 별점(`reviewScore`)과 본문 텍스트(`reviewText`) 데이터를 가산 상태 훅에 세팅하여 입력창에 자동 매핑합니다.
-     */
     const handleEditReviewStart = (review) => { setEditReviewId(review.reviewId); setEditReviewScore(review.reviewScore); setEditReviewText(review.reviewText); };
     
-    /**
-     * [오현옥] 3. 수정 완료 처리 및 백엔드 반영 기능 (PUT API)
-     * - 유저가 수정한 새로운 별점 스코어와 텍스트 문자열을 RESTful API 규격에 맞춰 서버에 갱신 처리 요청을 전송합니다.
-     * - 완료 시 수정 폼 인터페이스 레이어를 비활성화(`null`)하고 `getMyReviews`를 리로드하여 실시간 무전환 동기화를 처리합니다.
-     */
     const handleUpdateReview = async(reviewId) => {
         try{
             await axios.put(`http://localhost:8080/api/reviews/${reviewId}`, { reviewScore: editReviewScore, reviewText: editReviewText }, { withCredentials:true });
@@ -194,11 +182,6 @@ const Mypage = () => {
         }catch(error){ alert("리뷰 수정 실패"); }
     };
 
-    /**
-     * [오현옥] 4. 리뷰 완전 삭제 기능 (DELETE API)
-     * - 유저의 삭제 의사를 더블 체킹하는 윈도우 컨펌(`confirm`) 창을 트리거합니다.
-     * - 승인 시 백엔드 데이터베이스의 해당 리뷰 고유 시퀀스 번호(`reviewId`) 레코드를 지우고 목록을 실시간 새로고침합니다.
-     */
     const handleDeleteReview = async(reviewId) => {
         if(!window.confirm("리뷰를 삭제하시겠습니까?")) return;
         try{
@@ -206,6 +189,15 @@ const Mypage = () => {
             alert("리뷰가 삭제되었습니다."); getMyReviews();
         }catch(error){ alert("리뷰 삭제 실패"); }
     }
+
+    /* ⚡ [신규 추가] 구매내역 이전/다음 슬라이드 제어 함수 */
+    const handlePrevOrder = () => {
+        setCurrentOrderIndex(prev => (prev === 0 ? orders.length - 1 : prev - 1));
+    };
+
+    const handleNextOrder = () => {
+        setCurrentOrderIndex(prev => (prev === orders.length - 1 ? 0 : prev + 1));
+    };
 
     return (
         <div className="mypage-grid-container">
@@ -251,55 +243,80 @@ const Mypage = () => {
                             </div>
 
                             <h3 id="refund-section" className="info-section-title">구매내역</h3>
-                            <div className="info-data-block">
+                            
+                            {/* ⚡ [구조 변경] 낱개 정사각형 카드를 가로 슬라이더 형태로 배치 */}
+                            <div className="order-slider-wrapper">
                                 {orders && orders.length > 0 ? (
-                                    orders.map((order, index) => (
-                                        <div key={order.orderId || order.id || index} style={{ borderBottom: '1px solid #eee', padding: '10px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                            <div>
-                                                <p><strong>주문번호:</strong> {order.orderId || order.id || "번호 확인중"}</p>
-                                                <p><strong>상품명:</strong> {order.itemName || order.productName || "주문 상품"}</p>
-                                                {/* 주문 상태 추가 */}
-                                                <p><strong>주문상태:</strong> {order.orderState}</p>
-                                                <p><strong>배송상태:</strong> {order.deliveryStatus}</p>
-                                                <p style={{ fontSize: '12px', color: '#888' }}>
-                                                    주문일: {order.orderDate ? new Date(order.orderDate).toLocaleString() : "-"}
-                                                </p>
-                                            </div>
-                                            
-                                            <div style={{ display: 'flex', gap: '5px' }}>
-                                                {order.orderState === 'PURCHASED' ? (
-                                                    <button onClick={()=>navigate(`/item/${order.itemId}`)}
-                                                    disabled={!order.itemId}
-                                                    style={{
-                                                        backgroundColor:"#2196F3",
-                                                        color:"#fff",
-                                                        border:"none",
-                                                        padding:"8px 15px",
-                                                        cursor:order.itemId ? "pointer":"not-allowed",
-                                                    }}
-                                                    >
-                                                        리뷰쓰기
-                                                    </button>
-                                                ): order.orderState === "READY" && order.deliveryStatus ==="COMPLETED"?(
-                                                    <button onClick={()=>handleConfirmPurchase(order.orderId||order.id)}
-                                                    style={{backgroundColor:"#4CAF50",
-                                                        color:"#fff",
-                                                        border:"none",
-                                                        padding:"8px 15px",
-                                                        cursor:"pointer",
-                                                    }}>
-                                                        구매확정
-                                                    </button>
-                                                ):(
-                                                    <span style={{color:"#888",fontSize:"13px", alignSelf: 'center'}}>
-                                                        배송완료 후 구매확정 가능
-                                                    </span>
-                                                )}
-                                            </div>
+                                    <>
+                                        {/* 왼쪽 이동 화살표 */}
+                                        <button type="button" className="slider-arrow-btn prev" onClick={handlePrevOrder}>&#60;</button>
+                                        
+                                        <div className="order-slider-track">
+                                            {orders.map((order, index) => (
+                                                /* 현재 인덱스 번호에 해당하는 낱개 정형 카드 한 장만 Active 상태로 노출 */
+                                                <div 
+                                                    key={order.orderId || order.id || index} 
+                                                    className={`order-square-card ${index === currentOrderIndex ? 'active' : ''}`}
+                                                >
+                                                    <div className="order-card-inner-text">
+                                                        <p className="order-num-text">NO. {order.orderId || order.id || "확인중"}</p>
+                                                        <h4 className="order-name-text">{order.itemName || order.productName || "주문 상품"}</h4>
+                                                        <span className="order-status-badge">{order.orderState}</span>
+                                                        <p className="order-delivery-text">배송: {order.deliveryStatus}</p>
+                                                    </div>
+                                                    
+                                                    <div className="order-card-action-zone">
+                                                        {order.orderState === 'PURCHASED' ? (
+                                                            <button onClick={()=>navigate(`/item/${order.itemId}`)}
+                                                            disabled={!order.itemId}
+                                                            style={{
+                                                                backgroundColor:"#2196F3",
+                                                                color:"#fff",
+                                                                border:"none",
+                                                                padding:"8px 15px",
+                                                                cursor:order.itemId ? "pointer":"not-allowed",
+                                                                width: '100%'
+                                                            }}
+                                                            >
+                                                                리뷰쓰기
+                                                            </button>
+                                                        ): order.orderState === "READY" && order.deliveryStatus ==="COMPLETED"?(
+                                                            <button onClick={()=>handleConfirmPurchase(order.orderId||order.id)}
+                                                            style={{backgroundColor:"#4CAF50",
+                                                                color:"#fff",
+                                                                border:"none",
+                                                                padding:"8px 15px",
+                                                                cursor:"pointer",
+                                                                width: '100%'
+                                                            }}>
+                                                                구매확정
+                                                            </button>
+                                                        ):(
+                                                            <span className="order-disabled-msg">
+                                                                배송완료 후 구매확정
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            ))}
                                         </div>
-                                    ))
+
+                                        {/* 오른쪽 이동 화살표 */}
+                                        <button type="button" className="slider-arrow-btn next" onClick={handleNextOrder}>&#62;</button>
+                                        
+                                        {/* 슬라이드 하단 인덱스 도트(닷) 내비게이션 */}
+                                        <div className="slider-dots-container">
+                                            {orders.map((_, dotIdx) => (
+                                                <span 
+                                                    key={dotIdx} 
+                                                    className={`slider-dot ${dotIdx === currentOrderIndex ? 'active' : ''}`}
+                                                    onClick={() => setCurrentOrderIndex(dotIdx)}
+                                                />
+                                            ))}
+                                        </div>
+                                    </>
                                 ) : (
-                                    <p>최근 주문 내역이 없습니다.</p>
+                                    <div className="order-empty-box"><p>최근 주문 내역이 없습니다.</p></div>
                                 )}
                             </div>
 
@@ -307,7 +324,6 @@ const Mypage = () => {
                             <div className="info-data-block">
                                 {addresses.length > 0 ? (
                                     addresses.map(addr => (
-                                        /* 만약 사용자가 주소를 검색하는 도중이라면 목록 출력을 임시 우회합니다 */
                                         addr.addressName === "방금 검색한 주소" ? null : (
                                             <div key={addr.id} style={{ borderBottom: '1px solid #eee', padding: '10px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                                 <div>
@@ -333,7 +349,6 @@ const Mypage = () => {
                                 )}
                                 <button className="mypage-action-btn" style={{ marginTop: '15px' }} onClick={addAddress}>+ 새 배송지 추가</button>
                                 
-                                {/* ⚡ [카카오 우편번호 및 상세주소 입력 레이어 통합 영역] */}
                                 {isPostcodeOpen && (
                                     <div style={{ border: '1px solid #ccc', marginTop: '15px', padding: '15px', backgroundColor: '#fff', display: 'flex', flexDirection: 'column', gap: '10px' }}>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #eee', paddingBottom: '8px' }}>
@@ -341,7 +356,6 @@ const Mypage = () => {
                                             <button type="button" onClick={() => setIsPostcodeOpen(false)} style={{ cursor: 'pointer', padding: '2px 8px' }}>닫기</button>
                                         </div>
                                         
-                                        {/* 1단계: 임시 주소가 생성되었을 때만 상세주소를 타이핑하는 인풋창을 노출시킵니다. */}
                                         {addresses.some(a => a.addressName === "방금 검색한 주소") ? (
                                             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                                 <p style={{ margin: 0, fontSize: '14px', color: '#333' }}>
@@ -378,7 +392,6 @@ const Mypage = () => {
                                                 </button>
                                             </div>
                                         ) : (
-                                            /* 2단계: 아직 주소를 고르기 전에는 카카오 검색창을 띄워줍니다. */
                                             <DaumPostCode onComplete={handleAddressComplete} />
                                         )}
                                     </div>
@@ -388,18 +401,12 @@ const Mypage = () => {
                             <button className="mypage-action-btn" onClick={handleDelete} style={{ color: 'red', marginTop: '30px' }}>회원 탈퇴</button>
                         </div>
 
-                        {/* =========================================================================
-                         * 📝 [오현옥 렌더링 파트] 내가 작성한 리뷰 데이터 루프 바인딩 출력 구역
-                         * ========================================================================= */}
                         <div style={{marginTop:"40px"}}>
                             <h2>내가 작성한 리뷰</h2>
                             {myReviews && myReviews.length > 0 ? (
                                 myReviews.map((review) => (
                                     <div key={review.reviewId} style={{ borderBottom: "1px solid #eee", padding: '15px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                        
-                                        {/* [오현옥] 현재 행이 일반 보기 모드인지, 혹은 유저가 [수정]을 눌러 진입한 에디팅 상태인지 분기 처리 */}
                                         {editReviewId === review.reviewId ? (
-                                            /* 💡 1단계: [오현옥] 수정 모드 활성화 시 인풋창 인터페이스 노출 */
                                             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', flex: 1, marginRight: '20px' }}>
                                                 <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                                                     <span style={{ fontSize: '14px', fontWeight: '600' }}>별점 수정:</span>
@@ -427,10 +434,8 @@ const Mypage = () => {
                                                 </div>
                                             </div>
                                         ) : (
-                                            /* 💡 2단계: [오현옥] 평소 화면에 뿌려지는 텍스트 본문 및 평점 레이아웃 */
                                             <div style={{ flex: 1 }}>
                                                 <p style={{ margin: '0 0 6px 0', fontSize: '14px', color: '#ff9800', fontWeight: 'bold' }}>
-                                                    {/* 점수 정수값을 기반으로 별 아이콘 개수를 출력하는 오현옥 로직 매핑 */}
                                                     {"⭐".repeat(review.reviewScore || 5)} ({review.reviewScore}점)
                                                 </p>
                                                 <p style={{ margin: 0, fontSize: '15px', color: '#333' }}>
@@ -442,7 +447,6 @@ const Mypage = () => {
                                             </div>
                                         )}
 
-                                        {/* [오현옥] 우측에 상시 대기하는 수정 / 삭제 제어 버튼 셋 레이어 */}
                                         <div style={{ display: 'flex', gap: '5px', flexShrink: 0 }}>
                                             {editReviewId !== review.reviewId && (
                                                 <button 
@@ -461,7 +465,6 @@ const Mypage = () => {
                                                 삭제
                                             </button>
                                         </div>
-
                                     </div>
                                 ))
                             ) : (
