@@ -14,6 +14,12 @@ import com.cmyk.threeh.global.error.ErrorCode;
 
 public class CustomMemberDetails implements UserDetails, Serializable {
 
+
+
+    // private final transient Admins admins;
+    // private final transient Member member;
+
+    //원래있던코드
     private static final long serialVersionUID = 1L;
 
     private final  Admins admins;

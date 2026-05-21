@@ -4,66 +4,15 @@ import { Link } from "react-router-dom";
 import axios from 'axios';
 import AddCompany from './AddCompany';
 import Orderboard from './Orderboard';
+import AdminMemoDay from './AdminMemoDay';
 import '../../css/adminCss/AdminDashboard.css';
 
 const AdminDashboard = () => {
 
-    const [memo1, setMemo1] = useState('');
-    const memoRef = useRef(null);
+    
     const navigate = useNavigate();
     const [selectedDrivers, setSelectedDrivers] = useState({});
     const [adminId, setAdminId] = useState('관리자');
-
-    const saveMemo = () => {
-        localStorage.setItem("memo_textarea", memo1);
-        localStorage.setItem("memo_editor", memoRef.current.innerHTML);
-    };
-
-    const handleBulletKeyDown = (e) => {
-        if (e.key === "Enter") {
-            e.preventDefault();
-
-            const newLine = document.createElement("div");
-            newLine.innerHTML = "• ";
-
-            memoRef.current.appendChild(newLine);
-
-            const range = document.createRange();
-            const sel = window.getSelection();
-
-            range.setStart(newLine, 1);
-            range.collapse(true);
-
-            sel.removeAllRanges();
-            sel.addRange(range);
-        }
-    };
-
-    const [currentTime, setCurrentTime] = useState(new Date());
-
-    useEffect(() => {
-        const timer = setInterval(() => {
-            setCurrentTime(new Date());
-        }, 1000);
-
-        return () => clearInterval(timer);
-    }, []);
-
-    const formatDate = (date) => {
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-
-        const days = ['일', '월', '화', '수', '목', '금', '토'];
-
-        return `${month}-${day}(${days[date.getDay()]})`;
-    };
-
-    const formatTime = (date) => {
-        const hours = String(date.getHours()).padStart(2, '0');
-        const minutes = String(date.getMinutes()).padStart(2, '0');
-
-        return `${hours}:${minutes}`;
-    };
 
     const [orders, setOrders] = useState([]);
     const [items, setItems] = useState([]);
@@ -116,16 +65,7 @@ const AdminDashboard = () => {
     fetchOrders();
 }, [navigate]);
 
-    useEffect(() => {
-        const savedTextarea = localStorage.getItem("memo_textarea");
-        const savedEditor = localStorage.getItem("memo_editor");
-
-        if (savedTextarea) setMemo1(savedTextarea);
-
-        if (savedEditor && memoRef.current) {
-            memoRef.current.innerHTML = savedEditor;
-        }
-    }, []);
+   
 
     const handleDriverSelect = (orderId, deliveryId) => {
     setSelectedDrivers(prev => ({
@@ -243,45 +183,53 @@ const fetchDeliveries = async () => {
     };
 
     return (
-        <div className="admin-dashboard-container">
+    <div className="admin-dashboard-container">
+        <div className="admin-side-box">            
+            <div className="admin-welcome-message">
+                <span>👤 {adminId}님 접속을 환영합니다.</span>
+            </div>
 
-            {/* 왼쪽 */}
-            <div className="admin-side-box">
+            <AdminMemoDay/>
 
-                <div className="admin-welcome-message">
-                    <span>👤 {adminId}님 접속을 환영합니다.</span>
+             {/* 내부 구분선 */}
+            <hr className="sidebar-divider" />
+
+           
+            {/* 4. 원스톱 관리 매니저 패널 (사이드바 내부 하단 배치 성공) */}
+            <div className="admin-control-panel">
+                
+                {/* 4-A. 상품 관리 파트 */}
+                <div className="panel-group">
+                    <div className="panel-title">📦 상품 마스터 관리</div>
+                    <div className="panel-buttons">
+                        <Link to="/item/create" className="full-width-link">
+                            <button className="admin-menu-btn type-product">개별 상품 추가</button>
+                        </Link>
+                        <button className="admin-menu-btn type-product-edit">상품 수정 / 삭제</button>
+                    </div>
                 </div>
 
-                <div className="admin-date-text">
-                    {formatDate(currentTime)}
-                </div>
-
-                <div className="admin-time-text">
-                    {formatTime(currentTime)}
-                </div>
-
-                <textarea
-                    value={memo1}
-                    onChange={(e) => setMemo1(e.target.value)}
-                    placeholder="메모를 입력하세요"
-                    className="admin-memo-textarea"
-                />
-
-                <button onClick={saveMemo} className="admin-save-btn">
-                    메모 저장
-                </button>
-
-                <div
-                    ref={memoRef}
-                    contentEditable
-                    onKeyDown={handleBulletKeyDown}
-                    suppressContentEditableWarning
-                    className="admin-memo-editor"
-                >
-                    <div>• </div>
+                {/* 4-B. 배송 파트너 파트 */}
+                <div className="panel-group">
+                    <div className="panel-title">🚚 배송 파트너 등록</div>
+                    <div className="panel-buttons">
+                        {/* 개별 등록 */}
+                        <Link to="/admin/delivery" className="full-width-link">
+                            <button className="admin-menu-btn type-individual">개별 기사 직접 등록</button>
+                        </Link>
+                        
+                        {/* 단체 등록 영역 */}
+                        <div className="sidebar-excel-box">
+                            <div className="excel-micro-label">단체 엑셀 일괄 등록</div>
+                            <AddCompany onSuccess={fetchDeliveries} />
+                        </div>
+                    </div>
                 </div>
 
             </div>
+            
+        </div> {/* <-- .admin-side-box 가 여기서 안전하게 닫힙니다 */}
+
 
             {/* 오른쪽 */}
             <div className="admin-main-content">
@@ -298,17 +246,22 @@ const fetchDeliveries = async () => {
 
                 
 
-  {/* 기사 리스트 */}
-                <div className="admin-content-box">
-                    <h3>기사 리스트</h3>
-                    <Link to="/admin/delivery">
-                        <button>기사 추가</button>
-                    </Link>
-                   <div>
-    <h3>회사 기사 엑셀 등록</h3>
-
-   <AddCompany onSuccess={fetchDeliveries} />
-</div>
+<div className="admin-content-box">
+    
+   
+    <div className="admin-content-title-bar">
+        <h3>배송 파트너</h3>        
+        <div className="admin-header-actions">          
+            <div className="admin-excel-upload-wrapper">
+                <span className="excel-label">엑셀 등록:</span>
+                <AddCompany onSuccess={fetchDeliveries} />
+            </div>
+            
+            <Link to="/admin/delivery">
+                <button className="admin-add-driver-btn">기사 추가</button>
+            </Link>
+        </div>
+    </div>
 <div className="driver-table-wrapper">
 
                     <table className="admin-table-style">

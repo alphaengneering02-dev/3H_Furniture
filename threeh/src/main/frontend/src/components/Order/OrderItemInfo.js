@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getUrl } from '../../utils/BackendPath';
+import '../../css/orderPageCss/orderPage.css';
 
 
 
@@ -140,58 +141,85 @@ function OrderItemInfo( { orderData, orderType, zipCode, address, deliveryDate, 
        };
 
     return (
-        <div>
-            <div>
-
-                    {orderData?.items && orderData.items.length > 0 ? (
-                    orderData.items.map((item, index) => (
-                        <div key={item.itemId || index}>
-                            <img src={getUrl(item.itemImage)} alt={item.itemName} style={{ 
-                                    width: '100px', 
-                                    height: '100px', 
-                                    maxWidth: '100px',
-                                    objectFit: 'cover'
-                                }} /> 
-                            <p>상품명: {item.itemName}</p>
-                            <p>가격: {item.price}원 (수량: {item.count}개)</p>
-                            <p>설명: {item.itemDetail}</p>
-                        </div>
-                    ))
-                ) : orderData?.itemId ? (
-                   
-                    <div>
-                     
-                       
-                        <img src={getUrl(orderData?.itemImage)} alt={orderData.itemName} 
-                        style={{ 
-                                    width: '300px', 
-                                    height: '300px', 
-                                    maxWidth: '300px',
-                                    objectFit: 'cover'
-                                }}/>
-                        <p>가격: {orderData.price}원</p> 
-                        <p>설명: {orderData.itemDetail}</p>
-                    </div>
-                ) : (
-                    <p>주문할 상품 정보가 없습니다.</p>
-                )}
-
-                
-                <div>
-                    <h3>
-                        총 주문 금액: {
-                            orderData?.items && orderData.items.length > 0
-                                ? orderData.items.reduce((acc, item) => acc + (item.price * item.count), 0).toLocaleString()
-                                : (orderData?.price || 0).toLocaleString() 
-                        }원
+        <>
+                {/* 1. 상품 정보 섹션 블록 */}
+                <div className="order-section-block">
+                    {/* 까사미아 스타일의 굵은 상단선 헤더 */}
+                    <div className="order-section-header">
+                    <h3 className="order-section-title">
+                        상품 정보 ({orderData?.items && orderData.items.length > 0 ? `${orderData.items.length}건` : '1건'})
                     </h3>
+                    <span className="order-delivery-notice-tag">배송일 지정 필수</span>
+                    </div>
+
+                    <div className="order-section-body">
+                    {/* 수도권 외 외곽 지역 안내 문구 바 */}
+                    <div className="order-alert-banner">
+                        <i className="info-icon">i</i> 수도권 외 일부 지역은 지정 요일에만 배송되며, 선택하신 일자에 배송이 어려울 수 있습니다.
+                    </div>
+
+                    {/* 상품 리스트 렌더링 영역 */}
+                    <div className="order-items-list">
+                        {orderData?.items && orderData.items.length > 0 ? (
+                        orderData.items.map((item, index) => (
+                            <div className="order-item-card" key={item.itemId || index}>
+                            <div className="order-item-thumb-box">
+                                <img src={getUrl(item.itemImage)} alt={item.itemName} className="order-item-img"/>
+                            </div>
+                            <div className="order-item-info-box">
+                                <div className="order-item-brand">3H 오리지널</div>
+                                <h4 className="order-item-name">{item.itemName}</h4>
+                                <p className="order-item-option">설명: {item.itemDetail}</p>
+                                <div className="order-item-price-qty">
+                                <span className="order-item-qty">수량 : {item.count}개</span>
+                                <span className="order-item-price">{(item.price * item.count).toLocaleString()}원</span>
+                                </div>
+                            </div>
+                            </div>
+                        ))
+                        ) : orderData?.itemId ? (
+                        <div className="order-item-card">
+                            <div className="order-item-thumb-box">
+                            <img src={getUrl(orderData?.itemImage)} alt={orderData.itemName} className="order-item-img"/>
+                            </div>
+                            <div className="order-item-info-box">
+                            <div className="order-item-brand">3H 오리지널</div>
+                            <h4 className="order-item-name">{orderData.itemName}</h4>
+                            <p className="order-item-option">설명: {orderData.itemDetail}</p>
+                            <div className="order-item-price-qty">
+                                <span className="order-item-qty">수량 : 1개</span>
+                                <span className="order-item-price">{(orderData.price || 0).toLocaleString()}원</span>
+                            </div>
+                            </div>
+                        </div>
+                        ) : (
+                        <div className="order-item-empty">
+                            <p>주문할 상품 정보가 없습니다.</p>
+                        </div>
+                        )}
+                    </div>
+                    </div>
+                </div> 
+
+                {/* 2. 최종 결제 금액 및 결제 버튼 블록 (상품 블록 외부에 독립적으로 위치) */}
+                <div className="order-summary-block">
+                    <div className="order-summary-row">
+                    <span className="summary-label">최종 결제금액</span>
+                    <span className="summary-value-total">
+                        {orderData?.items && orderData.items.length > 0
+                        ? orderData.items.reduce((acc, item) => acc + (item.price * item.count), 0).toLocaleString()
+                        : (orderData?.price || 0).toLocaleString()
+                        }원
+                    </span>
+                    </div>
+                    
+                    <div className="order-submit-box">
+                    <button className="order-payment-btn" id="paymentButton" onClick={hadlePayment}>
+                        결제하기
+                    </button>
+                    </div>
                 </div>
-            
-                <div>
-                    <button id='paymentButton' onClick={hadlePayment}>결제하기</button>
-                </div>
-            </div>
-        </div>
+                </>
     );
 }
 

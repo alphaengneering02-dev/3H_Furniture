@@ -1,0 +1,344 @@
+/* ==========================================
+   1. 전체 페이지 레이아웃 & 기본 스타일
+   ========================================== */
+.order-page-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  font-family: 'Noto Sans KR', sans-serif;
+  color: #333333;
+  box-sizing: border-box;
+}
+
+/* 로고 영역 (중앙 정렬 및 시크한 볼드 폰트) */
+.order-logo-area {
+  text-align: center;
+  margin-bottom: 30px;
+}
+.order-logo-link {
+  font-size: 28px;
+  font-weight: 800;
+  color: #000000;
+  text-decoration: none;
+  letter-spacing: 1px;
+}
+
+/* 페이지 메인 타이틀 */
+.order-page-title {
+  font-size: 26px;
+  font-weight: 700;
+  color: #000000;
+  margin: 0 0 40px 0;
+  padding-bottom: 15px;
+}
+
+/* 까사미아풍 좌우 2단 분할 레이아웃 컨테이너 */
+.order-content-layout {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 50px; /* 좌측 섹션과 우측 결제 바 사이 여백 */
+}
+
+/* ==========================================
+   2. 좌측 콘텐츠 영역 (배송지 정보, 상품 정보 등)
+   ========================================== */
+.order-left-section {
+  flex: 1;
+  max-width: 750px; /* 좌측 가로 너비 제한 */
+}
+
+/* 개별 섹션 블록 공통 */
+.order-section-block {
+  margin-bottom: 50px;
+}
+
+/* 까사미아 디자인의 핵심: 상단 굵은 검은색 구분선 */
+.order-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  border-bottom: 2px solid #000000;
+  padding-bottom: 12px;
+  margin-bottom: 20px;
+}
+
+.order-section-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #000000;
+  margin: 0;
+}
+
+/* 섹션 내부 콘텐츠 배치 영역 */
+.order-section-body {
+  padding: 10px 0;
+}
+
+/* ==========================================
+   3. 서브 컴포넌트 커스텀 (라디오, 입력창 등)
+   ========================================== */
+/* MUI 라디오 그룹 커스텀 */
+.order-radio-group {
+  gap: 24px;
+}
+.order-radio {
+  color: #cccccc !important;
+}
+.order-radio.Mui-checked {
+  color: #000000 !important; /* 체크 시 블랙 */
+}
+.order-radio-label {
+  font-size: 15px;
+  font-weight: 500;
+  color: #333333;
+}
+
+/* 타이틀 우측 소형 링크 버튼 (배송지 변경 등 대비) */
+.order-title-link-btn {
+  background: none;
+  border: none;
+  font-size: 13px;
+  color: #666666;
+  cursor: pointer;
+  padding: 0;
+}
+
+
+.order-section-body{
+  margin-left: 10px;
+}
+.order-info-row {
+  display: flex;
+  align-items: center;
+  padding: 5px 10px;
+  border-bottom: 1px solid #f0f0f0;
+  margin: 20px;
+}
+
+.order-info-row:first-child {
+  padding-top: 5px;
+}
+
+.order-info-th {
+  width: 120px; 
+  font-size: 14px;
+  font-weight: 600;
+  color: #222222;
+}
+
+.oreder-input {
+  flex: 1;
+  max-width: 400px;
+  height: 44px;
+  padding: 0 14px;
+  border: 1px solid #777777;
+  border-radius: 0;
+  font-size: 14px;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease;
+}
+
+order-input:focus {
+  border-color: #000000;
+}
+
+/* readOnly(읽기전용) 인풋창 스타일 - 마우스 커서 및 배경 은은하게 변경 */
+.order-input[readOnly] {
+  width: 200px;
+  height: 30px;
+  padding: 0 14px;
+  background-color: #f9f9f9;
+  color: #777777;
+  border: 1px solid #777777;
+  cursor: default;
+  border-radius: 0;
+}
+
+/* 배송 설치 희망 날짜 블록 */
+.order-date-block {
+  padding-top: 15px;
+}
+
+/* 날짜 선택 인풋창 커스텀 (캘린더 아이콘 포함) */
+.order-date-input {
+  display: block;
+  width: 100%;
+  max-width: 250px; /* 날짜창 크기 최적화 */
+  height: 30px;
+  padding: 0 14px;
+  margin-top: 10px;
+  border: 1px solid #777777;
+  border-radius: 0; /* 직각 모서리 */
+  font-size: 14px;
+  font-family: inherit;
+  color: #333333;
+  box-sizing: border-box;
+  outline: none;
+  margin-left: 19px;
+}
+.order-date-input:focus {
+  border-color: #000000;
+}
+
+/* ==========================================
+   4. 상품 정보 영역 관련 스타일
+   ========================================== */
+/* 오렌지/레드 포인트 강조 뱃지 */
+.order-delivery-notice-tag {
+  font-size: 13px;
+  color: #ff4d4f;
+  font-weight: 500;
+}
+
+/* 수도권 배송 제한 안내 바 */
+.order-alert-banner {
+  background-color: #f9f9f9;
+  padding: 12px 16px;
+  font-size: 13px;
+  color: #777777;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.order-alert-banner .info-icon {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-color: #cccccc;
+  color: #ffffff;
+  border-radius: 50%;
+  text-align: center;
+  font-size: 11px;
+  font-style: normal;
+  line-height: 16px;
+}
+
+/* 상품 카드 구조 (썸네일과 텍스트 정보를 가로 정렬) */
+.order-item-card {
+  display: flex;
+  padding: 20px 0;
+  border-bottom: 1px solid #f0f0f0;
+  gap: 20px;
+}
+.order-item-card:last-child {
+  border-bottom: none;
+}
+
+/* 상품 이미지 가두는 썸네일 박스 */
+.order-item-thumb-box {
+  width: 90px;
+  height: 90px;
+  background-color: #f5f5f5;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.order-item-img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+/* 우측 상품 정보 텍스트 박스 */
+.order-item-info-box {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.order-item-brand {
+  font-size: 12px;
+  color: #888888;
+  margin-bottom: 4px;
+}
+.order-item-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: #222222;
+  margin: 0 0 6px 0;
+}
+.order-item-option {
+  font-size: 13px;
+  color: #666666;
+  margin: 0 0 12px 0;
+}
+
+/* 가격 및 수량 정렬 */
+.order-item-price-qty {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.order-item-qty {
+  font-size: 13px;
+  color: #888888;
+}
+.order-item-price {
+  font-size: 16px;
+  font-weight: 700;
+  color: #000000;
+}
+
+/* 상품이 없을 때 */
+.order-item-empty {
+  padding: 40px 0;
+  text-align: center;
+  color: #999999;
+  font-size: 14px;
+}
+
+/* ==========================================
+   5. 우측 결제 퀵바 영역 (스크롤 고정)
+   ========================================== */
+.order-summary-block {
+  width: 340px; /* 우측 퀵바 고정 너비 */
+  position: -webkit-sticky;
+  position: sticky;
+  top: 40px; /* 스크롤을 내릴 때 화면 상단으로부터 유지할 여백 */
+  background-color: #ffffff;
+  border: 1px solid #777;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.order-summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #f0f0f0;
+}
+.summary-label {
+  font-size: 16px;
+  font-weight: 600;
+  color: #222222;
+}
+.summary-value-total {
+  font-size: 22px;
+  font-weight: 700;
+  color: #ff4d4f; /* 최종 결제 금액 레드 포인트 컬러 */
+}
+
+/* 결제하기 버튼 */
+.order-submit-box {
+  width: 100%;
+}
+.order-payment-btn {
+  width: 100%;
+  background-color: #000000;
+  color: #ffffff;
+  border: none;
+  padding: 16px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+.order-payment-btn:hover {
+  background-color: #222222;
+}
