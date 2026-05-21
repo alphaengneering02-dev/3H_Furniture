@@ -166,6 +166,15 @@ public class ReviewController {
         @PathVariable Long reviewId,
         @AuthenticationPrincipal CustomMemberDetails principal)
         {
+            System.out.println("관리자 리뷰 삭제 요청 reviewId = " + reviewId);
+            System.out.println("principal = " + principal);
+
+            if(principal !=null){
+                System.out.println("username = " + principal.getUsername());
+                System.out.println("isAdmin = " + principal.isAdmin());
+                System.out.println("authorities = " + principal.getAuthorities());
+            }
+
             if(principal==null){
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
             }
