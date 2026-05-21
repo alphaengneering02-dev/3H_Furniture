@@ -44,6 +44,9 @@ public enum ErrorCode {
 
     //관리자 찾을 수 없음
     ADMIN_NOT_FOUND(404,"존재하지 않는 관리자 입니다."),
+    
+    //리뷰를 찾을 수 없음
+    REVIEW_NOT_FOUND(404,"리뷰를 찾을 수 없습니다."),
 
     //이미지 파일 없음
     NO_IMGFILE(404,"파일이 존재하지 않습니다.");

@@ -160,9 +160,10 @@ public class ReviewService {
         reviewRepository.delete(review);
     }
 
-    //관리자 삭제 메서드
-    public void adminDeleteReview(String loginId, Long reviewId){
-        Member member = memberService.getUser(loginId);
+    //관리자 삭제 메서드(관리자는 멤버를 찾을 필요가 없음)
+    public void adminDeleteReview(Long reviewId){
+        Review review = reviewRepository.findById(reviewId)
+            .orElseThrow(()-> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
 
         if(!member.getRole().name().equals("ADMIN")&&
             !member.getRole().name().equals("ROLE_ADMIN")){

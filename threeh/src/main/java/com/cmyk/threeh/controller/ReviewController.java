@@ -4,8 +4,10 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.jpa.repository.query.QueryParameterSetter.ErrorHandling;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,8 +17,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cmyk.threeh.domain.CustomMemberDetails;
 import com.cmyk.threeh.dto.ReviewDTO;
 import com.cmyk.threeh.dto.ReviewSummaryDTO;
+import com.cmyk.threeh.global.error.CustomException;
+import com.cmyk.threeh.global.error.ErrorCode;
 import com.cmyk.threeh.global.util.GetLoginId;
 import com.cmyk.threeh.service.ReviewService;
 
@@ -137,15 +142,16 @@ public class ReviewController {
     // 내가 작성한 리뷰만 삭제가능
     // Mypage.js에서 사용
     @DeleteMapping("/{reviewId}")
-    public ResponseEntity<?> deleteReview(
+    public ResponseEntity<?> deleteReviewByMember(
             @PathVariable Long reviewId,
-            Principal principal
+            @AuthenticationPrincipal CustomMemberDetails principal
     ) {
-        String loginId = GetLoginId.getloginId(principal);
-        if(loginId==null){
+
+        if(principal==null){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
         }
 
+        String loginId = principal.getUsername();
         try {
             reviewService.deleteReview(loginId, reviewId);
 
@@ -158,20 +164,23 @@ public class ReviewController {
 
     //admin이 리뷰 삭제할때 사용하는 api
     @DeleteMapping("/admin/{reviewId}")
-    public ResponseEntity<?> adminDeleteReview(
+    public ResponseEntity<?> deleteReviewByAdmin(
         @PathVariable Long reviewId,
-        Principal principal
-    ){
-        String loginId = GetLoginId.getloginId(principal);
+        @AuthenticationPrincipal CustomMemberDetails principal)
+        {
+            if(principal==null){
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+            }
 
-        if(loginId == null){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+            if(!principal.isAdmin()){
+                throw new CustomException(ErrorCode.FORBIDDEN);
+            }
+            try{
+                //서비스에 있는 관리자 삭제 메서드 호출
+                reviewService.adminDeleteReview(reviewId);
+                return ResponseEntity.ok("관리자가 리뷰를 삭제했습니다.");
+            }catch(Exception e){
+                return ResponseEntity.badRequest().body(e.getMessage());
+            }
         }
-        try{
-            reviewService.adminDeleteReview(loginId,reviewId);
-            return ResponseEntity.ok("리뷰가 삭제되었습니다.");
-        }catch(Exception e){
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
 }

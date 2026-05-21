@@ -99,5 +99,11 @@ public class CustomMemberDetails implements UserDetails, Serializable {
         return member;
     }
 
-    
+    //코딩 추가_ 오현옥 _ 관리자 리뷰 삭제 기능에 필요한 관리자 여부 확인용.
+    //로그인 한 사람이 관리자면 admins가 들어가고, 일반회원이면 member가 들어가니까.
+    //admin !=null이면 관리자라고 판단. 
+    public boolean isAdmin(){
+        return admins !=null;
+    }
+
 }
