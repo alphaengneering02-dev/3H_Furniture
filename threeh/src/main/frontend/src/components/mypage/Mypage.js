@@ -178,6 +178,23 @@ const Mypage = () => {
             setMyReviews(response.data);
         }catch(error){ console.error("내 리뷰 조회 실패", error); }
     };
+    
+    /**
+     * [오현옥] 1. 리뷰 작성 여부 확인 함수 추가
+     */
+
+    const findMyReviewByItemId = (itemId)=>{
+        if(!itemId){
+            return null;
+        }
+        return myReviews.find(
+            (review) => Number(review.itemId)===Number(itemId)
+        );
+    };
+
+    const hasWrittenReview = (itemId) => {
+        return !!findMyReviewByItemId(itemId);
+    }
 
     /**
      * [오현옥] 2. 리뷰 수정 모드 진입 전환 핸들러
@@ -327,16 +344,48 @@ const Mypage = () => {
                                                     
                                                     <div style={{ marginTop: '10px' }}>
                                                         {order.orderState === 'PURCHASED' ? (
-                                                            <button onClick={()=>navigate(`/item/${order.itemId}`)} disabled={!order.itemId}>
+                                                            hasWrittenReview(order.itemId) ? (
+                                                            <span
+                                                                type="button"
+                                                                onClick={() => {
+                                                                const writtenReview = findMyReviewByItemId(order.itemId);
+
+                                                                if (writtenReview) {
+                                                                    handleEditReviewStart(writtenReview);
+                                                                    document
+                                                                    .getElementById("my-review-section")
+                                                                    ?.scrollIntoView({ behavior: "smooth" });
+                                                                }
+                                                                }}
+                                                            >
+                                                                리뷰 작성 완료
+                                                            </span>
+                                                            ) : (
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => navigate(`/item/${order.itemId}`)}
+                                                                disabled={!order.itemId}
+                                                            >
                                                                 리뷰쓰기
                                                             </button>
-                                                        ) : order.orderState === "READY" && order.deliveryStatus ==="COMPLETED" ? (
-                                                            <button onClick={()=>handleConfirmPurchase(order.orderId||order.id)}>
-                                                                구매확정
+                                                            )
+                                                        ) : order.orderState === "READY" && order.deliveryStatus === "COMPLETED" ? (
+                                                            <button
+                                                            type="button"
+                                                            onClick={() => handleConfirmPurchase(order.orderId || order.id)}
+                                                            >
+                                                            구매확정
                                                             </button>
                                                         ) : (
-                                                            <span style={{color:"#64748b", fontSize:"11px", display: 'block', textAlign: 'center'}}>
-                                                                배송완료 후 확정 가능
+                                                            <span
+                                                            style={{
+                                                                color: "#64748b",
+                                                                fontSize: "11px",
+                                                                display: "block",
+                                                                textAlign: "center",
+                                                            }}
+                                                            >
+                                                            배송완료 후 확정 가능
                                                             </span>
                                                         )}
                                                     </div>
@@ -384,58 +433,120 @@ const Mypage = () => {
                                 )}
                             </div>
 
-                            {/* ⚡ 오리지널 100% 완벽 복구된 나의 리뷰 관리 구역 */}
-                            <h3 className="info-section-title">나의 리뷰 관리</h3>
-                            <div className="info-data-block">
+                            {/* ⚡ 오리지널 100% 완벽 복구된 나의 리뷰 관리 구역 .... ai가 필드명을 다..바꿔놨어요..*/}
+                           <h3 id="my-review-section" className="info-section-title">나의 리뷰 관리</h3>
+                                <div className="info-data-block">
                                 {myReviews && myReviews.length > 0 ? (
                                     myReviews.map((review) => (
-                                        <div key={review.id} style={{ borderBottom: '1px solid #eee', padding: '15px 0', width: '100%' }}>
-                                            <h4 style={{ margin: '0 0 5px 0' }}>{review.productName}</h4>
-                                            <p style={{ margin: '0 0 8px 0', color: '#ffb300' }}>{"★".repeat(review.score)}</p>
-                                            <p style={{ margin: '0 0 10px 0', fontSize: '14px', color: '#555' }}>{review.content}</p>
-                                            
-                                            <button 
-                                                className="mypage-action-btn"
-                                                onClick={() => {
-                                                    setEditReviewId(review.id);
-                                                    setEditReviewScore(review.score);
-                                                    setEditReviewText(review.content);
-                                                }}
+                                    <div
+                                        key={review.reviewId}
+                                        style={{
+                                        borderBottom: '1px solid #eee',
+                                        padding: '15px 0',
+                                        width: '100%',
+                                        }}
+                                    >
+                                        <h4 style={{ margin: '0 0 5px 0' }}>
+                                        {review.itemName || "상품명 없음"}
+                                        </h4>
+
+                                        <p style={{ margin: '0 0 8px 0', color: '#ffb300' }}>
+                                        {"★".repeat(Number(review.reviewScore || 0))}
+                                        {"☆".repeat(5 - Number(review.reviewScore || 0))}
+                                        {" "}
+                                        ({review.reviewScore}점)
+                                        </p>
+
+                                        <p style={{ margin: '0 0 10px 0', fontSize: '14px', color: '#555' }}>
+                                        {review.reviewText || "작성된 리뷰 내용이 없습니다."}
+                                        </p>
+
+                                        <p style={{ margin: '0 0 10px 0', fontSize: '12px', color: '#999' }}>
+                                        작성일:{" "}
+                                        {review.createdAt ? String(review.createdAt).substring(0, 10) : "-"}
+                                        </p>
+
+                                        {editReviewId === review.reviewId ? (
+                                        <div
+                                            style={{
+                                            marginTop: '15px',
+                                            padding: '15px',
+                                            background: '#f9f9f9',
+                                            border: '1px solid #ddd',
+                                            }}
+                                        >
+                                            <select
+                                            value={editReviewScore}
+                                            onChange={(e) => setEditReviewScore(Number(e.target.value))}
+                                            style={{
+                                                padding: '5px',
+                                                marginBottom: '10px',
+                                                display: 'block',
+                                            }}
                                             >
-                                                수정하기
+                                            <option value={5}>⭐⭐⭐⭐⭐ (5점)</option>
+                                            <option value={4}>⭐⭐⭐⭐ (4점)</option>
+                                            <option value={3}>⭐⭐⭐ (3점)</option>
+                                            <option value={2}>⭐⭐ (2점)</option>
+                                            <option value={1}>⭐ (1점)</option>
+                                            </select>
+
+                                            <textarea
+                                            value={editReviewText}
+                                            onChange={(e) => setEditReviewText(e.target.value)}
+                                            maxLength={255}
+                                            style={{
+                                                width: '100%',
+                                                height: '80px',
+                                                padding: '8px',
+                                                boxSizing: 'border-box',
+                                                marginBottom: '10px',
+                                            }}
+                                            />
+
+                                            <div>
+                                            <button
+                                                className="mypage-action-btn"
+                                                style={{ marginRight: '5px' }}
+                                                onClick={() => handleUpdateReview(review.reviewId)}
+                                            >
+                                                수정완료
                                             </button>
 
-                                            {editReviewId === review.id && (
-                                                <div style={{ marginTop: '15px', padding: '15px', background: '#f9f9f9', border: '1px solid #ddd' }}>
-                                                    <select 
-                                                        value={editReviewScore} 
-                                                        onChange={(e) => setEditReviewScore(Number(e.target.value))}
-                                                        style={{ padding: '5px', marginBottom: '10px', display: 'block' }}
-                                                    >
-                                                        <option value={5}>⭐⭐⭐⭐⭐ (5점)</option>
-                                                        <option value={4}>⭐⭐⭐⭐ (4점)</option>
-                                                        <option value={3}>⭐⭐⭐ (3점)</option>
-                                                        <option value={2}>⭐⭐ (2점)</option>
-                                                        <option value={1}>⭐ (1점)</option>
-                                                    </select>
-                                                    <textarea 
-                                                        value={editReviewText} 
-                                                        onChange={(e) => setEditReviewText(e.target.value)} 
-                                                        style={{ width: '100%', height: '80px', padding: '8px', boxSizing: 'border-box', marginBottom: '10px' }}
-                                                    />
-                                                    <div>
-                                                        <button className="mypage-action-btn" style={{ marginRight: '5px' }}>수정완료</button>
-                                                        <button className="mypage-action-btn" onClick={() => setEditReviewId(null)}>취소</button>
-                                                    </div>
-                                                </div>
-                                            )}
+                                            <button
+                                                className="mypage-action-btn"
+                                                onClick={() => setEditReviewId(null)}
+                                            >
+                                                취소
+                                            </button>
+                                            </div>
                                         </div>
+                                        ) : (
+                                        <div style={{ display: "flex", gap: "6px" }}>
+                                            <button
+                                            className="mypage-action-btn"
+                                            onClick={() => handleEditReviewStart(review)}
+                                            >
+                                            수정하기
+                                            </button>
+
+                                            <button
+                                            className="mypage-action-btn"
+                                            onClick={() => handleDeleteReview(review.reviewId)}
+                                            style={{ color: "red" }}
+                                            >
+                                            삭제
+                                            </button>
+                                        </div>
+                                        )}
+                                    </div>
                                     ))
                                 ) : (
-                                    <p style={{ color: '#8c7a6b', margin: 0 }}>작성한 리뷰가 존재하지 않습니다.</p>
+                                    <p style={{ color: '#8c7a6b', margin: 0 }}>
+                                    작성한 리뷰가 존재하지 않습니다.
+                                    </p>
                                 )}
-                            </div>
-
+                                </div>
                         </div>
                     </main>
                 </div>
