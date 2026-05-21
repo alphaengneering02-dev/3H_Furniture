@@ -38,13 +38,22 @@ public class ReviewController {
     public ResponseEntity<?> createReview(
             @PathVariable Long itemId,
             @RequestBody Map<String, Object> payload,
-            Principal principal
+            Principal principal,
+            @AuthenticationPrincipal CustomMemberDetails userDetails
     ) {
 
         String loginId = GetLoginId.getloginId(principal);
+
             if(loginId==null){
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
             }
+
+            //관리자 리뷰 작성 차단
+            if(userDetails !=null && userDetails.isAdmin()){
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+            .body("관리자는 리뷰를 작성할 수 없습니다.");
+            }
+
             try {
                 Integer reviewScore = Integer.parseInt(
                         payload.get("reviewScore").toString()
@@ -166,6 +175,15 @@ public class ReviewController {
         @PathVariable Long reviewId,
         @AuthenticationPrincipal CustomMemberDetails principal)
         {
+            System.out.println("관리자 리뷰 삭제 요청 reviewId = " + reviewId);
+            System.out.println("principal = " + principal);
+
+            if(principal !=null){
+                System.out.println("username = " + principal.getUsername());
+                System.out.println("isAdmin = " + principal.isAdmin());
+                System.out.println("authorities = " + principal.getAuthorities());
+            }
+
             if(principal==null){
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
             }
