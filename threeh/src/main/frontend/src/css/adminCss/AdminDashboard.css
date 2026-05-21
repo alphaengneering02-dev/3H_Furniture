@@ -224,3 +224,127 @@
     cursor: pointer;
     accent-color: #2D2A26;
 }
+
+/* ==========================================
+   6. 기사 리스트 제한 및 스크롤바 (Driver List Scroll)
+   ========================================== */
+/* 데이터가 5개 초과(약 280px)할 경우 세로 스크롤바 자동 생성 */
+.admin-dashboard-container .driver-table-wrapper {
+    max-height: 290px; 
+    overflow-y: auto;  
+    border: 1px solid #EAE8E4;
+    border-radius: 8px;
+    margin-top: 12px;
+    background-color: #FFFFFF;
+}
+
+/* 스크롤 시에도 테이블 헤더(th)가 상단에 고정되도록 처리 */
+.admin-dashboard-container .driver-table-wrapper .admin-table-style thead th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: #FAF9F7; /* 기존 헤더 배경색과 통일 */
+    border-top: none; /* 고정 시 부자연스러운 상단 테두리 제거 */
+    box-shadow: inset 0 -1px 0 #EAE8E4, inset 0 1px 0 #2D2A26; /* 스티키 보더 유지 */
+}
+
+/* 브라우저 기본 스크롤바 커스텀 (대시보드 톤앤매너 매칭) */
+.admin-dashboard-container .driver-table-wrapper::-webkit-scrollbar {
+    width: 6px;
+}
+
+.admin-dashboard-container .driver-table-wrapper::-webkit-scrollbar-track {
+    background: #FAF9F7;
+    border-radius: 0 8px 8px 0;
+}
+
+.admin-dashboard-container .driver-table-wrapper::-webkit-scrollbar-thumb {
+    background: #C4C0B9;
+    border-radius: 4px;
+}
+
+.admin-dashboard-container .driver-table-wrapper::-webkit-scrollbar-thumb:hover {
+    background: #8A8580;
+}
+
+
+/* ==========================================
+   7. 주문 목록 페이지네이션 (Orderboard Pagination)
+   ========================================== */
+/* 페이지네이션 하단 바 정렬 컨테이너 */
+.admin-dashboard-container .admin-pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid #FAF9F7;
+}
+
+/* 페이지네이션 공통 버튼 스타일 */
+.admin-dashboard-container .admin-pagination-container button {
+    min-width: 32px;
+    height: 32px;
+    padding: 0 8px;
+    font-size: 13px;
+    font-weight: 400;
+    color: #5A5550;
+    background-color: #FFFFFF;
+    border: 1px solid #EAE8E4;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+/* 페이지네이션 버튼 호버 */
+.admin-dashboard-container .admin-pagination-container button:hover:not(:disabled) {
+    background-color: #FAF9F7;
+    border-color: #8A8580;
+    color: #2D2A26;
+}
+
+/* 활성화된 페이지 번호 (현재 선택된 페이지) */
+.admin-dashboard-container .admin-pagination-container button.admin-active-page {
+    background-color: #2D2A26; /* 대시보드 메인 딥브라운/블랙 컬러 */
+    color: #FFFFFF;
+    border-color: #2D2A26;
+    font-weight: 600;
+}
+
+/* 이전/다음 비활성화(disabled) 상태 */
+.admin-dashboard-container .admin-pagination-container button:disabled {
+    color: #C4C0B9;
+    background-color: #FAF9F7;
+    border-color: #EAE8E4;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* 상단 출력 건수 조절 select 박스 위치 미세 조정 */
+.admin-dashboard-container .admin-content-box select {
+    cursor: pointer;
+    font-family: inherit;
+    color: #4A4A4A;
+}
+
+/* ==========================================
+   8. 콘텐츠 박스 헤더 및 정렬 스타일 (추가)
+   ========================================== */
+/* 각 테이블 상단의 제목과 Select 박스를 양 끝으로 정렬 */
+.admin-content-title-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+/* 첫 번째 테이블의 버튼들 (선택 상품 준비 완료, 자동 배정) 배치 관리 */
+.admin-action-button-group {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+}

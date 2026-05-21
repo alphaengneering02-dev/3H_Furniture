@@ -234,19 +234,13 @@ const handleStatusChange = async (orderId, nextState) => {
 };
 
 const fetchDeliveries = async () => {
-    try {
-        const response = await axios.get('/admin/list');
-        setItems(response.data);
-    } catch (error) {
-        console.error("❌ 기사 리스트 로드 실패 상세 원인:");
-        if (error.response && error.response.data) {
-            console.error(error.response.data); 
-            alert("서버 에러: " + error.response.data); 
-        } else {
-            console.error(error.message);
+        try {
+            const response = await axios.get('/admin/list');
+            setItems(response.data);
+        } catch (error) {
+            console.error("❌ 기사 리스트 로드 실패 상세 원인:", error);
         }
-    }
-};
+    };
 
     return (
         <div className="admin-dashboard-container">
@@ -315,6 +309,7 @@ const fetchDeliveries = async () => {
 
    <AddCompany onSuccess={fetchDeliveries} />
 </div>
+<div className="driver-table-wrapper">
 
                     <table className="admin-table-style">
                         <thead>
@@ -381,6 +376,7 @@ const fetchDeliveries = async () => {
             )}
         </tbody>
     </table>
+    </div>
 </div>
 
                     <Orderboard 

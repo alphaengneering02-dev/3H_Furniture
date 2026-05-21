@@ -90,6 +90,41 @@ const OrderMemberInfoCell = ({ memberId, type }) => {
     return <span>{type === 'email' ? info.email : info.phone}</span>;
 };
 
+/* =======================================================
+   재사용 가능한 페이지네이션 UI 컴포넌트
+======================================================= */
+const TablePagination = ({ totalItems, itemsPerPage, setItemsPerPage, currentPage, setCurrentPage }) => {
+    const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
+
+    const handlePageChange = (page) => {
+        if (page >= 1 && page <= totalPages) {
+            setCurrentPage(page);
+        }
+    };
+
+    return (
+        <div className="admin-pagination-container">
+            <button onClick={() => handlePageChange(1)} disabled={currentPage === 1}>&lt;&lt;</button>
+            <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>&lt;</button>
+            
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map(pageNum => (
+                <button
+                    key={pageNum}
+                    onClick={() => handlePageChange(pageNum)}
+                    className={currentPage === pageNum ? "admin-active-page" : ""}
+                >
+                    {pageNum}
+                </button>
+            ))}
+             {/* 다음 (>) */}
+            <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>&gt;</button>
+            {/* 끝으로 (>>) */}
+            <button onClick={() => handlePageChange(totalPages)} disabled={currentPage === totalPages}>&gt;&gt;</button>
+        </div>
+    );
+};
+
+
 const Orderboard = ({
     orders = [],
     items = [],
@@ -102,6 +137,13 @@ const Orderboard = ({
 
     const [selectedOrderIds, setSelectedOrderIds] = useState([]);
 
+    /* 각 테이블별 독립 상태 관리 */
+    const [perPage1, setPerPage1] = useState(5); const [page1, setPage1] = useState(1);
+    const [perPage2, setPerPage2] = useState(5); const [page2, setPage2] = useState(1);
+    const [perPage3, setPerPage3] = useState(5); const [page3, setPage3] = useState(1);
+    const [perPage4, setPerPage4] = useState(5); const [page4, setPage4] = useState(1);
+    const [perPage5, setPerPage5] = useState(5); const [page5, setPage5] = useState(1);
+    const [perPage6, setPerPage6] = useState(5); const [page6, setPage6] = useState(1);
 
     const { handleAutoAssign } = useDriverAuto({
         orders,
@@ -166,7 +208,15 @@ const Orderboard = ({
         o.deliveryStatus === 'COMPLETED' && o.orderState !== 'EXCHANGE' && o.orderState !== 'CANCEL'
     );
 
-const renderOrderType = (type) => {
+/* 페이지 자르기(Slice) 데이터 */
+    const pagedOrders = orders.slice((page1 - 1) * perPage1, page1 * perPage1);
+    const pagedAssigned = assignedOrders.slice((page2 - 1) * perPage2, page2 * perPage2);
+    const pagedUnassigned = unassignedOrders.slice((page3 - 1) * perPage3, page3 * perPage3);
+    const pagedShipping = shippingOrders.slice((page4 - 1) * perPage4, page4 * perPage4);
+    const pagedPickup = pickupOrders.slice((page5 - 1) * perPage5, page5 * perPage5);
+    const pagedCompleted = completedOrders.slice((page6 - 1) * perPage6, page6 * perPage6);
+
+    const renderOrderType = (type) => {
         if (type === 'DELIVERY_WITH_INSTALLATION') return '*설치 배송*';
         if (type === 'DELIVERY_ONLY') return '*일반 배송*';
         return type || '-';
@@ -215,26 +265,33 @@ const renderDeliveryStatus = (status) => {
         }
     };
 
+    const handlePerPageChange = (setterPerPage, setterPage, value) => {
+        setterPerPage(Number(value));
+        setterPage(1);
+    };
+
 
     return (
         <div>
 
             {/* 주문 목록 */}
                 <div className="admin-content-box">
-
+                    <div className="admin-content-title-bar">
                     <h3>주문 목록 (전체 접수 건)</h3>
                 {/* 💡 일괄 변경 버튼 추가 */}
                 <div>
-                    <button 
-                        onClick={handleBulkReady}
-                    >
+                    <select value={perPage1} onChange={(e) => handlePerPageChange(setPerPage1, setPage1, e.target.value)}>
+                            <option value={5}>5개씩 보기</option>
+                            <option value={10}>10개씩 보기</option>
+                            <option value={15}>15개씩 보기</option>
+                        </select>
+                    </div>
+                </div>
+                <div className="admin-action-button-group">
+                    <button onClick={handleBulkReady}>
                         선택 상품 준비 완료 처리 ({selectedOrderIds.length}건)
                     </button>
-                </div>
-                <div>
-                    <button 
-                        onClick={handleAutoAssign}
-                    >
+                    <button onClick={handleAutoAssign}>
                         선택 상품 자동 배정 ({selectedOrderIds.length}건)
                     </button>
                 </div>
@@ -259,12 +316,12 @@ const renderDeliveryStatus = (status) => {
                             <th>주소</th>
                             <th>주문 상태</th>
                             <th>배송 상태</th>
-                            <th>주문일/</th>
+                            <th>주문일</th>
                             <th>배송 신청일</th>
                         </tr>
                     </thead>
                     <tbody>
-    {orders.map((order, index) => {
+    {pagedOrders.map((order, index) => {
         
         const exactMemberId = order.MEMBER_ID || order.memberId || order.member_id;
 
@@ -308,13 +365,21 @@ const renderDeliveryStatus = (status) => {
                         {renderDeliveryStatus(order.deliveryStatus || order.DELIVERY_STATUS)}
                     </span>
                 </td>
-                <td>{(order.orderDate || order.ORDER_DATE)?.split('T')[0]}/</td>
+                <td>{(order.orderDate || order.ORDER_DATE)?.split('T')[0]}</td>
                 <td>{order.installDate}</td>
             </tr>
         );
     })}
 </tbody>
                 </table>
+
+                <TablePagination
+    totalItems={orders.length}
+    itemsPerPage={perPage1}
+    setItemsPerPage={setPerPage1}
+    currentPage={page1}
+    setCurrentPage={setPage1}
+/>
             </div>
 
             {/* 배송 배정 완료 */}
@@ -338,7 +403,7 @@ const renderDeliveryStatus = (status) => {
                 .filter(order => order.deliveryId && order.deliveryStatus === 'WAITING')
                 .map((order, index) => (
                     <tr key={order.orderId}>
-                        <td>{index + 1}</td>
+                        <td>{(page1 - 1) * perPage1 + index + 1}</td>
                         <td>{renderItemName(order.orderitems)}</td>
                         <td>{order.deliveryAddr} {order.deliveryAddrDetail}</td>
                         <td>
