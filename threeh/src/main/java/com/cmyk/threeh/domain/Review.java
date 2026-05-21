@@ -4,6 +4,8 @@ import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 //코딩 변경: 엔티티 컬럼명 테이블 명칭과 동일하게 소문자에서 대문자로 변경,유니크제약 추가_오현옥
@@ -18,7 +20,7 @@ import java.time.LocalDateTime;
 @Getter 
 @Setter
 @NoArgsConstructor
-public class Review {
+public class Review implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "review_seq")

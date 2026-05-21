@@ -157,7 +157,7 @@ public class ReviewController {
     }
 
     //admin이 리뷰 삭제할때 사용하는 api
-    @DeleteMapping("/admin/{reviewId")
+    @DeleteMapping("/admin/{reviewId}")
     public ResponseEntity<?> adminDeleteReview(
         @PathVariable Long reviewId,
         Principal principal
