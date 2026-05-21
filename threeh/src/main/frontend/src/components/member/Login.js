@@ -84,8 +84,10 @@ const Login = () => {
                 alert(passMessage)
                 console.log(passMessage)
 
-                //sessionStorage 저장
-                await setSession(res.data.id);
+                //sessionStorage 저장 userRole추가
+                const userRole = res.data.role;
+                const userId = res.data.id;
+                await setSession(userId, userRole);
 
                 // 세션 만료시간 타이머(30분): 세션 삭제+로그인 페이지로 이동
                 setTimeout(() => {
@@ -118,17 +120,22 @@ const Login = () => {
 
 
     //sessionStorage 저장
-    const setSession = async(id) => {
+    const setSession = async(Id, userRole) => {
         try {
             //DB에서 아이디가 같은 사이트 회원 데이터 검색
             let res;
 
-            if(form.id.indexOf("admin") != -1) {  //어드민 유저
-                res = await axios.get(`http://localhost:8080/admin/${id}`,{
+            //추가
+           const isAdmin = (userRole && userRole.includes("ADMIN")) || (id && id.startsWith("admin"));
+
+            console.log("로그인 유저 역할", isAdmin);
+
+            if(isAdmin) {  //어드민 유저
+                res = await axios.get(`http://localhost:8080/admin/${Id}`,{
                     withCredentials:true,
                 });
             } else {  //일반 유저
-                res = await axios.get(`http://localhost:8080/api/member/${id}`, {
+                res = await axios.get(`http://localhost:8080/api/member/${Id}`, {
                     withCredentials:true,
                 });
             }

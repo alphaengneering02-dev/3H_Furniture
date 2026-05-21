@@ -60,7 +60,7 @@ function PaymentSuccess() {
                 }
 
                 
-                debugger;
+                //debugger;
 
             } catch (e) {
                 if (ignored) return;
@@ -112,19 +112,20 @@ function PaymentSuccess() {
     }
 
     return (
-        <div>
-            <div>✓</div>
-            <h2>{finalOrderData?.memberName}님 결제가 완료되었습니다</h2>
-            <p>상품명:{finalOrderData?.orderItems[0]?.itemName}
+        <div className='payment-wrapper'>
+            
+            <div className='payment-checklogo'>✓</div>
+            <h2 className='payment-headline'>{finalOrderData?.memberName}님 결제가 완료되었습니다</h2>
+            <p className='payment-label'>상품명:{finalOrderData?.orderItems[0]?.itemName}
                 {finalOrderData?.orderItems?.length > 1
                 ? ` 외 ${finalOrderData.orderItems.length-1}개`
                 : ""
             }
             </p>
-            <p>주문번호: {orderId?.slice(0, 8).toUpperCase()}</p>
-            <p>배송지: {finalOrderData?.deliveryAddr}</p>
-            <p>결제금액: {Number(amount).toLocaleString()}원</p>
-            <button onClick={() => navigate("/")}>홈으로</button>
+            <p className='payment-label'>주문번호: {orderId?.slice(0, 8).toUpperCase()}</p>
+            <p className='payment-label'>배송지: {finalOrderData?.deliveryAddr}</p>
+            <p className='payment-label'>결제금액: {Number(amount).toLocaleString()}원</p>
+            <button className='payment-btn' onClick={() => navigate("/")}>홈으로</button>
         </div>
     );
 }
