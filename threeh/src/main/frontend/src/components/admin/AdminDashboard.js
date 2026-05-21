@@ -5,6 +5,7 @@ import axios from 'axios';
 import AddCompany from './AddCompany';
 import Orderboard from './Orderboard';
 import AdminMemoDay from './AdminMemoDay';
+import Ranking from './Ranking';
 import '../../css/adminCss/AdminDashboard.css';
 
 const AdminDashboard = () => {
@@ -236,12 +237,13 @@ const fetchDeliveries = async () => {
 
                 <h1>Admin Dashboard</h1>
 
+                <Ranking />
+
                 <div className="admin-button-group">
                     <Link to="/item/create">
                     <button>상품 추가</button>
                     </Link>
                     <button>상품 수정/삭제</button>
-                    <p>수정 삭제는 어드민만 볼 수 있는 상품리스트를 만들어서로 이동?</p>
                 </div>
 
                 

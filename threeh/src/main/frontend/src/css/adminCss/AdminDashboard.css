@@ -829,3 +829,186 @@
 .admin-table-style td {
     white-space: nowrap;
 }
+
+/* [추가] D-Day 당일 눈에 띄게 깜빡이는 애니메이션 */
+@keyframes blink-effect {
+    50% {
+        border-color: #E53E3E;
+        box-shadow: 0 0 12px rgba(229, 62, 62, 0.5);
+    }
+}
+
+/* 기본 디데이 카드 스타일 */
+.dday-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 14px;
+    background-color: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+/* 🔥 [변경] 오늘이 D-Day(0일)일 때 적용되는 특수 스타일 */
+.dday-card.is-today {
+    background-color: #FFF5F5; /* 연한 레드 배경 */
+    border: 2px solid #E53E3E; /* 두꺼운 레드 테두리 */
+    box-sizing: border-box;
+    animation: blink-effect 1.5s step-end infinite; /* 시선을 사로잡는 깜빡임 효과 */
+}
+
+/* D-Day 당일일 때 글자색도 더 진하게 */
+.dday-card.is-today .dday-card-title {
+    color: #9B1C1C;
+}
+
+.dday-card.is-today .dday-card-count {
+    font-size: 16px;
+    font-weight: 900;
+    color: #E53E3E;
+    text-shadow: 0px 0px 1px rgba(0,0,0,0.1);
+}
+
+/*랭킹*/
+
+/* ==========================================
+   9. 대시보드 메인 - 가로 나란히 랭킹 섹션 (VIP & ITEM)
+   ========================================== */
+/* 두 네모칸을 가로로 이쁘게 정렬하는 부모 컨테이너 */
+.admin-ranking-container {
+    display: flex !important;       /* 가로 정렬 강제 */
+    flex-direction: row !important; /* 무조건 왼쪽에서 오른쪽으로 배치 */
+    justify-content: space-between; /* 양쪽 끝으로 밀착 */
+    align-items: stretch;           /* 두 박스의 높이를 똑같이 맞춤 */
+    gap: 20px;                      /* 네모칸 사이의 여백 */
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 25px;            /* 밑에 배송 파트너(Orderboard)와의 간격 */
+}
+/* 📦 좌/우 독립된 랭킹 네모칸 스타일 */
+.admin-ranking-card-box {
+    flex: 1 !important;             /* 부모 너비를 1:1로 정확히 반반 나눠 가짐 */
+    width: calc(50% - 10px);        /* 전체 50% 폭에서 여백 절반을 뺀 값 고정 */
+    min-width: 0;                   /* 테이블 스크롤 및 글자 깨짐 방지 */
+    background-color: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 14px;
+    padding: 22px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+    box-sizing: border-box;         /* 패딩 때문에 박스 커지는 것 방지 */
+}
+
+/* 네모칸 내부 제목 표시줄 */
+.admin-ranking-card-header {
+    border-bottom: 2px solid #F1F5F9;
+    padding-bottom: 12px;
+    margin-bottom: 14px;
+}
+
+.admin-ranking-card-header h3 {
+    margin: 0;
+    font-size: 19px;      /* 눈에 확 들어오는 서브 타이틀 크기 */
+    font-weight: 700;
+    color: #1A202C;
+}
+
+/* 📊 랭킹 전용 맞춤 테이블 스타일 */
+.admin-ranking-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 15px;      /* 나이 있으신 분들을 위해 기본보다 크게 지정 */
+    text-align: left;
+}
+
+.admin-ranking-table th {
+    background-color: #F8FAFC !important;
+    color: #4A5568;
+    font-weight: 700;
+    padding: 12px;
+    border-top: 2px solid #2D3748; /* 상단 엣지 포인트 라인 */
+    border-bottom: 1px solid #E2E8F0;
+    font-size: 14px;
+}
+
+.admin-ranking-table td {
+    padding: 15px 12px;
+    border-bottom: 1px solid #E2E8F0;
+    color: #2D3748;
+    vertical-align: middle;
+    white-space: nowrap; /* 행 줄바꿈 방지하여 깔끔함 유지 */
+}
+
+/* 마우스 올렸을 때 행 하이라이트 효과 */
+.admin-ranking-table tr:hover td {
+    background-color: #F1F5F9;
+}
+
+/* 🔢 순위 전용 글자 데코레이션 */
+.rank-display {
+    font-weight: 800;
+    text-align: center;
+    width: 45px;
+}
+.vip-emoji {
+    font-size: 19px;     /* 메달 이모티콘 시원하게 확대 */
+}
+.item-number {
+    font-size: 16px;
+    color: #4A5568;
+}
+
+/* 🔤 굵은 핵심 텍스트 및 말줄임 처리 */
+.text-bold {
+    font-weight: 700;
+    color: #1A202C;
+}
+
+/* 아이템명이 길어질 경우 네모칸 밖으로 튀어나가지 않게 안전장치 */
+.item-name-ellipsis {
+    max-width: 220px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* 🔵 VIP 구매 건수 (신뢰감을 주는 딥 블루) */
+.text-count-blue {
+    font-weight: 800;
+    font-size: 16px;
+    color: #2B6CB0;
+}
+
+/* 🔴 아이템 판매 수량 (트렌디하고 직관적인 레드) */
+.text-count-red {
+    font-weight: 800;
+    font-size: 16px;
+    color: #E53E3E;
+}
+
+/* 🏷️ VIP 등급 표시 디자인 배지 */
+.badge {
+    display: inline-block;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 700;
+    border-radius: 20px;
+    text-align: center;
+}
+.badge-vip {
+    background-color: #FFF5F5;
+    color: #E53E3E;
+    border: 1px solid #FED7D7;
+}
+.badge-normal {
+    background-color: #EDF2F7;
+    color: #4A5568;
+}
+
+/* 📱 모니터 화면이 지나치게 좁아질 경우 레이아웃 깨짐 방지 반응형 */
+@media (max-width: 1280px) {
+    .admin-ranking-container {
+        flex-direction: column; /* 가로에서 세로 정렬로 자동 전환 */
+        gap: 16px;
+    }
+}
