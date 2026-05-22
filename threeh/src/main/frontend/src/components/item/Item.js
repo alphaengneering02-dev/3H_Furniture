@@ -117,23 +117,68 @@ function Item() {
 
   //상품 선택 가능 여부 확인
   //재고가 없거나 판매 상태가 SELL이 아니면 선택 불가
-  const canSelectItem = (item, showAlert = false) => {
-    if (item.itemStock <= 0) {
-      if (showAlert) {
-        alert("품절된 상품입니다.");
+ const getSellStatusInfo = (item)=>{
+    if(!item){
+      return{
+        text:"-",
+        selectable:false,
+        message:"상품 정보가 없습니다.",
+      };
+    }
+    if(Number(item.itemStock||0)<=0){
+      return{
+        text:"품절",
+        selectable:false,
+        message:"품절된 상품입니다.",
+      };
+    }
+    if(item.itemSellStatus === "SELL"){
+      return{
+        text:"판매중",
+        selectable:true,
+        message:"",
+      };
+    }
+    if(item.itemSellStatus==="STOP"){
+      return{
+        text:"판매중지",
+        selectable:false,
+        message:"판매중지된 상품입니다.",
+      };
+    }
+    if(item.itemSellStatus==="SOLD_OUT"){
+      return{
+        text:"품절",
+        selectable:false,
+        message:"품절된 상품입니다."
+      };
+    }
+    if(item.itemSellStatus==="COMING_SOON"){
+      return{
+        text:"판매예정",
+        selectable:false,
+        message:"판매예정 상품입니다.",
+      };
+    }
+
+    return{
+      text:item.itemSellStatus || "-",
+      selectable: false,
+      message: "판매중인 상품만 선택 가능합니다.",
+    }
+ };
+
+ const canSellectItem = (item,showAlert =false)=>{
+    const sellStatusInfo = getSellStatusInfo
+
+    if(!getSellStatusInfo.selectable){
+      if(showAlert){
+        alert(getSellStatusInfo.message);
       }
       return false;
     }
-
-    if (item.itemSellStatus && item.itemSellStatus !== "SELL") {
-      if (showAlert) {
-        alert("판매중인 상품만 선택 가능합니다.");
-      }
-      return false;
-    }
-
     return true;
-  };
+ };
 
   //백엔드에서 전체 상품 목록 가져오기
   const getItems = async () => {
@@ -210,29 +255,28 @@ function Item() {
   const handleSelectItem = (item) => {
     const loginUser = getLoginUser();
 
-    if (!loginUser) {
-      alert("로그인이 필요합니다.");
-      navigate("/login");
-      return;
-    }
+      if (!loginUser) {
+        alert("로그인이 필요합니다.");
+        navigate("/login");
+        return;
+      }
 
-    if (!isUserRole(loginUser)) {
-      alert("일반 회원만 상품을 선택할 수 있습니다.");
-      return;
-    }
+      if (!isUserRole(loginUser)) {
+        alert("일반 회원만 상품을 선택할 수 있습니다.");
+        return;
+      }
 
-    //재고,판매상태 확인
-    if (!canSelectItem(item, true)) {
-      return;
-    }
-
-    //이미 선택된 상품이면 선택 해제
-    if (isSelected(item.itemId)) {
-      setSelectedItems(
-        selectedItems.filter((selected) => selected.itemId !== item.itemId)
-      );
-      return;
-    }
+      //재고,판매상태 확인
+      if (!canSellectItem(item, true)) {
+        return;
+      }
+      //이미 선택된 상품이면 선택 해제
+      if (isSelected(item.itemId)) {
+        setSelectedItems(
+          selectedItems.filter((selected) => selected.itemId !== item.itemId)
+        );
+        return;
+      }
 
     //선택되지 않은 상품이면 selecteItems에 추가
     setSelectedItems([
@@ -466,7 +510,7 @@ function Item() {
 
   //상품 1개를 바로 장바구니에 담기
   const handleAddOneCart = async (item) => {
-    if (!canSelectItem(item, true)) {
+    if (!canSellectItem(item, true)) {
       return;
     }
 
@@ -520,7 +564,7 @@ function Item() {
       return;
     }
 
-    if (!canSelectItem(item, true)) {
+    if (!canSellectItem(item, true)) {
       return;
     }
 
@@ -631,7 +675,7 @@ function Item() {
           <p className="item-empty-text">상품이 없습니다.</p>
         ) : (
           items.map((item) => {
-            const selectable = canSelectItem(item, false);
+            const selectable = canSellectItem(item, false);
 
             return (
               <div key={item.itemId} className="item-card">
@@ -674,13 +718,18 @@ function Item() {
                     상품 최종가격: {formatPrice(getFinalPrice(item))}원
                   </p>
                   <p className="item-text">상품 재고: {item.itemStock}</p>
-                  <p className="item-text">판매 상태: {item.itemSellStatus}</p>
+                  <p className="item-text">판매 상태: {getSellStatusInfo(item).text}</p>
 
-                  {!selectable && (
-                    <p className="item-warning">
-                      현재 선택할 수 없는 상품입니다.
+                  {/*판매 상태가 sell이 아니면 구매 또는 장바구니 담기 안됌. */}
+                    <p className="item-text">
+                      {getSellStatusInfo(item).message}
                     </p>
-                  )}
+                    {!selectable &&(
+                      <p className="item-warning">
+                        {getSellStatusInfo(item).message}    
+                      </p>
+                    )}
+                    
 
                   {/*기존은 !isAdmin이였는데 일반 유저면 보이게 바꿈*/}
                   {isUser && (
