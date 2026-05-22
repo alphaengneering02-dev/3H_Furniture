@@ -380,6 +380,11 @@ public class MemberAddressController {
      * 탭 3용 API : 반품/교환처리 현황 목록 조회
      * - 현재 교환 및 반품이 진행 중인(EXCHANGEorREFUND) 실시간 상태값만 모아서 전송합니다.
      */
+       /**
+     * 반품/교환처리 현황 통합 목록 조회 API
+     * 부조장님 기획 반영: 이제 반품(CANCEL) 완료건과 교환(EXCHANGEorREFUND) 접수건이 
+     * 한 공간에 아름답게 수집되어 리액트의 2번 현황판 탭에 실시간으로 새로 추가되어 나타납니다!
+     */
     @GetMapping("/order/exchange-status-list")
     public ResponseEntity<?> getExchangeStatusList(Principal principal) {
         String loginId = getLoginIdOrNull(principal);
@@ -391,10 +396,14 @@ public class MemberAddressController {
         List<Map<String, Object>> exchangeList = new ArrayList<>();
         if (member.getOrdersList() != null) {
             for (Orders order : member.getOrdersList()) {
-                if (order.getOrderState() == OrderState.EXCHANGEorREFUND) {
+                
+                // [핵심 해결 지점]: 기획 변경에 맞춰 CANCEL(반품) 상태와 EXCHANGEorREFUND(교환) 상태를 모두 수용하도록 통합!
+                if (order.getOrderState() == OrderState.CANCEL || order.getOrderState() == OrderState.EXCHANGEorREFUND) {
                     Map<String, Object> orderMap = new HashMap<>();
                     orderMap.put("orderId", order.getOrderId());
-                    orderMap.put("orderState", "EXCHANGEorREFUND");
+                    
+                    // 리액트 삼항연산자 조건문과 매핑되도록 엔티티의 실제 영문 상태명을 안전하게 주입
+                    orderMap.put("orderState", order.getOrderState().name());
                     orderMap.put("deliveryStatus", order.getDeliveryStatus() != null ? order.getDeliveryStatus().name() : "PICKUP");
                     orderMap.put("orderDate", order.getOrderDate());
                     
@@ -420,4 +429,5 @@ public class MemberAddressController {
         }
         return ResponseEntity.ok(exchangeList);
     }
-}
+
+    }
