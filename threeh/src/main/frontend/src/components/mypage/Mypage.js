@@ -12,6 +12,11 @@ const Mypage = () => {
     const [addresses, setAddresses] = useState([]);
     const [orders, setOrders] = useState([]);
 
+    //북마크 추가_오현옥
+    const[showBookmarks, setShowBookmarks] = useState(false);
+    const[bookmarkedItems, setBookmarkedItems] = useState([]);
+
+    //리뷰 추가_오현옥
     const [myReviews, setMyReviews] = useState([]);
     const [editReviewId, setEditReviewId] = useState(null);
     const [editReviewScore, setEditReviewScore] = useState(5);
@@ -69,7 +74,54 @@ const Mypage = () => {
         }
     }, []);
 
+    const getMyBookmarkedItems = async()=>{
 
+        if(!member || !member.memberId){
+            alert("회원 정보를 찾을 수 없습니다.");
+            return;
+        }
+
+        try{
+            const bookmarkResponse = await axios.get(
+                `http://localhost:8080/api/bookmarks/member/${member.memberId}`,
+                {
+                    withCredentials: true,
+                }
+            );
+
+            const bookmarks = bookmarkResponse.data || [];
+
+            if(bookmarks.length === 0){
+                setBookmarkedItems([]);
+                setShowBookmarks(true);
+                return;
+            }
+
+            const itemResponse = await Promise.all(
+                bookmarks.map((bookmark)=>
+                axios.get(`http://localhost:8080/api/item/${bookmark.itemId}`,{
+                    withCredentials: true,
+                })
+            )
+         );
+         
+         const items = itemResponse.map((response)=>response.data);
+
+         setBookmarkedItems(items);
+         setShowBookmarks(true);
+        }catch(error){
+            console.error("북마크 상품 목록 조회 실패", error);
+
+            if(error.response){
+                console.log("북마크 조회 상태코드:", error.response.status);
+                console.log("북마크 조회 응답:",error.response.data);
+            }
+            
+            alert("북마크 목록을 불러오지 못했습니다.");
+        }
+    };
+
+//구매확정 버튼-->리뷰 쓰기로 넘어감.
     const handleConfirmPurchase = async (orderId) => {
         if (!window.confirm("구매를 확정하시겠습니까?")) return;
         try {
@@ -278,10 +330,101 @@ const Mypage = () => {
                         <div className="profile-icon-box">
                             <div className="profile-avatar-circle">{member.name ? member.name +"님" : "U"}</div>
                             {/* <p style={{ margin: '10px' }}><strong>{member?.name}</strong>님 환영합니다</p> */}
-                            {/* 프로필 옆 북마크 버튼 추가 */}
-                            <button className="mypage-action-btn" style={{marginRight: '5px'}}>북마크</button>
+                            {/* 프로필 옆 북마크 버튼 추가_버튼 누르면 열리고 다시 누르면 닫힘. */}
+                            <button className="mypage-action-btn" style={{marginRight: '5px'}}
+                                onClick={()=>{
+                                    if(showBookmarks){
+                                        setShowBookmarks(false);
+                                    }else{
+                                        getMyBookmarkedItems();
+                                    }
+                                }}>북마크</button>
                             <button className="mypage-action-btn" onClick={() => navigate(`/member/update/${member.id}`)}>정보 수정</button>
                         </div>
+                                {/* 북마크 리스트를 게시판 형태로 보여주기..오현옥 */}
+                                {showBookmarks && (
+                                <div className="info-content-box" style={{ marginTop: "20px" }}>
+                                    <h3 className="info-section-title">내 북마크 상품</h3>
+
+                                    <div className="info-data-block">
+                                    {bookmarkedItems.length === 0 ? (
+                                        <p>북마크한 상품이 없습니다.</p>
+                                    ) : (
+                                        <table
+                                        style={{
+                                            width: "100%",
+                                            borderCollapse: "collapse",
+                                            fontSize: "14px",
+                                        }}
+                                        >
+                                        <thead>
+                                            <tr>
+                                            <th>번호</th>
+                                            <th>이미지</th>
+                                            <th>상품명</th>
+                                            <th>가격</th>
+                                            <th>판매상태</th>
+                                            <th>관리</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                            {bookmarkedItems.map((item, index) => (
+                                            <tr key={item.itemId}>
+                                                <td>{index + 1}</td>
+
+                                                <td>
+                                                {item.itemImgUrl ? (
+                                                    <img
+                                                    src={`http://localhost:8080${item.itemImgUrl}`}
+                                                    alt={item.itemName}
+                                                    style={{
+                                                        width: "60px",
+                                                        height: "60px",
+                                                        objectFit: "cover",
+                                                    }}
+                                                    />
+                                                ) : (
+                                                    <span>이미지 없음</span>
+                                                )}
+                                                </td>
+
+                                                <td>
+                                                <strong>{item.itemName}</strong>
+                                                <p>{item.itemCategory || "-"}</p>
+                                                </td>
+
+                                                <td>
+                                                {Number(
+                                                    item.itemFinalPrice || item.itemPrice || 0
+                                                ).toLocaleString()}
+                                                원
+                                                </td>
+
+                                                <td>
+                                                {item.itemSellStatus === "SELL" ? (
+                                                    <span>판매중</span>
+                                                ) : (
+                                                    <span>{item.itemSellStatus || "판매불가"}</span>
+                                                )}
+                                                </td>
+
+                                                <td>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => navigate(`/item/${item.itemId}`)}
+                                                >
+                                                    상품 보기
+                                                </button>
+                                                </td>
+                                            </tr>
+                                            ))}
+                                        </tbody>
+                                        </table>
+                                    )}
+                                    </div>
+                                </div>
+                                )}
 
                         <div className="info-content-box">
                             <h3 className="info-section-title">회원정보</h3>
@@ -351,19 +494,7 @@ const Mypage = () => {
                                                     <div style={{ marginTop: '10px' }}>
                                                         {order.orderState === 'PURCHASED' ? (
                                                             hasWrittenReview(order.itemId) ? (
-                                                            <span
-                                                                type="button"
-                                                                onClick={() => {
-                                                                const writtenReview = findMyReviewByItemId(order.itemId);
-
-                                                                if (writtenReview) {
-                                                                    handleEditReviewStart(writtenReview);
-                                                                    document
-                                                                    .getElementById("my-review-section")
-                                                                    ?.scrollIntoView({ behavior: "smooth" });
-                                                                }
-                                                                }}
-                                                            >
+                                                            <span>
                                                                 리뷰 작성 완료
                                                             </span>
                                                             ) : (
