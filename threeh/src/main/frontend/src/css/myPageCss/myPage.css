@@ -7,7 +7,7 @@
 
 body {
     font-family: 'Noto Sans KR', sans-serif;
-    /* 🤎 [팀 공통 규격] 은은한 카사미아풍 아이보리 오프화이트 배경색 */
+    /* [팀 공통 규격] 은은한 카사미아풍 아이보리 오프화이트 배경색 */
     background-color: #F9F8F6 !important; 
     margin: 0;
     padding: 0;
@@ -26,7 +26,7 @@ body {
 }
 
 /* ==========================================
-   🤎 1. 상단 브랜드 헤더 박스 (고급 호텔 라운지 무드)
+   1. 상단 브랜드 헤더 박스 (고급 호텔 라운지 무드)
    ========================================== */
 .mypage-header-box {
     width: 100%;
@@ -55,7 +55,7 @@ body {
 }
 
 /* ==========================================
-   📦 2. 본문 레이아웃 그리드 (인호님 스펙 1200px 고정)
+   2. 본문 레이아웃 그리드 (인호님 스펙 1200px 고정)
    ========================================== */
 .mypage-grid-container > div[style*="display: flex"] {
     width: 100% !important;
@@ -69,7 +69,7 @@ body {
 }
 
 /* ==========================================
-   🧱 3. 좌측 사이드바 메뉴 (280px 와이드 킹 스케일 & 대형 배너 마감)
+   3. 좌측 사이드바 메뉴 (280px 와이드 킹 스케일 & 대형 배너 마감)
    ========================================== */
 .mypage-sidebar {
     width: 280px !important; 
@@ -119,7 +119,7 @@ body {
     padding-left: 34px !important; 
 }
 
-/* 🖼️ [인호님 주방수납장 사진 안전 연동 구역] */
+/* [주방수납장 사진 안전 연동 구역] */
 .mypage-sidebar::after {
     content: "";
     display: block;
@@ -141,7 +141,7 @@ body {
 }
 
 /* ==========================================
-   🖥️ 4. 우측 메인 콘텐츠 및 럭셔리 데이터 판넬
+   4. 우측 메인 콘텐츠 및 럭셔리 데이터 판넬
    ========================================== */
 .mypage-main-content {
     flex: 1 !important;
@@ -230,7 +230,7 @@ body {
 }
 
 /* ==========================================
-   🔄 5. 구매내역 가로형 슬라이더 쇼룸
+   5. 구매내역 가로형 슬라이더 쇼룸
    ========================================== */
 .order-slider-wrapper {
     display: flex;
@@ -275,7 +275,7 @@ body {
     width: 100% !important;
 }
 
-/* 🤎 개별 사각 카드 쇼룸 판넬 */
+/* 개별 사각 카드 쇼룸 판넬 */
 .order-square-card {
     flex: 0 0 calc(25% - 12px) !important; 
     max-width: calc(25% - 12px) !important;
@@ -301,12 +301,12 @@ body {
     font-size: 14px;
     font-weight: 700;
     line-height: 1.4;
-    color: #111111 !important; /* 👈 중단 구역 마감 보완 */
+    color: #111111 !important; /* 중단 구역 마감 보완 */
 }
 
 
 /* =========================================================================
-   💅 6. [신규 오버라이딩] 기존 마크업 전용 명품 라운지 버튼 스타일 클러스터
+   6. [신규 오버라이딩] 기존 마크업 전용 명품 라운지 버튼 스타일 클러스터
    ========================================================================= */
 
 /* ① 미니멀 헤더 액션 라인 버튼 (로그아웃, 메인으로, 정보수정, 상품보기) */
@@ -360,7 +360,7 @@ tbody button:hover {
 }
 
 /* =========================================================================
-   🔄 [레이아웃 최종 마감] JSX 수정 없이 버튼 박스를 제목 아래로 배치하는 정렬 시스템
+   [레이아웃 최종 마감] JSX 수정 없이 버튼 박스를 제목 아래로 배치하는 정렬 시스템
    ========================================================================= */
 
 /* 메인 대시보드 박스를 세로 배치 구조로 선언 */
@@ -393,7 +393,7 @@ tbody button:hover {
 }
 
 /* =========================================================================
-   🔄 [레이아웃 최종 마감] JSX 수정 없이 버튼 박스를 제목 아래로 배치하는 정렬 시스템
+   [레이아웃 최종 마감] JSX 수정 없이 버튼 박스를 제목 아래로 배치하는 정렬 시스템
    ========================================================================= */
 
 /* 메인 대시보드 박스를 세로 배치 구조로 선언 */
@@ -409,7 +409,7 @@ tbody button:hover {
     display: flex !important;
     flex-direction: column !important; /* 가로 배열을 세로 배열로 변경 */
     align-items: flex-start !important; /* 왼쪽 정렬 */
-    gap: 0px !important; /* 👈 내부 기본 여백 완전히 제거 */
+    gap: 0px !important; /* 내부 기본 여백 완전히 제거 */
     margin-top: 40px !important;
     margin-bottom: 0px !important;
 }
@@ -418,14 +418,14 @@ tbody button:hover {
 .address-section-header > h3 {
     order: 1 !important;
     width: 100% !important;
-    margin: 0 0 10px 0 !important; /* 👈 글씨와 버튼 사이 간격을 10px로 세밀하게 고정 */
+    margin: 0 0 10px 0 !important; /* 글씨와 버튼 사이 간격을 10px로 세밀하게 고정 */
     padding: 0 !important;
 }
 
 /* [+ 새 배송지 검색] 버튼 박스를 제목 아래인 두 번째로 강제 배치 */
 .address-section-header > button {
     order: 2 !important;
-    margin: 0 0 15px 0 !important; /* 👈 버튼 아래 배송지 리스트/카카오창과의 최소 간격만 확보 */
+    margin: 0 0 15px 0 !important; /* 버튼 아래 배송지 리스트/카카오창과의 최소 간격만 확보 */
 }
 
 /* -------------------------------------------------------------------------
@@ -472,7 +472,7 @@ tbody button:hover {
 }
 
 /* =========================================================================
-   🚨 [최종 가시성 보완] 하단 회원 탈퇴하기 글씨 시인성 및 반응형 제어
+   [최종 가시성 보완] 하단 회원 탈퇴하기 글씨 시인성 및 반응형 제어
    ========================================================================= */
 .mypage-main-content .info-content-box .link-withdraw-trigger,
 .mypage-main-content .info-content-box div[style*="justify-content: flex-end"] span {
@@ -498,7 +498,7 @@ tbody button:hover {
 }
 
 /* =========================================================================
-   🤎 [디자인 통일] 프로필 박스의 입체 섀도우 효과를 모든 데이터 박스에 확산 적용
+   [디자인 통일] 프로필 박스의 입체 섀도우 효과를 모든 데이터 박스에 확산 적용
    ========================================================================= */
 
 /* 1. 회원정보, 배송지 주소록, 나의 리뷰 관리 블록의 외곽선 및 입체 섀도우 통일 */
@@ -519,7 +519,7 @@ tbody button:hover {
     transition: all 0.3s ease-in-out !important;
 }
 
-/* 🔥 디자인 디테일 힌트: 박스들에 마우스를 올렸을 때 살짝 들어 올려지는 인터랙션 추가 (선택사항) */
+/* 디자인 디테일 힌트: 박스들에 마우스를 올렸을 때 살짝 들어 올려지는 인터랙션 추가 (선택사항) */
 .mypage-main-content .info-content-box .info-data-block:hover,
 .mypage-main-content .info-content-box .order-slider-wrapper:hover {
     transform: translate(-2px, -2px) !important;
@@ -527,7 +527,7 @@ tbody button:hover {
 }
 
 /* =========================================================================
-   👁️ [텍스트 가독성 최적화] 회원이름 및 회원정보 데이터 라벨 명도 극대화
+   [텍스트 가독성 최적화] 회원이름 및 회원정보 데이터 라벨 명도 극대화
    ========================================================================= */
 
 /* 1. 프로필 박스 내부 "김인호님" 회원이름 글씨 선명도 및 두께 강화 */
@@ -550,7 +550,7 @@ tbody button:hover {
 }
 
 /* =========================================================================
-   🛍️ [구매내역 슬라이더 상자 명도 및 선명도 극대화 오버라이딩]
+   [구매내역 슬라이더 상자 명도 및 선명도 극대화 오버라이딩]
    ========================================================================= */
 
 /* 구매내역을 감싸는 전체 슬라이더 프레임 상자의 색감 강화 */
@@ -572,13 +572,13 @@ tbody button:hover {
 }
 
 /* =========================================================================
-   🚚 [배송지 텍스트 밸런싱] 배송지 타이틀 글자 잘림 및 줄바꿈 차단 시스템
+   [배송지 텍스트 밸런싱] 배송지 타이틀 글자 잘림 및 줄바꿈 차단 시스템
    ========================================================================= */
 
 /* 1. "추가된 배송지", "기본 배송지" 항목의 텍스트 줄바꿈을 절대 차단 */
 .mypage-main-content .info-content-box .info-data-block div p strong,
 .mypage-main-content .info-content-box .info-data-block div p {
-    white-space: nowrap !important; /* 👈 글자가 아래로 끊겨서 내려가는 현상을 절대 차단 */
+    white-space: nowrap !important; /* 글자가 아래로 끊겨서 내려가는 현상을 절대 차단 */
     display: inline-flex !important;
     align-items: center;
 }
@@ -600,7 +600,7 @@ tbody button:hover {
 }
 
 /* =========================================================================
-   📏 [세로 간격 미세 조정] 대시보드 레이아웃 상하 공백 압축 오버라이딩
+   [세로 간격 미세 조정] 대시보드 레이아웃 상하 공백 압축 오버라이딩
    ========================================================================= */
 
 /* 1. 프로필 박스 하단의 거대한 공백을 25px로 압축 */
@@ -645,19 +645,19 @@ tbody button:hover {
 }
 
 /* =========================================================================
-   🛍️ 구매내역 타이틀 옆 수량 카운트 박스 초밀착 정렬 및 디자인 매칭
+   구매내역 타이틀 옆 수량 카운트 박스 초밀착 정렬 및 디자인 매칭
    ========================================================================= */
 
 /* 구매내역 타이틀 박스 내부의 요소들을 왼쪽으로 정렬 */
 #refund-section {
     display: flex !important;
-    justify-content: flex-start !important; /* 👈 우측 정렬에서 왼쪽 정렬로 변경 */
+    justify-content: flex-start !important; /* 우측 정렬에서 왼쪽 정렬로 변경 */
     align-items: center !important;
 }
 
 /* "구매내역" 글씨 자체의 우측 마진을 없애고 세밀하게 조정 */
 #refund-section {
-    gap: 8px !important; /* 👈 글씨와 카운트 박스 사이의 간격을 8px로 초밀착 고정 */
+    gap: 8px !important; /* 글씨와 카운트 박스 사이의 간격을 8px로 초밀착 고정 */
 }
 
 /* 총 개수 표시 스퀘어 배지 디자인 강화 */
@@ -675,13 +675,13 @@ tbody button:hover {
     align-items: center;
 }
 
-/* 🤎 디자인 가이드라인: 우측 끝에 나오던 프리미엄 가구 영문 폰트는 카운터 박스 오른쪽 끝으로 밀어내기 */
+/* 디자인 가이드라인: 우측 끝에 나오던 프리미엄 가구 영문 폰트는 카운터 박스 오른쪽 끝으로 밀어내기 */
 #refund-section::after {
-    margin-left: auto !important; /* 👈 수량 박스가 붙은 상태에서 영문 라벨만 우측 끝으로 밀어냄 */
+    margin-left: auto !important; /* 수량 박스가 붙은 상태에서 영문 라벨만 우측 끝으로 밀어냄 */
 }
 
 /* =========================================================================
-   🛍️ [구매내역 전체보기 확대 시스템] 격자 뷰포트 오버라이딩
+   [구매내역 전체보기 확대 시스템] 격자 뷰포트 오버라이딩
    ========================================================================= */
 
 /* 1. 전체보기가 켜졌을 때 슬라이더 바깥 큰 상자의 가로 차단벽을 해제하고 아래로 확장 */
@@ -724,23 +724,23 @@ tbody button:hover {
 }
 
 /* =========================================================================
-   🔓 [격자 차단벽 완전 해제] 전체보기 시 가로 폭 고정 스타일을 리셋하여 리스트 아래로 전사
+   [격자 차단벽 완전 해제] 전체보기 시 가로 폭 고정 스타일을 리셋하여 리스트 아래로 전사
    ========================================================================= */
 
 /* 전체보기 모드일 때 가로로 길게 늘어지던 트랙 폭을 100% 화면폭으로 초기화 */
 .order-slider-track.grid-view {
-    width: 100% !important; /* 👈 400% 등으로 늘어나던 가로폭을 현재 상자 폭으로 리셋 */
-    transform: none !important; /* 👈 좌우로 밀어내던 이동 공식을 완전히 삭제 */
+    width: 100% !important; /* 400% 등으로 늘어나던 가로폭을 현재 상자 폭으로 리셋 */
+    transform: none !important; /* 좌우로 밀어내던 이동 공식을 완전히 삭제 */
 }
 
 /* =========================================================================
-   🔓 [격자 뷰 강제 리셋] 상자 하나만 커지는 현상 완벽 해결
+   [격자 뷰 강제 리셋] 상자 하나만 커지는 현상 완벽 해결
    ========================================================================= */
 
 /* 전체보기 모드일 때 인라인 스타일에 적힌 가로 이동 공식(transform, width)을 무력화 */
 .mypage-main-content .info-content-box .order-slider-wrapper .order-slider-container .order-slider-track.grid-view {
     display: grid !important;
-    /* 💡 화면 폭에 맞춰서 알아서 2줄, 3줄 바둑판 격자로 쪼개지도록 강제 설정 */
+    /* 화면 폭에 맞춰서 알아서 2줄, 3줄 바둑판 격자로 쪼개지도록 강제 설정 */
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)) !important; 
     gap: 20px !important; /* 상하좌우 카드 간격 */
     width: 100% !important; /* 400% 등으로 늘어나던 가로폭을 현재 화면 폭으로 고정 */
@@ -755,6 +755,86 @@ tbody button:hover {
     min-height: 240px !important;
     box-sizing: border-box !important;
 }
+
+/* =========================================================================
+   구매내역 타이틀 라인 최종 정렬 (이상한 글씨 삭제 및 버튼 우측 고정)
+   ========================================================================= */
+
+/* 1. 구매내역 타이틀 박스 전체를 좌우 양끝 배칭 구조로 선언 */
+#refund-section {
+    display: flex !important;
+    justify-content: space-between !important; /* 글씨 세트는 왼쪽 끝, 버튼은 오른쪽 끝 */
+    align-items: center !important;
+    width: 100% !important;
+}
+
+/* 2. "구매내역" 글자와 "총 X건" 배지를 가로 한 묶음으로 왼쪽 정렬 */
+#refund-section > div[style*="display: flex"] {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 10px !important; /* 글씨와 수량 배지 간격 미세 고정 */
+}
+
+/* 3. 오른쪽 끝으로 붙는 [전체보기 / 접기] 버튼 오버라이드 */
+#refund-section > button.mypage-action-btn {
+    margin-left: auto !important; /* 오른쪽 끝단 축으로 강제 밀착 */
+    padding: 6px 14px !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+}
+
+/* 4. [요청 반영] 타이틀 뒤에 나타나던 이상한 영문 가상 글씨 완전히 삭제 */
+#refund-section::after {
+    display: none !important; /* 기존 가구 영문 폰트 텍스트 무력화 제거 완료 */
+    content: "" !important;
+}
+
+/* =========================================================================
+   🖼️ [먹통 완치] 사이드바 가구 목록 이동 배너 크기 및 클릭 영역 강제 활성화
+   ========================================================================= */
+
+/* 1. 기존 사이드바 텍스트 뒤에 가상으로 그리던 유령 배경은 완전히 무력화 차단 */
+.mypage-sidebar::after {
+    display: none !important;
+    content: "" !important;
+    height: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* 2. 인호님이 JSX에 새로 추가한 실제 <div> 박스 배너의 크기와 사진 강제 주입 */
+.mypage-sidebar .sidebar-furniture-banner,
+.sidebar-furniture-banner {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: 100% !important;       /* 사이드바 가로폭 280px에 꽉 차게 확장 */
+    height: 420px !important;      /* 0px로 수축되어 있던 높이를 420px로 강제 고정 */
+    margin-top: 30px !important;   /* 메뉴 버튼들과의 상단 여백 확보 */
+    
+    /* 🤎 팀 공통 주방 수납장 이미지 경로 오차 없이 선명하게 박아넣기 */
+    background-image: url(//localhost:8080/static/images/k5_2.jpg) !important; 
+    background-size: cover !important;       
+    background-position: center !important;  
+    
+    /* ⚡ 장바구니/정보수정과 일치하는 부드러운 브라운 테두리선 마감 */
+    border: 1px solid #dfd1c0 !important;    
+    box-shadow: 0 15px 35px rgba(140, 122, 107, 0.06) !important; 
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1) !important;
+}
+
+/* 3. 마우스를 올렸을 때 손가락 모양 반응 및 고급스럽게 솟아오르는 리빙 무드 모션 */
+.mypage-sidebar .sidebar-furniture-banner:hover,
+.sidebar-furniture-banner:hover {
+    cursor: pointer !important;
+    transform: translateY(-6px) !important; 
+    border-color: #8C7A6B !important; /* 까사미아 브라운선 하이라이트 */
+    box-shadow: 0 25px 50px rgba(140, 122, 107, 0.18) !important;
+}
+
+
+
 
 
 

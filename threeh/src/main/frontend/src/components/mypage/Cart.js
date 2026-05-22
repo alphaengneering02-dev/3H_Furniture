@@ -256,7 +256,7 @@ const Cart = () => {
                     <main className="mypage-main-content" style={{ flex: 1, padding: '20px' }}>
                         <div className="profile-icon-box">
                             <div className="profile-avatar-circle">{member.name ? member.name +"님" : "U"}</div>
-                            <button className="mypage-action-btn" onClick={() => navigate('/mypage')}>라운지 홈</button>
+                            <button className="mypage-action-btn" onClick={() => navigate('/mypage')}>마이페이지</button>
                         </div>
 
                         {/* 🛒 인호님 오리지널 장바구니 전용 전체 감싸는 상자 박스 */}

@@ -13,10 +13,10 @@ const Mypage = () => {
     const [orders, setOrders] = useState([]);
     const [isAllOrdersOpen, setIsAllOrdersOpen] = useState(false); // 구매내역 전체보기 토글
 
-
+    
     //북마크 추가_오현옥
-    const[showBookmarks, setShowBookmarks] = useState(false);
-    const[bookmarkedItems, setBookmarkedItems] = useState([]);
+    const [showBookmarks, setShowBookmarks] = useState(false);
+    const [bookmarkedItems, setBookmarkedItems] = useState([]);
 
     //리뷰 추가_오현옥
     const [myReviews, setMyReviews] = useState([]);
@@ -42,24 +42,24 @@ const Mypage = () => {
             axios.get('http://localhost:8080/Member/mypage.do', { withCredentials: true })
                 .then(res => {
                     setMember(res.data.member);
-                    
+
                     // ⚡ [회원 전용 보관고 연동] 이 브라우저에 이 회원 이름으로 저장된 주소록이 있는지 확인
                     const storageKey = `addresses_${res.data.member.id}`;
                     const localAddresses = localStorage.getItem(storageKey);
-                    
+
                     if (localAddresses) {
                         setAddresses(JSON.parse(localAddresses));
                     } else {
                         setAddresses(res.data.addressList || []);
                     }
-                    
+
                     const allOrders = res.data.recentOrders || [];
                     const activeOrders = allOrders.filter(order => order.orderState !== 'CANCEL');
                     setOrders(activeOrders);
 
                     const mergedUser = { ...userObj, ...res.data.member };
                     sessionStorage.setItem('user', JSON.stringify(mergedUser));
-                    
+
                     getMyReviews();
                 })
                 .catch(err => {
@@ -74,35 +74,35 @@ const Mypage = () => {
         }
     }, [navigate]);
 
-    const getMyBookmarkedItems = async()=>{
-        if(!member || !member.memberId){
+    const getMyBookmarkedItems = async () => {
+        if (!member || !member.memberId) {
             alert("회원 정보를 찾을 수 없습니다.");
             return;
         }
-        try{
+        try {
             const bookmarkResponse = await axios.get(
                 `http://localhost:8080/api/bookmarks/member/${member.memberId}`,
                 { withCredentials: true }
             );
             const bookmarks = bookmarkResponse.data || [];
-            if(bookmarks.length === 0){
+            if (bookmarks.length === 0) {
                 setBookmarkedItems([]);
                 setShowBookmarks(true);
                 return;
             }
             const itemResponse = await Promise.all(
-                bookmarks.map((bookmark)=>
-                    axios.get(`http://localhost:8080/api/item/${bookmark.itemId}`,{ withCredentials: true })
+                bookmarks.map((bookmark) =>
+                    axios.get(`http://localhost:8080/api/item/${bookmark.itemId}`, { withCredentials: true })
                 )
             );
-            const items = itemResponse.map((response)=>response.data);
+            const items = itemResponse.map((response) => response.data);
             setBookmarkedItems(items);
             setShowBookmarks(true);
-        }catch(error){
+        } catch (error) {
             console.error("북마크 상품 목록 조회 실패", error);
-            if(error.response){
+            if (error.response) {
                 console.log("북마크 조회 상태코드:", error.response.status);
-                console.log("북마크 조회 응답:",error.response.data);
+                console.log("북마크 조회 응답:", error.response.data);
             }
             alert("북마크 목록을 불러오지 못했습니다.");
         }
@@ -119,7 +119,7 @@ const Mypage = () => {
             setOrders((prevOrders) => prevOrders.map((order) => (order.orderId || order.id) === orderId ? { ...order, orderState: "PURCHASED" } : order));
         } catch (err) {
             console.error("구매 확정 오류:", err);
-            if(err.response) { alert(err.response.data); return; }
+            if (err.response) { alert(err.response.data); return; }
             alert("구매 확정 처리 중 오류가 발생했습니다.");
         }
     };
@@ -154,18 +154,18 @@ const Mypage = () => {
     /* [카카오 주소 수령 콜백 보정] 고른 주소를 상세주소 입력창으로 전송하도록 가교 역할 매핑 */
     const handleAddressComplete = (data) => {
         if (!member) return;
-        
+
         // [보완 완료]: 기존에 중복 추가되는 현상을 막고 최신 검색 주소 하나만 딱 임시 노출시킵니다.
         const filtered = addresses.filter(addr => addr.addressName !== "방금 검색한 주소");
-        
-        const newAddressObj = { 
-            id: Date.now(), 
-            addressName: "방금 검색한 주소", 
+
+        const newAddressObj = {
+            id: Date.now(),
+            addressName: "방금 검색한 주소",
             zonecode: data.zonecode, // 인호님 오리지널 우편번호 필드 매핑
             address: data.address,   // 인호님 오리지널 도로명주소 필드 매핑
-            detail: "" 
+            detail: ""
         };
-        
+
         setAddresses([...filtered, newAddressObj]);
         setIsPostcodeOpen(false); // 주소 고르면 우편번호 창은 자동으로 닫아줍니다.
     };
@@ -179,10 +179,10 @@ const Mypage = () => {
 
         const updatedAddresses = addresses.map(addr => {
             if (addr.id === targetId) {
-                return { 
-                    ...addr, 
-                    addressName: "추가된 배송지", 
-                    detail: tempDetail 
+                return {
+                    ...addr,
+                    addressName: "추가된 배송지",
+                    detail: tempDetail
                 };
             }
             return addr;
@@ -232,41 +232,41 @@ const Mypage = () => {
      * [오현옥 개발파트] 리뷰 관리 시스템 핵심 비즈니스 로직 연동 핸들러 정의 구역
      * ========================================================================= */
 
-    const getMyReviews = async() =>{
-        try{
-            const response = await axios.get("http://localhost:8080/api/reviews/my", { withCredentials:true });
+    const getMyReviews = async () => {
+        try {
+            const response = await axios.get("http://localhost:8080/api/reviews/my", { withCredentials: true });
             setMyReviews(response.data);
-        }catch(error){ console.error("내 리뷰 조회 실패", error); }
+        } catch (error) { console.error("내 리뷰 조회 실패", error); }
     };
-    
-    const findMyReviewByItemId = (itemId)=>{
-        if(!itemId){ return null; }
-        return myReviews.find((review) => Number(review.itemId)===Number(itemId));
+
+    const findMyReviewByItemId = (itemId) => {
+        if (!itemId) { return null; }
+        return myReviews.find((review) => Number(review.itemId) === Number(itemId));
     };
 
     const hasWrittenReview = (itemId) => {
         return !!findMyReviewByItemId(itemId);
     }
 
-    const handleEditReviewStart = (review) => { 
-        setEditReviewId(review.reviewId); 
-        setEditReviewScore(review.reviewScore); 
-        setEditReviewText(review.reviewText); 
-    };
-    
-    const handleUpdateReview = async(reviewId) => {
-        try{
-            await axios.put(`http://localhost:8080/api/reviews/${reviewId}`, { reviewScore: editReviewScore, reviewText: editReviewText }, { withCredentials:true });
-            alert("리뷰가 수정되었습니다."); setEditReviewId(null); getMyReviews();
-        }catch(error){ alert("리뷰 수정 실패"); }
+    const handleEditReviewStart = (review) => {
+        setEditReviewId(review.reviewId);
+        setEditReviewScore(review.reviewScore);
+        setEditReviewText(review.reviewText);
     };
 
-    const handleDeleteReview = async(reviewId) => {
-        if(!window.confirm("리뷰를 삭제하시겠습니까?")) return;
-        try{
-            await axios.delete(`http://localhost:8080/api/reviews/${reviewId}`, { withCredentials:true });
+    const handleUpdateReview = async (reviewId) => {
+        try {
+            await axios.put(`http://localhost:8080/api/reviews/${reviewId}`, { reviewScore: editReviewScore, reviewText: editReviewText }, { withCredentials: true });
+            alert("리뷰가 수정되었습니다."); setEditReviewId(null); getMyReviews();
+        } catch (error) { alert("리뷰 수정 실패"); }
+    };
+
+    const handleDeleteReview = async (reviewId) => {
+        if (!window.confirm("리뷰를 삭제하시겠습니까?")) return;
+        try {
+            await axios.delete(`http://localhost:8080/api/reviews/${reviewId}`, { withCredentials: true });
             alert("리뷰가 삭제되었습니다."); getMyReviews();
-        }catch(error){ alert("리뷰 삭제 실패"); }
+        } catch (error) { alert("리뷰 삭제 실패"); }
     }
 
     /* ⚡ [슬라이더 핸들러] 왼쪽 화살표 클릭 제어 */
@@ -307,14 +307,16 @@ const Mypage = () => {
                         <button className="sidebar-btn" onClick={() => navigate('/mypage/schedule')}>추가될기능/구매확정내역</button>
                         <button className="sidebar-btn" onClick={() => navigate('/cart/return')}>교환 및 반품</button>
                         <button className="sidebar-btn" onClick={() => navigate('/cart')}>장바구니 목록</button>
+
+                        <div className="sidebar-furniture-banner" onClick={() => navigate('/Item')} style={{ cursor: 'pointer' }} title="전체 가구 컬렉션 보러가기" />
                     </aside>
 
                     <main className="mypage-main-content" style={{ flex: 1, padding: '20px' }}>
                         <div className="profile-icon-box">
-                            <div className="profile-avatar-circle">{member.name ? member.name +"님" : "U"}</div>
-                            <button className="mypage-action-btn" style={{marginRight: '5px'}}
-                                onClick={()=>{
-                                    if(showBookmarks){ setShowBookmarks(false); }else{ getMyBookmarkedItems(); }
+                            <div className="profile-avatar-circle">{member.name ? member.name + "님" : "U"}</div>
+                            <button className="mypage-action-btn" style={{ marginRight: '5px' }}
+                                onClick={() => {
+                                    if (showBookmarks) { setShowBookmarks(false); } else { getMyBookmarkedItems(); }
                                 }}>북마크</button>
                             <button className="mypage-action-btn" onClick={() => navigate(`/member/update/${member.id}`)}>정보 수정</button>
                         </div>
@@ -345,7 +347,7 @@ const Mypage = () => {
                                                         <td>
                                                             {item.itemImgUrl ? (
                                                                 <img src={`http://localhost:8080${item.itemImgUrl}`} alt={item.itemName} style={{ width: "60px", height: "60px", objectFit: "cover" }} />
-                                                            ) : ( <span>이미지 없음</span> )}
+                                                            ) : (<span>이미지 없음</span>)}
                                                         </td>
                                                         <td>
                                                             <strong>{item.itemName}</strong>
@@ -375,57 +377,59 @@ const Mypage = () => {
 
                             <h3 id="refund-section" className="info-section-title">
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                    구매내역 
+                                    구매내역
                                     <span className="order-count-badge">총 {orders ? orders.length : 0}건</span>
                                 </div>
-                            <button type="button" className="mypage-action-btn" style={{ padding: '4px 10px', fontSize: '12px' }} onClick={() => setIsAllOrdersOpen(!isAllOrdersOpen)}>
-                                {isAllOrdersOpen ? "접기 ▲" : "전체보기 ▼"}
-                            </button>
-                           </h3>
+                                <button type="button" className="mypage-action-btn" style={{ padding: '4px 10px', fontSize: '12px' }} onClick={() => setIsAllOrdersOpen(!isAllOrdersOpen)}>
+                                    {isAllOrdersOpen ? "접기 ▲" : "전체보기 ▼"}
+                                </button>
+                            </h3>
 
-                            
+
                             {/* [가로형 슬라이더 프레임 대치 구역] */}
-<div className="order-slider-wrapper">
-    <button className="slider-arrow-btn prev" onClick={handlePrevSlide} disabled={currentSlideIndex === 0}>&lt;</button>
-    <div className="order-slider-container">
-        
-        {/* 👇 딱 이 1줄(트랙 선언부)만 조건부 연산자로 스위칭 완료되었습니다! */}
-        <div 
-            className={`order-slider-track ${isAllOrdersOpen ? 'grid-view' : ''}`} 
-            style={isAllOrdersOpen ? { transform: 'none', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '16px', width: '100%' } : { transform: `translateX(calc(-${currentSlideIndex * 25}% - ${currentSlideIndex * 4}px))` }}
-        >
+                            <div className="order-slider-wrapper">
+                                <button className="slider-arrow-btn prev" onClick={handlePrevSlide} disabled={currentSlideIndex === 0}>&lt;</button>
+                                <div className="order-slider-container">
 
-            {orders && orders.length > 0 ? (
-                orders.map((order, index) => (
-                    /* 낱개의 독립된 예쁜 정사각형 카드 인덱싱 */
-                    <div key={order.orderId || order.id || index} className="order-square-card">
-                        <div>
-                            <p style={{ fontSize: '11px', color: '#8C7A6B', margin: '0 0 6px 0' }}>NO. {order.orderId || order.id}</p>
-                            <p style={{ fontSize: '14px', fontWeight: '700', margin: '0 0 8px 0' }}>{order.itemName || order.productName}</p>
-                            
-                            {/* [주문상태 이늄 컬러 완전 싱크 마감] */}
-                            <p style={{ fontSize: '12px', margin: '0 0 2px 0', fontWeight: '700',
-                                color: order.orderState === 'ORDER' ? '#5e4431' : 
-                                       order.orderState === 'READY' ? '#c45a00' : 
-                                       order.orderState === 'PURCHASED' ? '#0a5c36' : 
-                                       order.orderState === 'CANCEL' ? '#a82525' : 
-                                       order.orderState === 'EXCHANGEorREFUND' ? '#323e4f' : '#111111' 
-                            }}>
-                                <strong>상태:</strong> {order.orderState}
-                            </p>
+                                    {/* 👇 딱 이 1줄(트랙 선언부)만 조건부 연산자로 스위칭 완료되었습니다! */}
+                                    <div
+                                        className={`order-slider-track ${isAllOrdersOpen ? 'grid-view' : ''}`}
+                                        style={isAllOrdersOpen ? { transform: 'none', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '16px', width: '100%' } : { transform: `translateX(calc(-${currentSlideIndex * 25}% - ${currentSlideIndex * 4}px))` }}
+                                    >
 
-                                                        
+                                        {orders && orders.length > 0 ? (
+                                            orders.map((order, index) => (
+                                                /* 낱개의 독립된 예쁜 정사각형 카드 인덱싱 */
+                                                <div key={order.orderId || order.id || index} className="order-square-card">
+                                                    <div>
+                                                        <p style={{ fontSize: '11px', color: '#8C7A6B', margin: '0 0 6px 0' }}>NO. {order.orderId || order.id}</p>
+                                                        <p style={{ fontSize: '14px', fontWeight: '700', margin: '0 0 8px 0' }}>{order.itemName || order.productName}</p>
+
+                                                        {/* [주문상태 이늄 컬러 완전 싱크 마감] */}
+                                                        <p style={{
+                                                            fontSize: '12px', margin: '0 0 2px 0', fontWeight: '700',
+                                                            color: order.orderState === 'ORDER' ? '#5e4431' :
+                                                                order.orderState === 'READY' ? '#c45a00' :
+                                                                    order.orderState === 'PURCHASED' ? '#0a5c36' :
+                                                                        order.orderState === 'CANCEL' ? '#a82525' :
+                                                                            order.orderState === 'EXCHANGEorREFUND' ? '#323e4f' : '#111111'
+                                                        }}>
+                                                            <strong>상태:</strong> {order.orderState}
+                                                        </p>
+
+
                                                         {/* [배송상태 이늄 컬러 완전 싱크 마감] */}
-                                                        <p style={{ fontSize: '12px', margin: '0 0 2px 0', fontWeight: '700',
-                                                            color: order.deliveryStatus === 'WAITING' ? '#801a24' : 
-                                                                   order.deliveryStatus === 'SHIPPING' ? '#c45a00' : 
-                                                                   order.deliveryStatus === 'COMPLETED' ? '#0b3161' : 
-                                                                   (order.deliveryStatus === 'PICKUP' || order.deliveryStatus === 'REJECTED') ? '#a63d2d' : '#111111'
+                                                        <p style={{
+                                                            fontSize: '12px', margin: '0 0 2px 0', fontWeight: '700',
+                                                            color: order.deliveryStatus === 'WAITING' ? '#801a24' :
+                                                                order.deliveryStatus === 'SHIPPING' ? '#c45a00' :
+                                                                    order.deliveryStatus === 'COMPLETED' ? '#0b3161' :
+                                                                        (order.deliveryStatus === 'PICKUP' || order.deliveryStatus === 'REJECTED') ? '#a63d2d' : '#111111'
                                                         }}>
                                                             <strong>배송:</strong> {order.deliveryStatus}
                                                         </p>
                                                     </div>
-                                                    
+
                                                     <div style={{ marginTop: '10px' }}>
                                                         {order.orderState === 'PURCHASED' ? (
                                                             hasWrittenReview(order.itemId) ? (
@@ -451,7 +455,7 @@ const Mypage = () => {
                                 <button className="slider-arrow-btn next" onClick={handleNextSlide} disabled={currentSlideIndex >= Math.max(orders.length - 4, 0)}>&gt;</button>
                             </div>
 
-                            {/* 오리지널 100% 완벽 복구된 배송지 설정 구역 (인호님 원본 필드명 및 동적 주소 보관함 마감) */}
+                            {/* 오리지널 100% 완벽 복구된 배송지 설정 구역 (원본 필드명 및 동적 주소 보관함 마감) */}
                             <div className="address-section-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '40px' }}>
                                 <h3 className="info-section-title" style={{ margin: 0, border: 'none' }}>배송지 설정</h3>
                                 <button className="mypage-action-btn" onClick={addAddress}>{isPostcodeOpen ? "주소창 닫기" : "+ 새 배송지 검색"}</button>
@@ -470,11 +474,11 @@ const Mypage = () => {
                                             /* [핵심 보완 구역]: 카카오 주소를 고르고 나면 상세주소를 적을 수 있는 전용 폼 인터페이스 동적 활성화 */
                                             <div key={addr.id} style={{ padding: '15px', background: '#fcfbfa', border: '1px solid #dfd1c0', margin: '10px 0', display: 'flex', flexDirection: 'column', gap: '10px' }}>
                                                 <p style={{ margin: 0, fontSize: '14px', color: '#111' }}><strong>선택된 주소:</strong> [{addr.zonecode}] {addr.address}</p>
-                                                <input 
-                                                    type="text" 
-                                                    placeholder="상세 주소를 입력하세요 (예: 101동 202호)" 
-                                                    value={tempDetail} 
-                                                    onChange={(e) => setTempDetail(e.target.value)} 
+                                                <input
+                                                    type="text"
+                                                    placeholder="상세 주소를 입력하세요 (예: 101동 202호)"
+                                                    value={tempDetail}
+                                                    onChange={(e) => setTempDetail(e.target.value)}
                                                     style={{ width: '100%', padding: '8px', boxSizing: 'border-box', border: '1px solid #ccc', fontSize: '13px' }}
                                                 />
                                                 <div style={{ display: 'flex', gap: '6px', justifyContent: 'flex-end' }}>

@@ -163,7 +163,7 @@ const RefundPage = () => {
                         {/* 프로필 요약 퀵 컴포넌트 존 */}
                         <div className="profile-icon-box">
                             <div className="profile-avatar-circle">{member.name ? member.name +"님" : "U"}</div>
-                            <button className="mypage-action-btn" onClick={() => navigate('/mypage')}>라운지 홈</button>
+                            <button className="mypage-action-btn" onClick={() => navigate('/mypage')}>마이페이지</button>
                         </div>
 
                         <div className="refund-container" style={{ width: '100%', maxWidth: '100%', padding: '0', margin: '0', border: 'none', boxShadow: 'none', background: 'transparent' }}>
