@@ -1,296 +1,375 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,500;0,600;1,400&display=swap');
 
-/* ==========================================
-   [까사미아 스타일] 전체 레이아웃 (폰트 제외)
-   ========================================== */
+/* =========================================================================
+   🏢 PROJECT CMYK - 마이페이지 데이터 씹힘 및 짤림 원천 파괴 디자인 시스템
+   ========================================================================= */
+
+body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background-color: #F9F8F6 !important; 
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden !important; /* 가로 스크롤바 원천 차단 유지 */
+}
+
+/* 최외곽 컨테이너 */
 .mypage-grid-container {
-    max-width: 1200px;
+    width: 100% !important;
+    max-width: 100% !important;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 !important; 
     color: #111111;
+    box-sizing: border-box;
+    background-color: #FFFFFF !important; /* 팀 공통 흰색 컨텐츠 박스 배경 */
+    min-height: 100vh;
+}
+
+/* ==========================================
+   🤎 1. 상단 브랜드 헤더 박스 (본문 정렬 라인과 칼같이 싱크 패치)
+   ========================================== */
+.mypage-header-box {
+    width: 100%;
+    background-color: #ede2d5 !important; 
+    border-bottom: 2px solid #111111 !important; 
+    padding: 22px calc((100% - 1140px) / 2) !important; /* 💡 정밀 연산: 본문 1140px 폭과 완벽 대칭 라인 정렬 */
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    box-shadow: 0 4px 20px rgba(140, 122, 107, 0.08);
     box-sizing: border-box;
 }
 
-/* 🤎 [상단 헤더 박스] 노란빛이 살짝 감오는 찐 샌드 베이지 */
-.mypage-header-box {
-    background-color: #ede2d5 !important; /* 핑크기 제로, 차분한 까사미아풍 샌드 베이지 */
-    border-bottom: 1px solid #111111 !important; /* 얇고 강한 직선 강조 */
-    padding: 25px 20px !important;
+.mypage-header-box > div:last-child {
+    display: flex;
+    gap: 10px;
+    align-items: center;
 }
 
 .mypage-logo-box {
-    font-size: 22px;
-    letter-spacing: 1.5px;
-}
-
-/* 본문 flex 레이아웃 */
-.mypage-grid-container > div[style*="display: flex"] {
-    margin-top: 40px;
-    gap: 50px;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 26px;
+    letter-spacing: 2px;
+    text-shadow: 1px 1px 0px rgba(255,255,255,0.8);
 }
 
 /* ==========================================
-   좌측 사이드바 영역
+   📦 2. 본문 레이아웃 그리드 (짤림/씹힘 방지 황금 규격 1140px 고정)
+   ========================================== */
+.mypage-grid-container > div[style*="display: flex"] {
+    width: 100% !important;
+    max-width: 1140px !important; /* 💡 가로 찢어짐 원천 차단: 데스크톱 표준 1140px로 락(Lock) 구현 */
+    margin: 40px auto 0 auto !important; /* 무조건 화면 정중앙 안착 */
+    padding: 0 20px; 
+    gap: 40px; /* 사이드바와 본문 사이의 최적의 간격 */
+    box-sizing: border-box;
+    display: flex !important;
+    flex-direction: row !important; /* 가로 배열 강제 고정 */
+}
+
+/* ==========================================
+   🧱 3. 좌측 사이드바 메뉴 (240px 볼륨업 & 주방수납장 대형 배너 싱크)
    ========================================== */
 .mypage-sidebar {
-    width: 210px !important;
-    flex-shrink: 0;
+    width: 240px !important; 
+    flex-shrink: 0 !important; /* 💡 중요: 우측 본문 압박에 사이드바가 절대 찌그러지지 않도록 철벽 방어 */
     display: flex;
     flex-direction: column;
     gap: 0px; 
+    position: relative;
+    min-height: 850px; 
 }
 
-/* 사이드바 메뉴 상단 인사말 박스 */
+/* 사이드바 회원 인사말 블록 */
 .mypage-sidebar > div:first-child {
-    background-color: #ede2d5 !important; /* 헤더와 동일한 베이지 */
-    padding: 20px !important;
+    background: linear-gradient(135deg, #ede2d5 0%, #dfd1c0 100%) !important;
+    padding: 26px 20px !important;
     border-bottom: 2px solid #111111 !important;
-    margin-bottom: 15px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.03);
 }
 
-/* 🤎 [좌측 기능 리스트 박스] 헤더와 오차 없는 샌드 베이지 통일 */
 .mypage-sidebar .sidebar-btn {
     display: block;
-    background-color: #ede2d5 !important; /* 분홍기 없는 베이지 */
+    background-color: #ffffff !important; 
     border: none;
     text-align: left;
-    padding: 12px 20px !important; 
+    padding: 16px 22px !important; 
     cursor: pointer;
-    font-size: 13px;
-    color: #444444;
+    font-size: 14px;               
+    font-weight: 700;              
+    color: #333333;
     width: 100%;
     box-sizing: border-box;
-    border-bottom: 1px solid #dfd1c0; /* 내부 베이지 톤 구분선 */
-    transition: all 0.2s ease;
+    border-bottom: 1px solid #f2ece4; 
+    border-left: 1px solid #dfd1c0;
+    border-right: 1px solid #dfd1c0;
+    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    letter-spacing: -0.3px;
 }
 
-/* 기능 리스트 박스의 최상단 메뉴 테두리 마감 */
-.mypage-sidebar .sidebar-btn:first-of-type {
-    border-top: 1px solid #111111;
-}
-
-/* 기능 리스트 박스의 최하단 메뉴 테두리 마감 */
-.mypage-sidebar .sidebar-btn:last-of-type {
-    border-bottom: 1px solid #111111;
-    margin-bottom: 30px;
-}
+.mypage-sidebar .sidebar-btn:first-of-type { border-top: 1px solid #111111; }
+.mypage-sidebar .sidebar-btn:last-of-type { border-bottom: 1px solid #111111; margin-bottom: 50px; }
 
 .mypage-sidebar .sidebar-btn:hover {
-    color: #111111;
-    background-color: #dfd1c0 !important; /* 호버 시 한 단계 차분해지는 브라운-베이지 */
-    font-weight: 500;
+    color: #ffffff;
+    background-color: #8C7A6B !important; 
+    padding-left: 30px !important; 
+}
+
+/* 🖼️ [인호님 주방수납장 사진 안전 연동 구역] */
+.mypage-sidebar::after {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 380px; 
+    margin-top: 20px; 
+    background-image: url('https://ibb.co'); 
+    background-size: cover;       
+    background-position: center;  
+    border: 1px solid #111111;    
+    background-color: #ffffff;
+    box-shadow: 0 15px 35px rgba(140, 122, 107, 0.12);
+    transition: all 0.4s ease;
+}
+.mypage-sidebar:hover::after {
+    transform: translateY(-4px); 
+    box-shadow: 0 20px 45px rgba(140, 122, 107, 0.2);
 }
 
 /* ==========================================
-   우측 메인 콘텐츠 및 프로필 섹션
+   🖥️ 4. 우측 메인 콘텐츠 구역 (데이터 씹힘/짤림 절대 방어 장치 탑재)
    ========================================== */
 .mypage-main-content {
-    flex: 1;
-    padding: 0 0 0 20px !important;
+    flex: 1 !important;
+    min-width: 0 !important; /* 💡 리액트 가로 짤림 해결 핵심: 자식 슬라이더 트랙이 멋대로 본문 영역을 찢고 나가지 못하게 강제 결속 */
+    padding: 0 !important; 
+    display: flex;
+    flex-direction: column;
 }
 
-/* 프로필 상단 요약 아바타 구역 */
+/* 프로필 박스 */
 .profile-icon-box {
     display: flex;
     align-items: center;
-    background-color: #f8f9fa;
-    padding: 30px 40px;
-    margin-bottom: 40px;
-    border-radius: 0px;
+    background: #ffffff;
+    padding: 35px 40px;
+    margin-bottom: 45px;
+    border: 1px solid #111111;
+    box-shadow: 5px 5px 0px #ede2d5; 
 }
 
 .profile-avatar-circle {
-    font-size: 22px;
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
     font-weight: 700;
-    color: #111111;
+    color: #8C7A6B;
     background: none;
     width: auto;
     height: auto;
     border-radius: 0;
     margin-right: auto;
-}
-
-/* 타이틀 라벨 스타일 */
-.info-section-title {
-    font-size: 16px;
-    font-weight: 700;
-    color: #111111;
-    margin: 40px 0 15px 0 !important;
     letter-spacing: -0.5px;
 }
 
-/* 회원정보 데이터 블록 */
+.info-section-title {
+    font-size: 16px;
+    font-weight: 900;
+    color: #111111;
+    margin: 40px 0 15px 0 !important;
+    letter-spacing: -0.5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #111111; /* 얇은 직선 언더라인으로 구획 확립 */
+    padding-bottom: 8px;
+}
+.info-section-title::after {
+    content: "COLLECTION";
+    font-family: 'Playfair Display', serif;
+    font-size: 11px;
+    color: #dfd1c0;
+    font-weight: 400;
+    letter-spacing: 2px;
+}
+
+/* 🔒 개별 컨텐츠 판넬 공통화 (너비 자동 수축 제어로 씹힘 해결) */
 .info-data-block {
     display: flex;
-    gap: 40px;
-    padding: 20px 10px;
-    border-top: 1px solid #111111;
-    border-bottom: 1px solid #eeeeee;
-    margin-bottom: 30px;
+    flex-direction: column; /* 💡 씹힘 해결: 가로로 꼬이던 정렬을 세로 블록형으로 일원화하여 정보수정과 리뷰가 깨지지 않게 가둠 */
+    gap: 15px;
+    padding: 25px 20px;
+    border: 1px solid #111111;
+    margin-bottom: 35px;
     background-color: #ffffff;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.01);
+    width: 100% !important;
+    box-sizing: border-box;
 }
 
 .info-data-block p {
     margin: 0;
     font-size: 14px;
     color: #111111;
+    line-height: 1.6;
 }
 
 .info-data-block p strong {
-    font-weight: 400;
-    color: #666666;
-    margin-right: 8px;
-}
-
-.info-data-block > div {
-    width: 100%;
+    font-weight: 700;
+    color: #8C7A6B; 
+    margin-right: 12px;
+    display: inline-block;
+    width: 70px; /* 라벨 너비 고정으로 가독성 일선 정렬 */
 }
 
 /* ==========================================
-   ⚡ 구매내역 가로형 슬라이더 시스템
+   ⚡ 5. [구매내역] 가로형 슬라이더 쇼룸 (짤림 버그 완전 방멸)
    ========================================== */
 .order-slider-wrapper {
     display: flex;
     align-items: center;
-    border-top: 1px solid #111111;
-    border-bottom: 1px solid #eeeeee;
-    padding: 30px 0;
+    border: 1px solid #111111;
+    padding: 30px 10px;
     margin-bottom: 40px;
     background: #ffffff;
-}
-
-/* 슬라이더 화살표 버튼 */
-.slider-arrow-btn {
-    background: none;
-    border: none;
-    font-size: 20px;
-    cursor: pointer;
-    padding: 0 10px;
-    color: #111111;
-}
-
-.slider-arrow-btn:disabled {
-    color: #dddddd;
-    cursor: default;
-}
-
-.order-slider-container {
-    flex: 1;
-    overflow: hidden;
-}
-
-/* 슬라이더 트랙 */
-.order-slider-track {
-    display: flex;
-    gap: 16px;
-    transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-}
-
-/* 🤎 [구매내역 카드 박스] 헤더 및 메뉴바와 완벽 동기화된 찐 베이지 */
-.order-square-card {
-    flex: 0 0 calc(25% - 12px) !important;
+    width: 100% !important;
     box-sizing: border-box;
-    border: 1px solid #dfd1c0; /* 베이지 라인 경계선 */
-    padding: 20px;
+}
+
+.slider-arrow-btn {
+    background-color: #ffffff;
+    border: 1px solid #111111;
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+    cursor: pointer;
+    color: #111111;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    z-index: 10;
+}
+.slider-arrow-btn:hover:not(:disabled) { background-color: #111111; color: #ffffff; }
+.slider-arrow-btn:disabled { border-color: #eeeeee; color: #dddddd; cursor: not-allowed; }
+
+.order-slider-container { 
+    flex: 1; 
+    overflow: hidden !important; /* 💡 짤림 방지 핵심: 이 구역 바깥으로 삐져나가는 카드를 눈에서 완벽 차단 */
+    padding: 5px; 
+    margin: 0 10px;
+}
+.order-slider-track { 
+    display: flex !important; 
+    gap: 14px !important; 
+    width: 100% !important;
+}
+
+/* 🤎 4개 카드 배정 너비 연산 정확히 대칭 보정 */
+.order-square-card {
+    flex: 0 0 calc(25% - 11px) !important; /* 💡 짤림 해결: 부모 100% 너비 안에서 정확하게 4등분(25%)으로 축소 안착 */
+    max-width: calc(25% - 11px) !important;
+    box-sizing: border-box;
+    border: 1px solid #dfd1c0; 
+    padding: 20px 15px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    min-height: 190px;
-    background-color: #ede2d5 !important; 
+    min-height: 220px; 
+    background-color: #ffffff !important; 
+    box-shadow: 0 4px 12px rgba(140, 122, 107, 0.04);
+    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-.order-square-card p {
-    margin: 0;
+.order-square-card:hover {
+    transform: translateY(-4px);
+    border-color: #111111;
+    box-shadow: 0 10px 24px rgba(140, 122, 107, 0.12);
 }
 
-/* 🎨 ⚡ [간섭 원인 완전 초기화 구역]
-   리액트의 삼항연산자 인라인 컬러 스타일이 브라우저 화면에 
-   왜곡 없이 100% 1순위로 다이렉트 투과되도록 강제 상속 처리 적용 */
-.order-square-card > div > p {
-    color: inherit; 
-}
-
-/* 배송 단락 구역 가독성 전용 그레이 톤 처리 마감 */
-.order-square-card > div > p:nth-child(4) {
-    color: #55483c !important; /* 기본 배송 색상: 차분한 웜 챠콜 */
-}
-
-/* 카드 내부 기능 버튼 */
 .order-square-card button {
     width: 100%;
-    padding: 8px 0;
+    padding: 9px 0;
     font-size: 12px;
+    font-weight: 700;
     cursor: pointer;
     border: 1px solid #111111;
-    background-color: #ffffff;
-    color: #111111;
-    transition: all 0.2s ease;
-}
-
-.order-square-card button:hover {
     background-color: #111111;
     color: #ffffff;
+    transition: all 0.2s;
+}
+.order-square-card button:hover {
+    background-color: #ede2d5;
+    color: #111111;
 }
 
-.order-square-card button:disabled {
-    color: #999999;
-    background-color: #f8f9fa;
-    border: 1px solid #e5e5e5;
-    cursor: default;
+/* =========================================================================
+   📊 6. 북마크 / 배송지 / 리뷰 게시판 리스트 수축 제어 마감
+   ========================================================================= */
+.info-data-block table {
+    width: 100% !important;
+    border-collapse: collapse;
+    box-sizing: border-box;
+}
+.info-data-block table th {
+    border-bottom: 2px solid #111111;
+    background-color: #fcfbfa;
+    padding: 12px 6px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #111111;
+}
+.info-data-block table td {
+    border-bottom: 1px solid #eeeeee;
+    padding: 15px 6px;
+    font-size: 13px;
+}
+.info-data-block table tbody tr:hover { background-color: #fafafa; }
+
+/* 배송지 내역 리스트 마감 */
+.info-data-block > div[style*="display: flex"] {
+    width: 100% !important;
+    border-bottom: 1px solid #eeeeee !important;
+    padding: 14px 0 !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    box-sizing: border-box;
+}
+.info-data-block > div[style*="display: flex"]:last-of-type { border-bottom: none !important; }
+
+/* 📝 리뷰 텍스트 에어리어 */
+#my-review-section + .info-data-block textarea {
+    border: 1px solid #dfd1c0 !important;
+    padding: 12px !important;
+    background-color: #fcfbfa;
 }
 
-/* ==========================================
-   공통 버튼 디자인 (로그아웃, 정보수정, 북마크 등)
-   ========================================== */
 .mypage-action-btn {
-    border: 1px solid #cccccc !important;
+    border: 1px solid #111111 !important; 
     background-color: #ffffff !important;
     padding: 6px 14px !important;
     font-size: 12px !important;
-    cursor: pointer;
-    color: #555555 !important;
-    border-radius: 0px !important;
-    transition: all 0.2s ease;
-}
-
-.mypage-action-btn:hover {
-    border-color: #111111 !important;
+    font-weight: 700 !important;
     color: #111111 !important;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
+.mypage-action-btn:hover { background-color: #ede2d5 !important; }
 
 /* ==========================================
-   [까사미아 스타일] 하단 푸터 영역
+   [까사미아 스타일] 하단 푸터 (본문 핏 일치 가로 대칭 마감)
    ========================================== */
 .mypage-footer {
     width: 100%;
-    border-top: 1px solid #111111;
+    border-top: 2px solid #111111;
     margin-top: 100px;
-    padding: 40px 0 60px 0;
-    background-color: #ffffff;
+    padding: 50px calc((100% - 1100px) / 2) 70px calc((100% - 1100px) / 2) !important;
+    background-color: #111111; 
+    box-sizing: border-box;
 }
-
-.footer-content {
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.footer-logo {
-    font-size: 16px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    margin: 0 0 15px 0;
-    color: #111111;
-}
-
-.footer-info {
-    font-size: 12px;
-    color: #666666;
-    line-height: 1.6;
-    margin: 0 0 8px 0;
-}
-
-.footer-copy {
-    font-size: 11px;
-    color: #999999;
-    margin: 0;
-}
+.mypage-footer .footer-logo { color: #ffffff; font-family: 'Playfair Display', serif; font-size: 18px; }
+.mypage-footer .footer-info { color: #aaaaaa; font-size: 12px; }
+.mypage-footer .footer-copy { color: #666666; margin-top: 15px; font-size: 11px; }
