@@ -15,6 +15,7 @@ import Item from '../components/item/Item';
 import ItemDetail from '../components/item/ItemDetail';
 import ItemCreate from '../components/item/ItemCreate';
 import ItemUpdate from '../components/item/ItemUpdate';
+import ItemAdminPage from '../components/item/ItemAdminPage';
 
 //김승우
 import Order from '../components/Order/Order';
@@ -36,6 +37,7 @@ import Schedule from '../components/mypage/Schedule';
 
 
 
+
 const Router = () => {
     return (
         <BrowserRouter>
@@ -53,6 +55,7 @@ const Router = () => {
                 <Route path="/item/:itemId" element={<ItemDetail/>} />
                 <Route path="/item/create" element={<ItemCreate/>} />
                 <Route path="/item/update/:itemId" element={<ItemUpdate/>} />
+                <Route path="/admin/item" element={<ItemAdminPage/>} />
 
                 <Route path="/mypage" element={<Mypage/>} />
                 <Route path='/cart' element={<Cart/>}/>
