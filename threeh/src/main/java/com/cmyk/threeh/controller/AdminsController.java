@@ -219,12 +219,31 @@ public ResponseEntity<?> getMyInfo(HttpSession session) {
 }
 
 @GetMapping("/orders")
-public ResponseEntity<List<OrderResponseDTO>> getAllOrdersForAdmin() {
-    System.out.println("📦 [Admin] 전체 주문 목록 조회 요청");
+public ResponseEntity<?> getAllOrdersForAdmin() {
+    System.out.println("=========================================");
+    System.out.println("📦 [Admin 백엔드] 전체 주문 목록 조회 요청 시작!");
+    System.out.println("=========================================");
     
-    List<OrderResponseDTO> orders = orderService.findAllOrders();
-    
-    return ResponseEntity.ok(orders);
+    try {
+        List<OrderResponseDTO> orders = orderService.findAllOrders();
+        
+        System.out.println("✅ [Admin 백엔드] DB 조회 성공!");
+        System.out.println("📊 가져온 데이터 개수: " + (orders != null ? orders.size() : 0) + "건");
+        
+        if (orders != null && !orders.isEmpty()) {
+            System.out.println("👀 첫 번째 데이터 샘플: " + orders.get(0).toString());
+        } else {
+            System.out.println("⚠️ [경고] DB에서 가져온 데이터가 비어있습니다(Empty).");
+        }
+        
+        return ResponseEntity.ok(orders);
+        
+    } catch (Exception e) {
+        System.out.println("❌ [Admin 백엔드] 에러 발생!");
+        e.printStackTrace(); // 스프링 부트 콘솔에 에러 추적 출력
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("백엔드 /admin/orders 처리 중 에러: " + e.getMessage());
+    }
 }
 
 //엑셀 등록용
