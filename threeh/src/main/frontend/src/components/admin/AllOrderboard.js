@@ -67,22 +67,16 @@ const AllOrderboard = ({
         return extraCount > 0 ? `${firstName} 외 ${extraCount}개 상품` : firstName;
     };
 
-    // 🔍 [디버깅 필터링] 필터링 단계를 쪼개서 어디서 데이터가 다 증발하는지 콘솔에 출력
-    const masterOrders = activeOrders.filter((o, index) => {
-        const isOrderState = o.orderState === '주문' || o.orderState === 'ORDER';
-        const isFinalCompleted = (o.deliveryStatus === 'COMPLETED' && o.orderState === 'PURCHASED');
-        
-        // 첫 3개 데이터만 매칭 로그를 찍어서 키값 상태 점검
+    // 💡 [수정 완료] 필터링을 완전히 없애고 DB에서 온 원본 데이터를 그대로 노출합니다.
+    const masterOrders = activeOrders;
+
+    // 첫 3개 데이터만 콘솔에 뿌려서 데이터 구조가 잘 들어오는지 체크
+    masterOrders.forEach((o, index) => {
         if (index < 3) {
-            console.log(`🔍 [데이터 확인 #${index}] orderId: ${o.orderId}, orderState: ${o.orderState}, deliveryStatus: ${o.deliveryStatus}`);
-            console.log(`👉 조건 통과 여부 -> orderState 조건: ${isOrderState}, 최종완료 제외 조건: ${!isFinalCompleted}`);
+            console.log(`🔍 [데이터 원본 확인 #${index}] orderId: ${o.orderId}, orderState: ${o.orderState}, deliveryStatus: ${o.deliveryStatus}`);
         }
-
-        // 💡 만약 데이터가 너무 안 뜨면 임시로 조건을 풀고 원본을 보기 위해 return true; 로 테스트해보세요.
-        return isOrderState && !isFinalCompleted;
     });
-
-    console.log(`📊 [필터링 결과] 원본 데이터: ${activeOrders.length}건 -> 필터링 후(masterOrders): ${masterOrders.length}건`);
+    console.log(`📊 [필터링 해제] 원본 데이터 전체 노출: ${masterOrders.length}건`);
 
     const selectableOrders = masterOrders.filter(o => o.deliveryStatus !== 'COMPLETED');
     const pagedOrders = masterOrders.slice((page1 - 1) * perPage1, page1 * perPage1);
