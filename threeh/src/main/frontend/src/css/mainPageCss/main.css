@@ -501,13 +501,15 @@
 }
 
 
+
+
 /*메인 배너 - 이전/다음 버튼*/
 .main-banner-btn-once {
     position: absolute;
     top: 50%; left: 50%; transform: translate(-50%, -50%);
     display: flex;
     justify-content: space-between;
-    width: 90%;
+    width: 92%;
 }
 .main-banner-btn-once button {
     background: none;
@@ -547,6 +549,133 @@
 .main-item-section {
   width: 100%;
 }
+
+
+
+/* ==========================================
+   1. 부모 레이아웃 (상품 리스트 정렬)
+========================================== */
+.itemList {
+    max-width: 1200px; /* 화면 크기에 맞게 조절 가능 */
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.itemList h2 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 24px;
+    text-align: left;
+}
+
+/* 4개의 아이템을 가로로 정렬하고 일정한 간격을 둠 */
+.itemList .items {
+    display: flex;
+    gap: 20px; /* 카드 사이의 간격 */
+    justify-content: space-between; /* 양 끝 정렬 */
+    align-items: flex-start;
+}
+
+
+/* ==========================================
+   2. 자식 레이아웃 (개별 상품 카드 & 하트 버튼 부유)
+========================================== */
+/* 개별 카드 전체 폭 지정 */
+.item-card {
+    flex: 1; /* 4개 카드가 동일한 비율로 너비를 가짐 */
+    min-width: 0; /* flex 자식 요소의 text-overflow 방지 */
+}
+
+/* 이미지 영역 - 하트 버튼 배치의 기준점이 됨 (relative) */
+.item-card .image-box {
+    position: relative; 
+    width: 100%;
+    aspect-ratio: 1 / 1; /* 이미지를 정직사각형(1:1) 비율로 고정 */
+    background-color: #e5e5e5; /* 기획서의 회색 배경 배경색 */
+    border-radius: 12px; /* 모서리 라운딩 */
+    overflow: hidden;
+    margin-bottom: 12px;
+}
+
+.item-card .image-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* 이미지가 찌그러지지 않고 꽉 차게 */
+}
+
+/* 기획서 핵심: 이미지 우측 상단에 하트 띄우기 */
+.item-card .wish-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #333;
+    z-index: 10;
+    transition: transform 0.2s ease;
+}
+
+.item-card .wish-btn:hover {
+    transform: scale(1.1); /* 마우스 올렸을 때 살짝 커지는 효과 */
+}
+
+/* 상품명 및 가격 스타일링 */
+.item-card .item-name {
+    font-size: 14px;
+    color: #666;
+    margin: 0 0 6px 0;
+}
+
+.item-card .item-price {
+    font-size: 16px;
+    font-weight: bold;
+    color: #111;
+    margin: 0;
+}
+
+
+
+/* ==========================================
+   [까사미아 스타일] 하단 푸터 영역
+   ========================================== */
+.mypage-footer {
+    width: 100%;
+    border-top: 1px solid #111111;
+    margin-top: 100px;
+    padding: 40px 0 60px 0;
+    background-color: #ffffff;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.footer-logo {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin: 0 0 15px 0;
+    color: #111111;
+}
+
+.footer-info {
+    font-size: 12px;
+    color: #666666;
+    line-height: 1.6;
+    margin: 0 0 8px 0;
+}
+
+.footer-copy {
+    font-size: 11px;
+    color: #999999;
+    margin: 0;
+}
+
+
+
 
 
 /* ==========================================

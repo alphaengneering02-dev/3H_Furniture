@@ -98,11 +98,12 @@
     margin-bottom: 35px;
 }
 
-.signup-divider-line {
+.signup-divider-line1 {
     flex: 1;
     height: 1px;
     background-color: var(--signup-border-light);
     border: none;
+    background: red;
 }
 
 .signup-divider-text {
@@ -111,6 +112,14 @@
     padding: 0 15px;
     font-weight: 500;
     letter-spacing: 0.5px;
+}
+
+.signup-divider-line2 {
+    flex: 1;
+    height: 1px;
+    background-color: var(--signup-border-light);
+    border: none;
+    background: red;
 }
 
 
@@ -124,6 +133,7 @@
     justify-content: center;
     gap: 24px;
     margin-bottom: 50px;
+    background: blue;
 }
 
 .signup-social-item {
@@ -147,13 +157,12 @@
 
 
 /* ==========================================
-   하단 로그인 안내 링크 푸터
+   하단 로그인 안내 링크
    ========================================== */
 .signup-select-footer {
     width: 100%;
     max-width: 400px;
     padding-top: 20px;
-    border-top: 1px solid var(--signup-border-light, #E5E2DC);
     text-align: center;
     font-size: 13.5px;
     color: var(--signup-middle-gray, #777777);
