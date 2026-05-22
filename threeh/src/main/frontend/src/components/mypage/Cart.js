@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'; 
 import { getUrl } from '../../utils/BackendPath';
+import '../../css/myPageCss/cart.css';
 
 const Cart = () => {
     const navigate = useNavigate();
@@ -10,6 +11,15 @@ const Cart = () => {
 
     //체크박스 수동/전체 선택 상태 관리용
     const [selectedIds, setSelectedIds] = useState([]);
+
+    const handleLogout = () => {
+        if (window.confirm("로그아웃 하시겠습니까?")) {
+            sessionStorage.removeItem('user');
+            setMember(null);
+            alert("로그아웃 되었습니다");
+            navigate('/');
+        }
+    };
 
     // 페이지 로드 시 세션 확인 및 실제 백엔드 DB 데이터 로드 (마이페이지 동기화 방식 완벽 결합)
     useEffect(() => {
@@ -211,105 +221,142 @@ const Cart = () => {
         })
     };
 
-   return (
-        <div className="cart-container" style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
-            <h1>{member?.name || member?.id || '고객'}님의 장바구니</h1>
-            
-            {/* [수정/추가 완료] 상단 전체 선택 바 레이아웃 배치 */}
-            <div style={{display:'flex',alignItems:'center',padding:'10px 0', borderBottom:'2px solid #ccc', marginBottom:'15px'}}>
-                <lebel style={{display:'flex',alignItems:'center',cursor:'pointer', marginRight:'15px'}}>
-                    <input
-                        type="checkbox"
-                        onChange={(e) => handleAllCheck(e.target.checked)}
-                        checked={selectedIds.length === cartItems.length && cartItems.length > 0}/>
-                        <span style={{marginLeft:'5px'}}>전체 선택 ({selectedIds.length}/{cartItems.length})</span>
-                      </lebel>
-
-                      {/* 전체 선택 삭제 버튼 : 선택된 개수가 0이면 클릭 불가 */}  
-                      <button
-                        onClick={deleteSelectedItems}
-                        disabled={selectedIds.length === 0}
-                        style={{
-                            padding:'5px 10px',
-                            backgroundColor:selectedIds.length === 0 ? '#eee' : '#ff4d4f',
-                            color:'none',
-                            borderRadius:'4px',
-                            cursor:selectedIds.length === 0 ? 'not-allowed' : 'pointer'
-                        }}
-                        >
-                            선택 삭제
-                    </button>
-            </div>
-
-            {/*             
-            {cartItems.length > 0 && (
-                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '2px solid #ccc', marginBottom: '15px' }}>
-                    <label style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
-                        <input 
-                            type="checkbox" 
-                            onChange={(e) => handleAllCheck(e.target.checked)}
-                            // 전체 장바구니 상품 개수와 내가 선택한 상자의 개수가 완벽히 일치할 때만 전체 체크박스에 불이 들어옵니다.
-                            checked={selectedIds.length === cartItems.length && cartItems.length > 0}
-                            style={{ width: '18px', height: '18px', cursor: 'pointer' }}
-                        />
-                        <span style={{ marginLeft: '10px', fontWeight: 'bold' }}>
-                            전체 선택 ({selectedIds.length}/{cartItems.length})
-                        </span>
-                    </label>
+       return (
+        <div className="mypage-grid-container">
+            {/* ========================================================= */}
+            {/* 🤎 [헤더 완벽 싱크] 마이페이지 메인과 100% 동일한 상단 브랜드 바   */}
+            {/* ========================================================= */}
+            <header className="mypage-header-box" style={{ display: 'flex', justifyContent: 'space-between', padding: '10px', borderBottom: '1px solid #ccc' }}>
+                <div className="mypage-logo-box" onClick={() => navigate('/')} style={{ cursor: 'pointer', fontWeight: 'bold' }}>PROJECT CMYK</div>
+                <div>
+                    {member ? (
+                        <button className="btn-header-action" onClick={handleLogout} style={{ marginRight: '10px' }}>로그아웃</button>
+                    ) : (
+                        <button className="btn-header-action" onClick={() => navigate('/login')} style={{ marginRight: '10px' }}>로그인</button>
+                    )}
+                    <button className="btn-header-action" onClick={() => navigate('/mypage')}>마이페이지</button>
+                    <button className="btn-header-action" onClick={() => navigate('/')}>메인으로</button>
                 </div>
-            )} */}
-            
+            </header>
 
-            {cartItems.length === 0 ? (
-                <p style={{ textAlign: 'center', padding: '30px 0' }}>장바구니가 비어 있습니다.</p>
+            {!member ? (
+                <main style={{ textAlign: 'center', padding: '100px 20px' }}>
+                    <h2>로그인이 필요한 service입니다.</h2>
+                </main>
             ) : (
-                cartItems.map(item => {
-                    const itemId = item.cartItemId || item.cartitemId;
-                    return (
-                        <div key={itemId} className="cart-item" style={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #ddd', padding: '15px 0' }}>
-                            
-                            {/* [수정/추가 완료] 개별 상품 왼쪽 수동 체크박스 주입 */}
-                            <input 
-                                type="checkbox" 
-                                // 현재 순회 중인 상품의 ID가 선택된 ID 보관함(selectedIds)에 포함되어 있는지 여부로 체크 판정
-                                checked={selectedIds.includes(itemId)}
-                                onChange={() => handleCheckElement(itemId)} // 클릭 시 보관함에 넣거나 빼는 핸들러 가동
-                                style={{ marginRight: '15px', width: '18px', height: '18px', cursor: 'pointer' }}
-                            />
+                <div style={{ display: 'flex' }}>
+                    {/* 📌 [사이드바 완벽 싱크] 장바구니 목록 active 하이라이트 활성화 상주 */}
+                    <aside className="mypage-sidebar">
+                        <button className="sidebar-btn" onClick={() => navigate('/mypage')}>추가될기능/구매확정내역</button>
+                        <button className="sidebar-btn" onClick={() => navigate('/cart/return')}>교환 및 반품</button>
+                        <button className="sidebar-btn active" style={{ color: '#8C7A6B', fontWeight: 'bold' }} onClick={() => navigate('/cart')}>장바구니 목록</button>
+                    </aside>
 
-                            <img src={getUrl(item.imageUrl)} alt={item.itemName} style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '4px', marginRight: '15px' }} />
-
-                            <div style={{ flex: 1 }}>
-                                <p style={{ margin: '0 0 10px 0' }}><strong>{item.itemName}</strong></p>
-                                <div className="quantity-box" style={{ display: 'flex', alignItems: 'center' }}>
-                                    <button onClick={() => updateCount(itemId, item.count - 1)} style={{ padding: '2px 8px' }}>-</button>
-                                    <span style={{ margin: '0 15px', fontWeight: 'bold' }}>{item.count}</span>
-                                    <button onClick={() => updateCount(itemId, item.count + 1)} style={{ padding: '2px 8px' }}>+</button>
-                                </div>
-                            </div>
-
-                            <div style={{ textAlign: 'right', marginRight: '20px' }}>
-                                <p style={{ margin: '0 0 5px 0', color: '#888', fontSize: '13px' }}>개당 {Number(item.orderPrice).toLocaleString()}원</p>
-                                <p style={{ margin: '0', fontWeight: 'bold', color: '#333' }}>{(Number(item.orderPrice) * item.count).toLocaleString()}원</p>
-                            </div>
-
-                            <button onClick={() => deleteItem(itemId)} style={{ color: 'red', border: 'none', background: 'none', cursor: 'pointer' }}>삭제</button>
+                    {/* 📄 우측 메인 장바구니 제어 컨텐츠 피드 */}
+                    <main className="mypage-main-content" style={{ flex: 1, padding: '20px' }}>
+                        <div className="profile-icon-box">
+                            <div className="profile-avatar-circle">{member.name ? member.name +"님" : "U"}</div>
+                            <button className="mypage-action-btn" onClick={() => navigate('/mypage')}>라운지 홈</button>
                         </div>
-                    );
-                })
+
+                        {/* 🛒 인호님 오리지널 장바구니 전용 전체 감싸는 상자 박스 */}
+                        <div className="cart-container">
+                            <h1>{member?.name || member?.id || '고객'}님의 장바구니</h1>
+                            
+                            {/* [수정/추가 완료] 상단 전체 선택 바 레이아웃 배치 */}
+                            <div style={{display:'flex',alignItems:'center',padding:'10px 0', borderBottom:'2px solid #ccc', marginBottom:'15px'}}>
+                                <label style={{display:'flex',alignItems:'center',cursor:'pointer', marginRight:'15px'}}>
+                                    <input
+                                        type="checkbox"
+                                        onChange={(e) => handleAllCheck(e.target.checked)}
+                                        checked={selectedIds.length === cartItems.length && cartItems.length > 0}
+                                        style={{ width: '16px', height: '16px', accentColor: '#8C7A6B' }}
+                                    />
+                                    <span style={{marginLeft:'5px'}}>전체 선택 ({selectedIds.length}/{cartItems.length})</span>
+                                </label>
+
+                                {/* 전체 선택 삭제 버튼 : 선택된 개수가 0이면 클릭 불가 */}  
+                                <button
+                                    onClick={deleteSelectedItems}
+                                    disabled={selectedIds.length === 0}
+                                    style={{
+                                        padding:'5px 10px',
+                                        backgroundColor:selectedIds.length === 0 ? '#eee' : '#ff4d4f',
+                                        color:selectedIds.length === 0 ? '#999' : '#fff',
+                                        borderRadius:'4px',
+                                        border:'none',
+                                        cursor:selectedIds.length === 0 ? 'not-allowed' : 'pointer'
+                                    }}
+                                >
+                                    선택 삭제
+                                </button>
+                            </div>
+
+                            {/* 📦 인호님 오리지널 장바구니 데이터 행 루프 구역 */}
+                            <div className="cart-item-list-group">
+                                {cartItems.length === 0 ? (
+                                    <p style={{ textAlign: 'center', padding: '30px 0', color: '#8c7a6b' }}>장바구니가 비어 있습니다.</p>
+                                ) : (
+                                    cartItems.map(item => {
+                                        const itemId = item.cartItemId || item.cartitemId;
+                                        return (
+                                            <div key={itemId} className="cart-item" style={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #ddd', padding: '15px 0' }}>
+                                                
+                                                <input 
+                                                    type="checkbox" 
+                                                    checked={selectedIds.includes(itemId)}
+                                                    onChange={() => handleCheckElement(itemId)} 
+                                                    style={{ marginRight: '15px', width: '18px', height: '18px', cursor: 'pointer' }}
+                                                />
+
+                                                <img src={getUrl(item.imageUrl)} alt={item.itemName} style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '4px', marginRight: '15px' }} />
+
+                                                <div style={{ flex: 1 }}>
+                                                    <p style={{ margin: '0 0 10px 0' }}><strong>{item.itemName}</strong></p>
+                                                    <div className="quantity-box" style={{ display: 'flex', alignItems: 'center' }}>
+                                                        <button onClick={() => updateCount(itemId, item.count - 1)} style={{ padding: '2px 8px' }}>-</button>
+                                                        <span style={{ margin: '0 15px', fontWeight: 'bold' }}>{item.count}</span>
+                                                        <button onClick={() => updateCount(itemId, item.count + 1)} style={{ padding: '2px 8px' }}>+</button>
+                                                    </div>
+                                                </div>
+
+                                                <div style={{ textAlign: 'right', marginRight: '20px' }}>
+                                                    <p style={{ margin: '0 0 5px 0', color: '#888', fontSize: '13px' }}>개당 {Number(item.orderPrice).toLocaleString()}원</p>
+                                                    <p style={{ margin: '0', fontWeight: 'bold', color: '#333' }}>{(Number(item.orderPrice) * item.count).toLocaleString()}원</p>
+                                                </div>
+
+                                                <button onClick={() => deleteItem(itemId)} style={{ color: 'red', border: 'none', background: 'none', cursor: 'pointer' }}>삭제</button>
+                                            </div>
+                                        );
+                                    })
+                                )}
+                            </div>
+
+                            {/* [실시간 정산 연동 배지 마감] */}
+                            <div className="total-price-box" style={{ marginTop: '30px', borderTop: '2px solid #333', paddingTop: '20px', textAlign: 'right' }}>
+                                <h3>총 결제 예상 금액: <span style={{ color: '#d9534f', fontSize: '24px' }}>{totalOrderPrice.toLocaleString()}</span>원</h3>
+                            </div>
+
+                            <button onClick={handleOrder} style={{ marginTop: '20px', padding: '15px', backgroundColor: '#333', color: '#fff', border: 'none', cursor: 'pointer', width: '100%', fontSize: '16px', fontWeight: 'bold' }}>
+                                {selectedIds.length}개 상품 주문하기
+                            </button>
+                        </div>
+                    </main>
+                </div>
             )}
 
-            {/* [수정/추가 완료] 실시간 동적 변수 totalOrderPrice를 매핑하여 체크 해제나 수량 변경 시 금액이 무조건 실시간 동기화됨 */}
-            <div className="total-price-box" style={{ marginTop: '30px', borderTop: '2px solid #333', paddingTop: '20px', textAlign: 'right' }}>
-                <h3>총 결제 예상 금액: <span style={{ color: '#d9534f', fontSize: '24px' }}>{totalOrderPrice.toLocaleString()}</span>원</h3>
-            </div>
-
-            <button onClick={handleOrder} style={{ marginTop: '20px', padding: '15px', backgroundColor: '#333', color: '#fff', border: 'none', cursor: 'pointer', width: '100%', fontSize: '16px', fontWeight: 'bold' }}>
-                {selectedIds.length}개 상품 주문하기
-            </button>
+            {/* ========================================================= */}
+            {/* 🤎 [푸터 완벽 싱크] 하단 기업 정보 및 미니멀 카피라이트 마크업    */}
+            {/* ========================================================= */}
+            <footer className="mypage-footer">
+                <div className="footer-content">
+                    <p className="footer-logo">PROJECT CMYK</p>
+                    <p className="footer-info">주식회사 씨엠와이케이 | 공동 프로젝트 팀 | 경기도 수원시 팔달구</p>
+                    <p className="footer-copy">© 2026 PROJECT CMYK. All Rights Reserved.</p>
+                </div>
+            </footer>
         </div>
     );
 };
-
 
 export default Cart;

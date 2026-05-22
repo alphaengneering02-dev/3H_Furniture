@@ -11,6 +11,8 @@ const Mypage = () => {
     const [member, setMember] = useState(null);
     const [addresses, setAddresses] = useState([]);
     const [orders, setOrders] = useState([]);
+    const [isAllOrdersOpen, setIsAllOrdersOpen] = useState(false); // 구매내역 전체보기 토글
+
 
     //북마크 추가_오현옥
     const[showBookmarks, setShowBookmarks] = useState(false);
@@ -371,31 +373,47 @@ const Mypage = () => {
                                 <p><strong>이메일:</strong> {member.email || "-"}</p>
                             </div>
 
-                            <h3 id="refund-section" className="info-section-title">구매내역</h3>
+                            <h3 id="refund-section" className="info-section-title">
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    구매내역 
+                                    <span className="order-count-badge">총 {orders ? orders.length : 0}건</span>
+                                </div>
+                            <button type="button" className="mypage-action-btn" style={{ padding: '4px 10px', fontSize: '12px' }} onClick={() => setIsAllOrdersOpen(!isAllOrdersOpen)}>
+                                {isAllOrdersOpen ? "접기 ▲" : "전체보기 ▼"}
+                            </button>
+                           </h3>
+
                             
                             {/* [가로형 슬라이더 프레임 대치 구역] */}
-                            <div className="order-slider-wrapper">
-                                <button className="slider-arrow-btn prev" onClick={handlePrevSlide} disabled={currentSlideIndex === 0}>&lt;</button>
-                                <div className="order-slider-container">
-                                    <div className="order-slider-track" style={{ transform: `translateX(calc(-${currentSlideIndex * 25}% - ${currentSlideIndex * 4}px))` }}>
-                                        {orders && orders.length > 0 ? (
-                                            orders.map((order, index) => (
-                                                /* 낱개의 독립된 예쁜 정사각형 카드 인덱싱 */
-                                                <div key={order.orderId || order.id || index} className="order-square-card">
-                                                    <div>
-                                                        <p style={{ fontSize: '11px', color: '#8C7A6B', margin: '0 0 6px 0' }}>NO. {order.orderId || order.id}</p>
-                                                        <p style={{ fontSize: '14px', fontWeight: '700', margin: '0 0 8px 0' }}>{order.itemName || order.productName}</p>
-                                                        
-                                                        {/* [주문상태 이늄 컬러 완전 싱크 마감] */}
-                                                        <p style={{ fontSize: '12px', margin: '0 0 2px 0', fontWeight: '700',
-                                                            color: order.orderState === 'ORDER' ? '#5e4431' : 
-                                                                   order.orderState === 'READY' ? '#c45a00' : 
-                                                                   order.orderState === 'PURCHASED' ? '#0a5c36' : 
-                                                                   order.orderState === 'CANCEL' ? '#a82525' : 
-                                                                   order.orderState === 'EXCHANGEorREFUND' ? '#323e4f' : '#111111' 
-                                                        }}>
-                                                            <strong>상태:</strong> {order.orderState}
-                                                        </p>
+<div className="order-slider-wrapper">
+    <button className="slider-arrow-btn prev" onClick={handlePrevSlide} disabled={currentSlideIndex === 0}>&lt;</button>
+    <div className="order-slider-container">
+        
+        {/* 👇 딱 이 1줄(트랙 선언부)만 조건부 연산자로 스위칭 완료되었습니다! */}
+        <div 
+            className={`order-slider-track ${isAllOrdersOpen ? 'grid-view' : ''}`} 
+            style={isAllOrdersOpen ? { transform: 'none', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '16px', width: '100%' } : { transform: `translateX(calc(-${currentSlideIndex * 25}% - ${currentSlideIndex * 4}px))` }}
+        >
+
+            {orders && orders.length > 0 ? (
+                orders.map((order, index) => (
+                    /* 낱개의 독립된 예쁜 정사각형 카드 인덱싱 */
+                    <div key={order.orderId || order.id || index} className="order-square-card">
+                        <div>
+                            <p style={{ fontSize: '11px', color: '#8C7A6B', margin: '0 0 6px 0' }}>NO. {order.orderId || order.id}</p>
+                            <p style={{ fontSize: '14px', fontWeight: '700', margin: '0 0 8px 0' }}>{order.itemName || order.productName}</p>
+                            
+                            {/* [주문상태 이늄 컬러 완전 싱크 마감] */}
+                            <p style={{ fontSize: '12px', margin: '0 0 2px 0', fontWeight: '700',
+                                color: order.orderState === 'ORDER' ? '#5e4431' : 
+                                       order.orderState === 'READY' ? '#c45a00' : 
+                                       order.orderState === 'PURCHASED' ? '#0a5c36' : 
+                                       order.orderState === 'CANCEL' ? '#a82525' : 
+                                       order.orderState === 'EXCHANGEorREFUND' ? '#323e4f' : '#111111' 
+                            }}>
+                                <strong>상태:</strong> {order.orderState}
+                            </p>
+
                                                         
                                                         {/* [배송상태 이늄 컬러 완전 싱크 마감] */}
                                                         <p style={{ fontSize: '12px', margin: '0 0 2px 0', fontWeight: '700',
