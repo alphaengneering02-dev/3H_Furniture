@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Link } from "react-router-dom";
 import axios from 'axios';
 import AddCompany from './AddCompany';
+import AllOrderboard from './AllOrderboard';
 import Orderboard from './Orderboard';
 import AdminMemoDay from './AdminMemoDay';
 import Ranking from './Ranking';
@@ -246,13 +247,27 @@ const fetchDeliveries = async () => {
                     <button>상품 수정/삭제</button>
                 </div>
 
-                
+                <AllOrderboard 
+                    orders={orders}
+                    items={items}
+                    handleDriverSelect={handleDriverSelect}
+                    handleAssignDriver={handleAssignDriver}
+                    handleStatusChange={handleStatusChange}
+                />
 
 <div className="admin-content-box">
     
-   
     <div className="admin-content-title-bar">
-        <h3>배송 파트너</h3>        
+        {/* h3 태그와 버튼이 가로로 배치되도록 구성 */}
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+            <h3>배송 파트너</h3>         
+            <Link to="/admin/driver" style={{ marginLeft: '12px' }}>
+                <button className="admin-add-driver-btn" style={{ padding: '4px 10px', fontSize: '14px' }}>
+                    기사 페이지 이동
+                </button>
+            </Link>
+        </div>
+
         <div className="admin-header-actions">          
             <div className="admin-excel-upload-wrapper">
                 <span className="excel-label">엑셀 등록:</span>
@@ -264,73 +279,56 @@ const fetchDeliveries = async () => {
             </Link>
         </div>
     </div>
-<div className="driver-table-wrapper">
 
-                    <table className="admin-table-style">
-                        <thead>
-                            <tr>
-                                <th>회사</th>
-                                <th>기사명</th>
-                                <th>연락처</th>
-                                <th>상태</th>
-                                <th>관리</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            
-
-                            {items.length === 0 ? (
-                                
-                                <tr>
-                                    <td colSpan="5">
-                                        등록된 기사가 없습니다.
-                    </td>
+    <div className="driver-table-wrapper">
+        <table className="admin-table-style">
+            <thead>
+                <tr>
+                    <th>회사</th>
+                    <th>기사명</th>
+                    <th>연락처</th>
+                    <th>상태</th>
+                    <th>관리</th>
                 </tr>
-            ) : (
-                items.map((item) => (
-                    <tr key={item.deliveryId}>
-                        <td>
-                            {item.companyName || item.businessName || "회사 정보 없음"}
-                        </td>
+            </thead>
 
-                        <td>
-                            {item.deliveryName}
-                        </td>
-
-            
-                        <td>
-                            {item.deliveryPhone}
-                        </td>
-
-                        <td>
-                            <b style={{
-                                color: item.status === 'WAITING' ? 'blue' : 'black'
-                            }}>
-                                {item.status}
-                            </b>
-                        </td>
-
-                        {/* 5. 관리 버튼 */}
-                        <td>
-                            <button 
-                                onClick={() => handleEditDelivery(item.deliveryId)}
-                                style={{ marginRight: '5px', padding: '2px 8px', cursor: 'pointer' }}
-                            >
-                                수정
-                            </button>
-                            <button 
-                                onClick={() => handleDeleteDelivery(item.deliveryId)}
-                                style={{ padding: '2px 8px', color: 'red', cursor: 'pointer' }}
-                            >
-                                삭제
-                            </button>
-                        </td>
+            <tbody>
+                {items.length === 0 ? (
+                    <tr>
+                        <td colSpan="5">등록된 기사가 없습니다.</td>
                     </tr>
-                ))
-            )}
-        </tbody>
-    </table>
+                ) : (
+                    items.map((item) => (
+                        <tr key={item.deliveryId}>
+                            <td>
+                                {item.companyName || item.businessName || "회사 정보 없음"}
+                            </td>
+                            <td>{item.deliveryName}</td>
+                            <td>{item.deliveryPhone}</td>
+                            <td>
+                                <b style={{ color: item.status === 'WAITING' ? 'blue' : 'black' }}>
+                                    {item.status}
+                                </b>
+                            </td>
+                            <td>
+                                <button 
+                                    onClick={() => handleEditDelivery(item.deliveryId)}
+                                    style={{ marginRight: '5px', padding: '2px 8px', cursor: 'pointer' }}
+                                >
+                                    수정
+                                </button>
+                                <button 
+                                    onClick={() => handleDeleteDelivery(item.deliveryId)}
+                                    style={{ padding: '2px 8px', color: 'red', cursor: 'pointer' }}
+                                >
+                                    삭제
+                                </button>
+                            </td>
+                        </tr>
+                    ))
+                )}
+            </tbody>
+        </table>
     </div>
 </div>
 

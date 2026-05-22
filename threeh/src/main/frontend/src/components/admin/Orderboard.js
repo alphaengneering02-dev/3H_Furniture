@@ -1,646 +1,177 @@
-import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-import { useDriverAuto } from './DriverAuto';
+import React, { useState } from 'react';
 import '../../css/adminCss/AdminDashboard.css';
-
-const getOrderStateStyle = (orderState, deliveryStatus) => {
-
-    // 배송 상태가 WAITING이면 READY 색 제거하고 WAITING 우선
-    if (deliveryStatus === 'WAITING') {
-        return {
-            color: '#7B1FA2',
-            fontWeight: 'bold'
-        };
-    }
-
-    switch(orderState) {
-        case 'ORDER':
-        case '주문':
-            return { color: '#1976D2', fontWeight: 'bold' };
-        case 'READY':
-        case '배송 준비중':
-            return { color: '#F57C00', fontWeight: 'bold' };
-        case 'PURCHASED':
-            return { color: '#2E7D32', fontWeight: 'bold' };
-        case 'EXCHANGEorREFUND':
-            return { color: '#E65100', fontWeight: 'bold' };
-        case 'CANCEL':
-            return { color: '#C62828', fontWeight: 'bold' };
-        default:
-            return { color: '#555' };
-    }
-};
-
-const getDeliveryStatusStyle = (status) => {
-    switch(status) {
-        case 'WAITING':
-            return { color: '#7B1FA2', fontWeight: 'bold' };
-        case 'SHIPPING':
-            return { color: '#009688', fontWeight: 'bold' };
-        case 'COMPLETED':
-            return { color: '#616161', fontWeight: 'bold' };
-        case 'REJECTED':
-            return { color: '#D32F2F', fontWeight: 'bold' };
-        case 'PICKUP':
-            return { color: '#E040FB', fontWeight: 'bold' };
-        default:
-            return { color: '#777' };
-    }
-};
-
-const MemberNameCell = ({ memberName }) => {
-    const displayName = memberName ? memberName : '비회원';  
-    return <span>{displayName}</span>;
-};
-
-const OrderMemberInfoCell = ({ memberId, type }) => {
-    const [info, setInfo] = useState({ phone: '조회 중...', email: '조회 중...' });
-
-    useEffect(() => {
-        if (!memberId) {
-            setInfo({ phone: '비회원', email: '비회원' });
-            return;
-        }
-        
-        axios.get(`/api/member/seq/${memberId}`, { withCredentials: true })
-            .then(res => {
-                const rawEmail = res.data?.email || '';
-                const rawPhone = res.data?.phone || '번호 없음';
-
-                if (rawEmail.includes('kakao')) {
-                    
-                    setInfo({
-                        phone: 'kakao',
-                        email: 'kakao'
-                    });
-                } else {
-                    // 일반 유저라면 기존 데이터 그대로 세팅
-                    setInfo({
-                        phone: rawPhone,
-                        email: rawEmail || '이메일 없음'
-                    });
-                }
-            })
-            .catch((err) => {
-                console.error(`${memberId}번 회원 조회 실패:`, err.response || err);
-                setInfo({ phone: '확인 불가', email: '확인 불가' });
-            });
-    }, [memberId]);
-
-    return <span>{type === 'email' ? info.email : info.phone}</span>;
-};
-
-/* =======================================================
-   재사용 가능한 페이지네이션 UI 컴포넌트
-======================================================= */
-const TablePagination = ({ totalItems, itemsPerPage, setItemsPerPage, currentPage, setCurrentPage }) => {
-    const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
-
-    const handlePageChange = (page) => {
-        if (page >= 1 && page <= totalPages) {
-            setCurrentPage(page);
-        }
-    };
-
-    return (
-        <div className="admin-pagination-container">
-            <button onClick={() => handlePageChange(1)} disabled={currentPage === 1}>&lt;&lt;</button>
-            <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>&lt;</button>
-            
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map(pageNum => (
-                <button
-                    key={pageNum}
-                    onClick={() => handlePageChange(pageNum)}
-                    className={currentPage === pageNum ? "admin-active-page" : ""}
-                >
-                    {pageNum}
-                </button>
-            ))}
-             {/* 다음 (>) */}
-            <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>&gt;</button>
-            {/* 끝으로 (>>) */}
-            <button onClick={() => handlePageChange(totalPages)} disabled={currentPage === totalPages}>&gt;&gt;</button>
-        </div>
-    );
-};
-
 
 const Orderboard = ({
     orders = [],
     items = [],
     selectedDrivers = {},
     handleDriverSelect,
-    handleAssignDriver,
-    handleStatusChange
+    handleAssignDriver
 }) => {
-
-
-    const [selectedOrderIds, setSelectedOrderIds] = useState([]);
-
-    /* 각 테이블별 독립 상태 관리 */
-    const [perPage1, setPerPage1] = useState(5); const [page1, setPage1] = useState(1);
+    /* 각 테이블별 페이지 기본값 */
     const [perPage2, setPerPage2] = useState(5); const [page2, setPage2] = useState(1);
     const [perPage3, setPerPage3] = useState(5); const [page3, setPage3] = useState(1);
     const [perPage4, setPerPage4] = useState(5); const [page4, setPage4] = useState(1);
     const [perPage5, setPerPage5] = useState(5); const [page5, setPage5] = useState(1);
     const [perPage6, setPerPage6] = useState(5); const [page6, setPage6] = useState(1);
 
-    const { handleAutoAssign } = useDriverAuto({
-        orders,
-        items,
-        selectedOrderIds,
-        setSelectedOrderIds,
-        handleDriverSelect,
-        handleAssignDriver
-    });
-
-
-    const renderItemName = (items) => {
-        if (!items || items.length === 0) return '';
-
-        const firstName = items[0].itemName;
-        const extraCount = items.length - 1;
-
-        return extraCount > 0
-            ? `${firstName} 외 ${extraCount}개 상품`
-            : firstName;
+    const renderItemName = (itemsList) => {
+        if (!itemsList || itemsList.length === 0) return '';
+        const firstName = itemsList[0].itemName;
+        const extraCount = itemsList.length - 1;
+        return extraCount > 0 ? `${firstName} 외 ${extraCount}개 상품` : firstName;
     };
 
-        // 1. 주문 목록: 주문 취소나 구매 완료가 되지않은 모든 주문 목록
-    const masterOrders = orders.filter(o => o.orderState === '주문' || o.orderState === 'ORDER');
-    const selectableOrders = masterOrders.filter(o => o.deliveryStatus !== 'COMPLETED');
-
-    // 2. 배송 미배정: 관리자가 'READY'로 바꿨지만, 아직 기사를 안 붙인 주문
-   const unassignedOrders = orders.filter(o => {   
-    const isReady = o.orderState === 'READY' || o.orderState === '배송 준비중';
-    
-    // 핵심: deliveryId가 아예 없거나, 
-    // 기사 ID는 들어가있지만 아직 수락을 안 해서 deliveryStatus가 null인 경우 둘 다 미배정 탭에 노출!
-    const isUnassignedOrRejected = 
-        !o.deliveryId || 
-        o.deliveryStatus === null || 
-        o.deliveryStatus === 'REJECTED'; 
-    
-    return isReady && isUnassignedOrRejected;
-});
-
-        //리로드 넣고 수정
-        // const orderRes = await axios.get(`/admin/driver/${res.data.deliveryId}/orders`);
-        //     const dbOrders = orderRes.data;
-            
-        //     setOrders(dbOrders.filter(o => o.deliveryStatus === 'WAITING'));
-        //     setShippingOrders(dbOrders.filter(o => o.deliveryStatus === 'SHIPPING'));
- 
-
-    // 3. 배송 배정 완료 목록: 기사가 배정되어 있고 배송 상태가 정확히 'WAITING'인 건
+    // 배송 프로세스별 필터링 정의
     const assignedOrders = orders.filter(o => o.deliveryId && o.deliveryStatus === 'WAITING');
-
-    // 4. 배송 진행 중 목록: 배송 상태가 'SHIPPING'인 건
+    const unassignedOrders = orders.filter(o => {   
+        const isReady = o.orderState === 'READY' || o.orderState === '배송 준비중';
+        const isUnassignedOrRejected = !o.deliveryId || o.deliveryStatus === null || o.deliveryStatus === 'REJECTED'; 
+        return isReady && isUnassignedOrRejected;
+    });
     const shippingOrders = orders.filter(o => o.deliveryStatus === 'SHIPPING');
+    const pickupOrders = orders.filter(o => o.deliveryStatus === 'COMPLETED' && (o.orderState === 'EXCHANGE' || o.orderState === 'CANCEL'));
+    const completedOrders = orders.filter(o => o.deliveryStatus === 'COMPLETED' && o.orderState !== 'EXCHANGE' && o.orderState !== 'CANCEL');
 
-    //추가 교환 취소로 인한 픽업
-    const pickupOrders = orders.filter(o => 
-        o.deliveryStatus === 'COMPLETED' && (o.orderState === 'EXCHANGE' || o.orderState === 'CANCEL')
-    );
-
-    // 5. 최종 배송 완료 목록: 배송 상태가 'COMPLETED'인 건
-    const completedOrders = orders.filter(o => 
-        o.deliveryStatus === 'COMPLETED' && o.orderState !== 'EXCHANGE' && o.orderState !== 'CANCEL'
-    );
-
-/* 페이지 자르기(Slice) 데이터 */
-    const pagedOrders = orders.slice((page1 - 1) * perPage1, page1 * perPage1);
+    // Slice 작업
     const pagedAssigned = assignedOrders.slice((page2 - 1) * perPage2, page2 * perPage2);
     const pagedUnassigned = unassignedOrders.slice((page3 - 1) * perPage3, page3 * perPage3);
     const pagedShipping = shippingOrders.slice((page4 - 1) * perPage4, page4 * perPage4);
     const pagedPickup = pickupOrders.slice((page5 - 1) * perPage5, page5 * perPage5);
     const pagedCompleted = completedOrders.slice((page6 - 1) * perPage6, page6 * perPage6);
 
-    const renderOrderType = (type) => {
-        if (type === 'DELIVERY_WITH_INSTALLATION') return '*설치 배송*';
-        if (type === 'DELIVERY_ONLY') return '*일반 배송*';
-        return type || '-';
-    };
-
-const renderDeliveryStatus = (status) => {
-        if (status === 'WAITING') return '배송 대기 (WAITING)';
-        if (status === 'SHIPPING') return '배송중 (SHIPPING)';
-        if (status === 'COMPLETED') return '배송 완료 (COMPLETED)';
-        if (status === 'REJECTED') return '배송 거절 (REJECTED)';
-        if (status === 'PICKUP') return '회수/픽업 (PICKUP)';
-        return status || '-';
-    };
-
-// 개별 체크박스 변경 핸들러
-    const handleCheckOrder = (orderId) => {
-        setSelectedOrderIds(prev => 
-            prev.includes(orderId) 
-                ? prev.filter(id => id !== orderId) 
-                : [...prev, orderId]
-        );
-    };
-
-    // ✨ 전체 선택/해제 핸들러 수정 (ORDER 상태인 주문만 선택되도록 제한)
-    const handleAllCheck = (e) => {
-    if (e.target.checked) {
-        const activeIds = selectableOrders.map(o => o.orderId);
-        setSelectedOrderIds(activeIds);
-    } else {
-        setSelectedOrderIds([]);
-    }
-};
-
-    // 선택된 주문들을 일괄 'READY'로 변경하는 핸들러
-    const handleBulkReady = () => {
-        if (selectedOrderIds.length === 0) {
-            alert('변경할 주문을 선택해주세요.');
-            return;
-        }
-
-        if (window.confirm(`선택한 ${selectedOrderIds.length}건의 주문을 '상품준비완료(READY)' 상태로 변경하시겠습니까?`)) {
-            selectedOrderIds.forEach(orderId => {
-                handleStatusChange(orderId, 'READY');
-            });
-            setSelectedOrderIds([]);
-        }
-    };
-
-    const handlePerPageChange = (setterPerPage, setterPage, value) => {
-        setterPerPage(Number(value));
-        setterPage(1);
-    };
-
-
     return (
         <div>
-
-            {/* 주문 목록 */}
-                <div className="admin-content-box">
-                    <div className="admin-content-title-bar">
-                    <h3>주문 목록 (전체 접수 건)</h3>
-                {/* 💡 일괄 변경 버튼 추가 */}
-                <div>
-                    <select value={perPage1} onChange={(e) => handlePerPageChange(setPerPage1, setPage1, e.target.value)}>
-                            <option value={5}>5개씩 보기</option>
-                            <option value={10}>10개씩 보기</option>
-                            <option value={15}>15개씩 보기</option>
-                        </select>
-                    </div>
-                </div>
-                <div className="admin-action-button-group">
-                    <button onClick={handleBulkReady}>
-                        선택 상품 준비 완료 처리 ({selectedOrderIds.length}건)
-                    </button>
-                    <button onClick={handleAutoAssign}>
-                        선택 상품 자동 배정 ({selectedOrderIds.length}건)
-                    </button>
-                </div>
-
-                <div className="admin-table-scroll">
-                <table className="admin-table-style">
-                    <thead>
-                        <tr>
-                            <th>
-                                <input 
-                                type="checkbox" 
-                                onChange={handleAllCheck}
-                                checked={selectableOrders.length > 0 && selectableOrders.every(o => selectedOrderIds.includes(o.orderId))
-                                }/>
-                            </th>
-                            <th>주문 번호</th>
-                            <th>주문자</th>
-                            <th>연락처</th>
-                            <th>E-mail</th>
-                            <th>상품</th>
-                            <th>수량</th>                            
-                            <th>주문 타입</th>
-                            <th>주소</th>
-                            <th>주문 상태</th>
-                            <th>배송 상태</th>
-                            <th>주문일</th>
-                            <th>배송 신청일</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-    {pagedOrders.map((order, index) => {
-        
-        const exactMemberId = order.MEMBER_ID || order.memberId || order.member_id;
-
-        return (
-            <tr key={order.orderId || order.ORDER_ID}>
-                <td>
-                    <input 
-                        type="checkbox" 
-                        checked={selectedOrderIds.includes(order.orderId || order.ORDER_ID)}
-                        onChange={() => handleCheckOrder(order.orderId || order.ORDER_ID)}
-                    />
-                </td>
-                <td>{order.orderId}</td>
-
-                <td>
-                    <strong>
-                        <MemberNameCell memberName={order.memberName || order.MEMBER_NAME} />
-                    </strong>
-                </td>
-
-                <td>
-                    <OrderMemberInfoCell memberId={exactMemberId} type="phone" />
-                </td>
-                <td>
-                    <OrderMemberInfoCell memberId={exactMemberId} type="email" />
-                </td>
-
-                <td>{renderItemName(order.orderitems || order.orderItems || order.ORDERITEMS)}</td>
-                <td>
-                    {(order.orderitems || order.orderItems || order.ORDERITEMS)?.reduce((sum, item) => sum + (item.count || item.COUNT || 0), 0) || 0}개
-                </td>
-                <td>{renderOrderType(order.orderType || order.ORDER_TYPE)}</td>
-                <td>{order.deliveryAddr || order.DELIVERY_ADDR} {order.deliveryAddrDetail || order.DELIVERY_ADDR_DETAIL}</td>
-                <td>
-                    <span style={getOrderStateStyle(order.orderState || order.ORDER_STATE, order.deliveryStatus || order.DELIVERY_STATUS)}>
-                        {order.orderState || order.ORDER_STATE}
-                    </span>
-                </td>
-                <td>
-                    <span style={getDeliveryStatusStyle(order.deliveryStatus || order.DELIVERY_STATUS)}>
-                        {renderDeliveryStatus(order.deliveryStatus || order.DELIVERY_STATUS)}
-                    </span>
-                </td>
-                <td>{(order.orderDate || order.ORDER_DATE)?.split('T')[0]}</td>
-                <td>{order.installDate}</td>
-            </tr>
-        );
-    })}
-</tbody>
-                </table>
-
-                <TablePagination
-    totalItems={orders.length}
-    itemsPerPage={perPage1}
-    setItemsPerPage={setPerPage1}
-    currentPage={page1}
-    setCurrentPage={setPage1}
-/>
-            </div>
-            </div>
-
-            {/* 배송 배정 완료 */}
-            <div>
-                <h3>배송 배정 완료 목록</h3>
-
-                <table className="admin-table-style">
-                    <thead>
-                        <tr>
-                            <th>번호</th>
-                            <th>상품</th>
-                            <th>주소</th>
-                            <th>배정된 기사</th>
-                            <th>상태</th>
-                            <th>주문일</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                       {orders
-                .filter(order => order.deliveryId && order.deliveryStatus === 'WAITING')
-                .map((order, index) => (
-                    <tr key={order.orderId}>
-                        <td>{(page1 - 1) * perPage1 + index + 1}</td>
-                        <td>{renderItemName(order.orderitems)}</td>
-                        <td>{order.deliveryAddr} {order.deliveryAddrDetail}</td>
-                        <td>
-                            <strong>
-                                {items.find(d => d.deliveryId === Number(order.deliveryId))?.deliveryName || "지정 기사"}
-                            </strong>
-                        </td>
-                        <td>
-                            <span>배송 대기중 (수락 확인)</span>
-                        </td>
-                        <td>{order.orderDate?.split('T')[0]}</td>
-                    </tr>
-                ))}
-            {orders.filter(order => order.deliveryId && order.deliveryStatus === 'WAITING').length === 0 && (
-                <tr><td colSpan="6">배정 완료된 주문이 없습니다.</td></tr>
-            )}
-        </tbody>
-                </table>
-            </div>
-
-            {/* 배송 미배정 */}
-            <div>
-                <h3>배송 미배정</h3>
-                <table className="admin-table-style">
-                    <thead>
-                        <tr>
-                            <th>번호</th>
-                            <th>상품</th>
-                            <th>수량</th>
-                            <th>주소</th>
-                            <th>기사 배정 및 상태</th>
-                            <th>주문일</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                       {unassignedOrders.length > 0 ? unassignedOrders.map((order, index) => {
-    const currentItems = order.orderitems || order.orderItems || [];
-                            return (
-                                <tr key={order.orderId}>
-            <td>{index + 1}</td>
-            <td>{renderItemName(currentItems)}</td>
-            {/* 수량 계산 시 안전하게 구문 작성 */}
-            <td>{Array.isArray(currentItems) ? currentItems.reduce((sum, i) => sum + (i.count || 0), 0) : 0}개</td>
-            <td>{order.deliveryAddr} {order.deliveryAddrDetail}</td>
-            <td>
-                {/* 기사는 지정되었으나 아직 기사가 수락/거절을 안 한 상태 (!deliveryStatus 또는 'WAITING'인데 아직 수락 전인지 확인 필요) */}
-                {order.deliveryId && (!order.deliveryStatus || order.deliveryStatus === 'WAITING_FOR_ACCEPT') ? (
-                    <div>
-                        <strong>{items.find(d => d.deliveryId === Number(order.deliveryId))?.deliveryName} 기사님 </strong>
-                        <span>
-                            배송 대기중 (수락 대기중)
-                        </span>
-                    </div>
-                ) : (
-                    <>
-                        <select
-                            value={selectedDrivers[order.orderId] || ""}
-                            onChange={(e) => handleDriverSelect(order.orderId, e.target.value)}
-                        >
-                            <option value="">기사 선택</option>
-                            {items.map(driver => (
-                                <option key={driver.deliveryId} value={driver.deliveryId}>
-                                    {driver.deliveryName}
-                                </option>
-                            ))}
-                        </select>
-                        <button onClick={() => handleAssignDriver(order.orderId)}>
-                            {order.deliveryStatus === 'REJECTED' ? '재배정' : '배정'}
-                        </button>
-                        {order.deliveryStatus === 'REJECTED' && (
-                            <span>
-                                (기사가 거절한 주문입니다)
-                            </span>
-                        )}
-                    </>
-                )}
-            </td>
-            <td>{order.orderDate?.split('T')[0]}</td>
-        </tr>
-    );
-}) : (
-    <tr><td colSpan="6">배정할 주문이 없습니다.</td></tr>
-)}
-                    </tbody>
-                </table>
-            </div>
-             {/* 배송 완료 status(COMPLETED)*/}
-                <div>
-                    <h3>🚚 배송 진행 중 목록</h3>
-                <table className="admin-table-style">
-                    <thead>
-                        <tr>
-                            <th>번호</th>
-                            <th>상품</th>
-                            <th>수량</th>
-                            <th>주소</th>
-                            <th>배정 기사</th>
-                            <th>상태</th>
-                            <th>주문일</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {orders
-                            .filter(order => order.deliveryStatus === 'SHIPPING')
-                            .map((order, index) => (
-                                <tr key={order.orderId}>
-                                    <td>{index + 1}</td>
-                                    <td>{renderItemName(order.orderitems)}</td>
-                                    <td>
-                                        {order.orderitems?.reduce((sum, item) => sum + item.count, 0) || 0}개
-                                    </td>
-                                    <td>{order.deliveryAddr} {order.deliveryAddrDetail}</td>
-                                    <td>
-                                        <strong>
-                                            {items.find(d => d.deliveryId === Number(order.deliveryId))?.deliveryName || "배정 기사"}
-                                        </strong>
-                                    </td>
-                                    <td>
-                                        <span>배송중</span>
-                                    </td>
-                                    <td>{order.orderDate?.split('T')[0]}</td>
-                                </tr>
-                            ))}
-                        {orders.filter(order => order.deliveryStatus === 'SHIPPING').length === 0 && (
-                            <tr>
-                                <td colSpan="7">
-                                    현재 도로 위에서 배송 중인 주문이 없습니다.
-                                </td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
-            </div>
-
-            {/* ✨ 추가 반품/교환 픽업 신청 목록 (새로 추가된 섹션) */}
+            {/* [배송 미배정] */}
             <div className="admin-content-box">
-                <h3>🔄 반품/교환 픽업 신청 목록</h3>
+                <h3>배송 미배정[O.S=READY,D.S=NULL인 ordersDB]</h3>
                 <table className="admin-table-style">
-                    <thead>
-                        <tr>
-                            <th>번호</th>
-                            <th>상품</th>
-                            <th>수량</th>
-                            <th>회수 주소</th>
-                            <th>주문 상태</th>
-                            <th>기사 배정 및 픽업 신청</th>
-                            <th>주문일</th>
-                        </tr>
-                    </thead>
+                    <thead><tr><th>번호</th><th>상품</th><th>수량</th><th>주소</th><th>기사 배정 및 상태</th><th>주문일</th></tr></thead>
                     <tbody>
-                        {pickupOrders.length > 0 ? pickupOrders.map((order, index) => {
+                        {pagedUnassigned.length > 0 ? pagedUnassigned.map((order, index) => {
                             const currentItems = order.orderitems || order.orderItems || [];
                             return (
                                 <tr key={order.orderId}>
-                                    <td>{index + 1}</td>
+                                    <td>{(page3 - 1) * perPage3 + index + 1}</td>
                                     <td>{renderItemName(currentItems)}</td>
                                     <td>{currentItems.reduce((sum, i) => sum + (i.count || 0), 0)}개</td>
                                     <td>{order.deliveryAddr} {order.deliveryAddrDetail}</td>
                                     <td>
-                                        <span>
-                                            {order.orderState === 'EXCHANGE' ? '교환 접수' : '취소 접수'}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <select value={selectedDrivers[order.orderId] || ""} onChange={(e) => handleDriverSelect(order.orderId, e.target.value)}>
-                                            <option value="">픽업 기사 선택</option>
-                                            {items.map(driver => (
-                                                <option key={driver.deliveryId} value={driver.deliveryId}>{driver.deliveryName}</option>
-                                            ))}
-                                        </select>
-                                        <button 
-                                            onClick={() => {
-                                                handleAssignDriver(order.orderId);
-                                            }}>
-                                            픽업 배정
-                                        </button>
+                                        {order.deliveryId && (!order.deliveryStatus || order.deliveryStatus === 'WAITING_FOR_ACCEPT') ? (
+                                            <div>
+                                                <strong>{items.find(d => d.deliveryId === Number(order.deliveryId))?.deliveryName} 기사님 </strong>
+                                                <span>수락 대기중</span>
+                                            </div>
+                                        ) : (
+                                            <>
+                                                <select value={selectedDrivers[order.orderId] || ""} onChange={(e) => handleDriverSelect(order.orderId, e.target.value)}>
+                                                    <option value="">기사 선택</option>
+                                                    {items.map(driver => <option key={driver.deliveryId} value={driver.deliveryId}>{driver.deliveryName}</option>)}
+                                                </select>
+                                                <button onClick={() => handleAssignDriver(order.orderId)}>{order.deliveryStatus === 'REJECTED' ? '재배정' : '배정'}</button>
+                                            </>
+                                        )}
                                     </td>
                                     <td>{order.orderDate?.split('T')[0]}</td>
                                 </tr>
                             );
-                        }) : (
-                            <tr><td colSpan="7">현재 반품/교환 회수 대상 주문이 없습니다.</td></tr>
-                        )}
+                        }) : <tr><td colSpan="6">배정할 주문이 없습니다.</td></tr>}
                     </tbody>
                 </table>
             </div>
 
-            {/* 4. ✅ 배송 완료 목록 (COMPLETED) */}
+            {/* [배송 배정 완료 목록] */}
             <div className="admin-content-box">
-                <h3>✅ 최종 배송 완료 목록</h3>
+                <h3>배송 배정 완료 목록[O.S=READY,D.S=WAITING인 ordersDB]</h3>
                 <table className="admin-table-style">
-                    <thead>
-                        <tr>
-                            <th>번호</th>
-                            <th>상품</th>
-                            <th>수량</th>
-                            <th>주소</th>
-                            <th>담당 기사</th>
-                            <th>상태</th>
-                            <th>주문일</th>
-                        </tr>
-                    </thead>
+                    <thead><tr><th>번호</th><th>상품</th><th>주소</th><th>배정된 기사</th><th>상태</th><th>주문일</th></tr></thead>
                     <tbody>
-                        {orders
-                            .filter(order => order.deliveryStatus === 'COMPLETED')
-                            .map((order, index) => (
+                        {pagedAssigned.map((order, index) => (
+                            <tr key={order.orderId}>
+                                <td>{(page2 - 1) * perPage2 + index + 1}</td>
+                                <td>{renderItemName(order.orderitems)}</td>
+                                <td>{order.deliveryAddr} {order.deliveryAddrDetail}</td>
+                                <td><strong>{items.find(d => d.deliveryId === Number(order.deliveryId))?.deliveryName || "지정 기사"}</strong></td>
+                                <td><span>배송 대기중</span></td>
+                                <td>{order.orderDate?.split('T')[0]}</td>
+                            </tr>
+                        ))}
+                        {assignedOrders.length === 0 && <tr><td colSpan="6">배정 완료된 주문이 없습니다.</td></tr>}
+                    </tbody>
+                </table>
+            </div>
+
+            {/* [배송 진행 중 목록] */}
+            <div className="admin-content-box">
+                <h3>🚚 배송 진행 중 목록[O.S=READY,D.S=SHIPPING인 ordersDB]</h3>
+                <table className="admin-table-style">
+                    <thead><tr><th>번호</th><th>상품</th><th>수량</th><th>주소</th><th>배정 기사</th><th>상태</th><th>주문일</th></tr></thead>
+                    <tbody>
+                        {pagedShipping.map((order, index) => (
+                            <tr key={order.orderId}>
+                                <td>{(page4 - 1) * perPage4 + index + 1}</td>
+                                <td>{renderItemName(order.orderitems)}</td>
+                                <td>{order.orderitems?.reduce((sum, item) => sum + item.count, 0) || 0}개</td>
+                                <td>{order.deliveryAddr} {order.deliveryAddrDetail}</td>
+                                <td><strong>{items.find(d => d.deliveryId === Number(order.deliveryId))?.deliveryName || "배정 기사"}</strong></td>
+                                <td><span>배송중</span></td>
+                                <td>{order.orderDate?.split('T')[0]}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+
+            {/* [최종 배송 완료 목록] */}
+            <div className="admin-content-box">
+                <h3>✅ 최종 배송 완료 목록[O.S=PURCHASED,D.S=COMPLETED인 ordersDB]</h3>
+                <table className="admin-table-style">
+                    <thead><tr><th>번호</th><th>상품</th><th>수량</th><th>주소</th><th>담당 기사</th><th>상태</th><th>주문일</th></tr></thead>
+                    <tbody>
+                        {pagedCompleted.map((order, index) => (
+                            <tr key={order.orderId}>
+                                <td>{(page6 - 1) * perPage6 + index + 1}</td>
+                                <td>{renderItemName(order.orderitems)}</td>
+                                <td>{order.orderitems?.reduce((sum, item) => sum + item.count, 0) || 0}개</td>
+                                <td>{order.deliveryAddr} {order.deliveryAddrDetail}</td>
+                                <td><span>{items.find(d => d.deliveryId === Number(order.deliveryId))?.deliveryName || "담당 기사"}</span></td>
+                                <td><span>배송완료</span></td>
+                                <td>{order.orderDate?.split('T')[0]}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+
+            {/* [반품/교환 픽업 신청 목록] */}
+            <div className="admin-content-box">
+                <h3>🔄 반품/교환 픽업 신청 목록[O.S=EXCHANGEorREFUND/CANCEL,D.S=COMPLETED/PICKUP인 ordersDB]</h3>
+                <table className="admin-table-style">
+                    <thead><tr><th>번호</th><th>상품</th><th>수량</th><th>회수 주소</th><th>주문 상태</th><th>기사 배정 및 픽업 신청</th><th>주문일</th></tr></thead>
+                    <tbody>
+                        {pagedPickup.length > 0 ? pagedPickup.map((order, index) => {
+                            const currentItems = order.orderitems || order.orderItems || [];
+                            return (
                                 <tr key={order.orderId}>
-                                    <td>{index + 1}</td>
-                                    <td>{renderItemName(order.orderitems)}</td>
-                                    <td>
-                                        {order.orderitems?.reduce((sum, item) => sum + item.count, 0) || 0}개
-                                    </td>
+                                    <td>{(page5 - 1) * perPage5 + index + 1}</td>
+                                    <td>{renderItemName(currentItems)}</td>
+                                    <td>{currentItems.reduce((sum, i) => sum + (i.count || 0), 0)}개</td>
                                     <td>{order.deliveryAddr} {order.deliveryAddrDetail}</td>
+                                    <td><span>{order.orderState === 'EXCHANGE' ? '교환 접수' : '취소 접수'}</span></td>
                                     <td>
-                                        <span>
-                                            {items.find(d => d.deliveryId === Number(order.deliveryId))?.deliveryName || "담당 기사"}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span>배송완료</span>
+                                        <select value={selectedDrivers[order.orderId] || ""} onChange={(e) => handleDriverSelect(order.orderId, e.target.value)}>
+                                            <option value="">픽업 기사 선택</option>
+                                            {items.map(driver => <option key={driver.deliveryId} value={driver.deliveryId}>{driver.deliveryName}</option>)}
+                                        </select>
+                                        <button onClick={() => handleAssignDriver(order.orderId)}>픽업 배정</button>
                                     </td>
                                     <td>{order.orderDate?.split('T')[0]}</td>
                                 </tr>
-                            ))}
-                        {orders.filter(order => order.deliveryStatus === 'COMPLETED').length === 0 && (
-                            <tr>
-                                <td colSpan="7">
-                                    완료된 배송 내역이 없습니다.
-                                </td>
-                            </tr>
-                        )}
+                            );
+                        }) : <tr><td colSpan="7">현재 반품/교환 회수 대상 주문이 없습니다.</td></tr>}
                     </tbody>
-    </table>
-                </div>
-
+                </table>
+            </div>        
         </div>
     );
 };
