@@ -44,7 +44,7 @@ const Orderboard = ({
         <div>
             {/* [배송 미배정] */}
             <div className="admin-content-box">
-                <h3>배송 미배정</h3>
+                <h3>배송 미배정[O.S=READY,D.S=NULL인 ordersDB]</h3>
                 <table className="admin-table-style">
                     <thead><tr><th>번호</th><th>상품</th><th>수량</th><th>주소</th><th>기사 배정 및 상태</th><th>주문일</th></tr></thead>
                     <tbody>
@@ -82,7 +82,7 @@ const Orderboard = ({
 
             {/* [배송 배정 완료 목록] */}
             <div className="admin-content-box">
-                <h3>배송 배정 완료 목록</h3>
+                <h3>배송 배정 완료 목록[O.S=READY,D.S=WAITING인 ordersDB]</h3>
                 <table className="admin-table-style">
                     <thead><tr><th>번호</th><th>상품</th><th>주소</th><th>배정된 기사</th><th>상태</th><th>주문일</th></tr></thead>
                     <tbody>
@@ -101,9 +101,30 @@ const Orderboard = ({
                 </table>
             </div>
 
+            {/* [배송 진행 중 목록] */}
+            <div className="admin-content-box">
+                <h3>🚚 배송 진행 중 목록[O.S=READY,D.S=SHIPPING인 ordersDB]</h3>
+                <table className="admin-table-style">
+                    <thead><tr><th>번호</th><th>상품</th><th>수량</th><th>주소</th><th>배정 기사</th><th>상태</th><th>주문일</th></tr></thead>
+                    <tbody>
+                        {pagedShipping.map((order, index) => (
+                            <tr key={order.orderId}>
+                                <td>{(page4 - 1) * perPage4 + index + 1}</td>
+                                <td>{renderItemName(order.orderitems)}</td>
+                                <td>{order.orderitems?.reduce((sum, item) => sum + item.count, 0) || 0}개</td>
+                                <td>{order.deliveryAddr} {order.deliveryAddrDetail}</td>
+                                <td><strong>{items.find(d => d.deliveryId === Number(order.deliveryId))?.deliveryName || "배정 기사"}</strong></td>
+                                <td><span>배송중</span></td>
+                                <td>{order.orderDate?.split('T')[0]}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+
             {/* [최종 배송 완료 목록] */}
             <div className="admin-content-box">
-                <h3>✅ 최종 배송 완료 목록</h3>
+                <h3>✅ 최종 배송 완료 목록[O.S=PURCHASED,D.S=COMPLETED인 ordersDB]</h3>
                 <table className="admin-table-style">
                     <thead><tr><th>번호</th><th>상품</th><th>수량</th><th>주소</th><th>담당 기사</th><th>상태</th><th>주문일</th></tr></thead>
                     <tbody>
@@ -122,26 +143,35 @@ const Orderboard = ({
                 </table>
             </div>
 
-            {/* [배송 진행 중 목록] */}
+            {/* [반품/교환 픽업 신청 목록] */}
             <div className="admin-content-box">
-                <h3>🚚 배송 진행 중 목록</h3>
+                <h3>🔄 반품/교환 픽업 신청 목록[O.S=EXCHANGEorREFUND/CANCEL,D.S=COMPLETED/PICKUP인 ordersDB]</h3>
                 <table className="admin-table-style">
-                    <thead><tr><th>번호</th><th>상품</th><th>수량</th><th>주소</th><th>배정 기사</th><th>상태</th><th>주문일</th></tr></thead>
+                    <thead><tr><th>번호</th><th>상품</th><th>수량</th><th>회수 주소</th><th>주문 상태</th><th>기사 배정 및 픽업 신청</th><th>주문일</th></tr></thead>
                     <tbody>
-                        {pagedShipping.map((order, index) => (
-                            <tr key={order.orderId}>
-                                <td>{(page4 - 1) * perPage4 + index + 1}</td>
-                                <td>{renderItemName(order.orderitems)}</td>
-                                <td>{order.orderitems?.reduce((sum, item) => sum + item.count, 0) || 0}개</td>
-                                <td>{order.deliveryAddr} {order.deliveryAddrDetail}</td>
-                                <td><strong>{items.find(d => d.deliveryId === Number(order.deliveryId))?.deliveryName || "배정 기사"}</strong></td>
-                                <td><span>배송중</span></td>
-                                <td>{order.orderDate?.split('T')[0]}</td>
-                            </tr>
-                        ))}
+                        {pagedPickup.length > 0 ? pagedPickup.map((order, index) => {
+                            const currentItems = order.orderitems || order.orderItems || [];
+                            return (
+                                <tr key={order.orderId}>
+                                    <td>{(page5 - 1) * perPage5 + index + 1}</td>
+                                    <td>{renderItemName(currentItems)}</td>
+                                    <td>{currentItems.reduce((sum, i) => sum + (i.count || 0), 0)}개</td>
+                                    <td>{order.deliveryAddr} {order.deliveryAddrDetail}</td>
+                                    <td><span>{order.orderState === 'EXCHANGE' ? '교환 접수' : '취소 접수'}</span></td>
+                                    <td>
+                                        <select value={selectedDrivers[order.orderId] || ""} onChange={(e) => handleDriverSelect(order.orderId, e.target.value)}>
+                                            <option value="">픽업 기사 선택</option>
+                                            {items.map(driver => <option key={driver.deliveryId} value={driver.deliveryId}>{driver.deliveryName}</option>)}
+                                        </select>
+                                        <button onClick={() => handleAssignDriver(order.orderId)}>픽업 배정</button>
+                                    </td>
+                                    <td>{order.orderDate?.split('T')[0]}</td>
+                                </tr>
+                            );
+                        }) : <tr><td colSpan="7">현재 반품/교환 회수 대상 주문이 없습니다.</td></tr>}
                     </tbody>
                 </table>
-            </div>            
+            </div>        
         </div>
     );
 };

@@ -73,7 +73,7 @@ const AllOrderboard = ({
     return (
         <div className="admin-content-box">
             <div className="admin-content-title-bar">
-                <h3>주문 목록 (전체 접수 건)</h3>
+                <h3>주문 목록 (전체 접수 건) [O.S=PURCHASED,D.S=COMPLETED빼고 전부]</h3>
                 <select value={perPage1} onChange={(e) => { setPerPage1(Number(e.target.value)); setPage1(1); }}>
                     <option value={5}>5개씩 보기</option>
                     <option value={10}>10개씩 보기</option>
