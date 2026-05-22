@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import '../../css/adminCss/AdminDashboard.css';
 
+
+
 const Orderboard = ({
     orders = [],
     items = [],
@@ -29,9 +31,33 @@ const Orderboard = ({
         const isUnassignedOrRejected = !o.deliveryId || o.deliveryStatus === null || o.deliveryStatus === 'REJECTED'; 
         return isReady && isUnassignedOrRejected;
     });
+
+    const [pickupFilter, setPickupFilter] = useState('ALL');
+
     const shippingOrders = orders.filter(o => o.deliveryStatus === 'SHIPPING');
-    const pickupOrders = orders.filter(o => o.deliveryStatus === 'COMPLETED' && (o.orderState === 'EXCHANGE' || o.orderState === 'CANCEL'));
+    //픽업 (반품/교환/취소 목록)
+    const pickupOrders = orders.filter(o => {
+    const isTargetState =
+        o.orderState === 'EXCHANGEorREFUND' ||
+        o.orderState === 'CANCEL';
+
+    const isPickupStatus =
+        o.deliveryStatus === 'COMPLETED' || o.deliveryStatus === 'PICKUP';
+
+    if (!isTargetState || !isPickupStatus) return false;
+
+    if (pickupFilter === 'ALL') return true;
+    if (pickupFilter === 'EXCHANGEorREFUND') return o.orderState === 'EXCHANGEorREFUND';
+    if (pickupFilter === 'CANCEL') return o.orderState === 'CANCEL';
+
+    return true;
+});
     const completedOrders = orders.filter(o => o.deliveryStatus === 'COMPLETED' && o.orderState !== 'EXCHANGE' && o.orderState !== 'CANCEL');
+
+    
+
+
+
 
     // Slice 작업
     const pagedAssigned = assignedOrders.slice((page2 - 1) * perPage2, page2 * perPage2);
@@ -146,6 +172,13 @@ const Orderboard = ({
             {/* [반품/교환 픽업 신청 목록] */}
             <div className="admin-content-box">
                 <h3>🔄 반품/교환 픽업 신청 목록[O.S=EXCHANGEorREFUND/CANCEL,D.S=COMPLETED/PICKUP인 ordersDB]</h3>
+
+                <div style={{ marginBottom: '10px' }}>
+        <button onClick={() => setPickupFilter('ALL')}>전체</button>
+        <button onClick={() => setPickupFilter('EXCHANGEorREFUND')}>교환/반품</button>
+        <button onClick={() => setPickupFilter('CANCEL')}>취소</button>
+    </div>
+
                 <table className="admin-table-style">
                     <thead><tr><th>번호</th><th>상품</th><th>수량</th><th>회수 주소</th><th>주문 상태</th><th>기사 배정 및 픽업 신청</th><th>주문일</th></tr></thead>
                     <tbody>

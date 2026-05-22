@@ -3,6 +3,9 @@ import { useDriverAuto } from './DriverAuto';
 import axios from 'axios'; // Axios 추가
 import '../../css/adminCss/AdminDashboard.css';
 
+
+
+
 /* 페이지네이션 UI */
 const TablePagination = ({ totalItems, itemsPerPage, currentPage, setCurrentPage }) => {
     const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
@@ -41,7 +44,6 @@ const AllOrderboard = ({
 
     // 🔍 [디버깅] 컴포넌트가 켜질 때 부모가 준 데이터가 있는지 검사, 없으면 백엔드 강제 호출
     useEffect(() => {
-        console.log("🖥️ [AllOrderboard 마운트] 부모가 넘겨준 orders 갯수:", propOrders?.length);
         
         if (!propOrders || propOrders.length === 0) {
             console.warn("⚠️ 부모 컴포넌트에서 orders 데이터를 받지 못했습니다. 백엔드로 직접 요청합니다!");
@@ -137,7 +139,7 @@ const AllOrderboard = ({
                         {masterOrders.length === 0 && (
                             <tr>
                                 <td colSpan="10" style={{textAlign: 'center', color: 'red', fontWeight: 'bold', padding: '30px'}}>
-                                    ⚠️ 현재 조건에 맞는 주문 데이터가 0건입니다. (F12 콘솔 창의 로그를 확인하세요)
+                                    ⚠️ 현재 조건에 맞는 주문 데이터가 0건입니다.
                                 </td>
                             </tr>
                         )}
