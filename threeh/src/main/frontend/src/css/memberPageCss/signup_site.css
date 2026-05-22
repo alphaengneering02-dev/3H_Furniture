@@ -177,27 +177,27 @@
     transition: all 0.3s;
 }
 
-/* 가입하기 버튼 (블랙) */
-.signup-btn-submit {
-    color: var(--signup-site-bg-white);
-    background-color: var(--signup-site-black);
-}
-
-.signup-btn-submit:hover {
-    background-color: var(--signup-site-light-gray);
-    border-color: var(--signup-site-light-gray);
-    color: var(--signup-site-charcoal);
-}
 
 /* 취소 버튼 (화이트) */
 .signup-btn-cancel {
     color: var(--signup-site-black);
     background-color: var(--signup-site-bg-white);
 }
-
 .signup-btn-cancel:hover {
-    background-color: var(--signup-site-bg-ivory);
+    background-color: var(--signup-site-light-gray);
 }
+
+/* 가입하기 버튼 (블랙) */
+.signup-btn-submit {
+    color: var(--signup-site-bg-white);
+    background-color: var(--signup-site-black);
+}
+.signup-btn-submit:hover {
+    background-color: var(--signup-site-light-gray);
+    border-color: var(--signup-site-light-gray);
+    color: var(--signup-site-charcoal);
+}
+
 
 /* 하단 기타/글로벌 서버 오류 알림 블록 */
 .signup-global-error-box {

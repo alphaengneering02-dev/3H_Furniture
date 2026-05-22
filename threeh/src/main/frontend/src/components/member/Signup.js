@@ -40,11 +40,11 @@ const Signup = () => {
 
                 {/* ===================oauth2 소셜 회원가입=================== */}
                 <article>
-                    {/* 시안의 수평 분할 라인 존 ( —— OR —— ) */}
+                    {/* 시안의 수평 분할 라인 존 - 상단 ( —— OR —— ) */}
                     <div className="signup-divider-zone">
-                        <hr className="signup-divider-line" />
+                        <hr className="signup-divider-line1"/>
                         <span className="signup-divider-text">OR</span>
-                        <hr className="signup-divider-line" />
+                        <hr className="signup-divider-line1"/>
                     </div>
                     
                     {/* OAuth2 연동 소셜 회원가입 아이콘 그룹 */}
@@ -60,6 +60,13 @@ const Signup = () => {
                         <Link to="http://localhost:8080/oauth2/authorization/kakao" className="signup-social-item">
                             <img src={icon_kakao} alt='카카오 회원가입' className="signup-social-img" />
                         </Link>
+                    </div>
+
+                    {/* 시안의 수평 분할 라인 존 - 하단 ( ——--—— ) */}
+                    <div className="signup-divider-zone">
+                        <hr className="signup-divider-line1"/>
+                        <span className="signup-divider-text">OR</span>
+                        <hr className="signup-divider-line1"/>
                     </div>
                 </article>
 
