@@ -1,0 +1,480 @@
+/* ================================
+   ItemAdminPage CSS
+   기준: global.css
+
+   global.css 기준:
+   - body 배경: #F9F8F6
+   - 컨텐츠 박스: #FFFFFF
+   - 기본 폰트: Noto Sans KR
+   - 포인트 폰트: Playfair Display
+
+   네이밍 규칙:
+   - 관리자 상품/리뷰 페이지 전용 클래스는 전부 itemAdmin- 으로 시작
+   - 다른 페이지 css와 충돌 방지 목적
+================================ */
+
+/* ================================
+   전체 레이아웃
+================================ */
+
+/* 관리자 페이지 전체를 감싸는 최상위 박스 */
+.itemAdmin-page {
+    max-width: 1240px;
+    min-height: 100vh;
+    margin: 0 auto;
+    padding: 40px 20px 80px;
+    background-color: #FFFFFF;
+    color: #2F2A25;
+}
+
+/* 상단의 메인으로 / 상품목록으로 버튼을 감싸는 영역 */
+.itemAdmin-topArea {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+/* 페이지 메인 제목 */
+.itemAdmin-title {
+    margin-bottom: 30px;
+    font-family: 'Playfair Display', serif;
+    font-size: 38px;
+    font-weight: 600;
+    color: #2F2A25;
+    letter-spacing: -0.5px;
+}
+
+/* 기존 탭 버튼 영역
+   현재 구조에서 상품관리 버튼을 숨기고 싶다면 사용하지 않아도 됨 */
+.itemAdmin-tabArea {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 34px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #E5DED6;
+}
+
+/* ================================
+   버튼 공통 스타일
+================================ */
+
+/* 모든 일반 버튼의 기본 스타일 */
+.itemAdmin-button {
+    padding: 10px 18px;
+    border: 1px solid #2F2A25;
+    background-color: #2F2A25;
+    color: #FFFFFF;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* 일반 버튼 hover */
+.itemAdmin-button:hover {
+    background-color: #FFFFFF;
+    color: #2F2A25;
+}
+
+/* 비활성화 버튼 */
+.itemAdmin-button:disabled {
+    border-color: #CFC7BD;
+    background-color: #CFC7BD;
+    color: #FFFFFF;
+    cursor: not-allowed;
+}
+
+/* 보조 버튼
+   예: 메인으로, 상품목록으로, 리뷰 관리, 필터 초기화 */
+.itemAdmin-subButton {
+    border: 1px solid #8A6F55;
+    background-color: #FFFFFF;
+    color: #8A6F55;
+}
+
+/* 보조 버튼 hover */
+.itemAdmin-subButton:hover {
+    background-color: #8A6F55;
+    color: #FFFFFF;
+}
+
+/* 삭제/위험 버튼
+   예: 상품 삭제, 리뷰 삭제 */
+.itemAdmin-dangerButton {
+    border-color: #B94A3A;
+    background-color: #B94A3A;
+    color: #FFFFFF;
+}
+
+/* 삭제/위험 버튼 hover */
+.itemAdmin-dangerButton:hover {
+    background-color: #FFFFFF;
+    color: #B94A3A;
+}
+
+/* 현재 선택된 탭 버튼 표시용 */
+.itemAdmin-activeButton {
+    border-color: #8A6F55;
+    background-color: #8A6F55;
+    color: #FFFFFF;
+}
+
+/* ================================
+   섹션 공통
+================================ */
+
+/* 상품 관리 / 리뷰 관리 같은 큰 섹션 영역 */
+.itemAdmin-section {
+    margin-top: 20px;
+}
+
+/* 각 섹션 제목
+   예: 상품 관리, 리뷰 관리 */
+.itemAdmin-sectionTitle {
+    margin-bottom: 20px;
+    font-size: 26px;
+    font-weight: 700;
+    color: #2F2A25;
+}
+
+/* 상품 등록하기 버튼만 따로 감쌀 때 사용하는 영역 */
+.itemAdmin-createArea {
+    margin-bottom: 24px;
+}
+
+/* 데이터가 없을 때 보여주는 문구
+   예: 등록된 상품이 없습니다, 조건에 맞는 상품이 없습니다 */
+.itemAdmin-emptyText {
+    padding: 40px 0;
+    text-align: center;
+    color: #8A8178;
+    font-size: 15px;
+}
+
+/* 상품 등록하기 / 리뷰 관리 버튼을 같은 줄에 배치하는 영역 */
+.itemAdmin-adminActionArea {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 34px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #E5DED6;
+}
+
+/* 카테고리, 판매상태, 재고 정렬 필터 전체 영역 */
+.itemAdmin-filterArea {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 14px;
+    margin-bottom: 24px;
+    padding: 18px 20px;
+    border: 1px solid #E5DED6;
+    background-color: #FBFAF8;
+}
+
+/* 필터 하나를 감싸는 박스
+   예: 카테고리 label + select */
+.itemAdmin-filterGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* 리뷰보기 버튼과 리뷰 개수를 나란히 보여주는 박스 */
+.itemAdmin-reviewButtonBox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+/* 리뷰 개수 텍스트
+   예: 3개 */
+.itemAdmin-reviewCount {
+    font-size: 13px;
+    font-weight: 700;
+    color: #8A6F55;
+}
+
+/* 태블릿 이하에서 관리자 액션 영역과 필터 영역을 세로 정렬 */
+@media (max-width: 768px) {
+    .itemAdmin-adminActionArea,
+    .itemAdmin-filterArea {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .itemAdmin-filterGroup {
+        width: 100%;
+    }
+}
+
+/* ================================
+   테이블
+================================ */
+
+/* 테이블이 화면보다 넓어질 때 가로 스크롤 가능하게 하는 감싸는 박스 */
+.itemAdmin-tableWrap {
+    width: 100%;
+    overflow-x: auto;
+}
+
+/* 상품 관리 테이블, 리뷰 관리 테이블 공통 스타일 */
+.itemAdmin-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #FFFFFF;
+    border: 1px solid #E5DED6;
+}
+
+/* 테이블 셀 공통 */
+.itemAdmin-table th,
+.itemAdmin-table td {
+    padding: 13px 12px;
+    border: 1px solid #E5DED6;
+    text-align: center;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+/* 테이블 헤더 */
+.itemAdmin-table th {
+    background-color: #F3EFEA;
+    color: #2F2A25;
+    font-weight: 700;
+}
+
+/* 테이블 본문 셀 */
+.itemAdmin-table td {
+    color: #4A4038;
+}
+
+/* 테이블 행 hover 시 배경 */
+.itemAdmin-table tr:hover td {
+    background-color: #FBFAF8;
+}
+
+/* 상품명처럼 왼쪽 정렬이 필요한 긴 텍스트 */
+.itemAdmin-tableTextLeft {
+    text-align: left;
+}
+
+/* 리뷰 내용처럼 길어질 수 있는 텍스트 셀 */
+.itemAdmin-reviewTextCell {
+    max-width: 360px;
+    text-align: left;
+    line-height: 1.6;
+    word-break: keep-all;
+}
+
+/* 테이블 안의 여러 버튼을 정렬하는 영역 */
+.itemAdmin-tableButtonArea {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+/* 테이블 내부 버튼 기본 스타일
+   예: 리뷰보기, 수정 */
+.itemAdmin-tableButton {
+    padding: 7px 12px;
+    border: 1px solid #2F2A25;
+    background-color: #2F2A25;
+    color: #FFFFFF;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* 테이블 내부 버튼 hover */
+.itemAdmin-tableButton:hover {
+    background-color: #FFFFFF;
+    color: #2F2A25;
+}
+
+/* 테이블 안 보조 버튼
+   예: 리뷰보기 */
+.itemAdmin-tableSubButton {
+    border-color: #8A6F55;
+    background-color: #FFFFFF;
+    color: #8A6F55;
+}
+
+/* 테이블 안 보조 버튼 hover */
+.itemAdmin-tableSubButton:hover {
+    background-color: #8A6F55;
+    color: #FFFFFF;
+}
+
+/* 테이블 안 삭제 버튼
+   예: 상품 삭제, 리뷰 삭제 */
+.itemAdmin-tableDangerButton {
+    border-color: #B94A3A;
+    background-color: #B94A3A;
+    color: #FFFFFF;
+}
+
+/* 테이블 안 삭제 버튼 hover */
+.itemAdmin-tableDangerButton:hover {
+    background-color: #FFFFFF;
+    color: #B94A3A;
+}
+
+/* ================================
+   리뷰 관리
+================================ */
+
+/* 리뷰 관리 탭에서 상품 선택 select를 감싸는 영역 */
+.itemAdmin-reviewSelectArea {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 26px;
+    padding: 18px 20px;
+    border: 1px solid #E5DED6;
+    background-color: #FBFAF8;
+}
+
+/* label 공통 스타일
+   예: 상품 선택, 카테고리, 판매상태 */
+.itemAdmin-label {
+    font-size: 14px;
+    font-weight: 700;
+    color: #2F2A25;
+}
+
+/* select 공통 스타일
+   예: 상품 선택, 카테고리 필터, 판매상태 필터, 재고 정렬 */
+.itemAdmin-select {
+    min-width: 280px;
+    padding: 9px 10px;
+    border: 1px solid #CFC7BD;
+    background-color: #FFFFFF;
+    color: #2F2A25;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+/* select 클릭/포커스 시 테두리 강조 */
+.itemAdmin-select:focus {
+    outline: none;
+    border-color: #2F2A25;
+}
+
+/* 리뷰 평균 평점 / 리뷰 수를 보여주는 요약 박스 */
+.itemAdmin-summaryBox {
+    margin-bottom: 24px;
+    padding: 18px 20px;
+    border: 1px solid #E5DED6;
+    background-color: #FFFFFF;
+}
+
+/* 리뷰 요약 문장 */
+.itemAdmin-summaryText {
+    margin-bottom: 6px;
+    font-size: 15px;
+    color: #4A4038;
+}
+
+/* 마지막 요약 문장에는 아래 여백 제거 */
+.itemAdmin-summaryText:last-child {
+    margin-bottom: 0;
+}
+
+/* 리뷰 요약에서 숫자 강조 */
+.itemAdmin-summaryStrong {
+    font-weight: 700;
+    color: #2F2A25;
+}
+
+/* 리뷰 별점 표시
+   예: ★★★★☆ */
+.itemAdmin-stars {
+    color: #D9A441;
+    font-size: 15px;
+    letter-spacing: 1px;
+    white-space: nowrap;
+}
+
+/* ================================
+   반응형
+================================ */
+
+/* 태블릿 이하 화면 대응 */
+@media (max-width: 768px) {
+    /* 페이지 좌우 여백 축소 */
+    .itemAdmin-page {
+        padding: 30px 16px 60px;
+    }
+
+    /* 제목 크기 축소 */
+    .itemAdmin-title {
+        font-size: 32px;
+    }
+
+    /* 섹션 제목 크기 축소 */
+    .itemAdmin-sectionTitle {
+        font-size: 23px;
+    }
+
+    /* 상단 버튼, 탭 버튼, 테이블 버튼을 세로 정렬 */
+    .itemAdmin-topArea,
+    .itemAdmin-tabArea,
+    .itemAdmin-tableButtonArea {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    /* 모바일에서는 버튼을 가로 전체 너비로 */
+    .itemAdmin-button,
+    .itemAdmin-tableButton {
+        width: 100%;
+    }
+
+    /* 리뷰 상품 선택 영역 세로 정렬 */
+    .itemAdmin-reviewSelectArea {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    /* select도 모바일에서 전체 너비 */
+    .itemAdmin-select {
+        width: 100%;
+        min-width: 0;
+    }
+
+    /* 작은 화면에서 테이블 셀 여백과 글자 크기 축소 */
+    .itemAdmin-table th,
+    .itemAdmin-table td {
+        padding: 10px 8px;
+        font-size: 13px;
+    }
+}
+
+/* 모바일 작은 화면 대응 */
+@media (max-width: 480px) {
+    /* 메인 제목 더 축소 */
+    .itemAdmin-title {
+        font-size: 28px;
+    }
+
+    /* 섹션 제목 더 축소 */
+    .itemAdmin-sectionTitle {
+        font-size: 21px;
+    }
+
+    /* 박스 내부 여백 축소 */
+    .itemAdmin-summaryBox,
+    .itemAdmin-reviewSelectArea {
+        padding: 16px;
+    }
+}

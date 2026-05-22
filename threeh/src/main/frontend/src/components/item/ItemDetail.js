@@ -209,6 +209,7 @@ const ItemDetail = () => {
             <p>상품 가격: {formatPrice(item.itemPrice)}원</p>
             <p>상품 할인가격: {formatPrice(item.itemDiscountPrice)}원</p>
             <p>상품 최종가격: {formatPrice(item.itemFinalPrice)}원</p>
+            <p>상품 판매상태: {item.itemSellStatus}</p>
             <p>상품 재고: {item.itemStock}</p>
 
             {isAdmin &&(

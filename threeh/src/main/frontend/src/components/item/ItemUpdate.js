@@ -150,6 +150,8 @@ const ItemUpdate = () => {
                 
             };
 
+            console.log("상품수정 payload:",itemPayload);
+
             await axios.put(
                 `http://localhost:8080/api/admin/item/${itemId}`,
                 itemPayload,
@@ -179,12 +181,22 @@ const ItemUpdate = () => {
             }
 
             alert("상품 수정 완료");
-            navigate(`/item/${itemId}`);
+            navigate("/admin/item");
+            
         }catch(error){
             console.error(error);
-
+        
             if(error.response){
+                console.log("상품 수정 실패 상태코드:",error.response.status);
+                console.log("상품 수정 실패 응답:, error.response.data");
                 console.log(error.response.data);
+            }
+
+            if(error.response?.status===401||error.response?.status===403){
+                alert("관리자 로그인 세션이 만료되었습니다. 다시 로그인해주세요.");
+                sessionStorage.removeItem("user");
+                navigate("/login");
+                return;
             }
 
             alert("상품 수정 실패");
@@ -259,8 +271,10 @@ const ItemUpdate = () => {
                     onChange={handleItemChange} required>
                         <option value="">판매 상태 선택</option>
                         <option value="SELL">SELL</option>
-                        <option value="READY">READY</option>
-                        <option value="NON_SELL">NON_SELL</option>
+                        <option value="SOLD_OUT">SOLD_OUT</option>
+                        <option value="STOP">STOP</option>
+                        <option value="COMING_SOON">COMING_SOON</option>
+
                     </select>
                 </div>
 
