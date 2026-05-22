@@ -212,22 +212,57 @@ public class MemberAddressController {
                 return ResponseEntity.badRequest().body("배송완료된 주문만 구매확정 할 수 있습니다.");
             }
 
-            order.setOrderState(OrderState.PURCHASED);
-
-            return ResponseEntity.ok("구매가 확정되었습니다.");
+            // 💡 끊겼던 구매확정 최종 마감 비즈니스 처리 구역
+            order.changeOrderState(OrderState.PURCHASED);
+            orderRepository.save(order);
+            return ResponseEntity.ok("구매확정이 완료되었습니다.");
         }
 
-    // 반품 처리_코딩추가
+    // =========================================================================
+    // 🔄 [오현옥 개발파트] 교환 및 반품 핵심 비즈니스 로직 연동 컨트롤러 API 구역
+    // =========================================================================
+
+    /**
+     * 1. 교환 신청 처리 API
+     * 리액트의 handleExchange 함수가 요청하는 '@PostMapping("/Member/exchange/process")' 주소 매핑
+     */
+    @PostMapping("/exchange/process")
+    @Transactional
+    public ResponseEntity<String> processExchange(
+            @RequestParam("orderId") Long orderId, Principal principal) {
+        
+        String loginId = getLoginIdOrNull(principal);
+        if (loginId == null) return ResponseEntity.status(401).body("로그인이 필요합니다.");
+
+        Orders order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("주문을 찾을 수 없습니다."));
+
+        // 주문 상태를 '교환또는환불' 이늄 규격으로 안전하게 세이브
+        order.changeOrderState(OrderState.EXCHANGEorREFUND);
+        orderRepository.save(order);
+
+        return ResponseEntity.ok("교환 접수가 완료되었습니다.");
+    }
+
+    /**
+     * 2. 반품 접수 처리 API
+     * 리액트의 handleRefund 함수가 요청하는 '@PostMapping("/Member/refund/process")' 주소 매핑
+     */
     @PostMapping("/refund/process")
     @Transactional
-    public ResponseEntity<String> refundProcess(@RequestParam("orderId") Long orderId, Principal principal) {
+    public ResponseEntity<String> processRefund(
+            @RequestParam("orderId") Long orderId, Principal principal) {
+        
         String loginId = getLoginIdOrNull(principal);
-        if (loginId == null) {
-            return ResponseEntity.status(401).body("로그인이 필요합니다.");
-        }
+        if (loginId == null) return ResponseEntity.status(401).body("로그인이 필요합니다.");
 
-        Orders order = orderRepository.findById(orderId).orElseThrow(() -> new IllegalArgumentException("주문을 찾을 수 없습니다."));
-        order.setOrderState(OrderState.CANCEL);
-        return ResponseEntity.ok("주문번호 " + orderId + "번 반품 처리가 완료되었습니다.");
+        Orders order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("주문을 찾을 수 없습니다."));
+
+        // 반품 처리 상태도 동일하게 '교환또는환불' 상태로 저장하여 마감
+        order.changeOrderState(OrderState.EXCHANGEorREFUND);
+        orderRepository.save(order);
+
+        return ResponseEntity.ok("취소 접수가 완료되었습니다.");
     }
 }

@@ -21,7 +21,7 @@ const RefundPage = () => {
             });
     }, []);
 
-    // ⚡ [교환 접수 DB 연동 로직 추가] 반품 규격과 동일하게 URLSearchParams로 백엔드에 교환 상태 변경 요청
+    // [교환 접수 DB 연동 로직 추가] 반품 규격과 동일하게 URLSearchParams로 백엔드에 교환 상태 변경 요청
     const handleExchange = (orderId, itemId) => {
         if (window.confirm(`주문번호 ${orderId}번을 교환 신청 하시겠습니까?`)) {
             const params = new URLSearchParams();
@@ -78,7 +78,7 @@ const RefundPage = () => {
                             {/* 이미 접수된 주문의 경우 현재 배송 상태를 한글로 가이드해주는 서브 텍스트 라벨 */}
                             {(order.orderState === 'EXCHANGEorREFUND' || order.deliveryStatus === 'PICKUP') && (
                                 <p style={{ margin: '5px 0 0 0', fontSize: '13px', color: '#801a24', fontWeight: 'bold' }}>
-                                    [현재 접수 완료되어 {order.deliveryStatus === 'PICKUP' ? '수거 중' : '검수 중'}입니다]
+                                    [현재 접수 완료되어 {order.deliveryStatus === 'PICKUP' ? '수거예정' : '환불예정'}입니다]
                                 </p>
                             )}
                         </div>
