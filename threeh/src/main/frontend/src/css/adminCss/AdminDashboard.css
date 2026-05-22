@@ -1012,3 +1012,33 @@
         gap: 16px;
     }
 }
+
+/* 액션 바 */
+
+.admin-action-container {
+    display: flex !important;
+    justify-content: space-between; /* 좌측 버튼그룹과 우측 select를 양 끝으로 밀어냄 */
+    align-items: center;            /* 세로축 가운데 정렬 */
+    width: 100%;
+    margin-bottom: 12px;            /* 테이블과의 간격 확보 */
+}
+
+/* 2. 좌측 버튼 그룹 구조화 */
+.admin-action-button-group {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 0 !important;   /* 기존에 밑으로 떨어지게 하던 여백 제거 */
+}
+
+/* 3. 우측 select 박스 정렬 위치 지정 */
+.admin-per-page-select {
+    margin-left: auto;              /* 무조건 오른쪽 끝으로 밀착 */
+    display: flex;
+    align-items: center;
+}
+
+/* (선택사항) 테이블 스크롤 시 정렬 바가 찌그러지지 않도록 보호 */
+.admin-content-box {
+    display: flex;
+    flex-direction: column;
+}
