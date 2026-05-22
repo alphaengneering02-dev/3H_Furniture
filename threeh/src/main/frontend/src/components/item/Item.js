@@ -1,53 +1,50 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, Link, useLocation } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import '../../css/itemPageCss/itemPage.css';
 
-//상품목록,관리자테이블,선택상품영역이 모두 코딩되어 있는 곳입니다. 망가지면 큰일나요.
+//상품목록, 선택상품영역이 모두 코딩되어 있는 곳입니다. 망가지면 큰일나요.
+//관리자 상품관리/리뷰관리는 ItemAdminPage.js로 분리했습니다.
 
 function Item() {
   const navigate = useNavigate();
 
   //백엔드에서 가져온 전체 상품 목록 저장
   const [items, setItems] = useState([]);
-  const [adminMode, setAdminMode] = useState(false);
 
   //알반 유저가 체크박스로 선택한 상품 목록 저장
   const [selectedItems, setSelectedItems] = useState([]);
+
   //북마크 상태 저장([201,223,230])
   const [bookmarkedItems, setBookmarkedItems] = useState([]);
+
   //상품 상세페이지로 갔다가 아이템 목록으로 돌아오더라도 체킹 유지 및 체킹 목록 유지
   const SELECTED_ITEMS_KEY = "selectedItems";
 
-  //관리자 모드 여부
-  //false: 일반 상품 목록 화면
-  //ture: 관리자 상품 수정/삭제 테이블 화면
-  //상품 수정 및 등록 후 /item으로 돌아왔을 때, 바로 관리자 테이블(목록)이 보이도록(useLocation)
-  const location = useLocation();
-  
   const getLoginUser = () => {
-    try{
+    try {
       //sesstionStroage에 저장된 로그인 사용자 정보 가져오기
-    return JSON.parse(sessionStorage.getItem("user"));
-    }catch(error){
-      console.error("user 파싱 실패",error);
+      return JSON.parse(sessionStorage.getItem("user"));
+    } catch (error) {
+      console.error("user 파싱 실패", error);
       sessionStorage.removeItem("user");
       return null;
     }
   };
 
-  const getUserRole = (user)=>{
-    if(!user){
+  const getUserRole = (user) => {
+    if (!user) {
       return null;
     }
 
-    if(typeof user.role === "string"){
+    if (typeof user.role === "string") {
       return user.role;
     }
 
-    if(user.role?.key){
+    if (user.role?.key) {
       return user.role.key;
     }
+
     return null;
   };
 
@@ -59,55 +56,48 @@ function Item() {
   };
 
   //로그인한 사용자가 일반 회원인지 확인
-   const isUserRole = (user) => {
-   const role = getUserRole(user);
+  const isUserRole = (user) => {
+    const role = getUserRole(user);
 
-   return role === "USER"||role === "ROLE_USER";
+    return role === "USER" || role === "ROLE_USER";
   };
 
-   //컴포넌트가 처음 실행될 때 상품 목록 조회. 그리고 북마크
-   //관리자 모드일때, ItemCreate.js또는 ItemUpdate.js에서 /item으로 돌아왔을 때, 상품관리 목록이 바로 열림.
-   //처음 화면 돌아왔을 때, 선택한 상품 복구
-
+  //컴포넌트가 처음 실행될 때 상품 목록 조회. 그리고 북마크
+  //처음 화면 돌아왔을 때, 선택한 상품 복구
   useEffect(() => {
     getItems();
     getMyBookmarks();
 
-    //세션 유지 코드 보강
-   // const savedSelectedItems =JSON.parse(sessionStorage.getItem(SELECTED_ITEMS_KEY));
+    //세션 유지 코드 보강(기존 코딩)
+    // const savedSelectedItems =JSON.parse(sessionStorage.getItem(SELECTED_ITEMS_KEY));
 
-   // if(savedSelectedItems && Array.isArray(savedSelectedItems)){
-   //   setSelectedItems(savedSelectedItems);
-   //}
+    // if(savedSelectedItems && Array.isArray(savedSelectedItems)){
+    //   setSelectedItems(savedSelectedItems);
+    //}
 
-   let savedSelectedItems = [];
+    let savedSelectedItems = [];
 
-   try{
-    savedSelectedItems = JSON.parse(sessionStorage.getItem(SELECTED_ITEMS_KEY))||[];
-   }catch(error){
-    console.error("selectedItems 파싱 실패", error);
-    sessionStorage.removeItem(SELECTED_ITEMS_KEY);
-    savedSelectedItems = [];
-   }
-
-   if(Array.isArray(savedSelectedItems)){
-    setSelectedItems(savedSelectedItems);
-   }
-
-    if(location.state?.adminMode){
-      setAdminMode(true);
+    try {
+      savedSelectedItems =
+        JSON.parse(sessionStorage.getItem(SELECTED_ITEMS_KEY)) || [];
+    } catch (error) {
+      console.error("selectedItems 파싱 실패", error);
+      sessionStorage.removeItem(SELECTED_ITEMS_KEY);
+      savedSelectedItems = [];
     }
 
-  }, [location.state]);
+    if (Array.isArray(savedSelectedItems)) {
+      setSelectedItems(savedSelectedItems);
+    }
+  }, []);
 
   //selectedItems가 바뀔 때마다 자동으로 sessionStorage에 저장
-  useEffect(()=>{
+  useEffect(() => {
     sessionStorage.setItem(
       SELECTED_ITEMS_KEY,
       JSON.stringify(selectedItems)
     );
-  },[selectedItems]);
-
+  }, [selectedItems]);
 
   //상품 최종 가격 계산
   //백엔드에서 itemFinalPrice가 오면 그 값을 사용
@@ -121,10 +111,9 @@ function Item() {
     return Number(item.itemPrice || 0) - Number(item.itemDiscountPrice || 0);
   };
 
-  const formatPrice = (price) =>{
+  const formatPrice = (price) => {
     return Number(price || 0).toLocaleString();
   };
-
 
   //상품 선택 가능 여부 확인
   //재고가 없거나 판매 상태가 SELL이 아니면 선택 불가
@@ -146,8 +135,6 @@ function Item() {
     return true;
   };
 
- 
-  
   //백엔드에서 전체 상품 목록 가져오기
   const getItems = async () => {
     try {
@@ -156,60 +143,61 @@ function Item() {
       });
 
       console.log("상품 목록:", response.data);
-      
+
       //가져온 상품 목록을 items state에 저장
-      setItems(response.data);
+      setItems(response.data || []);
     } catch (error) {
       console.error("상품 목록 조회 실패", error);
       alert("상품 목록을 불러오지 못했습니다.");
     }
   };
 
-//북마크 가져오기
-  const getMyBookmarks = async()=>{
+  //북마크 가져오기
+  const getMyBookmarks = async () => {
     const loginUser = getLoginUser();
- 
-    if(!loginUser||!isUserRole(loginUser)){
+
+    if (!loginUser || !isUserRole(loginUser)) {
       return;
     }
 
     const memberId = loginUser.memberId;
 
-    if(!memberId){
+    if (!memberId) {
       console.log("memberId가 없습니다:", loginUser);
       return;
     }
 
-    try{
+    try {
       const response = await axios.get(
         `http://localhost:8080/api/bookmarks/member/${memberId}`,
         {
-          withCredentials:true,
+          withCredentials: true,
         }
       );
 
       console.log("내 북마크 목록:", response.data);
 
-      const bookmarkedItems=response.data.map(
-        (bookmark)=>bookmark.itemId
+      const bookmarkedItems = response.data.map(
+        (bookmark) => bookmark.itemId
       );
 
       setBookmarkedItems(bookmarkedItems);
-    }catch(error){
+    } catch (error) {
       console.error("북마크 목록 조회 실패", error);
     }
   };
 
-
   //현재 로그인한 사용자 정보
   const user = getLoginUser();
+
   //현재 로그인한 사용자가 admin인지 여부
   const isAdmin = isAdminRole(user);
+
   //비로그인 유저 확인
   const isUser = isUserRole(user);
 
   //북마크 여부 확인 함수
-  const isBookmarked = (itemId) =>{
+  const isBookmarked = (itemId) => {
     return bookmarkedItems.includes(itemId);
   };
 
@@ -264,34 +252,34 @@ function Item() {
   };
 
   //북마크 토글 함수 추가
-   const handleToggleBookmark = async(itemId) =>{
+  const handleToggleBookmark = async (itemId) => {
     const loginUser = getLoginUser();
 
-    if(!loginUser){
+    if (!loginUser) {
       alert("로그인이 필요합니다.");
       navigate("/login");
       return;
     }
 
-    if(!isUserRole(loginUser)){
+    if (!isUserRole(loginUser)) {
       alert("일반 회원만 북마크를 이용할 수 있습니다.");
       return;
     }
 
-    if(!loginUser.memberId){
+    if (!loginUser.memberId) {
       alert("회원 정보가 올바르지 않습ㄴ디ㅏ.");
       console.log("로그인 유저:", loginUser);
       return;
     }
 
-    try{
+    try {
       const payload = {
-        memberId:loginUser.memberId,
+        memberId: loginUser.memberId,
         itemId: itemId,
         type: "ITEM",
       };
 
-      const response =await axios.post(
+      const response = await axios.post(
         "http://localhost:8080/api/bookmarks/toggle",
         payload,
         {
@@ -299,31 +287,33 @@ function Item() {
         }
       );
 
-      console.log("북마크 응답:",response.data);
+      console.log("북마크 응답:", response.data);
 
-      if(response.data.bookmarked){
+      if (response.data.bookmarked) {
         //북마크 추가
-        setBookmarkedItems((prev)=>{
-          if(prev.includes(itemId)){
+        setBookmarkedItems((prev) => {
+          if (prev.includes(itemId)) {
             return prev;
           }
-          return[...prev,itemId];
+          return [...prev, itemId];
         });
-      }else{
+      } else {
         //북마크 삭제
-        setBookmarkedItems((prev) => prev.filter((id)=>id !==itemId)
-      );
-    }
-  } catch (error) {
-      console.error("북마크 처리 실패",error);
-
-      if(error.response){
-        console.log("상태코드:",error.response.status);
-        console.log("응답메시지:",error.response.data);
+        setBookmarkedItems((prev) =>
+          prev.filter((id) => id !== itemId)
+        );
       }
+    } catch (error) {
+      console.error("북마크 처리 실패", error);
+
+      if (error.response) {
+        console.log("상태코드:", error.response.status);
+        console.log("응답메시지:", error.response.data);
+      }
+
       alert("북마크 처리 실패");
     }
-   };
+  };
 
   //선택 상품 수량 변경
   const handleCountChange = (itemId, value) => {
@@ -367,10 +357,10 @@ function Item() {
   const validateSelectedItems = () => {
     const loginUser = getLoginUser();
 
-   //  console.log("validateSelectedItems loginUser:", loginUser);
-   //  console.log("loginUser.role:", loginUser?.role);
-   //  console.log("loginUser.role.key:", loginUser?.role?.key);
-   //  console.log("isUserRole:", isUserRole(loginUser));
+    //  console.log("validateSelectedItems loginUser:", loginUser);
+    //  console.log("loginUser.role:", loginUser?.role);
+    //  console.log("loginUser.role.key:", loginUser?.role?.key);
+    //  console.log("isUserRole:", isUserRole(loginUser));
 
     //비로그인 검사
     if (!loginUser) {
@@ -510,7 +500,7 @@ function Item() {
     }
 
     alert("선택한 상품이 장바구니에 담겼습니다.");
-    
+
     //성공 후 선택 목록 비우기
     setSelectedItems([]);
   };
@@ -538,27 +528,26 @@ function Item() {
     navigate(`/order/${item.itemId}`);
   };
 
-
   //내 장바구니로 가기
   //장바구니 담기 API: POST /api/cartItem/add
   //장바구니 목록 API: GET /api/Member/cart/list/{id}
   //프론트 장바구니 화면: /cart
-  const handlGoMyCart = () =>{
+  const handlGoMyCart = () => {
     const loginUser = getLoginUser();
 
-    if(!loginUser){
-        alert("로그인이 필요합니다.");
-        navigate("/login");
-        return;
+    if (!loginUser) {
+      alert("로그인이 필요합니다.");
+      navigate("/login");
+      return;
     }
 
-    if(!isUserRole(loginUser)){
-        alert("일반 회원만 장바구니를 이용할 수 있습니다.");
-        return;
+    if (!isUserRole(loginUser)) {
+      alert("일반 회원만 장바구니를 이용할 수 있습니다.");
+      return;
     }
 
-    navigate("/cart")
-  }
+    navigate("/cart");
+  };
 
   //선택한 여러 상품 구매
   //현재 구조에서는 선택 상품을 장바구니에 담고 장바구니 페이지로 이동
@@ -595,229 +584,77 @@ function Item() {
     navigate("/cart");
   };
 
-  const handleAdminCreateClick = () => {
-    navigate("/item/create");
-  };
-
-  //관리자 상품 수정/삭제 테이블 보기
-  const handleAdminListClick = () => {
-    setAdminMode(true);
-  };
-
-  //일반 상품 목록 보기
-  const handleNormalListClick = () => {
-    setAdminMode(false);
-  };
-
-  //상품 수정 페이지 이동
-  const handleUpdateClick = (itemId) => {
-    navigate(`/item/update/${itemId}`);
-  };
-
-  //상품 삭제
-  const handleDeleteClick = async (itemId) => {
-    const confirmDelete = window.confirm("정말 이 상품을 삭제하시겠습니까?");
-
-    if (!confirmDelete) {
-      return;
-    }
-
-    try {
-        //상품에 연결된 이미지 먼저 조회 (FK)
-      const imgRes = await axios.get(
-        `http://localhost:8080/api/itemImgs/${itemId}`,
-        {
-          withCredentials: true,
-        }
-      );
-
-      const itemImgs = imgRes.data;
-
-      //FK문제 방지를 위해 이미지 먼저 삭제
-      for (const img of itemImgs) {
-        await axios.delete(
-          `http://localhost:8080/api/itemImgs/${img.itemImgId}`,
-          {
-            withCredentials: true,
-          }
-        );
-      }
-
-      //이미지 삭제 후 상품 삭제
-      await axios.delete(`http://localhost:8080/api/admin/item/${itemId}`, {
-        withCredentials: true,
-      });
-
-      alert("상품이 삭제되었습니다.");
-      
-      //선택 목록에 있던 상품도 제거
-      setSelectedItems(
-        selectedItems.filter((item) => item.itemId !== itemId)
-      );
-
-      //북마크 목록에 있는 상품도 제거
-      setBookmarkedItems(
-        bookmarkedItems.filter((id) => id !== itemId)
-      );
-
-      //삭제 후 최신 상품 목록 다시 조회
-      getItems();
-
-    } catch (error) {
-      console.error("상품 삭제 실패", error);
-
-      if (error.response) {
-        console.log("상품 삭제 상태코드: ",error.response.status);
-        console.log("상품 삭제 응답: ",error.response.data);
-      }
-
-      alert("상품 삭제 실패");
-    }
-  };
-
   //상품 목록 체킹 시, 선택한 목록에서 전체 삭제 기능 추가.
-  const handleClearSelectedItems =()=>{
+  const handleClearSelectedItems = () => {
     const confirmClear = window.confirm("선택한 상품을 모두 삭세하시겠습니까?");
 
-    if(!confirmClear){
-      return;    
+    if (!confirmClear) {
+      return;
     }
 
     setSelectedItems([]);
     sessionStorage.removeItem(SELECTED_ITEMS_KEY);
   };
 
-
   //JSX부분^__________^===================================================
 
   return (
     <div className="item-page">
-        {/*상품 목록 페이지 제목 */}
-
+      {/*상품 목록 페이지 제목 */}
       <h1 className="item-title">상품 목록</h1>
-          <button type="button" onClick={()=>navigate("/")}>
-            메인으로가기
-          </button>
-         {/*내 장바구니로 가기_admin인경우 안보이게 기존 !isAdmin 이였는데 isUser로 변경*/}
-      {isUser&&(
+
+      <button type="button" onClick={() => navigate("/")}>
+        메인으로가기
+      </button>
+
+      {/*내 장바구니로 가기_admin인경우 안보이게 기존 !isAdmin 이였는데 isUser로 변경*/}
+      {isUser && (
         <div className="item-action-area">
-            <button type="button" onClick={handlGoMyCart}>
-                장바구니 보기
-            </button>
+          <button type="button" onClick={handlGoMyCart}>
+            장바구니 보기
+          </button>
         </div>
       )}
 
-      {/*관리자 로그인 시에만 상품 등록/수정삭제 버튼 표시 */}
+      {/*관리자 로그인 시에만 관리자 상품/리뷰 관리 페이지 이동 버튼 표시 */}
       {isAdmin && (
         <div className="item-action-area">
-          <button type="button" onClick={handleAdminCreateClick}>
-            상품 등록하기
+          <button type="button" onClick={() => navigate("/admin/item")}>
+            관리자 상품/리뷰 관리
           </button>
-
-          <button
-            type="button"
-            onClick={handleAdminListClick}
-            style={{ marginLeft: "10px" }}
-          >
-            상품수정 및 삭제하기
-          </button>
-
-        {/*관리자 모드일 때 일반 목록으로 돌아가는 버튼 표시*/}
-          {adminMode && (
-            <button
-              type="button"
-              onClick={handleNormalListClick}
-              style={{ marginLeft: "10px" }}
-            >
-              일반상품 목록 보기
-            </button>
-          )}
         </div>
       )}
 
-    {/*adminMode가 true이고 관리자라면 관리자용 테이블 표시 */}
-      {adminMode && isAdmin ? (
-        <div className="item-admin-section">
-          <h2 className="item-section-title">관리자 상품 관리</h2>
+      {/*상품 목록 표시 영역 */}
+      <div>
+        {items.length === 0 ? (
+          <p className="item-empty-text">상품이 없습니다.</p>
+        ) : (
+          items.map((item) => {
+            const selectable = canSelectItem(item, false);
 
-          {items.length === 0 ? (
-            <p>등록된 상품이 없습니다.</p>
-          ) : (
-            <table className="item-table">
-              <thead>
-                <tr>
-                  <th>ItemId</th>
-                  <th>제품 카테고리</th>
-                  <th>제품명</th>
-                  <th>가격</th>
-                  <th>재고</th>
-                  <th>판매상태</th>
-                  <th>관리</th>
-                </tr>
-              </thead>
+            return (
+              <div key={item.itemId} className="item-card">
+                {/*기존은 !isAdmin이였는데 일반 유저면 보이게 바꿈*/}
+                {isUser && (
+                  <input
+                    className="item-checkbox"
+                    type="checkbox"
+                    checked={isSelected(item.itemId)}
+                    disabled={!selectable}
+                    onChange={() => handleSelectItem(item)}
+                  />
+                )}
 
-              <tbody>
-                {items.map((item) => (
-                  <tr key={item.itemId}>
-                    <td>{item.itemId}</td>
-                    <td>{item.itemCategory}</td>
-                    <td>{item.itemName}</td>
-                    <td>{formatPrice(item.itemPrice)}원</td>
-                    <td>{item.itemStock}</td>
-                    <td>{item.itemSellStatus}</td>
-                    <td>
-                      <button
-                        type="button"
-                        className="item-button item-sub-button"
-                        onClick={() => handleUpdateClick(item.itemId)}
-                      >
-                        수정
-                      </button>
-
-                      <button
-                        type="button"
-                        className="item-button item-danger-button"
-                        onClick={() => handleDeleteClick(item.itemId)}
-                      >
-                        삭제
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-        </div>
-      ) : (
-        <div>
-          {items.length === 0 ? (
-            <p className="item-empty-text">상품이 없습니다.</p>
-          ) : (
-            items.map((item) => {
-              const selectable = canSelectItem(item, false);
-
-              return (
-                <div key={item.itemId} className="item-card">
-                  {/*기존은 !isAdmin이였는데 일반 유저면 보이게 바꿈*/}
-                  {isUser && (
-                    <input
-                      className="item-checkbox"
-                      type="checkbox"
-                      checked={isSelected(item.itemId)}
-                      disabled={!selectable}
-                      onChange={() => handleSelectItem(item)}
-                    />
-                  )}
-
-                  {item.itemImgUrl ? (
-                    <img
-                      className="item-image"
-                      src={`http://localhost:8080${item.itemImgUrl}`}
-                      alt={item.itemName}
-                    />
-                  ) : (
-                    <p className="item-no-image">이미지 없음</p>
-                  )}
+                {item.itemImgUrl ? (
+                  <img
+                    className="item-image"
+                    src={`http://localhost:8080${item.itemImgUrl}`}
+                    alt={item.itemName}
+                  />
+                ) : (
+                  <p className="item-no-image">이미지 없음</p>
+                )}
 
                 <div className="item-info">
                   <Link className="item-link" to={`/item/${item.itemId}`}>
@@ -827,9 +664,15 @@ function Item() {
                   <p className="item-text">카테고리: {item.itemCategory}</p>
                   <p className="item-text">상품 설명: {item.itemDetail}</p>
                   <p className="item-text">상품 색상: {item.itemColor}</p>
-                  <p className="item-text">상품 가격: {formatPrice(item.itemPrice)}원</p>
-                  <p className="item-text">상품 할인가격: {formatPrice(item.itemDiscountPrice)}원</p>
-                  <p className="item-text item-price">상품 최종가격: {formatPrice(getFinalPrice(item))}원</p>
+                  <p className="item-text">
+                    상품 가격: {formatPrice(item.itemPrice)}원
+                  </p>
+                  <p className="item-text">
+                    상품 할인가격: {formatPrice(item.itemDiscountPrice)}원
+                  </p>
+                  <p className="item-text item-price">
+                    상품 최종가격: {formatPrice(getFinalPrice(item))}원
+                  </p>
                   <p className="item-text">상품 재고: {item.itemStock}</p>
                   <p className="item-text">판매 상태: {item.itemSellStatus}</p>
 
@@ -838,46 +681,49 @@ function Item() {
                       현재 선택할 수 없는 상품입니다.
                     </p>
                   )}
+
                   {/*기존은 !isAdmin이였는데 일반 유저면 보이게 바꿈*/}
                   {isUser && (
                     <button
                       type="button"
-                      onClick={()=>handleToggleBookmark(item.itemId)}
-                     className={`item-bookmark-button ${
-                      isBookmarked(item.itemId)?"item-bookmark-active":""
-                     }`}>
-                      {isBookmarked(item.itemId) ?"♥" : "♡"} 
+                      onClick={() => handleToggleBookmark(item.itemId)}
+                      className={`item-bookmark-button ${
+                        isBookmarked(item.itemId) ? "item-bookmark-active" : ""
+                      }`}
+                    >
+                      {isBookmarked(item.itemId) ? "♥" : "♡"}
                     </button>
                   )}
-                 </div> 
-                 {/*기존은 !isAdmin이였는데 일반 유저면 보이게 바꿈*/}
-                  {isUser && (
-                    <div className="item-card-button-area">
-                      <button
-                        type="button"
-                        className="item-button"
-                        disabled={!selectable}
-                        onClick={() => handleAddOneCart(item)}
-                      >
-                        장바구니 담기
-                      </button>
-
-                      <button
-                        type="button"
-                        className="item-button item-sub-button"
-                        disabled={!selectable}
-                        onClick={() => handleBuyNow(item)}
-                      >
-                        구매하기
-                      </button>
-                    </div>
-                  )}
                 </div>
-              );
-            })
-          )}
-        </div>
-      )}
+
+                {/*기존은 !isAdmin이였는데 일반 유저면 보이게 바꿈*/}
+                {isUser && (
+                  <div className="item-card-button-area">
+                    <button
+                      type="button"
+                      className="item-button"
+                      disabled={!selectable}
+                      onClick={() => handleAddOneCart(item)}
+                    >
+                      장바구니 담기
+                    </button>
+
+                    <button
+                      type="button"
+                      className="item-button item-sub-button"
+                      disabled={!selectable}
+                      onClick={() => handleBuyNow(item)}
+                    >
+                      구매하기
+                    </button>
+                  </div>
+                )}
+              </div>
+            );
+          })
+        )}
+      </div>
+
       {/*기존은 !isAdmin이였는데 일반 유저면 보이게 바꿈*/}
       {isUser && selectedItems.length > 0 && (
         <div className="item-selected-box">
@@ -897,12 +743,17 @@ function Item() {
             <tbody>
               {selectedItems.map((item) => (
                 <tr key={item.itemId}>
-                    <td>
-                      <Link className="item-table-link" to={`/item/${item.itemId}`}>
+                  <td>
+                    <Link
+                      className="item-table-link"
+                      to={`/item/${item.itemId}`}
+                    >
                       {item.itemName}
-                    </Link>  
-                    </td>
+                    </Link>
+                  </td>
+
                   <td>{item.itemFinalPrice}</td>
+
                   <td>
                     <input
                       className="item-count-input"
@@ -914,9 +765,14 @@ function Item() {
                         handleCountChange(item.itemId, e.target.value)
                       }
                     />
-                    <span className="item-stock-text"> / 재고 {item.itemStock}</span>
+                    <span className="item-stock-text">
+                      {" "}
+                      / 재고 {item.itemStock}
+                    </span>
                   </td>
+
                   <td>{item.itemFinalPrice * item.count}</td>
+
                   <td>
                     <button
                       type="button"
@@ -930,23 +786,34 @@ function Item() {
             </tbody>
           </table>
 
-          <h3 className="item-total-price">총 가격: {formatPrice(getTotalPrice())}원</h3>
+          <h3 className="item-total-price">
+            총 가격: {formatPrice(getTotalPrice())}원
+          </h3>
 
           <div className="item-selecte-button-area">
-          <button type="button" onClick={handleClearSelectedItems} className="item-button item-danger-button">
-            선택 상품 전체 삭제
-          </button>
-          <button type="button" onClick={handleAddSelectedCart} className="item-button">
-            선택 상품 장바구니 담기
-          </button>
-          
-          <button
-            type="button"
-            className="item-button item-sub-button"
-            onClick={handleBuySelectedItems}
-          >
-            선택 상품 구매하기
-          </button>
+            <button
+              type="button"
+              onClick={handleClearSelectedItems}
+              className="item-button item-danger-button"
+            >
+              선택 상품 전체 삭제
+            </button>
+
+            <button
+              type="button"
+              onClick={handleAddSelectedCart}
+              className="item-button"
+            >
+              선택 상품 장바구니 담기
+            </button>
+
+            <button
+              type="button"
+              className="item-button item-sub-button"
+              onClick={handleBuySelectedItems}
+            >
+              선택 상품 구매하기
+            </button>
           </div>
         </div>
       )}
