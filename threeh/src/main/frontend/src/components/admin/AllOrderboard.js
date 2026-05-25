@@ -69,20 +69,23 @@ const AllOrderboard = ({
         return extraCount > 0 ? `${firstName} 외 ${extraCount}개 상품` : firstName;
     };
 
-    // 💡 [수정 완료] 필터링을 완전히 없애고 DB에서 온 원본 데이터를 그대로 노출합니다.
-    const masterOrders = activeOrders;
+    // 💡 [수정 포인트] masterOrders 선언부 변경
+    const masterOrders = activeOrders.map(o => ({
+        ...o,
+        orderId: o.orderId || o.ORDER_ID,
+        orderState: o.orderState || o.ORDER_STATE,
+        deliveryStatus: o.deliveryStatus || o.DELIVERY_STATUS,
+        orderType: o.orderType || o.ORDER_TYPE,
+        orderDate: o.orderDate || o.ORDER_DATE,
+        deliveryAddr: o.deliveryAddr || o.DELIVERY_ADDR,
+        deliveryAddrDetail: o.deliveryAddrDetail || o.DELIVERY_ADDR_DETAIL,
+        memberName: o.memberName || o.MEMBER_ID,
+        orderitems: o.orderitems || o.orderItems || o.ITEMS || []
+    }));
 
-    // 첫 3개 데이터만 콘솔에 뿌려서 데이터 구조가 잘 들어오는지 체크
-    masterOrders.forEach((o, index) => {
-        if (index < 3) {
-            console.log(`🔍 [데이터 원본 확인 #${index}] orderId: ${o.orderId}, orderState: ${o.orderState}, deliveryStatus: ${o.deliveryStatus}`);
-        }
-    });
-    console.log(`📊 [필터링 해제] 원본 데이터 전체 노출: ${masterOrders.length}건`);
-
+    // 💡 [수정 포인트] 위에서 매핑을 끝냈으므로 소문자로 일괄 필터링 가능
     const selectableOrders = masterOrders.filter(o => o.deliveryStatus !== 'COMPLETED');
     const pagedOrders = masterOrders.slice((page1 - 1) * perPage1, page1 * perPage1);
-
     const handleCheckOrder = (orderId) => {
         setSelectedOrderIds(prev => prev.includes(orderId) ? prev.filter(id => id !== orderId) : [...prev, orderId]);
     };

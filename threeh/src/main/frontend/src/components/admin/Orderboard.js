@@ -26,31 +26,39 @@ const Orderboard = ({
         return extraCount > 0 ? `${firstName} 외 ${extraCount}개 상품` : firstName;
     };
 
-    // 배송 프로세스별 필터링 정의
-    const assignedOrders = orders.filter(o => o.deliveryId && o.deliveryStatus === 'WAITING');
-    const unassignedOrders = orders.filter(o => {   
-        const isReady = o.orderState === 'READY' || o.orderState === '배송 준비중';
+    const normalizedOrders = orders.map(o => ({
+        ...o,
+        orderId: o.orderId || o.ORDER_ID,
+        orderState: o.orderState || o.ORDER_STATE,
+        deliveryStatus: o.deliveryStatus || o.DELIVERY_STATUS,
+        deliveryId: o.deliveryId || o.DELIVERY_ID,
+        deliveryAddr: o.deliveryAddr || o.DELIVERY_ADDR,
+        deliveryAddrDetail: o.deliveryAddrDetail || o.DELIVERY_ADDR_DETAIL,
+        orderDate: o.orderDate || o.ORDER_DATE,
+        orderitems: o.orderitems || o.orderItems || o.ITEMS || []
+    }));
+
+    // 💡 [수정 포인트] 필터 대상 대상을 원본(orders)에서 규격화된 데이터(normalizedOrders)로 교체
+    const assignedOrders = normalizedOrders.filter(o => o.deliveryId && o.deliveryStatus === 'WAITING');
+    const unassignedOrders = normalizedOrders.filter(o => {   
+        const isReady = o.orderState === 'READY' || o.orderState === '배송 준비중' || o.orderState === 'ORDER'; // 'ORDER' 상태도 미배정에 포함되도록 보완
         const isUnassignedOrRejected = !o.deliveryId || o.deliveryStatus === null || o.deliveryStatus === 'REJECTED'; 
         return isReady && isUnassignedOrRejected;
     });
 
-    const shippingOrders = orders.filter(o => o.deliveryStatus === 'SHIPPING');
+    const shippingOrders = normalizedOrders.filter(o => o.deliveryStatus === 'SHIPPING');
     
-    // 픽업 (반품/교환/취소 목록)
-    const pickupOrders = orders.filter(o => {
+    const pickupOrders = normalizedOrders.filter(o => {
         const isTargetState = o.orderState === 'EXCHANGEorREFUND' || o.orderState === 'CANCEL';
-        const isPickupStatus = o.deliveryStatus === 'COMPLETED' || o.deliveryStatus === 'PICKUP';
+        // SQL 결과 PICKUP 상태인 데이터를 인지하도록 보완
+        const isPickupStatus = o.deliveryStatus === 'COMPLETED' || o.deliveryStatus === 'PICKUP' || !o.deliveryStatus; 
 
-        if (!isTargetState || !isPickupStatus) return false;
-
+        if (!isTargetState) return false;
         if (pickupFilter === 'ALL') return true;
-        if (pickupFilter === 'EXCHANGEorREFUND') return o.orderState === 'EXCHANGEorREFUND';
-        if (pickupFilter === 'CANCEL') return o.orderState === 'CANCEL';
-
-        return true;
+        return o.orderState === pickupFilter;
     });
     
-    const completedOrders = orders.filter(o => o.deliveryStatus === 'COMPLETED' && o.orderState !== 'EXCHANGE' && o.orderState !== 'CANCEL');
+    const completedOrders = normalizedOrders.filter(o => o.deliveryStatus === 'COMPLETED' && o.orderState !== 'EXCHANGEorREFUND' && o.orderState !== 'CANCEL');
 
     // Slice 작업
     const pagedAssigned = assignedOrders.slice((page2 - 1) * perPage2, page2 * perPage2);
