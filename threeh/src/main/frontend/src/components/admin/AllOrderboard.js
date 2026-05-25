@@ -138,7 +138,7 @@ const AllOrderboard = ({
                         ))}
                         {masterOrders.length === 0 && (
                             <tr>
-                                <td colSpan="10" style={{textAlign: 'center', color: 'red', fontWeight: 'bold', padding: '30px'}}>
+                                <td colSpan="10" className="table-no-data">
                                     ⚠️ 현재 조건에 맞는 주문 데이터가 0건입니다.
                                 </td>
                             </tr>

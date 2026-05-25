@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
+import '../../css/adminCss/DeliveryAE.css';
 
 const EditDelivery = () => {
     const { deliveryId } = useParams(); 
@@ -102,56 +103,58 @@ const EditDelivery = () => {
     };
 
     return (
-        <div className="delivery-page" style={{ padding: '20px' }}>
+        <div className="delivery-page">
             <div className="delivery-container">
                 <h1 className="delivery-title">배송 기사 정보 수정</h1>
 
                 <form onSubmit={handleSubmit} className="delivery-form">
                     
-                    <div className="form-card readonly-section" style={{ opacity: 0.8, marginBottom: '20px' }}>
+                    <div className="form-card readonly-section">
                         <label className="form-label">업체명 / 기사명 (수정 불가)</label>
-                        <div className="form-input" style={{ backgroundColor: '#f5f5f5', padding: '10px', borderRadius: '4px' }}>
+                        <div className="form-input readonly-box">
                             {formData.companyName} / {formData.deliveryName}
                         </div>
                     </div>
 
-                    <div className="form-card" style={{ marginBottom: '15px' }}>
+                    <div className="form-card">
                         <label className="form-label">기사 연락처</label>
-                        <div className="phone-group" style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
-                            <select name="phonePrefix" value={formData.phonePrefix} onChange={handleChange} style={{ padding: '8px' }}>
+                        <div className="phone-group">
+                            <select name="phonePrefix" value={formData.phonePrefix} onChange={handleChange}>
                                 <option value="010">010</option>
                                 <option value="011">011</option>
                                 <option value="070">070</option>
                             </select>
-                            <span>-</span>
-                            <input type="text" name="phoneMiddle" value={formData.phoneMiddle} onChange={handleChange} maxLength={4} style={{ width: '60px', padding: '8px' }} required />
-                            <span>-</span>
-                            <input type="text" name="phoneLast" value={formData.phoneLast} onChange={handleChange} maxLength={4} style={{ width: '60px', padding: '8px' }} required />
+                            <span className="phone-dash">-</span>
+                            <input type="text" name="phoneMiddle" value={formData.phoneMiddle} onChange={handleChange} maxLength={4} className="phone-input" required />
+                            <span className="phone-dash">-</span>
+                            <input type="text" name="phoneLast" value={formData.phoneLast} onChange={handleChange} maxLength={4} className="phone-input" required />
                         </div>
                     </div>
 
-                    <div className="form-card" style={{ marginBottom: '15px' }}>
+                    <div className="form-card">
                         <label className="form-label">차량 번호</label>
-                        <input type="text" name="deliveryCarNo" value={formData.deliveryCarNo} onChange={handleChange} placeholder="12가1234" style={{ width: '100%', padding: '8px' }} required />
+                        <input type="text" name="deliveryCarNo" value={formData.deliveryCarNo} onChange={handleChange} placeholder="12가1234" className="form-input" required />
                     </div>
 
-                    <h3 style={{ marginTop: '30px' }}>업체 정보 수정</h3>
+                    {/* 소제목 스타일 클래스 부여 */}
+                    <h3 className="business-section-title">업체 정보 수정</h3>
 
-                    <div className="form-card" style={{ marginBottom: '15px' }}>
+                    <div className="form-card">
                         <label className="form-label">업체 전화번호</label>
-                        <input type="text" name="businessPhone" value={formData.businessPhone} onChange={handleChange} placeholder="02-123-4567" style={{ width: '100%', padding: '8px' }} required />
+                        <input type="text" name="businessPhone" value={formData.businessPhone} onChange={handleChange} placeholder="02-123-4567" className="form-input" required />
                     </div>
 
-                    <div className="form-card" style={{ marginBottom: '15px' }}>
+                    <div className="form-card">
                         <label className="form-label">사업자 주소</label>
-                        <input type="text" name="businessAddr" value={formData.businessAddr} onChange={handleChange} placeholder="전체 주소를 입력하세요" style={{ width: '100%', padding: '8px' }} required />
+                        <input type="text" name="businessAddr" value={formData.businessAddr} onChange={handleChange} placeholder="전체 주소를 입력하세요" className="form-input" required />
                     </div>
 
-                    <div className="button-group" style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
-                        <button type="button" onClick={() => navigate(-1)} style={{ flex: 1, padding: '12px', cursor: 'pointer' }}>
+                    {/* 하단 버튼 그룹 */}
+                    <div className="button-group">
+                        <button type="button" onClick={() => navigate(-1)} className="cancel-btn">
                             취소
                         </button>
-                        <button type="submit" style={{ flex: 2, padding: '12px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+                        <button type="submit" className="submit-btn">
                             수정 완료
                         </button>
                     </div>

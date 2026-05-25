@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import '../../css/adminCss/AdminDashboard.css';
 
-
-
 const Orderboard = ({
     orders = [],
     items = [],
@@ -16,6 +14,10 @@ const Orderboard = ({
     const [perPage4, setPerPage4] = useState(5); const [page4, setPage4] = useState(1);
     const [perPage5, setPerPage5] = useState(5); const [page5, setPage5] = useState(1);
     const [perPage6, setPerPage6] = useState(5); const [page6, setPage6] = useState(1);
+
+    // 💡 픽업 목록 전용 체크박스 상태 추가
+    const [selectedPickupIds, setSelectedPickupIds] = useState([]);
+    const [pickupFilter, setPickupFilter] = useState('ALL');
 
     const renderItemName = (itemsList) => {
         if (!itemsList || itemsList.length === 0) return '';
@@ -32,32 +34,23 @@ const Orderboard = ({
         return isReady && isUnassignedOrRejected;
     });
 
-    const [pickupFilter, setPickupFilter] = useState('ALL');
-
     const shippingOrders = orders.filter(o => o.deliveryStatus === 'SHIPPING');
-    //픽업 (반품/교환/취소 목록)
-    const pickupOrders = orders.filter(o => {
-    const isTargetState =
-        o.orderState === 'EXCHANGEorREFUND' ||
-        o.orderState === 'CANCEL';
-
-    const isPickupStatus =
-        o.deliveryStatus === 'COMPLETED' || o.deliveryStatus === 'PICKUP';
-
-    if (!isTargetState || !isPickupStatus) return false;
-
-    if (pickupFilter === 'ALL') return true;
-    if (pickupFilter === 'EXCHANGEorREFUND') return o.orderState === 'EXCHANGEorREFUND';
-    if (pickupFilter === 'CANCEL') return o.orderState === 'CANCEL';
-
-    return true;
-});
-    const completedOrders = orders.filter(o => o.deliveryStatus === 'COMPLETED' && o.orderState !== 'EXCHANGE' && o.orderState !== 'CANCEL');
-
     
+    // 픽업 (반품/교환/취소 목록)
+    const pickupOrders = orders.filter(o => {
+        const isTargetState = o.orderState === 'EXCHANGEorREFUND' || o.orderState === 'CANCEL';
+        const isPickupStatus = o.deliveryStatus === 'COMPLETED' || o.deliveryStatus === 'PICKUP';
 
+        if (!isTargetState || !isPickupStatus) return false;
 
+        if (pickupFilter === 'ALL') return true;
+        if (pickupFilter === 'EXCHANGEorREFUND') return o.orderState === 'EXCHANGEorREFUND';
+        if (pickupFilter === 'CANCEL') return o.orderState === 'CANCEL';
 
+        return true;
+    });
+    
+    const completedOrders = orders.filter(o => o.deliveryStatus === 'COMPLETED' && o.orderState !== 'EXCHANGE' && o.orderState !== 'CANCEL');
 
     // Slice 작업
     const pagedAssigned = assignedOrders.slice((page2 - 1) * perPage2, page2 * perPage2);
@@ -65,6 +58,32 @@ const Orderboard = ({
     const pagedShipping = shippingOrders.slice((page4 - 1) * perPage4, page4 * perPage4);
     const pagedPickup = pickupOrders.slice((page5 - 1) * perPage5, page5 * perPage5);
     const pagedCompleted = completedOrders.slice((page6 - 1) * perPage6, page6 * perPage6);
+
+    // 💡 1️⃣ 픽업 개별 체크 핸들러
+    const handleCheckPickup = (orderId) => {
+        setSelectedPickupIds(prev => 
+            prev.includes(orderId) ? prev.filter(id => id !== orderId) : [...prev, orderId]
+        );
+    };
+
+    // 💡 2️⃣ 픽업 현재 페이지 전체 체크 핸들러
+    const handleAllCheckPickup = (e) => {
+        const isChecked = e.target.checked;
+        const currentPageIds = pagedPickup.map(o => o.orderId);
+
+        if (isChecked) {
+            // 현재 페이지의 모든 ID를 기존 선택 목록과 병합 (중복 제거)
+            setSelectedPickupIds(prev => Array.from(new Set([...prev, ...currentPageIds])));
+        } else {
+            // 현재 페이지의 ID들만 선택 목록에서 해제
+            setSelectedPickupIds(prev => prev.filter(id => !currentPageIds.includes(id)));
+        }
+    };
+
+    // 💡 3️⃣ 현재 페이지의 모든 항목이 체크되어 있는지 확인하는 상태 변수
+    const isAllPickupCheckedOnCurrentPage = 
+        pagedPickup.length > 0 && 
+        pagedPickup.every(o => selectedPickupIds.includes(o.orderId));
 
     return (
         <div>
@@ -173,35 +192,63 @@ const Orderboard = ({
             <div className="admin-content-box">
                 <h3>🔄 반품/교환 픽업 신청 목록[O.S=EXCHANGEorREFUND/CANCEL,D.S=COMPLETED/PICKUP인 ordersDB]</h3>
 
-                <div style={{ marginBottom: '10px' }}>
-        <button onClick={() => setPickupFilter('ALL')}>전체</button>
-        <button onClick={() => setPickupFilter('EXCHANGEorREFUND')}>교환/반품</button>
-        <button onClick={() => setPickupFilter('CANCEL')}>취소</button>
-    </div>
+                <div className="admin-tab-filter-group">
+                    <button onClick={() => setPickupFilter('ALL')}>전체</button>
+                    <button onClick={() => setPickupFilter('EXCHANGEorREFUND')}>교환/반품</button>
+                    <button onClick={() => setPickupFilter('CANCEL')}>취소</button>
+                </div>
+
+                {/* 💡 상단에 다중 처리가 필요할 경우 표시할 선택 건수 안내 (선택 사항) */}
+                {selectedPickupIds.length > 0 && (
+                    <div style={{ marginBottom: '10px', color: '#007bff', fontWeight: 'bold' }}>
+                        선택된 반품/교환 건: {selectedPickupIds.length}건
+                    </div>
+                )}
 
                 <table className="admin-table-style">
-                    <thead><tr><th>번호</th><th>상품</th><th>수량</th><th>회수 주소</th><th>주문 상태</th><th>기사 배정 및 픽업 신청</th><th>주문일</th></tr></thead>
+                    <thead>
+                        <tr>
+                            {/* 💡 제목줄 한꺼번에 체크박스 추가 */}
+                            <th>
+                                <input 
+                                    type="checkbox" 
+                                    onChange={handleAllCheckPickup} 
+                                    checked={isAllPickupCheckedOnCurrentPage} 
+                                />
+                            </th>
+                            <th>번호</th><th>상품</th><th>수량</th><th>회수 주소</th><th>주문 상태</th><th>기사 배정 및 픽업 신청</th><th>주문일</th>
+                        </tr>
+                    </thead>
                     <tbody>
                         {pagedPickup.length > 0 ? pagedPickup.map((order, index) => {
                             const currentItems = order.orderitems || order.orderItems || [];
                             return (
                                 <tr key={order.orderId}>
+                                    {/* 💡 데이터 행 개별 체크박스 추가 */}
+                                    <td>
+                                        <input 
+                                            type="checkbox" 
+                                            checked={selectedPickupIds.includes(order.orderId)} 
+                                            onChange={() => handleCheckPickup(order.orderId)} 
+                                        />
+                                    </td>
                                     <td>{(page5 - 1) * perPage5 + index + 1}</td>
                                     <td>{renderItemName(currentItems)}</td>
                                     <td>{currentItems.reduce((sum, i) => sum + (i.count || 0), 0)}개</td>
                                     <td>{order.deliveryAddr} {order.deliveryAddrDetail}</td>
-                                    <td><span>{order.orderState === 'EXCHANGE' ? '교환 접수' : '취소 접수'}</span></td>
+                                    {/* 기존 코드의 오타 매핑('EXCHANGEorREFUND') 대응 보완 */}
+                                    <td><span>{order.orderState === 'EXCHANGEorREFUND' ? '교환/반품 접수' : '취소 접수'}</span></td>
                                     <td>
                                         <select value={selectedDrivers[order.orderId] || ""} onChange={(e) => handleDriverSelect(order.orderId, e.target.value)}>
                                             <option value="">픽업 기사 선택</option>
                                             {items.map(driver => <option key={driver.deliveryId} value={driver.deliveryId}>{driver.deliveryName}</option>)}
                                         </select>
-                                        <button onClick={() => handleAssignDriver(order.orderId)}>픽업 배정</button>
+                                        <button onClick={() => handleAssignDriver(order.orderId, true)}>픽업 배정</button>
                                     </td>
                                     <td>{order.orderDate?.split('T')[0]}</td>
                                 </tr>
                             );
-                        }) : <tr><td colSpan="7">현재 반품/교환 회수 대상 주문이 없습니다.</td></tr>}
+                        }) : <tr><td colSpan="8">현재 반품/교환 회수 대상 주문이 없습니다.</td></tr>}
                     </tbody>
                 </table>
             </div>        

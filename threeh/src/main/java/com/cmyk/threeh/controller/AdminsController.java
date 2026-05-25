@@ -482,5 +482,59 @@ public ResponseEntity<?> completeDelivery(@PathVariable Long orderId) {
         System.out.println("✅ 기사 [" + deliveryId + "] 상태가 WAITING으로 리셋 완료되어 DB에 반영되었습니다.");
         return ResponseEntity.ok("기사 상태가 WAITING으로 전환되었습니다.");
     }
+
+    //교환 환불
+    @PostMapping("/orders/{orderId}/assign-pickup")
+public ResponseEntity<?> assignPickupDriver(
+        @PathVariable Long orderId, 
+        @RequestBody Map<String, String> payload) { // 리액트 select에서 String으로 넘어올 수 있으므로 String 처리 후 파싱
+    
+    String deliveryIdStr = payload.get("deliveryId");
+    if (deliveryIdStr == null || deliveryIdStr.isEmpty()) {
+        return ResponseEntity.badRequest().body("배정할 기사 ID가 없습니다.");
+    }
+
+    try {
+        Long deliveryId = Long.parseLong(deliveryIdStr);
+
+        // 1. 주문 조회 (기존 Entity 이름인 Orders 적용 및 예외 처리 통일)
+        Orders order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
+        
+        // 2. 기사 조회
+        Delivery driver = deliveryRepository.findById(deliveryId)
+                .orElseThrow(() -> new RuntimeException("해당 배송 기사를 찾을 수 없습니다."));
+
+        // 3. 검증: 주문 상태가 반품/교환(EXCHANGEorREFUND)이거나 취소(CANCEL)인지 확인
+        OrderState currentState = order.getOrderState();
+        if (currentState != OrderState.EXCHANGEorREFUND && currentState != OrderState.CANCEL) {
+            return ResponseEntity.badRequest().body("반품/교환 또는 취소 접수 상태의 주문만 픽업 배정이 가능합니다.");
+        }
+
+        // 4. 상태 변경: deliveryStatus를 COMPLETED -> PICKUP으로 전환
+        order.setDelivery(driver); // 픽업을 담당할 기사 배정
+        order.changeDeliveryStatus(DeliveryStatus.PICKUP); // 💡 요청하신 대로 PICKUP으로 변경!
+        
+        // 기사 엔티티의 현재 업무 상태도 PICKUP으로 동기화
+        driver.setStatus(DeliveryStatus.PICKUP); 
+
+        // 5. DB 저장
+        orderRepository.save(order);
+        deliveryRepository.save(driver);
+
+        System.out.println("🔄 [픽업 배정 완료] 주문ID: " + orderId + " -> 기사ID: " + deliveryId + " (상태: PICKUP)");
+        return ResponseEntity.ok("성공적으로 픽업 기사가 배정되었으며, 픽업(PICKUP) 상태로 전환되었습니다.");
+
+    } catch (NumberFormatException e) {
+        return ResponseEntity.badRequest().body("잘못된 기사 ID 형식입니다.");
+    } catch (CustomException e) {
+        return ResponseEntity.badRequest().body("주문을 찾을 수 없습니다.");
+    } catch (Exception e) {
+        return ResponseEntity.internalServerError().body("서버 오류: " + e.getMessage());
+    }
 }
+
+}
+
+
 
