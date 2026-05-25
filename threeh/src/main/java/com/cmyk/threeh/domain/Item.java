@@ -100,24 +100,40 @@ public class Item {
     // 상품 수정 메서드
     public void itemUpdate(ItemUpdateRequestDTO dto){
 
+    //카테고리
+     if(dto.getItemCategory()!=null){
+        this.itemCategory = dto.getItemCategory();
+     }
+     //상품명   
      if(dto.getItemName() !=null) this.itemName = dto.getItemName();
+     //상품상세내용
      if(dto.getItemDetail() !=null)this.itemDetail = dto.getItemDetail();
+     //상품 컬러
      if(dto.getItemColor() !=null)this.itemColor = dto.getItemColor();
-     
+     //상품 가격
      if(dto.getItemPrice() !=null){
         validatePrice(dto.getItemPrice());
         this.itemPrice =dto.getItemPrice();
      }
-
+     //상품할인가격
      if(dto.getItemDiscountPrice() !=null){
         validateDiscountPrice(dto.getItemDiscountPrice());
         this.itemDiscountPrice = dto.getItemDiscountPrice();
 
      }
-
+     //상품재고
      if(dto.getItemStock() !=null){
         validateStock(dto.getItemStock());
         this.itemStock = dto.getItemStock();
+     }
+     //상품 판매상태
+     if(dto.getItemSellStatus()!=null){
+        changeSellStatus(dto.getItemSellStatus());
+     }
+
+     //통화
+     if(dto.getItemPriceCurrency() !=null){
+        this.itemPriceCurrency =dto.getItemPriceCurrency();
      }
     
     }
@@ -202,7 +218,7 @@ public class Item {
 
         item.itemSellStatus = dto.getItemSellStatus() != null
                             ? dto.getItemSellStatus()
-                            : ItemSellStatus.NON_SELL;
+                            : ItemSellStatus.COMING_SOON;
 
         item.itemStock = dto.getItemStock();
         item.validateItem();

@@ -1,18 +1,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,500;0,600;1,400&display=swap');
 
+
 /* =========================================================================
-   🏢 PROJECT CMYK - 마이페이지 데이터 씹힘 및 짤림 원천 파괴 디자인 시스템
+   🏢 PROJECT CMYK - 마이페이지 최종 텍스트 밸런싱 및 탈퇴 시인성 강화 시스템
    ========================================================================= */
 
 body {
     font-family: 'Noto Sans KR', sans-serif;
+    /* [팀 공통 규격] 은은한 카사미아풍 아이보리 오프화이트 배경색 */
     background-color: #F9F8F6 !important; 
     margin: 0;
     padding: 0;
-    overflow-x: hidden !important; /* 가로 스크롤바 원천 차단 유지 */
+    overflow-x: hidden !important; /* 가로 스크롤바 절대 차단 유지 */
 }
 
-/* 최외곽 컨테이너 */
 .mypage-grid-container {
     width: 100% !important;
     max-width: 100% !important;
@@ -20,33 +21,33 @@ body {
     padding: 0 !important; 
     color: #111111;
     box-sizing: border-box;
-    background-color: #FFFFFF !important; /* 팀 공통 흰색 컨텐츠 박스 배경 */
+    background-color: #FFFFFF !important; /* 팀 공통 컨텐츠 영역 화이트 지정 */
     min-height: 100vh;
 }
 
 /* ==========================================
-   🤎 1. 상단 브랜드 헤더 박스 (본문 정렬 라인과 칼같이 싱크 패치)
+   1. 상단 브랜드 헤더 박스 (고급 호텔 라운지 무드)
    ========================================== */
 .mypage-header-box {
     width: 100%;
     background-color: #ede2d5 !important; 
     border-bottom: 2px solid #111111 !important; 
-    padding: 22px calc((100% - 1140px) / 2) !important; /* 💡 정밀 연산: 본문 1140px 폭과 완벽 대칭 라인 정렬 */
+    padding: 28px calc((100% - 1200px) / 2) !important; /* 본문 1200px 축과 칼대칭 */
     display: flex !important;
     justify-content: space-between !important;
     align-items: center !important;
-    box-shadow: 0 4px 20px rgba(140, 122, 107, 0.08);
+    box-shadow: 0 10px 30px rgba(140, 122, 107, 0.08); 
     box-sizing: border-box;
 }
 
 .mypage-header-box > div:last-child {
     display: flex;
-    gap: 10px;
+    gap: 12px;
     align-items: center;
 }
 
 .mypage-logo-box {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Playfair Display', serif; 
     font-weight: 700;
     font-size: 26px;
     letter-spacing: 2px;
@@ -54,57 +55,58 @@ body {
 }
 
 /* ==========================================
-   📦 2. 본문 레이아웃 그리드 (짤림/씹힘 방지 황금 규격 1140px 고정)
+   2. 본문 레이아웃 그리드 (인호님 스펙 1200px 고정)
    ========================================== */
 .mypage-grid-container > div[style*="display: flex"] {
     width: 100% !important;
-    max-width: 1140px !important; /* 💡 가로 찢어짐 원천 차단: 데스크톱 표준 1140px로 락(Lock) 구현 */
-    margin: 40px auto 0 auto !important; /* 무조건 화면 정중앙 안착 */
+    max-width: 1200px !important; 
+    margin: 50px auto 0 auto !important; 
     padding: 0 20px; 
-    gap: 40px; /* 사이드바와 본문 사이의 최적의 간격 */
+    gap: 50px; 
     box-sizing: border-box;
     display: flex !important;
-    flex-direction: row !important; /* 가로 배열 강제 고정 */
+    flex-direction: row !important; 
 }
 
 /* ==========================================
-   🧱 3. 좌측 사이드바 메뉴 (240px 볼륨업 & 주방수납장 대형 배너 싱크)
+   3. 좌측 사이드바 메뉴 (280px 와이드 킹 스케일 & 대형 배너 마감)
    ========================================== */
 .mypage-sidebar {
-    width: 240px !important; 
-    flex-shrink: 0 !important; /* 💡 중요: 우측 본문 압박에 사이드바가 절대 찌그러지지 않도록 철벽 방어 */
+    width: 280px !important; 
+    flex-shrink: 0 !important; 
     display: flex;
     flex-direction: column;
     gap: 0px; 
     position: relative;
-    min-height: 850px; 
+    min-height: 900px; 
 }
 
-/* 사이드바 회원 인사말 블록 */
+/* 사이드바 인사말 박스 */
 .mypage-sidebar > div:first-child {
     background: linear-gradient(135deg, #ede2d5 0%, #dfd1c0 100%) !important;
-    padding: 26px 20px !important;
+    padding: 28px 24px !important;
     border-bottom: 2px solid #111111 !important;
     margin-bottom: 25px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+    box-shadow: 5px 5px 0px rgba(140, 122, 107, 0.15); 
 }
 
+/* 메뉴 리스트 버튼 디자인 */
 .mypage-sidebar .sidebar-btn {
     display: block;
     background-color: #ffffff !important; 
     border: none;
     text-align: left;
-    padding: 16px 22px !important; 
+    padding: 18px 24px !important; 
     cursor: pointer;
     font-size: 14px;               
     font-weight: 700;              
-    color: #333333;
+    color: #444444;
     width: 100%;
     box-sizing: border-box;
     border-bottom: 1px solid #f2ece4; 
     border-left: 1px solid #dfd1c0;
     border-right: 1px solid #dfd1c0;
-    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
     letter-spacing: -0.3px;
 }
 
@@ -114,49 +116,50 @@ body {
 .mypage-sidebar .sidebar-btn:hover {
     color: #ffffff;
     background-color: #8C7A6B !important; 
-    padding-left: 30px !important; 
+    padding-left: 34px !important; 
 }
 
-/* 🖼️ [인호님 주방수납장 사진 안전 연동 구역] */
+/* [주방수납장 사진 안전 연동 구역] */
 .mypage-sidebar::after {
     content: "";
     display: block;
-    width: 100%;
-    height: 380px; 
+    width: 100%;       
+    height: 420px;      
     margin-top: 20px; 
-    background-image: url('https://ibb.co'); 
+    background-image: url(//localhost:8080/static/images/k5_2.jpg); 
     background-size: cover;       
     background-position: center;  
-    border: 1px solid #111111;    
-    background-color: #ffffff;
-    box-shadow: 0 15px 35px rgba(140, 122, 107, 0.12);
-    transition: all 0.4s ease;
+    border: 2px solid #111111;    
+    background-color: transparent !important; 
+    box-shadow: 0 20px 40px rgba(140, 122, 107, 0.18); 
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
 }
 .mypage-sidebar:hover::after {
-    transform: translateY(-4px); 
-    box-shadow: 0 20px 45px rgba(140, 122, 107, 0.2);
+    transform: translateY(-6px); 
+    box-shadow: 0 30px 60px rgba(140, 122, 107, 0.28);
+    border-color: #8C7A6B;
 }
 
 /* ==========================================
-   🖥️ 4. 우측 메인 콘텐츠 구역 (데이터 씹힘/짤림 절대 방어 장치 탑재)
+   4. 우측 메인 콘텐츠 및 럭셔리 데이터 판넬
    ========================================== */
 .mypage-main-content {
     flex: 1 !important;
-    min-width: 0 !important; /* 💡 리액트 가로 짤림 해결 핵심: 자식 슬라이더 트랙이 멋대로 본문 영역을 찢고 나가지 못하게 강제 결속 */
+    min-width: 0 !important; 
     padding: 0 !important; 
     display: flex;
     flex-direction: column;
 }
 
-/* 프로필 박스 */
+/* 프로필 타이틀 요약 박스 */
 .profile-icon-box {
     display: flex;
     align-items: center;
     background: #ffffff;
-    padding: 35px 40px;
+    padding: 35px 45px;
     margin-bottom: 45px;
-    border: 1px solid #111111;
-    box-shadow: 5px 5px 0px #ede2d5; 
+    border: 2px solid #111111;
+    box-shadow: 8px 8px 0px #ede2d5; 
 }
 
 .profile-avatar-circle {
@@ -172,37 +175,38 @@ body {
     letter-spacing: -0.5px;
 }
 
+/* 섹션 대제목 타이틀 라벨 */
 .info-section-title {
     font-size: 16px;
     font-weight: 900;
     color: #111111;
-    margin: 40px 0 15px 0 !important;
+    margin: 55px 0 25px 0 !important;
     letter-spacing: -0.5px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-bottom: 1px solid #111111; /* 얇은 직선 언더라인으로 구획 확립 */
-    padding-bottom: 8px;
+    border-bottom: 2px solid #111111; 
+    padding-bottom: 10px;
 }
 .info-section-title::after {
-    content: "COLLECTION";
+    content: "3H PREMIUM FURNITURE";
     font-family: 'Playfair Display', serif;
     font-size: 11px;
     color: #dfd1c0;
-    font-weight: 400;
+    font-weight: 700;
     letter-spacing: 2px;
 }
 
-/* 🔒 개별 컨텐츠 판넬 공통화 (너비 자동 수축 제어로 씹힘 해결) */
+/* 회원정보 및 공통 데이터 블록 디자인 */
 .info-data-block {
     display: flex;
-    flex-direction: column; /* 💡 씹힘 해결: 가로로 꼬이던 정렬을 세로 블록형으로 일원화하여 정보수정과 리뷰가 깨지지 않게 가둠 */
-    gap: 15px;
-    padding: 25px 20px;
+    flex-direction: column; 
+    gap: 18px;
+    padding: 30px 25px; 
     border: 1px solid #111111;
-    margin-bottom: 35px;
+    margin-bottom: 40px;
     background-color: #ffffff;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.01);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.02);
     width: 100% !important;
     box-sizing: border-box;
 }
@@ -212,36 +216,41 @@ body {
     font-size: 14px;
     color: #111111;
     line-height: 1.6;
+    border-bottom: 1px solid #fcfbfa; 
+    padding-bottom: 6px;
 }
 
 .info-data-block p strong {
     font-weight: 700;
     color: #8C7A6B; 
-    margin-right: 12px;
+    margin-right: 15px;
     display: inline-block;
-    width: 70px; /* 라벨 너비 고정으로 가독성 일선 정렬 */
+    width: 80px; 
+    letter-spacing: 0.5px;
 }
 
 /* ==========================================
-   ⚡ 5. [구매내역] 가로형 슬라이더 쇼룸 (짤림 버그 완전 방멸)
+   5. 구매내역 가로형 슬라이더 쇼룸
    ========================================== */
 .order-slider-wrapper {
     display: flex;
     align-items: center;
-    border: 1px solid #111111;
-    padding: 30px 10px;
-    margin-bottom: 40px;
-    background: #ffffff;
+    border: 2px solid #111111; 
+    padding: 35px 15px;
+    margin-bottom: 45px;
+    background: linear-gradient(to right, #ffffff, #fcfbfa); 
     width: 100% !important;
     box-sizing: border-box;
+    box-shadow: inset 0 0 25px rgba(140, 122, 107, 0.04);
 }
 
 .slider-arrow-btn {
     background-color: #ffffff;
     border: 1px solid #111111;
-    width: 32px;
-    height: 32px;
-    font-size: 14px;
+    width: 36px;
+    height: 36px;
+    font-size: 15px;
+    font-weight: 700;
     cursor: pointer;
     color: #111111;
     display: flex;
@@ -249,127 +258,589 @@ body {
     justify-content: center;
     flex-shrink: 0;
     z-index: 10;
+    transition: all 0.2s ease;
 }
 .slider-arrow-btn:hover:not(:disabled) { background-color: #111111; color: #ffffff; }
 .slider-arrow-btn:disabled { border-color: #eeeeee; color: #dddddd; cursor: not-allowed; }
 
 .order-slider-container { 
     flex: 1; 
-    overflow: hidden !important; /* 💡 짤림 방지 핵심: 이 구역 바깥으로 삐져나가는 카드를 눈에서 완벽 차단 */
-    padding: 5px; 
-    margin: 0 10px;
+    overflow: hidden !important; 
+    padding: 8px; 
+    margin: 0 15px;
 }
 .order-slider-track { 
     display: flex !important; 
-    gap: 14px !important; 
+    gap: 16px !important; 
     width: 100% !important;
 }
 
-/* 🤎 4개 카드 배정 너비 연산 정확히 대칭 보정 */
+/* 개별 사각 카드 쇼룸 판넬 */
 .order-square-card {
-    flex: 0 0 calc(25% - 11px) !important; /* 💡 짤림 해결: 부모 100% 너비 안에서 정확하게 4등분(25%)으로 축소 안착 */
-    max-width: calc(25% - 11px) !important;
+    flex: 0 0 calc(25% - 12px) !important; 
+    max-width: calc(25% - 12px) !important;
     box-sizing: border-box;
     border: 1px solid #dfd1c0; 
-    padding: 20px 15px;
+    padding: 24px 18px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    min-height: 220px; 
+    min-height: 230px; 
     background-color: #ffffff !important; 
-    box-shadow: 0 4px 12px rgba(140, 122, 107, 0.04);
-    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    box-shadow: 0 6px 18px rgba(140, 122, 107, 0.05); 
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .order-square-card:hover {
-    transform: translateY(-4px);
+    transform: translateY(-6px);
     border-color: #111111;
-    box-shadow: 0 10px 24px rgba(140, 122, 107, 0.12);
+    box-shadow: 0 15px 30px rgba(140, 122, 107, 0.16);
 }
 
-.order-square-card button {
-    width: 100%;
-    padding: 9px 0;
-    font-size: 12px;
+.order-square-card p:nth-child(2) {
+    font-size: 14px;
     font-weight: 700;
-    cursor: pointer;
-    border: 1px solid #111111;
-    background-color: #111111;
-    color: #ffffff;
-    transition: all 0.2s;
+    line-height: 1.4;
+    color: #111111 !important; /* 중단 구역 마감 보완 */
 }
-.order-square-card button:hover {
-    background-color: #ede2d5;
-    color: #111111;
+
+
+/* =========================================================================
+   6. [신규 오버라이딩] 기존 마크업 전용 명품 라운지 버튼 스타일 클러스터
+   ========================================================================= */
+
+/* ① 미니멀 헤더 액션 라인 버튼 (로그아웃, 메인으로, 정보수정, 상품보기) */
+.mypage-header-box button,
+.profile-icon-box button:last-of-type,
+tbody button {
+    background-color: transparent !important;
+    border: 1px solid #111111 !important;
+    color: #111111 !important;
+    padding: 8px 18px !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.5px !important;
+    cursor: pointer !important;
+    border-radius: 0px !important; /* 모던 직각 마감 */
+    transition: all 0.25s ease-in-out !important;
+}
+
+.mypage-header-box button:hover,
+.profile-icon-box button:last-of-type:hover,
+tbody button:hover {
+    background-color: #111111 !important;
+    color: #FFFFFF !important;
+}
+
+/* ② 시그니처 딥 브라운 메인 버튼 (북마크 토글, 배송지 검색, 수정완료 등 공통) */
+.mypage-action-btn {
+    background-color: #8C7A6B !important; /* 까사미아풍 피크브라운 색상 */
+    border: 1px solid #8C7A6B !important;
+    color: #FFFFFF !important;
+    padding: 9px 20px !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    border-radius: 0px !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease-in-out !important;
+    box-shadow: 0 3px 6px rgba(140, 122, 107, 0.12);
+}
+
+.mypage-action-btn:hover {
+    background-color: #5E4431 !important; /* 딥 에스프레소 초콜릿 색상 */
+    border-color: #5E4431 !important;
+    box-shadow: 0 6px 15px rgba(94, 68, 49, 0.25);
+}
+
+.mypage-action-btn:disabled {
+    background-color: #E2DDD5 !important;
+    border-color: #E2DDD5 !important;
+    color: #A39E95 !important;
+    cursor: not-allowed !important;
 }
 
 /* =========================================================================
-   📊 6. 북마크 / 배송지 / 리뷰 게시판 리스트 수축 제어 마감
+   [레이아웃 최종 마감] JSX 수정 없이 버튼 박스를 제목 아래로 배치하는 정렬 시스템
    ========================================================================= */
-.info-data-block table {
-    width: 100% !important;
-    border-collapse: collapse;
-    box-sizing: border-box;
-}
-.info-data-block table th {
-    border-bottom: 2px solid #111111;
-    background-color: #fcfbfa;
-    padding: 12px 6px;
-    font-size: 13px;
-    font-weight: 700;
-    color: #111111;
-}
-.info-data-block table td {
-    border-bottom: 1px solid #eeeeee;
-    padding: 15px 6px;
-    font-size: 13px;
-}
-.info-data-block table tbody tr:hover { background-color: #fafafa; }
 
-/* 배송지 내역 리스트 마감 */
-.info-data-block > div[style*="display: flex"] {
+/* 메인 대시보드 박스를 세로 배치 구조로 선언 */
+.mypage-main-content .info-content-box {
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+/* -------------------------------------------------------------------------
+   [배송지 추가 헤더 내부 순서 뒤집기] 
+   ------------------------------------------------------------------------- */
+.address-section-header {
+    display: flex !important;
+    flex-direction: column !important; /* 가로 배열을 세로 배열로 변경 */
+    align-items: flex-start !important; /* 왼쪽 정렬 */
+    gap: 15px !important; /* 제목과 버튼 사이 간격 제공 */
+    margin-top: 40px !important;
+}
+
+/* 제목 라벨을 헤더 박스 내에서 첫 번째로 배치 */
+.address-section-header > h3 {
+    order: 1 !important;
     width: 100% !important;
-    border-bottom: 1px solid #eeeeee !important;
-    padding: 14px 0 !important;
+}
+
+/* [+ 새 배송지 검색] 버튼 박스를 제목 아래인 두 번째로 강제 배치 */
+.address-section-header > button {
+    order: 2 !important;
+    margin-bottom: 5px !important; /* 우편번호 창과의 간격 확보 */
+}
+
+/* =========================================================================
+   [레이아웃 최종 마감] JSX 수정 없이 버튼 박스를 제목 아래로 배치하는 정렬 시스템
+   ========================================================================= */
+
+/* 메인 대시보드 박스를 세로 배치 구조로 선언 */
+.mypage-main-content .info-content-box {
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+/* -------------------------------------------------------------------------
+   [배송지 추가 헤더 내부 순서 뒤집기 및 간격 미세 압축] 
+   ------------------------------------------------------------------------- */
+.address-section-header {
+    display: flex !important;
+    flex-direction: column !important; /* 가로 배열을 세로 배열로 변경 */
+    align-items: flex-start !important; /* 왼쪽 정렬 */
+    gap: 0px !important; /* 내부 기본 여백 완전히 제거 */
+    margin-top: 40px !important;
+    margin-bottom: 0px !important;
+}
+
+/* 제목 라벨을 헤더 박스 내에서 첫 번째로 배치 */
+.address-section-header > h3 {
+    order: 1 !important;
+    width: 100% !important;
+    margin: 0 0 10px 0 !important; /* 글씨와 버튼 사이 간격을 10px로 세밀하게 고정 */
+    padding: 0 !important;
+}
+
+/* [+ 새 배송지 검색] 버튼 박스를 제목 아래인 두 번째로 강제 배치 */
+.address-section-header > button {
+    order: 2 !important;
+    margin: 0 0 15px 0 !important; /* 버튼 아래 배송지 리스트/카카오창과의 최소 간격만 확보 */
+}
+
+/* -------------------------------------------------------------------------
+   [대시보드 전체 섹션 최종 노출 순서 제어]
+   ------------------------------------------------------------------------- */
+
+/* [순서 1] 회원정보 타이틀 및 데이터 영역 (맨 위) */
+.mypage-main-content .info-content-box > h3:nth-of-type(1),
+.mypage-main-content .info-content-box > h3:nth-of-type(1) + .info-data-block {
+    order: 1 !important;
+}
+
+/* [순서 2] 배송지 설정(추가) 헤더 박스 (두 번째) */
+.mypage-main-content .info-content-box > .address-section-header {
+    order: 2 !important;
+}
+
+/* [순서 3] 카카오 다음 우편번호 레이어 창 (활성화 시 버튼 아래인 세 번째로 조율) */
+.mypage-main-content .info-content-box > .postcode-layer-wrapper {
+    order: 3 !important;
+}
+
+/* [순서 4] 실제 등록된 배송지 리스트 데이터 블록 (네 번째) */
+.mypage-main-content .info-content-box > .address-section-header + .postcode-layer-wrapper + .info-data-block,
+.mypage-main-content .info-content-box > .address-section-header + .info-data-block {
+    order: 4 !important;
+}
+
+/* [순서 5] 구매내역 타이틀 및 가로형 캐러셀 슬라이더 트랙 (다섯 번째) */
+.mypage-main-content .info-content-box > #refund-section,
+.mypage-main-content .info-content-box > .order-slider-wrapper {
+    order: 5 !important;
+}
+
+/* [순서 6] 나의 리뷰 관리 타이틀 및 실시간 작성 평점 데이터 블록 (여섯 번째) */
+.mypage-main-content .info-content-box > #my-review-section,
+.mypage-main-content .info-content-box > #my-review-section + .info-data-block {
+    order: 6 !important;
+}
+
+/* [순서 7] 최하단 회원 탈퇴 버튼 링크 (맨 아래 고정) */
+.mypage-main-content .info-content-box > div:last-child {
+    order: 7 !important;
+}
+
+/* =========================================================================
+   [최종 가시성 보완] 하단 회원 탈퇴하기 글씨 시인성 및 반응형 제어
+   ========================================================================= */
+.mypage-main-content .info-content-box .link-withdraw-trigger,
+.mypage-main-content .info-content-box div[style*="justify-content: flex-end"] span {
+    color: #A63D2D !important; /* 👈 잘 안 보이던 회색을 라운지 버건디 레드로 전면 변경 */
+    font-size: 13px !important;
+    font-weight: 700 !important; /* 👈 글씨 두께를 두껍게 주어 주목도 상승 */
+    letter-spacing: -0.3px !important;
+    cursor: pointer !important;
+    text-decoration: none !important;
+    border-bottom: 1px dashed #A63D2D !important; /* 세련된 밑줄 추가 */
+    padding-bottom: 2px !important;
+    opacity: 0.75 !important;
+    transition: all 0.2s ease-in-out !important;
+}
+
+/* 마우스를 올렸을 때(Hover) 피드백 효과 */
+.mypage-main-content .info-content-box .link-withdraw-trigger:hover,
+.mypage-main-content .info-content-box div[style*="justify-content: flex-end"] span:hover {
+    color: #801A24 !important; /* 더 깊은 딥 레드 로즈 색상 */
+    border-bottom: 1px solid #801A24 !important;
+    opacity: 1 !important;
+    text-shadow: 0 0 1px rgba(128, 26, 36, 0.1);
+}
+
+/* =========================================================================
+   [디자인 통일] 프로필 박스의 입체 섀도우 효과를 모든 데이터 박스에 확산 적용
+   ========================================================================= */
+
+/* 1. 회원정보, 배송지 주소록, 나의 리뷰 관리 블록의 외곽선 및 입체 섀도우 통일 */
+.mypage-main-content .info-content-box .info-data-block {
+    border: 2px solid #111111 !important; /* 프로필 박스와 동일한 두께로 통일 */
+    box-shadow: 8px 8px 0px #ede2d5 !important; /* 까사미아 시그니처 소프트베이지 섀도우 */
+    background-color: #ffffff !important;
+    margin-bottom: 50px !important; /* 박스 간 하단 간격 균형 조율 */
+    transition: all 0.3s ease-in-out !important;
+}
+
+/* 2. 구매내역 가로형 슬라이더 쇼룸 프레임 외곽선 및 입체 섀도우 매칭 */
+.mypage-main-content .info-content-box .order-slider-wrapper {
+    border: 2px solid #111111 !important; /* 두께 일치 */
+    box-shadow: 8px 8px 0px #ede2d5 !important; /* 동일한 무광 입체 섀도우 투사 */
+    background-color: #ffffff !important;
+    margin-bottom: 50px !important;
+    transition: all 0.3s ease-in-out !important;
+}
+
+/* 디자인 디테일 힌트: 박스들에 마우스를 올렸을 때 살짝 들어 올려지는 인터랙션 추가 (선택사항) */
+.mypage-main-content .info-content-box .info-data-block:hover,
+.mypage-main-content .info-content-box .order-slider-wrapper:hover {
+    transform: translate(-2px, -2px) !important;
+    box-shadow: 10px 10px 0px #dfd1c0 !important; /* 조금 더 깊은 베이지 톤으로 음영 강조 */
+}
+
+/* =========================================================================
+   [텍스트 가독성 최적화] 회원이름 및 회원정보 데이터 라벨 명도 극대화
+   ========================================================================= */
+
+/* 1. 프로필 박스 내부 "김인호님" 회원이름 글씨 선명도 및 두께 강화 */
+.profile-icon-box .profile-avatar-circle {
+    color: #111111 !important; /* 연한 갈색 무드에서 선명한 딥 블랙으로 변경 */
+    font-weight: 800 !important; /* 글씨 두께를 가장 두껍게 보정 */
+    text-shadow: none !important; /* 흐릿해 보일 수 있는 그림자 제거 */
+}
+
+/* 2. 회원정보 블록 내부 [아이디, 연락처, 이메일] 데이터 텍스트 전체 진하게 처리 */
+.mypage-main-content .info-content-box .info-data-block p {
+    color: #111111 !important; /* 본문 텍스트 색상을 깊고 진한 블랙으로 고정 */
+    font-weight: 500 !important; /* 일반 글씨도 가독성을 위해 두께 소폭 상향 */
+}
+
+/* 3. 회원정보 항목명(strong 태그) 강조색 보정 */
+.mypage-main-content .info-content-box .info-data-block p strong {
+    color: #5E4431 !important; /* 항목 이름은 에스프레소 브라운으로 묵직하게 고정 */
+    font-weight: 700 !important;
+}
+
+/* =========================================================================
+   [구매내역 슬라이더 상자 명도 및 선명도 극대화 오버라이딩]
+   ========================================================================= */
+
+/* 구매내역을 감싸는 전체 슬라이더 프레임 상자의 색감 강화 */
+.mypage-main-content .info-content-box .order-slider-wrapper {
+    background: #FFFFFF !important; /* 흐릿한 그라데이션에서 선명한 순백색으로 변경 */
+    border: 2px solid #111111 !important; /* 외곽 테두리를 가장 진한 블랙으로 고정 */
+    box-shadow: 8px 8px 0px #EDE2D5 !important; /* 프로필/회원정보 박스와 동일한 두께감 배지 투사 */
+}
+
+/* 슬라이더 내부의 낱개 사각 상품 카드 디자인 가독성 보정 */
+.mypage-main-content .info-content-box .order-slider-wrapper .order-square-card {
+    border: 1px solid #111111 !important; /* 연한 선에서 진한 검정 외곽선으로 변경하여 시인성 확보 */
+    background-color: #FFFFFF !important;
+}
+
+/* 카드 내부 이늄(Enum) 상태 문구들을 더 또렷하게 강조 */
+.mypage-main-content .info-content-box .order-slider-wrapper .order-square-card p strong {
+    color: #111111 !important; /* "상태:", "배송:" 라벨 글씨 딥블랙 고정 */
+}
+
+/* =========================================================================
+   [배송지 텍스트 밸런싱] 배송지 타이틀 글자 잘림 및 줄바꿈 차단 시스템
+   ========================================================================= */
+
+/* 1. "추가된 배송지", "기본 배송지" 항목의 텍스트 줄바꿈을 절대 차단 */
+.mypage-main-content .info-content-box .info-data-block div p strong,
+.mypage-main-content .info-content-box .info-data-block div p {
+    white-space: nowrap !important; /* 글자가 아래로 끊겨서 내려가는 현상을 절대 차단 */
+    display: inline-flex !important;
+    align-items: center;
+}
+
+/* 2. 우측 버튼들과 텍스트가 겹치지 않도록 유연하게 늘어나도록 리스트 정렬 보정 */
+.mypage-main-content .info-content-box .info-data-block > div[style*="display: flex"] {
     display: flex !important;
     justify-content: space-between !important;
     align-items: center !important;
-    box-sizing: border-box;
-}
-.info-data-block > div[style*="display: flex"]:last-of-type { border-bottom: none !important; }
-
-/* 📝 리뷰 텍스트 에어리어 */
-#my-review-section + .info-data-block textarea {
-    border: 1px solid #dfd1c0 !important;
-    padding: 12px !important;
-    background-color: #fcfbfa;
+    gap: 20px !important; /* 텍스트와 우측 버튼 사이 안전 거리 확보 */
+    width: 100% !important;
 }
 
-.mypage-action-btn {
-    border: 1px solid #111111 !important; 
-    background-color: #ffffff !important;
+/* 3. 배송지 이름 텍스트의 가시성 강조 */
+.mypage-main-content .info-content-box .info-data-block p strong {
+    font-size: 14px !important;
+    width: auto !important; /* 고정 크기를 해제하여 글자 길이에 맞게 가로로 자동 확장 */
+    margin-right: 8px !important;
+}
+
+/* =========================================================================
+   [세로 간격 미세 조정] 대시보드 레이아웃 상하 공백 압축 오버라이딩
+   ========================================================================= */
+
+/* 1. 프로필 박스 하단의 거대한 공백을 25px로 압축 */
+.profile-icon-box {
+    margin-bottom: 25px !important;
+}
+
+/* 2. 섹션 대제목 타이틀(회원정보, 배송지 추가 등)의 상단 여백을 25px로 대폭 줄임 */
+.info-section-title {
+    margin: 25px 0 15px 0 !important; /* 상단 여백을 55px -> 25px로 압축 */
+    padding-bottom: 8px !important;
+}
+
+/* 3. 회원정보, 배송지 주소록, 나의 리뷰 관리 상자들의 하단 마진을 50px -> 25px로 통일 */
+.mypage-main-content .info-content-box .info-data-block {
+    margin-bottom: 25px !important; /* 다음 섹션과의 간격을 촘촘하게 결합 */
+}
+
+/* 4. 구매내역 가로형 캐러셀 슬라이더 상자의 하단 마진도 25px로 압축 매칭 */
+.mypage-main-content .info-content-box .order-slider-wrapper {
+    margin-bottom: 25px !important;
+}
+
+/* 5. 배송지 설정 헤더 박스의 상단 여백 보정 */
+.address-section-header {
+    margin-top: 25px !important; /* 40px -> 25px로 좁힘 */
+}
+
+/* 6. 최하단 회원 탈퇴 버튼 위쪽의 거대한 여백 조절 */
+.mypage-main-content .info-content-box > div:last-child {
+    margin-top: 40px !important; /* 60px -> 40px로 세밀하게 밀착 */
+}
+
+/* 구매내역 총 개수 표시 스타일링 */
+#refund-section span {
+    font-family: 'Noto Sans KR', sans-serif !important;
+    letter-spacing: -0.3px;
+    background-color: #F9F8F6;
+    padding: 2px 10px;
+    border: 1px solid #111111;
+    box-shadow: 2px 2px 0px #EDE2D5;
+}
+
+/* =========================================================================
+   구매내역 타이틀 옆 수량 카운트 박스 초밀착 정렬 및 디자인 매칭
+   ========================================================================= */
+
+/* 구매내역 타이틀 박스 내부의 요소들을 왼쪽으로 정렬 */
+#refund-section {
+    display: flex !important;
+    justify-content: flex-start !important; /* 우측 정렬에서 왼쪽 정렬로 변경 */
+    align-items: center !important;
+}
+
+/* "구매내역" 글씨 자체의 우측 마진을 없애고 세밀하게 조정 */
+#refund-section {
+    gap: 8px !important; /* 글씨와 카운트 박스 사이의 간격을 8px로 초밀착 고정 */
+}
+
+/* 총 개수 표시 스퀘어 배지 디자인 강화 */
+#refund-section span {
+    font-family: 'Noto Sans KR', sans-serif !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    color: #8C7A6B !important; /* 까사미아 시그니처 브라운 */
+    background-color: #F9F8F6 !important; /* 연한 아이보리 내부색 */
+    padding: 3px 10px !important;
+    border: 1px solid #111111 !important; /* 미니멀리즘 블랙 단선 */
+    box-shadow: 3px 3px 0px #EDE2D5 !important; /* 프로필 미니 버전 입체 섀도우 */
+    margin: 0 !important; /* 불필요한 밀림 마진 초기화 */
+    display: inline-flex !important;
+    align-items: center;
+}
+
+/* 디자인 가이드라인: 우측 끝에 나오던 프리미엄 가구 영문 폰트는 카운터 박스 오른쪽 끝으로 밀어내기 */
+#refund-section::after {
+    margin-left: auto !important; /* 수량 박스가 붙은 상태에서 영문 라벨만 우측 끝으로 밀어냄 */
+}
+
+/* =========================================================================
+   [구매내역 전체보기 확대 시스템] 격자 뷰포트 오버라이딩
+   ========================================================================= */
+
+/* 1. 전체보기가 켜졌을 때 슬라이더 바깥 큰 상자의 가로 차단벽을 해제하고 아래로 확장 */
+.mypage-main-content .info-content-box .order-slider-wrapper:has(.grid-view) {
+    min-height: auto !important;
+    padding: 30px 25px !important;
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* 2. 전체보기 격자 모드일 때는 좌우 이동 화살표 버튼을 깔끔하게 숨김 처리 */
+.mypage-main-content .info-content-box .order-slider-wrapper:has(.grid-view) .slider-arrow-btn {
+    display: none !important;
+}
+
+/* 3. 1줄 가로폭 제한이 걸려있던 컨테이너 상자의 탈출 잠금 해제 */
+.mypage-main-content .info-content-box .order-slider-wrapper:has(.grid-view) .order-slider-container {
+    overflow: visible !important;
+    margin: 0 !important;
+}
+
+/* 4. 격자로 정렬이 풀렸을 때 인호님의 예쁜 사각 카드가 찌그러지지 않게 크기 보정 */
+.order-slider-track.grid-view .order-square-card {
+    flex: none !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    min-height: 240px !important;
+    box-sizing: border-box !important;
+    animation: fadeInOrderCard 0.4s ease-in-out forwards;
+}
+
+/* 5. 카드 내부 글씨들이 바둑판 정렬에서도 한눈에 들어오도록 텍스트 줄바꿈 방지 세팅 */
+.order-slider-track.grid-view .order-square-card p {
+    white-space: normal !important; /* 상품명이 길어도 깨지지 않게 줄바꿈 수용 */
+}
+
+/* 6. 전체보기를 누르면 카드들이 밑에서 위로 부드럽게 솟아오르는 고급 호텔 무드 효과 */
+@keyframes fadeInOrderCard {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* =========================================================================
+   [격자 차단벽 완전 해제] 전체보기 시 가로 폭 고정 스타일을 리셋하여 리스트 아래로 전사
+   ========================================================================= */
+
+/* 전체보기 모드일 때 가로로 길게 늘어지던 트랙 폭을 100% 화면폭으로 초기화 */
+.order-slider-track.grid-view {
+    width: 100% !important; /* 400% 등으로 늘어나던 가로폭을 현재 상자 폭으로 리셋 */
+    transform: none !important; /* 좌우로 밀어내던 이동 공식을 완전히 삭제 */
+}
+
+/* =========================================================================
+   [격자 뷰 강제 리셋] 상자 하나만 커지는 현상 완벽 해결
+   ========================================================================= */
+
+/* 전체보기 모드일 때 인라인 스타일에 적힌 가로 이동 공식(transform, width)을 무력화 */
+.mypage-main-content .info-content-box .order-slider-wrapper .order-slider-container .order-slider-track.grid-view {
+    display: grid !important;
+    /* 화면 폭에 맞춰서 알아서 2줄, 3줄 바둑판 격자로 쪼개지도록 강제 설정 */
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)) !important; 
+    gap: 20px !important; /* 상하좌우 카드 간격 */
+    width: 100% !important; /* 400% 등으로 늘어나던 가로폭을 현재 화면 폭으로 고정 */
+    transform: none !important; /* 좌우로 밀어내던 슬라이더 이동 공식을 강제 삭제 */
+}
+
+/* 격자 상태일 때 개별 사각 카드가 혼자 거대해지지 않도록 가로 스케일 딱 맞춤 */
+.mypage-main-content .info-content-box .order-slider-wrapper .order-slider-container .order-slider-track.grid-view .order-square-card {
+    flex: none !important;
+    max-width: 100% !important;
+    width: 100% !important; /* 격자 한 칸 크기에 1:1로 정확하게 핏 */
+    min-height: 240px !important;
+    box-sizing: border-box !important;
+}
+
+/* =========================================================================
+   구매내역 타이틀 라인 최종 정렬 (이상한 글씨 삭제 및 버튼 우측 고정)
+   ========================================================================= */
+
+/* 1. 구매내역 타이틀 박스 전체를 좌우 양끝 배칭 구조로 선언 */
+#refund-section {
+    display: flex !important;
+    justify-content: space-between !important; /* 글씨 세트는 왼쪽 끝, 버튼은 오른쪽 끝 */
+    align-items: center !important;
+    width: 100% !important;
+}
+
+/* 2. "구매내역" 글자와 "총 X건" 배지를 가로 한 묶음으로 왼쪽 정렬 */
+#refund-section > div[style*="display: flex"] {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 10px !important; /* 글씨와 수량 배지 간격 미세 고정 */
+}
+
+/* 3. 오른쪽 끝으로 붙는 [전체보기 / 접기] 버튼 오버라이드 */
+#refund-section > button.mypage-action-btn {
+    margin-left: auto !important; /* 오른쪽 끝단 축으로 강제 밀착 */
     padding: 6px 14px !important;
     font-size: 12px !important;
     font-weight: 700 !important;
-    color: #111111 !important;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
 }
-.mypage-action-btn:hover { background-color: #ede2d5 !important; }
 
-/* ==========================================
-   [까사미아 스타일] 하단 푸터 (본문 핏 일치 가로 대칭 마감)
-   ========================================== */
-.mypage-footer {
-    width: 100%;
-    border-top: 2px solid #111111;
-    margin-top: 100px;
-    padding: 50px calc((100% - 1100px) / 2) 70px calc((100% - 1100px) / 2) !important;
-    background-color: #111111; 
-    box-sizing: border-box;
+/* 4. [요청 반영] 타이틀 뒤에 나타나던 이상한 영문 가상 글씨 완전히 삭제 */
+#refund-section::after {
+    display: none !important; /* 기존 가구 영문 폰트 텍스트 무력화 제거 완료 */
+    content: "" !important;
 }
-.mypage-footer .footer-logo { color: #ffffff; font-family: 'Playfair Display', serif; font-size: 18px; }
-.mypage-footer .footer-info { color: #aaaaaa; font-size: 12px; }
-.mypage-footer .footer-copy { color: #666666; margin-top: 15px; font-size: 11px; }
+
+/* =========================================================================
+   🖼️ [먹통 완치] 사이드바 가구 목록 이동 배너 크기 및 클릭 영역 강제 활성화
+   ========================================================================= */
+
+/* 1. 기존 사이드바 텍스트 뒤에 가상으로 그리던 유령 배경은 완전히 무력화 차단 */
+.mypage-sidebar::after {
+    display: none !important;
+    content: "" !important;
+    height: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* 2. 인호님이 JSX에 새로 추가한 실제 <div> 박스 배너의 크기와 사진 강제 주입 */
+.mypage-sidebar .sidebar-furniture-banner,
+.sidebar-furniture-banner {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: 100% !important;       /* 사이드바 가로폭 280px에 꽉 차게 확장 */
+    height: 420px !important;      /* 0px로 수축되어 있던 높이를 420px로 강제 고정 */
+    margin-top: 30px !important;   /* 메뉴 버튼들과의 상단 여백 확보 */
+    
+    /* 🤎 팀 공통 주방 수납장 이미지 경로 오차 없이 선명하게 박아넣기 */
+    background-image: url(//localhost:8080/static/images/k5_2.jpg) !important; 
+    background-size: cover !important;       
+    background-position: center !important;  
+    
+    /* ⚡ 장바구니/정보수정과 일치하는 부드러운 브라운 테두리선 마감 */
+    border: 1px solid #dfd1c0 !important;    
+    box-shadow: 0 15px 35px rgba(140, 122, 107, 0.06) !important; 
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1) !important;
+}
+
+/* 3. 마우스를 올렸을 때 손가락 모양 반응 및 고급스럽게 솟아오르는 리빙 무드 모션 */
+.mypage-sidebar .sidebar-furniture-banner:hover,
+.sidebar-furniture-banner:hover {
+    cursor: pointer !important;
+    transform: translateY(-6px) !important; 
+    border-color: #8C7A6B !important; /* 까사미아 브라운선 하이라이트 */
+    box-shadow: 0 25px 50px rgba(140, 122, 107, 0.18) !important;
+}
+
+
+
+
+
+
+
+
+
+
+
+

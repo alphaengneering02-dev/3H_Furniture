@@ -553,10 +553,10 @@
 
 
 /* ==========================================
-   1. 부모 레이아웃 (상품 리스트 정렬)
+   1. 부모 레이아웃 (상품 리스트 정렬 및 슬라이더 뷰포트)
 ========================================== */
 .itemList {
-    max-width: 1200px; /* 화면 크기에 맞게 조절 가능 */
+    max-width: 1200px;
     margin: 0 auto;
     padding: 40px 20px;
 }
@@ -568,42 +568,59 @@
     text-align: left;
 }
 
-/* 4개의 아이템을 가로로 정렬하고 일정한 간격을 둠 */
-.itemList .items {
+/* 슬라이더의 넘치는 카드를 숨겨주는 윈도우 역할 창 */
+.product-slider-section .slider-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden; /* 영역 밖으로 밀려난 5~8번 상품 카드 숨김 */
+}
+
+/* 8개의 카드가 수평 정렬되는 트랙 공간 */
+.product-slider-section .items {
     display: flex;
-    gap: 20px; /* 카드 사이의 간격 */
-    justify-content: space-between; /* 양 끝 정렬 */
+    gap: 20px; /* 카드간 고정 간격 */
+    box-sizing: border-box;
+    width: 200%; /* 부모 폭의 200%로 가로 배치 보장 */
+}
+
+/* 빈 상품 문구 */
+.itemList .item-empty-text {
+    padding: 60px 0;
+    margin: 0 auto;
+    font-size: 15px;
+    color: #8A8178;
+}
+
+/* ==========================================
+   2. 자식 레이아웃 (개별 상품 카드 & 세로 배열 유지)
+========================================== */
+.item-card {
+    /* 8개 중 한 화면에 4개가 정확한 비율로 들어오도록 패딩/갭을 계산한 너비 계산식 적용 */
+    width: calc((100% - 60px) / 8); 
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
     align-items: flex-start;
 }
 
-
-/* ==========================================
-   2. 자식 레이아웃 (개별 상품 카드 & 하트 버튼 부유)
-========================================== */
-/* 개별 카드 전체 폭 지정 */
-.item-card {
-    flex: 1; /* 4개 카드가 동일한 비율로 너비를 가짐 */
-    min-width: 0; /* flex 자식 요소의 text-overflow 방지 */
-}
-
-/* 이미지 영역 - 하트 버튼 배치의 기준점이 됨 (relative) */
+/* 이미지 박스 스타일 */
 .item-card .image-box {
     position: relative; 
     width: 100%;
-    aspect-ratio: 1 / 1; /* 이미지를 정직사각형(1:1) 비율로 고정 */
-    background-color: #e5e5e5; /* 기획서의 회색 배경 배경색 */
-    border-radius: 12px; /* 모서리 라운딩 */
+    aspect-ratio: 1 / 1; 
+    background-color: #e5e5e5; 
+    border-radius: 12px; 
     overflow: hidden;
-    margin-bottom: 12px;
+    margin-bottom: 12px; 
 }
 
 .item-card .image-box img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* 이미지가 찌그러지지 않고 꽉 차게 */
+    object-fit: cover; 
 }
 
-/* 기획서 핵심: 이미지 우측 상단에 하트 띄우기 */
+/* 찜하기 하트 버튼 */
 .item-card .wish-btn {
     position: absolute;
     top: 12px;
@@ -618,14 +635,15 @@
 }
 
 .item-card .wish-btn:hover {
-    transform: scale(1.1); /* 마우스 올렸을 때 살짝 커지는 효과 */
+    transform: scale(1.1); 
 }
 
-/* 상품명 및 가격 스타일링 */
+/* 텍스트 정보 정렬 */
 .item-card .item-name {
     font-size: 14px;
     color: #666;
     margin: 0 0 6px 0;
+    text-align: left;
 }
 
 .item-card .item-price {
@@ -633,6 +651,60 @@
     font-weight: bold;
     color: #111;
     margin: 0;
+    text-align: left;
+}
+
+/* ==========================================
+   3. 슬라이더 컴포넌트 전용 UI 컨트롤러 버튼 (까사미아 메인 배너 스타일 이식)
+========================================== */
+/* 화살표 내비게이션 버튼 배치 */
+.product-slider-section .slider-btn-once {
+    position: absolute;
+    top: calc(50% - 25px); /* 이미지 박스 중간 지점에 균형감 있게 배치 */
+    left: 50%; 
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: space-between;
+    width: 102%; /* 화살표 버튼들이 카드 밖 양끝단 쪽에 튀어나와 쾌적하도록 설정 */
+    pointer-events: none; /* 빈 영역 마우스 클릭 방해 해제 */
+    z-index: 20;
+}
+
+.product-slider-section .slider-btn-once button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    pointer-events: auto; /* 버튼 자체는 클릭 가능 */
+    padding: 0;
+}
+
+.product-slider-section .slider-btn-once button img {
+    width: 45px;
+    filter: drop-shadow(0px 2px 5px rgba(0,0,0,0.1));
+}
+
+/* 하단 인디케이터 도트 트랙 */
+.product-slider-section .slider-btn-indicator {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    list-style: none;
+    padding: 0;
+    margin: 30px 0 0 0; /* 슬라이더 하단 여백 형성 */
+}
+
+.product-slider-section .slider-btn-indicator li {
+    width: 12px;
+    height: 12px;
+    background-color: #ccc;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* 활성화 상태 인디케이터 컬러 융합 */
+.product-slider-section .slider-btn-indicator li.active {
+    background-color: var(--main-black, #000); 
 }
 
 

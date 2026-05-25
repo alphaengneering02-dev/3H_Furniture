@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,500;0,600;1,400&display=swap');
 
 /* =========================================================================
-   🏢 PROJECT CMYK - 반품/교환 통합 대형 현황판 프리미엄 디자인 시스템
+   PROJECT CMYK - 반품/교환 통합 대형 현황판 프리미엄 디자인 시스템
    ========================================================================= */
 
 .refund-container {
@@ -14,7 +14,7 @@
 }
 
 /* ==========================================
-   📋 1. [부조장님 기획 반영] 2대 대형 통합 탭바 (200px 와이드 균등 정렬)
+   1. [부조장님 기획 반영] 2대 대형 통합 탭바 (200px 와이드 균등 정렬)
    ========================================== */
 .refund-tabs-bar {
     display: flex;
@@ -65,7 +65,7 @@
 }
 
 /* ==========================================
-   📊 2. 가로형 격자 테이블 헤더 라인 (.info-data-block 두께 매핑)
+   2. 가로형 격자 테이블 헤더 라인 (.info-data-block 두께 매핑)
    ========================================== */
 .refund-table-header {
     display: flex;
@@ -79,7 +79,7 @@
     text-align: center;
 }
 
-/* 🔄 컬럼별 가로 비율 정밀 분할 레이아웃 (총합 100% 칼정렬 기하학) */
+/* 컬럼별 가로 비율 정밀 분할 레이아웃 (총합 100% 칼정렬 기하학) */
 .th-select, .td-select             { width: 6%;  display: flex; justify-content: center; align-items: center; }
 .th-order-id, .td-order-id         { width: 12%; text-align: center; }
 .th-product-name, .td-product-name { width: 36%; text-align: left; padding-left: 15px; box-sizing: border-box; }
@@ -89,7 +89,7 @@
 .th-status, .td-status             { width: 12%; text-align: center; }
 
 /* ==========================================
-   📦 3. 테이블 바디 및 데이터 행 아이템 카드
+   3. 테이블 바디 및 데이터 행 아이템 카드
    ========================================== */
 .refund-item-list {
     display: flex;
@@ -166,7 +166,7 @@
 }
 
 /* ==========================================
-   🔢 4. 하단 직각 사각 페이징 내비게이션 바
+   4. 하단 직각 사각 페이징 내비게이션 바
    ========================================== */
 .refund-pagination-bar {
     display: flex;
@@ -215,7 +215,7 @@
 }
 
 /* ==========================================
-   📋 5. [부조장님 기획 반영] 최하단 공통 제출 제어 Zone
+   5. [부조장님 기획 반영] 최하단 공통 제출 제어 Zone
    ========================================== */
 .refund-action-submit-zone {
     display: flex;

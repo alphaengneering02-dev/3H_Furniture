@@ -2,6 +2,8 @@ package com.cmyk.threeh.dto;
 
 import javax.validation.constraints.NotBlank;
 
+import com.cmyk.threeh.enums.ItemSellStatus;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,6 +30,9 @@ public class ItemUpdateRequestDTO {
     private Integer itemPrice;
     private Integer itemDiscountPrice;
     private Integer itemStock;
+
+    private ItemSellStatus itemSellStatus;
+    private String itemPriceCurrency;
 
 }
 
