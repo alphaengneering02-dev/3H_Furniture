@@ -5,6 +5,7 @@ import icon_google from '../../assets/icon_google.png';
 import icon_kakao from '../../assets/icon_kakao.png';
 import icon_naver from '../../assets/icon_naver.png';
 import Header from '../main/Header';
+import { useToast } from '../../hook/useToast';
 
 //Login 전용 CSS 임포트
 import '../../css/memberPageCss/login.css';
@@ -12,6 +13,7 @@ import '../../css/memberPageCss/login.css';
 const Login = () => {
 
     const navigate = useNavigate();
+    const { success, error: err, warn, info } = useToast();
 
     
     //로그인 member 보내기(request)
@@ -52,7 +54,7 @@ const Login = () => {
 
         //모든 필드의 null 검사
         if(id=="" || password=="") {
-            alert("모든 항목을 입력해주세요!")
+            warn("모든 항목을 입력해주세요!")
             return
         }
 
@@ -81,7 +83,7 @@ const Login = () => {
                 //"message": "로그인에 성공하였습니다"
                 const passMessage = res.data.message
                 setLoginResultMsg(passMessage);
-                alert(passMessage)
+                success(passMessage)
                 console.log(passMessage)
 
                 //sessionStorage 저장 userRole추가
@@ -91,7 +93,7 @@ const Login = () => {
 
                 // 세션 만료시간 타이머(30분): 세션 삭제+로그인 페이지로 이동
                 setTimeout(() => {
-                    alert("세션이 만료되었습니다. 다시 로그인해주세요.");
+                    err("세션이 만료되었습니다. 다시 로그인해주세요.");
                     sessionStorage.removeItem("user"); //세션 삭제
                     navigate('/login'); //로그인 페이지로 이동
                 }, expireTime)
@@ -105,11 +107,11 @@ const Login = () => {
             if (error.response && error.response.data) {
                 const errorMessage = error.response.data.message
                 setLoginResultMsg(errorMessage);  //"잠긴 계정입니다.", "비밀번호가 만료되었습니다." 등의 에러메세지
-                alert(errorMessage)
+                err(errorMessage)
                 console.log(errorMessage)
             } else {
                 setLoginResultMsg("서버와 연결할 수 없습니다.");
-                alert("서버와 연결할 수 없습니다.")
+                err("서버와 연결할 수 없습니다.")
                 console.log("서버와 연결할 수 없습니다.")
             }
 
@@ -250,6 +252,11 @@ const Login = () => {
                         <Link to="http://localhost:8080/oauth2/authorization/kakao" className="login-social-item">
                             <img src={icon_kakao} alt='카카오 로그인' className="login-social-img" />
                         </Link>
+                    </div>
+
+                    {/* 시안의 수평 분할 라인 존 - 하단 ( ——--—— ) */}
+                    <div className="signup-divider-zone">
+                        <hr className="signup-divider-line1"/>
                     </div>
                 </article>
 

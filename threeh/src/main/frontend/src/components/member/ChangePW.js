@@ -3,11 +3,14 @@ import ChangePw_result from './ChangePW_result';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import Header from '../main/Header';
+import { useToast } from '../../hook/useToast';
 
 //ChangePW 전용 CSS 임포트
 import '../../css/memberPageCss/changePW.css';
 
 const ChangePw = () => {
+
+    const { success, error: err, warn, info } = useToast();
 
     const [form, setForm] = useState({
         id: "", oldPassword: "", newPassword: ""
@@ -36,7 +39,7 @@ const ChangePw = () => {
 
         //모든 필드의 null 검사
         if(id=="" || oldPassword=="" || newPassword=="") {
-            alert("모든 항목을 입력해주세요.")
+            warn("모든 항목을 입력해주세요.")
             return
         }
 
@@ -62,10 +65,10 @@ const ChangePw = () => {
                 const errorData = error.response.data
                 const errorMessage =error.response.data.message || Object.values(errorData)[0] || "알 수 없는 오류가 발생했습니다."
 
-                alert("[비밀번호 재설정 실패]\n" + errorMessage)
+                err("[비밀번호 재설정 실패]\n" + errorMessage)
                 console.log("[비밀번호 재설정 실패]\n" + errorMessage)
             } else {
-                alert("[비밀번호 재설정 실패]\n" + "서버와 연결할 수 없습니다.")
+                err("[비밀번호 재설정 실패]\n" + "서버와 연결할 수 없습니다.")
                 console.log("[비밀번호 재설정 실패]\n" + "서버와 연결할 수 없습니다.")
             }
         }

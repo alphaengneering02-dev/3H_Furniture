@@ -10,6 +10,7 @@ import icon_cart from '../../assets/icon_cart.png';
 import icon_logout from '../../assets/icon_logout.png';
 import icon_login from '../../assets/icon_login.png';
 import icon_signup from '../../assets/icon_signup.png';
+import logo from '../../assets/logo.jpg';
 import axios, { all } from 'axios';
 import Header_searchCondition from './Header_searchCondition';
 import { useToast } from '../../hook/useToast';
@@ -151,7 +152,7 @@ const Header = () => {
                     <div className="main-header-center">
                         <h1 className='main-header-logo'> 
                             <Link to="/">
-                                <img src={null} alt="logo"/>
+                                <img src={logo} alt="logo"/>
                             </Link> 
                         </h1>
 
@@ -280,7 +281,7 @@ const Header = () => {
 
                             {/* <!-- 메인메뉴2 --> */}
                             <li>
-                                <Link to="#">거실</Link>
+                                <Link to="/searchResult?searchValue=거실&price=0%2C500">거실</Link>
                                 <ul className="main-header-sub1">
                                     <li> <Link to="#"><span>서브메뉴1</span></Link> </li>
                                     <li> <Link to="#"><span>서브메뉴2</span></Link> </li>
@@ -292,81 +293,36 @@ const Header = () => {
 
                             {/* <!-- 메인메뉴3 --> */}
                             <li>
-                                <Link to="#">침실</Link>
+                                <Link to="/searchResult?searchValue=침실&price=0%2C500">침실</Link>
                                 <ul className="main-header-sub1">
-                                    <li>
-                                        <Link to="#"><span>서브메뉴1</span></Link>
-                                        <ul className="main-header-sub2">
-                                            <li> <Link to="#"><span>서브-서브메뉴1</span></Link> </li>
-                                            <li> <Link to="#"><span>서브-서브메뉴2</span></Link> </li>
-                                            <li> <Link to="#"><span>서브-서브메뉴3</span></Link> </li>
-                                            <li> <Link to="#"><span>서브-서브메뉴4</span></Link> </li>
-                                        </ul>
-                                    </li>
-                                    
-                                    <li>
-                                        <Link to="#"><span>서브메뉴2</span></Link>
-                                        <ul className="main-header-sub2">
-                                            <li> <Link to="#"><span>서브-서브메뉴1</span></Link> </li>
-                                            <li> <Link to="#"><span>서브-서브메뉴2</span></Link> </li>
-                                            <li> <Link to="#"><span>서브-서브메뉴3</span></Link> </li>
-                                            <li> <Link to="#"><span>서브-서브메뉴4</span></Link> </li>
-                                        </ul>
-                                    </li>
+                                    <li> <Link to="#"><span>서브메뉴1</span></Link> </li>
+                                    <li> <Link to="#"><span>서브메뉴2</span></Link> </li>
+                                    <li> <Link to="#"><span>서브메뉴3</span></Link> </li>
+                                    <li> <Link to="#"><span>서브메뉴4</span></Link> </li>
                                 </ul>
                             </li>
 
 
                             {/* <!-- 메인메뉴4 --> */}
                             <li>
-                                <Link to="#">주방</Link>
+                                <Link to="/searchResult?searchValue=주방&price=0%2C500">주방</Link>
                                 <ul className="main-header-sub1">
-                                    <li>
-                                        <Link to="#"><span>서브메뉴1</span></Link>
-                                        <ul className="main-header-sub2">
-                                            <li> <Link to="#"><span>서브-서브메뉴1</span></Link> </li>
-                                            <li> <Link to="#"><span>서브-서브메뉴2</span></Link> </li>
-                                            <li> <Link to="#"><span>서브-서브메뉴3</span></Link> </li>
-                                            <li> <Link to="#"><span>서브-서브메뉴4</span></Link> </li>
-                                        </ul>
-                                    </li>
-                                    
-                                    <li>
-                                        <Link to="#"><span>서브메뉴2</span></Link>
-                                        <ul className="main-header-sub2">
-                                            <li> <Link to="#"><span>서브-서브메뉴1</span></Link> </li>
-                                            <li> <Link to="#"><span>서브-서브메뉴2</span></Link> </li>
-                                            <li> <Link to="#"><span>서브-서브메뉴3</span></Link> </li>
-                                            <li> <Link to="#"><span>서브-서브메뉴4</span></Link> </li>
-                                        </ul>
-                                    </li>
+                                    <li> <Link to="#"><span>서브메뉴1</span></Link> </li>
+                                    <li> <Link to="#"><span>서브메뉴2</span></Link> </li>
+                                    <li> <Link to="#"><span>서브메뉴3</span></Link> </li>
+                                    <li> <Link to="#"><span>서브메뉴4</span></Link> </li>
                                 </ul>
                             </li>
 
 
                             {/* <!-- 메인메뉴5 --> */}
                             <li>
-                                <Link to="#">욕실</Link>
+                                <Link to="/searchResult?searchValue=욕실&price=0%2C500">욕실</Link>
                                 <ul className="main-header-sub1">
-                                    <li>
-                                        <Link to="#"><span>서브메뉴1</span></Link>
-                                        <ul className="main-header-sub2">
-                                            <li> <Link to="#"><span>서브-서브메뉴1</span></Link> </li>
-                                            <li> <Link to="#"><span>서브-서브메뉴2</span></Link> </li>
-                                            <li> <Link to="#"><span>서브-서브메뉴3</span></Link> </li>
-                                            <li> <Link to="#"><span>서브-서브메뉴4</span></Link> </li>
-                                        </ul>
-                                    </li>
-                                    
-                                    <li>
-                                        <Link to="#"><span>서브메뉴2</span></Link>
-                                        <ul className="main-header-sub2">
-                                            <li> <Link to="#"><span>서브-서브메뉴1</span></Link> </li>
-                                            <li> <Link to="#"><span>서브-서브메뉴2</span></Link> </li>
-                                            <li> <Link to="#"><span>서브-서브메뉴3</span></Link> </li>
-                                            <li> <Link to="#"><span>서브-서브메뉴4</span></Link> </li>
-                                        </ul>
-                                    </li>
+                                    <li> <Link to="#"><span>서브메뉴1</span></Link> </li>
+                                    <li> <Link to="#"><span>서브메뉴2</span></Link> </li>
+                                    <li> <Link to="#"><span>서브메뉴3</span></Link> </li>
+                                    <li> <Link to="#"><span>서브메뉴4</span></Link> </li>
                                 </ul>
                             </li>
                         </ul>

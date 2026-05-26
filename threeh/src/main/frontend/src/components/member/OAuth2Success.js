@@ -2,10 +2,12 @@
 import React, { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
+import { useToast } from '../../hook/useToast';
 
 const OAuth2Success = () => {
 
     const navigate = useNavigate();
+    const { success, error: err, warn, info } = useToast();
     const [searchParams] = useSearchParams();
     
 
@@ -63,17 +65,17 @@ const OAuth2Success = () => {
                 }
             } else {
                 // 기존 소셜 회원의 경우
-                alert("로그인에 성공하였습니다.");
+                success("로그인에 성공하였습니다.");
                 navigate("/"); // 메인 페이지로 이동
             }
 
         } catch (error) {
             if (error.response && error.response.data) {
                 const errorMessage = error.response.data.message || "로그인 처리 중 오류가 발생했습니다.";
-                alert(errorMessage);
+                err(errorMessage);
                 console.log(errorMessage);
             } else {
-                alert("서버와 연결할 수 없습니다.");
+                err("서버와 연결할 수 없습니다.");
                 console.log("서버와 연결할 수 없습니다.");
             }
 

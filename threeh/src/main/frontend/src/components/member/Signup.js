@@ -65,8 +65,6 @@ const Signup = () => {
                     {/* 시안의 수평 분할 라인 존 - 하단 ( ——--—— ) */}
                     <div className="signup-divider-zone">
                         <hr className="signup-divider-line1"/>
-                        <span className="signup-divider-text">OR</span>
-                        <hr className="signup-divider-line1"/>
                     </div>
                 </article>
 
