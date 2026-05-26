@@ -14,12 +14,8 @@ function OrderInfo({orderType, setOrderType, zipcode, address, setZipcode, setAd
     return (
     <div className="order-page-wrapper">
   
-      {/* 상단 로고 영역 - 중앙 정렬 컨셉 */}
-      <div className="order-logo-area">
-        <Link to="/" className="order-logo-link">
-          3H
-        </Link>
-      </div>
+    
+      
 
       {/* 대형 타이틀 */}
       <h2 className="order-page-title">주문/결제</h2>
@@ -86,9 +82,7 @@ function OrderInfo({orderType, setOrderType, zipcode, address, setZipcode, setAd
 
         </div>
 
-        {/* [참고] 이 자리에 추후 우측 결제 박스 컴포넌트(<OrderSummary /> 등)가 
-          들어오면 display: flex를 통해 까사미아와 동일한 화면 배치가 완성됩니다!
-        */}
+       
 
       </div>
     </div>
