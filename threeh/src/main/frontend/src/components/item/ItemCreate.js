@@ -1,6 +1,7 @@
 import React, { useEffect,useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import "../../css/itemPageCss/itemCreate.css";
 
 //상품 등록
 const ItemCreate = () => {
@@ -174,13 +175,13 @@ const ItemCreate = () => {
     
 
     return (
-        <div>
-            <h2>상품 등록</h2>
+        <div className="itemCreate-page">
+            <h2 className="itemCreate-title">상품 등록</h2>
 
-            <form onSubmit={handleItemSubmit}>
+            <form className="itemCreate-form" onSubmit={handleItemSubmit}>
                 {/*카테고리*/}
-                <div>
-                    <label>카테고리</label>
+                <div className="itemCreate-formRow">
+                    <label className="itemCreate-label">카테고리</label>
                     <select  name="itemCategory" value={item.itemCategory} onChange={handleItemChange} required>
                     <option value="">카테고리 선택</option>
                     <option value="거실">거실</option>    
@@ -191,48 +192,48 @@ const ItemCreate = () => {
                 </div>
 
                 {/*상품명*/}
-                <div>
+                <div className="itemCreate-formRow">
                     <label>상품명</label>
                     <input type='text' name="itemName" value={item.itemName} onChange={handleItemChange} required/>
                 </div>
                 
                 {/*상품 설명*/}
-                <div>
+                <div className="itemCreate-formRow">
                     <label>상품 설명</label>
-                    <textarea name="itemDetail" value={item.itemDetail} onChange={handleItemChange} maxLength={255}
+                    <textarea  className="itemCreate-textarea" name="itemDetail" value={item.itemDetail} onChange={handleItemChange} maxLength={255}
                     rows={5}
                     style={{resize:"none",width:"400px",height:"120px",}}/>
-                    <p>{item.itemDetail.length}/255</p>
+                    <p className="itemCreate-count">{item.itemDetail.length}/255</p>
                 </div>
 
                 {/*상품 색상*/}
-                <div>
-                    <label>상품 색상</label>
-                    <input type='text' name="itemColor" value={item.itemColor} onChange={handleItemChange}/>
+                <div className="itemCreate-formRow">
+                    <label className="itemCreate-label">상품 색상</label>
+                    <input className="itemCreate-input" type='text' name="itemColor" value={item.itemColor} onChange={handleItemChange}/>
                 </div>
 
                 {/*상품 가격*/}
-                <div>
-                    <label>가격</label>
-                    <input type='number' name="itemPrice" value={item.itemPrice} onChange={handleItemChange} required/>
+                <div className="itemCreate-formRow">
+                    <label className="itemCreate-label">가격</label>
+                    <input className="itemCreate-input" type='number' name="itemPrice" value={item.itemPrice} onChange={handleItemChange} required/>
                 </div>
 
                 {/*할인 가격*/}
-                <div>
+                <div className="itemCreate-formRow">
                     <label>할인 가격</label>
-                    <input type="number" name="itemDiscountPrice" value={item.itemDiscountPrice} onChange={handleItemChange}/>
+                    <input className="itemCreate-input" type="number" name="itemDiscountPrice" value={item.itemDiscountPrice} onChange={handleItemChange}/>
                 </div>
                 
                 {/*상품 재고*/}
-                <div>
-                    <label>상품 재고</label>
-                    <input type="number" name="itemStock" value={item.itemStock} onChange={handleItemChange} required/>
+                <div className="itemCreate-formRow">
+                    <label className="itemCreate-label">상품 재고</label>
+                    <input className="itemCreate-input" type="number" name="itemStock" value={item.itemStock} onChange={handleItemChange} required/>
                 </div>
 
                 {/*판매상태 */}
-                <div>
-                    <label>판매 상태</label>
-                    <select name="itemSellStatus" value={item.itemSellStatus} onChange={handleItemChange} required>
+                <div className="itemCreate-formRow">
+                    <label className="itemCreate-label">판매 상태</label>
+                    <select className="itemCreate-select" name="itemSellStatus" value={item.itemSellStatus} onChange={handleItemChange} required>
                         <option value="">판매상태 선택</option>
                         <option value="SELL">SELL</option>
                         <option value="READY">READY</option>
@@ -241,27 +242,27 @@ const ItemCreate = () => {
                 </div>
 
                 {/*통화*/}
-                <div>
-                    <label>통화</label>
+                <div className="itemCreate-formRow">
+                    <label className="itemCreate-label">통화</label>
                     <input type="text" name="itemPriceCurrency" value={item.itemPriceCurrency} onChange={handleItemChange}/>
                 </div>
 
-                <hr/>
+                <hr className="itemCreate-divider"/>
 
-                <h3>===상품 이미지===</h3>
+                <h3 className="itemCreate-sectionTitle">===상품 이미지===</h3>
 
                 {/*대표 이미지 */}
 
-                <div>
-                <label>대표 이미지</label>
-                <input type="file" accept="image/*" onChange={(e) => setMainImgFile(e.target.files[0])} required/>
+                <div className="itemCreate-formRow">
+                <label className="itemCreate-label">대표 이미지</label>
+                <input className="itemCreate-fileInput" type="file" accept="image/*" onChange={(e) => setMainImgFile(e.target.files[0])} required/>
                 </div>
                 
                 {/*서브 이미지*/}
 
-                <div>
-                    <label>서브 이미지</label>
-                    <input type="file" accept="image/*" multiple onChange={(e)=>{
+                <div className="itemCreate-formRow">
+                    <label className="itemCreate-label">서브 이미지</label>
+                    <input className="itemCreate-fileInput" type="file" accept="image/*" multiple onChange={(e)=>{
                         const selectedSubFiles = Array.from(e.target.files);
 
                         const totalFiles = subImgFiles.length + selectedSubFiles.length;
@@ -276,12 +277,15 @@ const ItemCreate = () => {
                         e.target.value ="";
                     }}
                     />
-                    <p>{subImgFiles.length}/10</p>
+                    <p className="itemCreate-fileCount">{subImgFiles.length}/10</p>
                     
-                    <ul>
+                    <ul className="itemCreate-fileList">
                         {subImgFiles.map((file,index)=>(
-                            <li key={index}>{file.name}
-                            <button type='button' onClick={()=> {
+                            <li className="itemCreate-fileItem" key={index}>
+                                <span className="itemCreate-fileName">
+                                {file.name}
+                                </span>
+                            <button  className="itemCreate-dangerButton" type='button' onClick={()=> {
                                 const newFiles =subImgFiles.filter((_,i)=> i !== index);
                                 setSubImgFiles(newFiles);
                             }}> 
@@ -291,9 +295,11 @@ const ItemCreate = () => {
                     </ul>
                 </div>
 
-                <button type="submit">
-                    상품 등록
-                </button>
+                <div className="itemCreate-buttonArea">
+                    <button type="submit">
+                        상품 등록
+                    </button>
+                </div>
             </form>
         </div>
     );
