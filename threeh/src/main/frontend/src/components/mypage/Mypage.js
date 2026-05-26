@@ -74,6 +74,7 @@ const Mypage = () => {
         }
     }, [navigate]);
 
+    //오현옥 북마크
     const getMyBookmarkedItems = async () => {
         if (!member || !member.memberId) {
             alert("회원 정보를 찾을 수 없습니다.");
@@ -124,18 +125,40 @@ const Mypage = () => {
         }
     };
 
-    const handleRefund = (orderId) => {
-        if (window.confirm(`주문번호 ${orderId}번을 교환/반품 하시겠습니까?'\n재고가 복구되고 주문이 삭제됩니다.`)) {
+    //교환
+    const handleRefund = (orderId, itemId) => {
+        if(window.confirm(`주문번호 ${orderId}번을 교환 하시겠습니까?\n재고가 복구되고 주문이 삭제됩니다.`)) {
             const params = new URLSearchParams();
-            params.append('orderId', orderId);
-            axios.post('http://localhost:8080/Member/refund/process', params, { withCredentials: true })
+            params.append('orderId',orderId);
+
+            axios.post('http://localhost:8080/Member/refund/process',params, {withCredentials:true})
                 .then(res => {
                     alert(res.data);
-                    setOrders(orders.filter(order => order.id !== orderId));
+
+                    setOrders(prevOrders => prevOrders.filter(order => order.orderId !== orderId));
+
+                    if(itemId) {
+                        navigate(`/item/${itemId}`);
+                    }
                 })
-                .catch(err => alert("처리 중 오류 발생"))
+                .catch(err => {
+                    alert(err.response?.data || "처리 중 오류 발생");
+                })
         }
     }
+
+    // const handleRefund = (orderId) => {
+    //     if (window.confirm(`주문번호 ${orderId}번을 교환 하시겠습니까?'\n재고가 복구되고 주문이 삭제됩니다.`)) {
+    //         const params = new URLSearchParams();
+    //         params.append('orderId', orderId);
+    //         axios.post('http://localhost:8080/Member/refund/process', params, { withCredentials: true })
+    //             .then(res => {
+    //                 alert(res.data);
+    //                 setOrders(orders.filter(order => order.id !== orderId));
+    //             })
+    //             .catch(err => alert("처리 중 오류 발생"))
+    //     }
+    // }
 
     const handleLogout = () => {
         if (window.confirm("로그아웃 하시겠습니까?")) {
@@ -161,8 +184,8 @@ const Mypage = () => {
         const newAddressObj = {
             id: Date.now(),
             addressName: "방금 검색한 주소",
-            zonecode: data.zonecode, // 인호님 오리지널 우편번호 필드 매핑
-            address: data.address,   // 인호님 오리지널 도로명주소 필드 매핑
+            zonecode: data.zonecode, // 우편번호 필드 매핑
+            address: data.address,   // 도로명주소 필드 매핑
             detail: ""
         };
 
