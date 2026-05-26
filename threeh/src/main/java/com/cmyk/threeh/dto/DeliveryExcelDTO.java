@@ -17,4 +17,6 @@ public class DeliveryExcelDTO {
     private String deliveryCarNo;
     
     private String status;
+
+    private String failReason;
 }

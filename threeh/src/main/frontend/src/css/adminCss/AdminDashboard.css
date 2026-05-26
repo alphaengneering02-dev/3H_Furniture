@@ -72,7 +72,7 @@
     padding: 8px 0;
 }
 
-.sidebar-divider {
+.admin-sidebar-divider {
     border: 0;
     height: 1px;
     background-color: #E2E8F0;
@@ -86,13 +86,13 @@
     gap: 24px;
 }
 
-.panel-group {
+.admin-panel-group {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-.panel-title {
+.admin-panel-title {
     font-size: 13px;
     font-weight: 700;
     color: #A0AEC0;

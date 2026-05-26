@@ -20,38 +20,9 @@ const AdminDashboard = () => {
     const [items, setItems] = useState([]);
 
     // 상품 번호를 입력받아 검증 후 상세 페이지로 이동하는 함수
-const handleEditItemDetail = async () => {
-    const itemIdRaw = window.prompt("수정하거나 삭제할 상품 번호(ID)를 입력해주세요:");
-    
-    // 1. 입력 취소 및 빈 값 예외 처리
-    if (!itemIdRaw) return; 
-
-    const itemId = Number(itemIdRaw);
-    if (isNaN(itemId)) {
-        alert("올바른 상품 번호(숫자)를 입력해주세요.");
-        return;
-    }
-
-    try {
-        // 2. 백엔드 Controller (@GetMapping("/{itemId}"))에 상품이 존재하는지 먼저 확인
-        // 백엔드 @RequestMapping("/api/item") 주소에 맞춰 요청을 보냅니다.
-        const response = await axios.get(`/api/item/${itemId}`);
-        
-        if (response.data) {
-            // 3. 상품이 확인되면 리액트 라우터 화면 경로인 /item/:itemId 로 이동
-            navigate(`/item/${itemId}`);
-        } else {
-            alert("존재하지 않는 상품 번호입니다.");
-        }
-    } catch (error) {
-        console.error("상품 조회 실패:", error);
-        if (error.response?.status === 404) {
-            alert("해당 상품을 찾을 수 없습니다.");
-        } else {
-            alert("상품 조회 중 오류가 발생했습니다. 번호를 다시 확인해주세요.");
-        }
-    }
-};
+const handleEditItemDetail = () => {
+        navigate('/item'); 
+    };
 
     const handleDeleteDelivery = async (deliveryId) => {
         if (!window.confirm("정말 이 기사를 삭제하시겠습니까?")) return;
@@ -228,15 +199,15 @@ const fetchDeliveries = async () => {
             <AdminMemoDay/>
 
              {/* 내부 구분선 */}
-            <hr className="sidebar-divider" />
+            <hr className="admin-sidebar-divider" />
 
            
             {/* 4. 원스톱 관리 매니저 패널 (사이드바 내부 하단 배치 성공) */}
             <div className="admin-control-panel">
                 
                 {/* 4-A. 상품 관리 파트 */}
-                    <div className="panel-group">
-                        <div className="panel-title">📦 상품 마스터 관리</div>
+                    <div className="admin-panel-group">
+                        <div className="admin-panel-title">📦 상품 마스터 관리</div>
                         <div className="panel-buttons">
                             <Link to="/item/create" className="full-width-link">
                                 <button className="admin-menu-btn type-product">개별 상품 추가</button>
@@ -244,13 +215,13 @@ const fetchDeliveries = async () => {
                             {/* 💡 수정 1: 사이드바 내부의 수정 버튼에 onClick 추가 */}
                             <button className="admin-menu-btn type-product-edit" onClick={handleEditItemDetail}>
                                 상품 수정 / 삭제
-                            </button>
+                            </button>                          
                         </div>
                     </div>
 
                 {/* 4-B. 배송 파트너 파트 */}
-                <div className="panel-group">
-                    <div className="panel-title">🚚 배송 파트너 등록</div>
+                <div className="admin-panel-group">
+                    <div className="admin-panel-title">🚚 배송 파트너 등록</div>
                     <div className="panel-buttons">
                         {/* 개별 등록 */}
                         <Link to="/admin/delivery" className="full-width-link">
@@ -267,7 +238,7 @@ const fetchDeliveries = async () => {
 
             </div>
             
-        </div> {/* <-- .admin-side-box 가 여기서 안전하게 닫힙니다 */}
+        </div> 
 
 
             {/* 오른쪽 */}
@@ -281,7 +252,9 @@ const fetchDeliveries = async () => {
                     <Link to="/item/create">
                     <button>상품 추가</button>
                     </Link>
-                    <button>상품 수정/삭제</button>
+                    <button className="admin-menu-btn type-product-edit" onClick={handleEditItemDetail}>
+                                상품 수정 / 삭제
+                            </button>
                 </div>
 
                 <AllOrderboard 

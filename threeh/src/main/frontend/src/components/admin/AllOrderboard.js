@@ -81,8 +81,10 @@ const AllOrderboard = ({
         deliveryAddrDetail: o.deliveryAddrDetail || o.DELIVERY_ADDR_DETAIL,
         memberName: o.memberName || o.MEMBER_ID,
         orderitems: o.orderitems || o.orderItems || o.ITEMS || []
-    }));
-
+    })).sort((a, b) => {
+        // 최신 주문일 순 내림차순 정렬
+        return new Date(b.orderDate) - new Date(a.orderDate);
+    });
     // 💡 [수정 포인트] 위에서 매핑을 끝냈으므로 소문자로 일괄 필터링 가능
     const selectableOrders = masterOrders.filter(o => o.deliveryStatus !== 'COMPLETED');
     const pagedOrders = masterOrders.slice((page1 - 1) * perPage1, page1 * perPage1);
