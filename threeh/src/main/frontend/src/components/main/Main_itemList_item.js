@@ -159,13 +159,10 @@ const Main_itemList_item = ({item, getLoginUser, isUserRole, isUser}) => {
 
     return (
         <div className="main-item-card">
-            <div className="image-box">
+            <div className="main-image-box">
                 {/* 상품 이미지 */}
                 <img src={item.imgUrl || "placeholder.png"} alt={item.itemName} />
                 {/* 북마크 버튼 */}
-                {/* <button className="main-bookmark-btn">♡</button> */}
-
-                {/*기존은 !isAdmin이였는데 일반 유저면 보이게 바꿈*/}
                 {isUser && (
                     <button
                         type="button"
@@ -179,8 +176,8 @@ const Main_itemList_item = ({item, getLoginUser, isUserRole, isUser}) => {
                 )}
 
             </div>
-            <p className="item-name">{item.itemName || "상품명"}</p>
-            <h4 className="item-price">{formatPrice(getFinalPrice(item))}원</h4>
+            <p className="main-item-name">{item.itemName || "상품명"}</p>
+            <h4 className="main-item-price">{formatPrice(getFinalPrice(item))}원</h4>
         </div>
     );
 };
