@@ -236,8 +236,9 @@ const ItemCreate = () => {
                     <select className="itemCreate-select" name="itemSellStatus" value={item.itemSellStatus} onChange={handleItemChange} required>
                         <option value="">판매상태 선택</option>
                         <option value="SELL">SELL</option>
-                        <option value="READY">READY</option>
-                        <option value="NON_SELL">NON_SELL</option>
+                        <option value="COMING_SOON">COMING_SOON</option>
+                        <option value="SOLD_OUT">SOLD_OUT</option>
+                        <option value="STOP">STOP</option>
                     </select>
                 </div>
 
