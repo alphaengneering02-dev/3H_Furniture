@@ -363,9 +363,9 @@ const Mypage = () => {
 
                         {/* 북마크 리스트를 게시판 형태로 보여주기..오현옥 */}
                         {showBookmarks && (
-                            <div className="info-content-box" style={{ marginTop: "20px" }}>
-                                <h3 className="info-section-title">내 북마크 상품</h3>
-                                <div className="info-data-block">
+                            <div className="mypage-info-content-box" style={{ marginTop: "20px" }}>
+                                <h3 className="mypage-info-section-title">내 북마크 상품</h3>
+                                <div className="mypage-info-data-block">
                                     {bookmarkedItems.length === 0 ? (
                                         <p>북마크한 상품이 없습니다.</p>
                                     ) : (
@@ -407,18 +407,18 @@ const Mypage = () => {
                             </div>
                         )}
 
-                        <div className="info-content-box">
-                            <h3 className="info-section-title">회원정보</h3>
-                            <div className="info-data-block">
+                        <div className="mypage-info-content-box">
+                            <h3 className="mypage-info-section-title">회원정보</h3>
+                            <div className="mypage-info-data-block">
                                 <p><strong>아이디:</strong> {member.id}</p>
                                 <p><strong>연락처:</strong> {member.phone}</p>
                                 <p><strong>이메일:</strong> {member.email || "-"}</p>
                             </div>
 
-                            <h3 id="refund-section" className="info-section-title">
+                            <h3 id="refund-section" className="mypage-info-section-title">
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                     구매내역
-                                    <span className="order-count-badge">
+                                    <span className="mypage-order-count-badge">
                                         총 {orders ? orders.filter(order => order.orderState !== 'CANCEL' && order.orderState !== 'EXCHANGEorREFUND').length : 0}건</span>
                                 </div>
                                 <button type="button" className="mypage-action-btn" style={{ padding: '4px 10px', fontSize: '12px' }} onClick={() => setIsAllOrdersOpen(!isAllOrdersOpen)}>
@@ -428,13 +428,13 @@ const Mypage = () => {
 
 
                             {/* [가로형 슬라이더 프레임 대치 구역] */}
-                            <div className="order-slider-wrapper">
-                                <button className="slider-arrow-btn prev" onClick={handlePrevSlide} disabled={currentSlideIndex === 0}>&lt;</button>
-                                <div className="order-slider-container">
+                            <div className="mypage-order-slider-wrapper">
+                                <button className="mypage-slider-arrow-btn prev" onClick={handlePrevSlide} disabled={currentSlideIndex === 0}>&lt;</button>
+                                <div className="mypage-order-slider-container">
 
                                     {/* 👇 딱 이 1줄(트랙 선언부)만 조건부 연산자로 스위칭 완료되었습니다! */}
                                     <div
-                                        className={`order-slider-track ${isAllOrdersOpen ? 'grid-view' : ''}`}
+                                        className={`mypage-order-slider-track ${isAllOrdersOpen ? 'grid-view' : ''}`}
                                         style={isAllOrdersOpen ? { transform: 'none', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '16px', width: '100%' } : { transform: `translateX(calc(-${currentSlideIndex * 25}% - ${currentSlideIndex * 4}px))` }}
                                     >
 
@@ -443,7 +443,7 @@ const Mypage = () => {
                                             .filter(order => order.orderState !== 'CANCEL' && order.orderState !== 'EXCHANGEorREFUND' )
                                             .map((order, index) => (
                                                 /* 낱개의 독립된 예쁜 정사각형 카드 인덱싱 */
-                                                <div key={order.orderId || order.id || index} className="order-square-card">
+                                                <div key={order.orderId || order.id || index} className="mypage-order-square-card">
                                                     <div>
                                                         <p style={{ fontSize: '11px', color: '#8C7A6B', margin: '0 0 6px 0' }}>NO. {order.orderId || order.id}</p>
                                                         <p style={{ fontSize: '14px', fontWeight: '700', margin: '0 0 8px 0' }}>{order.itemName || order.productName}</p>
@@ -489,28 +489,28 @@ const Mypage = () => {
                                                 </div>
                                             ))
                                         ) : (
-                                            <div className="order-square-card" style={{ width: '100%', aspectRatio: 'auto', justifyContent: 'center', alignItems: 'center' }}>
+                                            <div className="mypage-order-square-card" style={{ width: '100%', aspectRatio: 'auto', justifyContent: 'center', alignItems: 'center' }}>
                                                 <p style={{ color: '#8c7a6b', margin: 0 }}>최근 주문 내역이 없습니다.</p>
                                             </div>
                                         )}
                                     </div>
                                 </div>
-                                <button className="slider-arrow-btn next" onClick={handleNextSlide} disabled={currentSlideIndex >= Math.max(orders.length - 4, 0)}>&gt;</button>
+                                <button className="mypage-slider-arrow-btn next" onClick={handleNextSlide} disabled={currentSlideIndex >= Math.max(orders.length - 4, 0)}>&gt;</button>
                             </div>
 
                             {/* 오리지널 100% 완벽 복구된 배송지 설정 구역 (원본 필드명 및 동적 주소 보관함 마감) */}
-                            <div className="address-section-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '40px' }}>
-                                <h3 className="info-section-title" style={{ margin: 0, border: 'none' }}>배송지 설정</h3>
+                            <div className="mypage-address-section-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '40px' }}>
+                                <h3 className="mypage-info-section-title" style={{ margin: 0, border: 'none' }}>배송지 설정</h3>
                                 <button className="mypage-action-btn" onClick={addAddress}>{isPostcodeOpen ? "주소창 닫기" : "+ 새 배송지 검색"}</button>
                             </div>
 
                             {isPostcodeOpen && (
-                                <div className="postcode-layer-wrapper" style={{ border: '1px solid #111111', margin: '15px 0' }}>
+                                <div className="mypage-postcode-layer-wrapper" style={{ border: '1px solid #111111', margin: '15px 0' }}>
                                     <DaumPostCode onComplete={handleAddressComplete} />
                                 </div>
                             )}
 
-                            <div className="info-data-block" style={{ marginTop: '15px' }}>
+                            <div className="mypage-info-data-block" style={{ marginTop: '15px' }}>
                                 {addresses.length > 0 ? (
                                     addresses.map(addr => (
                                         addr.addressName === "방금 검색한 주소" ? (
@@ -556,8 +556,8 @@ const Mypage = () => {
                             </div>
 
                             {/* 오리지널 100% 완벽 복구된 나의 리뷰 관리 구역 (인호님 원본 필드명 복구) */}
-                            <h3 id="my-review-section" className="info-section-title">나의 리뷰 관리</h3>
-                            <div className="info-data-block">
+                            <h3 id="my-review-section" className="mypage-info-section-title">나의 리뷰 관리</h3>
+                            <div className="mypage-info-data-block">
                                 {myReviews && myReviews.length > 0 ? (
                                     myReviews.map((review) => (
                                         <div key={review.reviewId} style={{ borderBottom: '1px solid #eee', padding: '15px 0', width: '100%' }}>
@@ -611,10 +611,10 @@ const Mypage = () => {
             {/* [푸터 시작] 하단 기업 정보 및 미니멀 카피라이트 마크업          */}
             {/* ========================================================= */}
             <footer className="mypage-footer">
-                <div className="footer-content">
-                    <p className="footer-logo">PROJECT CMYK</p>
-                    <p className="footer-info">주식회사 씨엠와이케이 | 공동 프로젝트 팀 | 경기도 수원시 팔달구</p>
-                    <p className="footer-copy">© 2026 PROJECT CMYK. All Rights Reserved.</p>
+                <div className="mypage-footer-content">
+                    <p className="mypage-footer-logo">PROJECT CMYK</p>
+                    <p className="mypage-footer-info">주식회사 씨엠와이케이 | 공동 프로젝트 팀 | 경기도 수원시 팔달구</p>
+                    <p className="mypage-footer-copy">© 2026 PROJECT CMYK. All Rights Reserved.</p>
                 </div>
             </footer>
         </div>

@@ -229,14 +229,14 @@ body {
     letter-spacing: 0.5px;
 }
 
-/* ==========================================
-   5. 구매내역 가로형 슬라이더 쇼룸
-   ========================================== */
+/* =========================================================================
+   📦 5. 구매내역 가로형 슬라이더 쇼룸 (카드 크기 축소 및 테두리 블랙 강화)
+   ========================================================================= */
 .mypage-order-slider-wrapper {
     display: flex;
     align-items: center;
     border: 2px solid #111111; 
-    padding: 35px 15px;
+    padding: 25px 15px; /* 💡 상하 패딩을 줄여 전체적인 슬라이더 두께를 슬림하게 조정 */
     margin-bottom: 45px;
     background: linear-gradient(to right, #ffffff, #fcfbfa); 
     width: 100% !important;
@@ -247,9 +247,9 @@ body {
 .mypage-slider-arrow-btn {
     background-color: #ffffff;
     border: 1px solid #111111;
-    width: 36px;
-    height: 36px;
-    font-size: 15px;
+    width: 32px; /* 💡 화살표 버튼 크기도 카드 축소 비율에 맞춰 미세 조정 */
+    height: 32px;
+    font-size: 14px;
     font-weight: 700;
     cursor: pointer;
     color: #111111;
@@ -266,42 +266,69 @@ body {
 .mypage-order-slider-container { 
     flex: 1; 
     overflow: hidden !important; 
-    padding: 8px; 
+    padding: 10px 4px !important; 
     margin: 0 15px;
-}
-.mypage-order-slider-track { 
-    display: flex !important; 
-    gap: 16px !important; 
-    width: 100% !important;
+    box-sizing: border-box;
 }
 
-/* 개별 사각 카드 쇼룸 판넬 */
+/* [슬라이더 모드 기본형 트랙 설정] */
+.mypage-order-slider-track { 
+    display: flex !important; 
+    gap: 14px !important; /* 카드 사이 간격 조율 */
+    width: max-content !important; 
+    flex-wrap: nowrap !important;  
+    transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* [전체보기 활성화 시 격자(Grid) 전환 구조] */
+.mypage-order-slider-track.grid-view {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)) !important; /* 💡 격자 모드 시 최소 크기도 180px 슬림 규격 반영 */
+    gap: 14px !important;
+    width: 100% !important;        
+    flex-wrap: wrap !important;     
+    transform: none !important;     
+}
+
+/* 📐 [개별 사각 카드 쇼룸 판넬 - 크기 다이어트 및 라인 극대화] */
 .mypage-order-square-card {
-    flex: 0 0 calc(25% - 12px) !important; 
-    max-width: calc(25% - 12px) !important;
+    flex: 0 0 180px !important;       /* 🚨 [크기 축소]: 가로폭을 기존 212px에서 180px로 대폭 줄여 컴팩트하게 배치 */
+    width: 180px !important;          
+    max-width: 180px !important;
+    min-height: 210px !important;     /* 🚨 [크기 축소]: 세로 높이를 기존 240px에서 210px로 슬림화 */
     box-sizing: border-box;
-    border: 1px solid #dfd1c0; 
-    padding: 24px 18px;
+    
+    /* 🚨 [테두리 극대화]: 선명도를 위해 눈에 가장 확실하게 띄는 매트한 차콜 블랙 컬러(#333)로 2px 묵직하게 각인 */
+    border: 2px solid #333333 !important; 
+    
+    padding: 16px 14px; /* 내부 여백도 카드 크기에 맞게 축소 */
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    min-height: 230px; 
     background-color: #ffffff !important; 
-    box-shadow: 0 6px 18px rgba(140, 122, 107, 0.05); 
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04); 
     transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
+/* 전체보기 격자 모드일 때 개별 카드 가로폭 유연성 확보 */
+.mypage-order-slider-track.grid-view .mypage-order-square-card {
+    flex: 1 1 auto !important;
+    max-width: 100% !important;
+    width: 100% !important;
+}
+
+/* 🔥 마우스를 올렸을 때는 완벽한 올블랙 테두리로 완전 대칭 변환 */
 .mypage-order-square-card:hover {
-    transform: translateY(-6px);
-    border-color: #111111;
-    box-shadow: 0 15px 30px rgba(140, 122, 107, 0.16);
+    transform: translateY(-5px);
+    border-color: #111111 !important;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
 }
 
 .mypage-order-square-card p:nth-child(2) {
-    font-size: 14px;
+    font-size: 13px; /* 카드 크기가 줄어들었으므로 폰트 크기도 13px로 조화롭게 매칭 */
     font-weight: 700;
     line-height: 1.4;
-    color: #111111 !important; /* 중단 구역 마감 보완 */
+    color: #111111 !important; 
 }
 
 
