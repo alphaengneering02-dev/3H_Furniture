@@ -4,10 +4,10 @@ import { Link, useNavigate } from 'react-router-dom'
 import icon_google from '../../assets/icon_google.png';
 import icon_kakao from '../../assets/icon_kakao.png';
 import icon_naver from '../../assets/icon_naver.png';
+import Header from '../main/Header';
 
 //Login 전용 CSS 임포트
 import '../../css/memberPageCss/login.css';
-import Header from '../main/Header';
 
 const Login = () => {
 
@@ -212,44 +212,46 @@ const Login = () => {
 
                 {/* 아이디 / 비밀번호 찾기 */}
                 <article className="login-utility-box">
-                    <p> <input type='checkbox' checked={isChecked} onChange={changeChecked}/>로그인 상태 유지 </p>
-                    <p> 
-                        <span className="login-utility-link" onClick={() => navigate("/findId")}>아이디 찾기</span>
-                        <span className="login-utility-divider">|</span>
-                        <span className="login-utility-link" onClick={() => navigate("/changePw")}>비밀번호 찾기</span>
+                    <p className='staying'> 
+                        <input className='check' type='checkbox' checked={isChecked} onChange={changeChecked}/>
+                        <span className='label'>로그인 상태 유지</span>
+                    </p>
+                    <p className='finding'> 
+                        <span className="link" onClick={() => navigate("/findId")}>아이디 찾기</span>
+                        <span className="divider">|</span>
+                        <span className="link" onClick={() => navigate("/changePw")}>비밀번호 찾기</span>
                     </p>
                 </article>
 
                 {/* 로그인 버튼 */}
-                <button onClick={onSubmit}>로그인</button>
+                <button className='login-submit-btn' onClick={onSubmit}>로그인</button>
 
                 
 
                 {/* ===================oauth2 소셜 로그인=================== */}
-                <div>
-                    <hr className="login-social-divider"/>
-
-                    {/* 소셜 로그인 간편 아이콘 */}
-                    <div className="login-social-group">
-                        <p> 
-                            <Link to="http://localhost:8080/oauth2/authorization/google">
-                                <img src={icon_google} alt='구글' className="login-social-icon"/>
-                            </Link>
-                        </p>
-                        <p> 
-                            <Link to="http://localhost:8080/oauth2/authorization/naver">
-                                <img src={icon_naver} alt='네이버' className="login-social-icon"/>
-                            </Link>
-                        </p>
-                        <p> 
-                            <Link to="http://localhost:8080/oauth2/authorization/kakao">
-                                <img src={icon_kakao} alt='카카오' className="login-social-icon"/>
-                            </Link>
-                        </p>
+                <article>
+                    {/* 시안의 수평 분할 라인 존 ( —— OR —— ) */}
+                    <div className="login-divider-zone">
+                        <hr className="login-divider-line" />
+                        <span className="login-divider-text">OR</span>
+                        <hr className="login-divider-line" />
                     </div>
-
-                    <hr className="login-social-divider"/>
-                </div>
+                    
+                    {/* OAuth2 연동 소셜 회원가입 아이콘 그룹 */}
+                    <div className="login-social-wrapper">
+                        <Link to="http://localhost:8080/oauth2/authorization/google" className="login-social-item">
+                            <img src={icon_google} alt='구글 로그인' className="login-social-img" />
+                        </Link>
+                        
+                        <Link to="http://localhost:8080/oauth2/authorization/naver" className="login-social-item">
+                            <img src={icon_naver} alt='네이버 로그인' className="login-social-img" />
+                        </Link>
+                        
+                        <Link to="http://localhost:8080/oauth2/authorization/kakao" className="login-social-item">
+                            <img src={icon_kakao} alt='카카오 로그인' className="login-social-img" />
+                        </Link>
+                    </div>
+                </article>
 
 
                 {/* 하단 회원가입 유도 가이드 박스 */}
@@ -259,7 +261,7 @@ const Login = () => {
                         onClick={() => navigate("/signup")} 
                         className="login-signup-link-btn"
                     >
-                        회원가입
+                        회원가입 <span className='right-arrow'>&gt;</span>
                     </button>
                 </article>
 

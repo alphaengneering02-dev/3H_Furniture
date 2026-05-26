@@ -1,0 +1,217 @@
+/* ==========================================
+   Signup Site Page CSS
+   기준: global.css
+   - body 배경: #F9F8F6
+   - 컨텐츠 박스: #FFFFFF
+   - 기본 폰트: Noto Sans KR
+   - 포인트 폰트: Playfair Display
+========================================== */
+
+:root {
+  --signup-site-black: #000000;
+  --signup-site-middle-gray: #777;
+  --signup-site-light-gray: #999;
+  --signup-site-charcoal: #2B2D2F;
+  --signup-site-dark-brown: #2F2A25;
+  --signup-site-dark-beige: #8C7A6B;
+  --signup-site-light-beige: #eee8e0;
+  --signup-site-accent-gold: #D4B26F;
+  --signup-site-alert-red: #FF3B30;
+  --signup-site-success-green: #4CAF50;
+
+  --signup-site-bg-ivory: #F9F8F6;
+  --signup-site-bg-white: #FFFFFF;
+
+  --signup-site-border-light: #E5E2DC;
+  --signup-site-border-dark: #1A1A1A;
+
+  --signup-site-font-sans: 'Noto Sans KR', sans-serif;
+  --signup-site-font-serif: 'Playfair Display', serif;
+}
+
+
+/* 1. 전체 레이아웃 컨테이너 (중앙 정렬) */
+.signup-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 60px 20px;
+    background: var(--signup-site-bg-white);
+    font-family: var(--signup-site-font-sans);
+}
+
+
+/* 대제목 (사이트 회원가입) */
+.signup-title {
+    font-size: 1.6rem;
+    font-weight: 500;
+    margin-bottom: 40px;
+    letter-spacing: -0.5px;
+    color: var(--signup-site-black);
+}
+
+
+/* ==========================================
+   회원가입 폼 및 입력 필드 공통 구조
+   ========================================== */
+.signup-form {
+    width: 100%;
+    max-width: 450px;
+}
+
+.signup-input-group {
+    margin-bottom: 24px;
+    position: relative;
+}
+
+/* 하단 라인만 렌더링되는 모던 인풋 필드 */
+.signup-input-field {
+    width: 100%;
+    padding: 14px 0;
+    font-size: 14px;
+    border: none;
+    border-bottom: 1px solid var(--signup-site-border-light);
+    background-color: transparent;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.signup-input-field:focus {
+    border-bottom: 1px solid var(--signup-site-black);
+}
+
+.signup-input-field::placeholder {
+    color: var(--signup-site-light-gray);
+}
+
+/* 유효성 검사 에러 메시지 스타일 */
+.signup-error-msg {
+    font-size: 11px;
+    color: var(--signup-site-alert-red);
+    margin-top: 4px;
+    font-weight: 400;
+}
+
+
+/* ==========================================
+   이메일 필드 특화 레이아웃 (가로 배열 전용)
+   ========================================== */
+.signup-email-row {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+    border-bottom: 1px solid var(--signup-site-border-light);
+    transition: border-color 0.3s;
+}
+
+.signup-email-row:focus-within {
+    border-bottom: 1px solid var(--signup-site-black);
+}
+
+/* 가로 구조 구획을 위한 테이블 셀 레이아웃 적용 */
+.signup-email-cell {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.signup-email-cell.cell-id,
+.signup-email-cell.cell-site {
+    width: 35%;
+}
+
+.signup-email-cell.cell-at {
+    width: 6%;
+    text-align: center;
+    color: var(--signup-site-light-gray);
+    font-size: 14px;
+}
+
+.signup-email-cell.cell-select {
+    width: 24%;
+    padding-left: 5px;
+}
+
+/* 이메일 내부 인풋 하단 테두리 중복 제거 */
+.signup-email-field {
+    width: 100%;
+    padding: 14px 0;
+    font-size: 14px;
+    border: none;
+    background-color: transparent;
+    outline: none;
+}
+
+/* 커스텀 셀렉트 박스 스타일 */
+.signup-email-select {
+    width: 100%;
+    padding: 8px 0;
+    font-size: 13px;
+    color: var(--signup-site-middle-gray);
+    border: none;
+    background-color: transparent;
+    outline: none;
+    cursor: pointer;
+}
+
+
+/* ==========================================
+   하단 버튼 그룹 및 기타 에러 영역
+   ========================================== */
+.signup-action-group {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+    margin-top: 40px;
+    margin-bottom: 30px;
+}
+
+.signup-action-group button {
+    flex: 1;
+    height: 55px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid var(--signup-site-black);
+    transition: all 0.3s;
+}
+
+
+/* 취소 버튼 (화이트) */
+.signup-btn-cancel {
+    color: var(--signup-site-black);
+    background-color: var(--signup-site-bg-white);
+}
+.signup-btn-cancel:hover {
+    background-color: var(--signup-site-light-gray);
+}
+
+/* 가입하기 버튼 (블랙) */
+.signup-btn-submit {
+    color: var(--signup-site-bg-white);
+    background-color: var(--signup-site-black);
+}
+.signup-btn-submit:hover {
+    background-color: var(--signup-site-light-gray);
+    border-color: var(--signup-site-light-gray);
+    color: var(--signup-site-charcoal);
+}
+
+
+/* 하단 기타/글로벌 서버 오류 알림 블록 */
+.signup-global-error-box {
+    width: 100%;
+    max-width: 450px;
+    margin-top: 10px;
+    padding: 15px;
+    background-color: var(--signup-site-bg-ivory);
+    border-radius: 4px;
+    text-align: center;
+}
+
+.signup-global-error-box p {
+    font-size: 12px;
+    color: var(--signup-site-alert-red);
+    margin: 4px 0;
+}

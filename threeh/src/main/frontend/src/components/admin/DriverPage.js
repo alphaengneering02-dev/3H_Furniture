@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom'; // 👈 Link 컴포넌트 임포트 확인!
 import '../../css/adminCss/driverPage.css';
 
 const DriverPage = () => {
@@ -37,12 +38,12 @@ const DriverPage = () => {
         const orderRes = await axios.get(`/admin/driver/${deliveryId}/orders`);
         const dbOrders = orderRes.data; 
         
-        // 1. 신규 배정: deliveryStatus가 아예 없거나(null), 관리자가 막 배정한 상태(WAITING)인 것
+        // 1. 신규 배정
         const newOrders = dbOrders.filter(o => 
             (!o.deliveryStatus || o.deliveryStatus === 'WAITING') && o.orderState !== 'CANCEL'
         );
         
-        // 2. 수락된 주문: 기사님이 수락 버튼을 눌러서 백엔드에 'ACCEPTED'로 저장된 것
+        // 2. 수락된 주문
         const accepted = dbOrders.filter(o => 
             o.deliveryStatus === 'ACCEPTED' && o.orderState !== 'CANCEL'
         );
@@ -57,7 +58,6 @@ const DriverPage = () => {
             o.deliveryStatus === 'PICKUP' && (o.orderState === 'EXCHANGEorREFUND' || o.orderState === 'CANCEL')
         );
         
-        // State에 각각 안전하게 정착시킵니다. 이제 새로고침해도 안 섞입니다!
         setOrders(newOrders);
         setAcceptedOrders(accepted); 
         setShippingOrders(shipping);
@@ -82,13 +82,10 @@ const DriverPage = () => {
                 const email = res.data?.email || '';
                 const phone = res.data?.phone || '';
 
-                // 1. 만약 phone 필드에 영어가 포함되어 있다면 (소셜 난수 ID나 이메일 오입력 등)
-                //    또는 phone 값이 아예 없다면 이메일 주소를 그대로 표기합니다.
                 if (/[a-zA-Z]/.test(phone) || !phone) {
                     return setDisplayValue(email ? email : '연락처 없음');
                 }
 
-                // 2. phone 필드가 정상적인 숫자/하이픈 형태라면 전화번호를 표기합니다.
                 if (phone) {
                     return setDisplayValue(phone);
                 }
@@ -104,17 +101,15 @@ const DriverPage = () => {
     return <span>{displayValue}</span>;
 };
 
-    // 로그인 핸들러 수정
+    // 로그인 핸들러
 const handleLogin = async () => {
     try {
         const res = await axios.post('/admin/driver/login', loginInfo);
         
-        // 1. 기사 정보 상태 저장 및 로컬스토리지 저장
         setDriver(res.data);
         setIsLoggedIn(true);
         localStorage.setItem('driverInfo', JSON.stringify(res.data)); 
 
-        // 🔄 2. 이미 만들어둔 함수를 이용해 로그인 즉시 최신 주문 목록 새로고침(리로드)
         await fetchDriverOrders(res.data.deliveryId);
 
     } catch (err) {
@@ -125,15 +120,12 @@ const handleLogin = async () => {
 
     //로그아웃
     const handleLogout = () => {
-        // 1. 로컬스토리지에서 기사 정보 삭제
         localStorage.removeItem('driverInfo');
         
-        // 2. 로그인 및 기사 관련 상태 초기화
         setDriver(null);
         setIsLoggedIn(false);
         setLoginInfo({ phone: '', carSuffix: '' });
 
-        // 3. 주문 관련 모든 리스트 상태 초기화
         setOrders([]);
         setSelectedOrders([]);
         setAcceptedOrders([]);
@@ -190,7 +182,7 @@ const handleLogin = async () => {
         }
     };
 
-    // 선택 거절 (거절 시 내 목록에서 완전히 삭제 및 백엔드 리로드)
+    // 선택 거절
     const handleReject = async () => {
         if (selectedOrders.length === 0) return;
         try {
@@ -202,7 +194,6 @@ const handleLogin = async () => {
                 )
             );
 
-            // 💡 새로고침하여 확실하게 내 배정 대기 리스트에서 제외시킵니다.
             fetchDriverOrders(driver.deliveryId);
             setSelectedOrders([]);
             alert("선택한 주문을 거절했습니다. (어드민 미배정으로 복구)");
@@ -212,15 +203,13 @@ const handleLogin = async () => {
         }
     };
 
-    // 배송 시작 (수락 목록 전체 출발 -> 배송 중 목록으로 이동)
+    // 배송 시작
     const handleStartDelivery = async () => {
     try {
-        // 1. [선택 구현] 만약 신규 배정 목록(orders)에 남아있는 것들을 자동으로 거절하고 싶다면:
         if (orders.length > 0) {
             const rejectConfirm = window.confirm("수락하지 않은 신규 배정 주문들이 있습니다. 모두 거절 처리하고 배송을 출발하시겠습니까?");
             
             if (rejectConfirm) {
-                // 신규 목록에 있는 모든 orderId 추출하여 거절 API 일괄 호출
                 await Promise.all(
                     orders.map(o =>
                         axios.patch(`/admin/driver/orders/${o.orderId}/response`, {
@@ -231,7 +220,6 @@ const handleLogin = async () => {
             }
         }
 
-        // 2. 수락된 주문들 배송 출발 API 호출 (o.id 제거하고 o.orderId로 명확히 통일)
         await Promise.all(
             acceptedOrders.map(o =>
                 axios.post(`/admin/orders/${o.orderId}/start`) 
@@ -240,12 +228,11 @@ const handleLogin = async () => {
 
         alert("배송 출발 처리가 완료되었습니다!");
 
-        // 3. 서버 최신 데이터로 리로드 및 프론트 상태 초기화
         if (driver && driver.deliveryId) {
             await fetchDriverOrders(driver.deliveryId);
         }
         setAcceptedOrders([]);
-        setSelectedOrders([]); // 체크박스 초기화 추가
+        setSelectedOrders([]); 
 
     } catch (err) {
         console.error("배송 출발 처리 중 에러 발생:", err);
@@ -254,12 +241,11 @@ const handleLogin = async () => {
 };
 
 
-// 기사 상태만 WAITING으로 돌려서 화면 비우기
+// 대기 상태 전환
 const handleResetToWaiting = async () => {
     try {
         await axios.put(`/admin/driver/${driver.deliveryId}/reset-status`);
         
-        // 프론트엔드 기사 화면 초기화
         setAcceptedOrders([]);    
         setShippingOrders([]);    
         setShippingCheckeds([]);
@@ -277,7 +263,7 @@ const handleResetToWaiting = async () => {
     }
 };
 
-    // 선택 배송 완료 (체크박스 기반)
+    // 선택 배송 완료 
     const handlecomplete = async () => {
         if (shippingCheckeds.length === 0) {
             alert("완료 처리할 주문을 선택해 주세요.");
@@ -291,12 +277,10 @@ const handleResetToWaiting = async () => {
                 )
             );
 
-            // 완료된 주문들은 배송 중 목록(shippingOrders)에서 제외 처리
             setShippingOrders(prev => 
                 prev.filter(o => !shippingCheckeds.includes(o.orderId))
             );
         
-            // 체크박스 선택 초기화
             setShippingCheckeds([]);
             alert("선택하신 주문의 배송 완료 처리가 되었습니다.");
 
@@ -314,7 +298,7 @@ const handleResetToWaiting = async () => {
         try {
             await Promise.all(
                 pickupCheckeds.map(id =>
-                    axios.post(`/admin/orders/${id}/complete`) // 백엔드 설계에 따라 pickup 혹은 complete 호출
+                    axios.post(`/admin/orders/${id}/complete`) 
                 )
             );
 
@@ -330,42 +314,53 @@ const handleResetToWaiting = async () => {
         }
     };
 
+    // 1️⃣ 로그인 전 화면 (비로그인 상태)
     if (!isLoggedIn) {
         return (
             <div className="driver-body-wrapper">
-               <div className="driver-login-section"> 
-                <h2 className="driver-login-title">기사 로그인</h2>
-                <input className="driver-login-input"
-                    type="text"
-                    inputMode="numeric"
-                    maxLength={11}
-                    placeholder="전화번호(010 0000 0000)"
-                    value={loginInfo.phone}
-                    onChange={e => {
-                        const onlyNums = e.target.value.replace(/[^0-9]/g, '');
-                        setLoginInfo({ ...loginInfo, phone: onlyNums });
-                                }} 
-                            />
+                <div className="driver-login-section"> 
+                    <h2 className="driver-login-title">기사 로그인</h2>
+                    <input className="driver-login-input"
+                        type="text"
+                        inputMode="numeric"
+                        maxLength={11}
+                        placeholder="전화번호(010 0000 0000)"
+                        value={loginInfo.phone}
+                        onChange={e => {
+                            const onlyNums = e.target.value.replace(/[^0-9]/g, '');
+                            setLoginInfo({ ...loginInfo, phone: onlyNums });
+                        }} 
+                    />
                     <input 
-                    className="driver-login-input"
-                    type="text"
-                    inputMode="numeric"
-                    maxLength={4}
-                    placeholder="차량번호 (4자리)"
-                    value={loginInfo.carSuffix}
-                    onChange={e => {
-                        const onlyNums = e.target.value.replace(/[^0-9]/g, '');
-                        setLoginInfo({ ...loginInfo, carSuffix: onlyNums });
-                            }} 
-                        />
-            <button className="driver-btn driver-btn-primary" 
-            style={{marginTop: '10px'}} onClick={handleLogin}>
-            로그인</button>
+                        className="driver-login-input"
+                        type="text"
+                        inputMode="numeric"
+                        maxLength={4}
+                        placeholder="차량번호 (4자리)"
+                        value={loginInfo.carSuffix}
+                        onChange={e => {
+                            const onlyNums = e.target.value.replace(/[^0-9]/g, '');
+                            setLoginInfo({ ...loginInfo, carSuffix: onlyNums });
+                        }} 
+                    />
+                    {/* 버튼들을 가로로 나란히 배치하기 위한 wrapper */}
+                    <div style={{ display: 'flex', gap: '10px', width: '100%', marginTop: '10px' }}>
+                        <button className="driver-btn driver-btn-primary" style={{ flex: 1 }} onClick={handleLogin}>
+                            로그인
+                        </button>
+                        <Link to="/admin" style={{ flex: 1 }}>
+                            <button className="driver-btn" style={{ width: '100%', backgroundColor: '#6c757d', color: '#fff' }}>
+                                관리자 메인
+                            </button>
+                        </Link>
+                    </div>
                 </div>
             </div> 
         );
     }
-return (
+
+    // 2️⃣ 로그인 후 화면
+    return (
         <div className="driver-body-wrapper">
             {/* 기사 상단 헤더 정보 바 */}
             <div className="driver-top-info-bar">
@@ -373,85 +368,71 @@ return (
                     <p className="driver-info-text">
                         배송 파트너: <strong>{driver.deliveryName}</strong> 기사님 ({driver.deliveryCarNo})
                     </p>
-                    <button className="driver-btn" style={{padding: '6px 16px', fontSize: '12px'}} onClick={handleLogout}>
-                        로그아웃
-                    </button>
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                        <Link to="/admin">
+                            <button className="driver-btn" style={{ padding: '6px 16px', fontSize: '12px', backgroundColor: '#6c757d', color: '#fff' }}>
+                                관리자 메인
+                            </button>
+                        </Link>
+                        <button className="driver-btn" style={{ padding: '6px 16px', fontSize: '12px' }} onClick={handleLogout}>
+                            로그아웃
+                        </button>
+                    </div>
                 </div>
             </div>
 
             <div className="driver-container">
-                
-                {/* 1. 신규 배정 섹션 (4열 Grid 스타일 적용) */}
+                {/* 1. 신규 배정 섹션 */}
                 <h2 className="driver-headline">📌 신규 배정 (수락 대기 목록)</h2>
                 {orders.length === 0 ? (
                     <p className="driver-empty-msg">새로운 배정 요청이 없습니다.</p>
                 ) : (
                     <>
                         <div className="driver-order-grid">
-    {orders.map(order => {
-        const isChecked = selectedOrders.includes(order.orderId);
+                            {orders.map(order => {
+                                const isChecked = selectedOrders.includes(order.orderId);
+                                const currentItems = order.orderitems || order.orderItems || [];
+                                let itemDisplay = "상품 정보 없음";
+                                
+                                if (currentItems && currentItems.length > 0) {
+                                    const firstItemName = currentItems[0].itemName || currentItems[0].ItemName || "이름 없는 상품";
+                                    const firstItemCount = currentItems[0].count || 0;
 
-        // 💡 [해결 포인트] 소문자 orderitems와 대소문자 orderItems를 둘 다 받아오도록 통합
-        const currentItems = order.orderitems || order.orderItems || [];
-        
-        let itemDisplay = "상품 정보 없음";
-        
-        if (currentItems && currentItems.length > 0) {
-            // 내부 아이템 필드명도 대소문자(itemName, ItemName) 모두 방어
-            const firstItemName = currentItems[0].itemName || currentItems[0].ItemName || "이름 없는 상품";
-            const firstItemCount = currentItems[0].count || 0;
+                                    if (currentItems.length === 1) {
+                                        itemDisplay = `${firstItemName} (${firstItemCount}개)`;
+                                    } else {
+                                        const totalCount = currentItems.reduce((sum, item) => sum + (item.count || 0), 0);
+                                        itemDisplay = `${firstItemName} 외 ${currentItems.length - 1}건 (총 ${totalCount}개)`;
+                                    }
+                                }
 
-            if (currentItems.length === 1) {
-                itemDisplay = `${firstItemName} (${firstItemCount}개)`;
-            } else {
-                // 전체 수량 총합 계산
-                const totalCount = currentItems.reduce((sum, item) => sum + (item.count || 0), 0);
-                itemDisplay = `${firstItemName} 외 ${currentItems.length - 1}건 (총 ${totalCount}개)`;
-            }
-        }
+                                return (
+                                    <div key={order.orderId} className={`driver-order-card ${isChecked ? 'checked' : ''}`}>
+                                        <div className="driver-card-header">
+                                            <input
+                                                type="checkbox"
+                                                className="driver-checkbox"
+                                                checked={isChecked}
+                                                onChange={() => toggleSelect(order.orderId)}
+                                            />
+                                            <span className="driver-order-id">NO. {order.orderId}</span>
+                                            {order.orderType && (
+                                                <span className={`driver-badge ${order.orderType.toLowerCase()}`}>
+                                                    {order.orderType === 'DELIVERY_WITH_INSTALLATION' ? '설치배송' : '일반배송'}
+                                                </span>
+                                            )}
+                                        </div>
 
-        return (
-            <div key={order.orderId} className={`driver-order-card ${isChecked ? 'checked' : ''}`}>
-                <div className="driver-card-header">
-                    <input
-                        type="checkbox"
-                        className="driver-checkbox"
-                        checked={isChecked}
-                        onChange={() => toggleSelect(order.orderId)}
-                    />
-                    <span className="driver-order-id">NO. {order.orderId}</span>
-                    {order.orderType && (
-                        <span className={`driver-badge ${order.orderType.toLowerCase()}`}>
-                            {order.orderType === 'DELIVERY_WITH_INSTALLATION' ? '설치배송' : '일반배송'}
-                        </span>
-                    )}
-                </div>
-
-                <div className="driver-card-body">
-            {/* 1. 주문자 이름 */}
-            <p className="driver-order-name">
-                <strong>주문자:</strong> {order.memberName || '비회원'}
-            </p>
-
-            {/* 📞 2. 주문자 연락처 (콘솔 추적 기능 및 매핑 방어 적용) */}
-                                            <p className="driver-order-phone">
-    <strong>연락처:</strong> <DriverPhoneCell memberId={order.memberId} />
-</p>
-
-            {/* 3. 상품명 정보 */}
-            <p className="driver-order-items">
-                <strong>상품명:</strong> {itemDisplay}
-            </p>
-            
-            {/* 4. 배송지 주소 */}
-            <p className="driver-order-addr">
-                <strong>주소:</strong> {order.deliveryAddr} {order.deliveryAddrDetail || ''}
-            </p>
-        </div>
-            </div>
-        );
-    })}
-</div>
+                                        <div className="driver-card-body">
+                                            <p className="driver-order-name"><strong>주문자:</strong> {order.memberName || '비회원'}</p>
+                                            <p className="driver-order-phone"><strong>연락처:</strong> <DriverPhoneCell memberId={order.memberId} /></p>
+                                            <p className="driver-order-items"><strong>상품명:</strong> {itemDisplay}</p>
+                                            <p className="driver-order-addr"><strong>주소:</strong> {order.deliveryAddr} {order.deliveryAddrDetail || ''}</p>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
                         <div className="driver-btn-group">
                             <button className="driver-btn" onClick={handleAccept}>선택 주문 수락</button>
                             <button className="driver-btn driver-btn-danger" onClick={handleReject}>선택 주문 거절</button>
@@ -459,19 +440,19 @@ return (
                     </>
                 )}
 
-                {/* 2. 수락 리스트 섹션 (정갈한 로우 스타일 적용) */}
+                {/* 2. 수락 리스트 섹션 */}
                 <h2 className="driver-headline">📦 수락된 주문 (상차 및 출발 대기)</h2>
                 {acceptedOrders.length === 0 ? (
                     <p className="driver-empty-msg">수락 후 상차 대기 중인 주문이 없습니다.</p>
                 ) : (
-                    <div style={{marginBottom: '20px'}}>
+                    <div style={{ marginBottom: '20px' }}>
                         {acceptedOrders.map(order => (
                             <div key={order.orderId} className="driver-list-row">
-                                <span className="driver-order-id" style={{fontSize: '14px'}}>주문번호: {order.orderId}</span>
-                                <span className="driver-order-addr" style={{margin: 0, minHeight: 'auto'}}>{order.deliveryAddr}</span>
+                                <span className="driver-order-id" style={{ fontSize: '14px' }}>주문번호: {order.orderId}</span>
+                                <span className="driver-order-addr" style={{ margin: 0, minHeight: 'auto' }}>{order.deliveryAddr}</span>
                             </div>
                         ))}
-                        <div style={{marginTop: '20px'}}>
+                        <div style={{ marginTop: '20px' }}>
                             <button className="driver-btn-primary" onClick={handleStartDelivery}>
                                 🚚 선택 목록 일괄 배송 출발 (상차 완료 확인)
                             </button>
@@ -479,7 +460,7 @@ return (
                     </div>
                 )}
 
-                {/* 3. 배송 중 리스트 섹션 (4열 Grid 스타일 적용) */}
+                {/* 3. 배송 중 리스트 섹션 */}
                 <h2 className="driver-headline">🚚 배달중 (현재 실시간 배송 진행)</h2>
                 {shippingOrders.length === 0 ? (
                     <p className="driver-empty-msg">현재 진행 중인 배송 임무가 없습니다.</p>
@@ -504,13 +485,13 @@ return (
                                 );
                             })}
                         </div>
-                        <button className="driver-btn-primary" style={{backgroundColor: '#1A1A1A'}} onClick={handlecomplete}>
+                        <button className="driver-btn-primary" style={{ backgroundColor: '#1A1A1A' }} onClick={handlecomplete}>
                             ✅ 선택 주문 배송 완료 처리
                         </button>
                     </>
                 )}
 
-                {/* 🔄 4. 회수 목록 섹션 추가 (조건: PICKUP 상태 && EXCHANGEorREFUND 또는 CANCEL) */}
+                {/* 4. 회수 목록 섹션 */}
                 <h2 className="driver-headline" style={{ marginTop: '40px' }}>🔄 회수 (교환 및 반품 수거 목록)</h2>
                 {pickupOrders.length === 0 ? (
                     <p className="driver-empty-msg">현재 예정된 교환/반품 회수 건이 없습니다.</p>
@@ -551,15 +532,12 @@ return (
                 {/* 다음 배송 받기 대기 전환 상태 구역 */}
                 {shippingOrders.length === 0 && acceptedOrders.length === 0 && (
                     <div className="driver-reset-box">
-                        <p>
-                            💡 완료되지 않은 진행 중 배송 임무가 없습니다. 다음 업무를 인계받으시겠습니까?
-                        </p>
+                        <p>💡 완료되지 않은 진행 중 배송 임무가 없습니다. 다음 업무를 인계받으시겠습니까?</p>
                         <button className="driver-btn-success" onClick={handleResetToWaiting}>
                             🔄 다음 배송 받기 (대기 상태 전환)
                         </button>
                     </div>
                 )}
-
             </div>
         </div>
     );

@@ -11,545 +11,414 @@
 }
 
 /* ==========================================
-   2. 레이아웃 (대시보드 구조)
+   2. 레이아웃 (대시보드 메인 구조)
    ========================================== */
 .admin-dashboard-container {
     display: flex;
-    max-width: 1600px; /* 대시보드 특성상 넓은 화면 확보 */
+    max-width: 1600px;        /* 데스크톱 모니터 최적 너비 제한 */
     margin: 0 auto;
     min-height: 100vh;
-    gap: 8px;
+    gap: 20px;
     padding: 24px;
+    width: 100%;
+    background-color: #F8F9FA; /* 배경을 살짝 톤다운하여 가독성 업 */
 }
 
-/* 왼쪽 사이드바 */
+/* ◀ 왼쪽 사이드바 (고정 폭) */
 .admin-side-box {
-    flex: 0 0 230px;
+    flex: 0 0 260px;          /* 폭이 좁아 컴포넌트가 깨지지 않도록 260px 확보 */
     background-color: #FFFFFF;
     border-radius: 12px;
     padding: 24px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    border: 1px solid #EAEAEB;
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    align-self: flex-start;
+    gap: 20px;
+    align-self: flex-start;   /* 콘텐츠가 길어져도 사이드바가 늘어나지 않음 */
 }
 
-/* 오른쪽 메인 콘텐츠 */
+/* ▶ 오른쪽 메인 콘텐츠 영역 (유연한 폭) */
 .admin-main-content {
     flex: 1;
+    min-width: 0;             /* ⭐ 핵심: 내부 대형 테이블이 부모 레이아웃을 찢는 현상 원천 차단 */
     background-color: #FFFFFF;
     border-radius: 12px;
     padding: 32px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    border: 1px solid #EAEAEB;
     display: flex;
     flex-direction: column;
     gap: 32px;
 }
 
-/* 섹션별 공통 박스 */
-.admin-content-box {
-    background-color: #FFFFFF;
-    border: 1px solid #EAE8E4;
-    border-radius: 8px;
-    padding: 20px;
+/* 메인 타이틀 */
+.admin-main-content h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1A1A1A;
+    margin: 0;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #333333;
 }
 
 /* ==========================================
-   3. 사이드바 내부 위젯 스타일
+   3. 왼쪽 사이드바 내부 컴포넌트 스타일
    ========================================== */
 .admin-welcome-message {
     font-size: 15px;
     font-weight: 500;
-    color: #4A4A4A;
-    border-bottom: 1px solid #EAE8E4;
-    padding-bottom: 12px;
+    color: #4A5568;
+    padding: 8px 0;
 }
 
-.admin-date-text {
-    font-size: 14px;
-    color: #8A8580;
+.sidebar-divider {
+    border: 0;
+    height: 1px;
+    background-color: #E2E8F0;
+    margin: 8px 0;
 }
 
-.admin-time-text {
-    font-size: 32px;
-    font-weight: 700;
-    color: #2D2A26;
-    margin-top: -8px;
-}
-
-/* 메모장 스타일 */
-.admin-memo-textarea {
-    width: 100%;
-    height: 120px;
-    padding: 12px;
-    border: 1px solid #EAE8E4;
-    border-radius: 6px;
-    background-color: #FAF9F7;
-    resize: none;
-    font-size: 13px;
-    font-family: inherit;
-}
-
-.admin-memo-textarea:focus, 
-.admin-memo-editor:focus {
-    outline: none;
-    border-color: #8A8580;
-}
-
-.admin-memo-editor {
-    width: 100%;
-    min-height: 120px;
-    padding: 12px;
-    border: 1px solid #EAE8E4;
-    border-radius: 6px;
-    background-color: #FAF9F7;
-    font-size: 13px;
-    overflow-y: auto;
-}
-
-/* ==========================================
-   4. 버튼 스타일 (Buttons)
-   ========================================== */
-.admin-dashboard-container button {
-    font-family: 'Noto Sans KR', sans-serif;
-    font-size: 13px;
-    font-weight: 500;
-    padding: 8px 16px;
-    border-radius: 6px;
-    border: 1px solid #DDD;
-    background-color: #FFFFFF;
-    color: #4A4A4A;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.admin-dashboard-container button:hover {
-    background-color: #F5F5F3;
-    border-color: #8A8580;
-}
-
-/* 상단 메인 버튼 그룹 */
-.admin-button-group {
+/* 매니저 제어 패널 그룹 */
+.admin-control-panel {
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.panel-group {
+    display: flex;
+    flex-direction: column;
     gap: 10px;
-    background-color: #FAF9F7;
-    padding: 16px;
-    border-radius: 8px;
 }
 
-.admin-button-group p {
-    font-size: 12px;
-    color: #999;
-    margin-left: auto;
-}
-
-/* 사이드바 저장 버튼 */
-.admin-save-btn {
-    background-color: #4A4A4A;
-    color: #FFFFFF;
-    border: none !important;
-}
-.admin-save-btn:hover {
-    background-color: #2D2A26;
-}
-
-/* ==========================================
-   5. 타이포그래피 및 테이블 스타일 (Orderboard 공통)
-   ========================================== */
-.admin-dashboard-container h1 {
-    font-size: 28px;
+.panel-title {
+    font-size: 13px;
     font-weight: 700;
-    color: #2D2A26;
-    margin: 0;
+    color: #A0AEC0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-.admin-dashboard-container h3 {
-    font-size: 18px;
-    font-weight: 700;
-    color: #4A4A4A;
-    margin-bottom: 16px;
+.panel-buttons {
     display: flex;
-    align-items: center;
+    flex-direction: column;
     gap: 8px;
 }
 
-.admin-table-style {
+/* Link 태그가 버튼의 너비를 100% 채우도록 유도 */
+.full-width-link {
     width: 100%;
-    border-collapse: collapse;
-    margin-top: 8px;
-    font-size: 13px;
+    text-decoration: none;
+}
+
+/* 사이드바 메뉴 공통 버튼 */
+.admin-menu-btn {
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 14px;
+    font-weight: 500;
+    border: 1px solid #E2E8F0;
+    border-radius: 6px;
+    background-color: #F8FAFC;
+    color: #4A5568;
+    cursor: pointer;
     text-align: left;
-}
-
-.admin-table-style th {
-    background-color: #FAF9F7; /* 은은한 아이보리 톤 매칭 헤더 */
-    color: #5A5550;
-    font-weight: 600;
-    padding: 12px 10px;
-    border-top: 1px solid #2D2A26;
-    border-bottom: 1px solid #EAE8E4;
-}
-
-.admin-table-style td {
-    padding: 14px 10px;
-    border-bottom: 1px solid #EAE8E4;
-    color: #4A4A4A;
-    vertical-align: middle;
-}
-
-.admin-table-style tr:hover td {
-    background-color: #FDFDFD; /* 행 마우스 호버 효과 */
-}
-
-/* 테이블 내 입력창/선택창 */
-.admin-dashboard-container select {
-    padding: 6px 10px;
-    font-size: 12px;
-    border: 1px solid #EAE8E4;
-    border-radius: 4px;
-    background-color: #FFFFFF;
-    outline: none;
-}
-
-.admin-dashboard-container select:focus {
-    border-color: #8A8580;
-}
-
-/* 체크박스 정렬 크기 조정 */
-.admin-dashboard-container input[type="checkbox"] {
-    width: 15px;
-    height: 15px;
-    cursor: pointer;
-    accent-color: #2D2A26;
-}
-
-/* ==========================================
-   6. 기사 리스트 제한 및 스크롤바 (Driver List Scroll)
-   ========================================== */
-/* 데이터가 5개 초과(약 280px)할 경우 세로 스크롤바 자동 생성 */
-.admin-dashboard-container .driver-table-wrapper {
-    max-height: 290px; 
-    overflow-y: auto;  
-    border: 1px solid #EAE8E4;
-    border-radius: 8px;
-    margin-top: 12px;
-    background-color: #FFFFFF;
-}
-
-/* 스크롤 시에도 테이블 헤더(th)가 상단에 고정되도록 처리 */
-.admin-dashboard-container .driver-table-wrapper .admin-table-style thead th {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    background-color: #FAF9F7; /* 기존 헤더 배경색과 통일 */
-    border-top: none; /* 고정 시 부자연스러운 상단 테두리 제거 */
-    box-shadow: inset 0 -1px 0 #EAE8E4, inset 0 1px 0 #2D2A26; /* 스티키 보더 유지 */
-}
-
-/* 브라우저 기본 스크롤바 커스텀 (대시보드 톤앤매너 매칭) */
-.admin-dashboard-container .driver-table-wrapper::-webkit-scrollbar {
-    width: 6px;
-}
-
-.admin-dashboard-container .driver-table-wrapper::-webkit-scrollbar-track {
-    background: #FAF9F7;
-    border-radius: 0 8px 8px 0;
-}
-
-.admin-dashboard-container .driver-table-wrapper::-webkit-scrollbar-thumb {
-    background: #C4C0B9;
-    border-radius: 4px;
-}
-
-.admin-dashboard-container .driver-table-wrapper::-webkit-scrollbar-thumb:hover {
-    background: #8A8580;
-}
-
-
-/* ==========================================
-   7. 주문 목록 페이지네이션 (Orderboard Pagination)
-   ========================================== */
-/* 페이지네이션 하단 바 정렬 컨테이너 */
-.admin-dashboard-container .admin-pagination-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 6px;
-    margin-top: 24px;
-    padding-top: 16px;
-    border-top: 1px solid #FAF9F7;
-}
-
-/* 페이지네이션 공통 버튼 스타일 */
-.admin-dashboard-container .admin-pagination-container button {
-    min-width: 32px;
-    height: 32px;
-    padding: 0 8px;
-    font-size: 13px;
-    font-weight: 400;
-    color: #5A5550;
-    background-color: #FFFFFF;
-    border: 1px solid #EAE8E4;
-    border-radius: 4px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     transition: all 0.2s ease;
 }
 
-/* 페이지네이션 버튼 호버 */
-.admin-dashboard-container .admin-pagination-container button:hover:not(:disabled) {
-    background-color: #FAF9F7;
-    border-color: #8A8580;
-    color: #2D2A26;
+.admin-menu-btn:hover {
+    background-color: #EDF2F7;
+    color: #1A202C;
 }
 
-/* 활성화된 페이지 번호 (현재 선택된 페이지) */
-.admin-dashboard-container .admin-pagination-container button.admin-active-page {
-    background-color: #2D2A26; /* 대시보드 메인 딥브라운/블랙 컬러 */
-    color: #FFFFFF;
-    border-color: #2D2A26;
+/* 엑셀 미크로 상자 */
+.sidebar-excel-box {
+    margin-top: 4px;
+    padding: 12px;
+    background-color: #F7FAFC;
+    border: 1px dashed #CBD5E0;
+    border-radius: 6px;
+}
+
+.excel-micro-label {
+    font-size: 11px;
     font-weight: 600;
-}
-
-/* 이전/다음 비활성화(disabled) 상태 */
-.admin-dashboard-container .admin-pagination-container button:disabled {
-    color: #C4C0B9;
-    background-color: #FAF9F7;
-    border-color: #EAE8E4;
-    cursor: not-allowed;
-    opacity: 0.7;
-}
-
-/* 상단 출력 건수 조절 select 박스 위치 미세 조정 */
-.admin-dashboard-container .admin-content-box select {
-    cursor: pointer;
-    font-family: inherit;
-    color: #4A4A4A;
+    color: #718096;
+    margin-bottom: 6px;
 }
 
 /* ==========================================
-   8. 콘텐츠 박스 헤더 및 정렬 스타일 (추가)
+   4. 오른쪽 메인 콘텐츠 영역 내부 컴포넌트
    ========================================== */
-/* 각 테이블 상단의 제목과 Select 박스를 양 끝으로 정렬 */
+
+/* 임시 상단 버튼 그룹 */
+.admin-button-group {
+    display: flex;
+    gap: 10px;
+}
+
+.admin-button-group button {
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    background-color: #4A5568;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.admin-button-group button:hover {
+    background-color: #2D3748;
+}
+
+/* 섹션별 공통 컨텐츠 박스 */
+.admin-content-box {
+    background-color: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* 섹션별 헤더 바 */
 .admin-content-title-bar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 16px; /* 테이블과의 간격 */
-    border-bottom: 2px solid #FAF9F7;
-    padding-bottom: 12px;
+    flex-wrap: wrap; /* 창이 좁아지면 자연스럽게 떨어지도록 처리 */
+    gap: 12px;
 }
 
 .admin-content-title-bar h3 {
     margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: #2D3748;
 }
-/* 우측 액션 레이아웃 (엑셀 등록 + 기사 추가 버튼) */
+
+/* 우측 액션 레이아웃 (엑셀 등록 + 추가버튼) */
 .admin-header-actions {
     display: flex;
     align-items: center;
-    gap: 16px; /* 엑셀 등록과 기사 추가 버튼 사이의 간격 */
+    gap: 16px;
 }
 
-/* 엑셀 등록 정돈 */
 .admin-excel-upload-wrapper {
     display: flex;
     align-items: center;
-    gap: 6px;
-}
-
-/* "엑셀 등록:" 텍스트 스타일 */
-.admin-excel-upload-wrapper .excel-label {
-    font-size: 13px;
-    font-weight: 500;
-    color: #5A5550;
-}
-
-
-
-
-/* 첫 번째 테이블의 버튼들 (선택 상품 준비 완료, 자동 배정) 배치 관리 */
-.admin-action-button-group {
-    display: flex;
     gap: 8px;
-    margin-bottom: 12px;
+    font-size: 13px;
+    color: #4A5568;
 }
 
-/* 가로 스크롤 영역 */
-.admin-table-scroll {
+.excel-label {
+    font-weight: 600;
+}
+
+/* 메인 기능성 버튼 */
+.admin-add-driver-btn {
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    background-color: #3182CE;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.admin-add-driver-btn:hover {
+    background-color: #2B6CB0;
+}
+
+/* ==========================================
+   5. 완벽한 테이블 반응형 및 가로 스크롤 구현 (중요)
+   ========================================== */
+
+/* 테이블을 감싸는 wrapper: 여기서 화면 밖 탈출을 방지합니다 */
+.driver-table-wrapper {
     width: 100%;
-    overflow-x: auto;
-    overflow-y: hidden;
+    overflow-x: auto;          /* 💡 데이터가 많아 넘치면 이 안에서만 가로 스크롤 발생 */
+    border: 1px solid #E2E8F0;
+    border-radius: 6px;
 }
 
-/* 테이블 최소 너비 강제 */
-.admin-table-scroll .admin-table-style {
-    min-width: 1600px; /* 필요하면 1800px */
-    width: max-content;
+/* 실제 테이블 스타일 */
+.admin-table-style {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    text-align: center;
+    min-width: 700px;         /* 💡 테이블이 너무 찌그러지지 않도록 최소 가로폭 지정 */
 }
 
-/* 글자 줄바꿈 방지 */
-.admin-table-style th,
+.admin-table-style th {
+    background-color: #F7FAFC;
+    color: #4A5568;
+    font-weight: 600;
+    padding: 12px 16px;
+    border-bottom: 2px solid #E2E8F0;
+}
+
 .admin-table-style td {
-    white-space: nowrap;
+    padding: 12px 16px;
+    border-bottom: 1px solid #E2E8F0;
+    color: #2D3748;
+    vertical-align: middle;
 }
 
-
-/* ==========================================
-   1. 전체 초기화 및 글로벌 스타일 (Pretendard 서체 도입)
-   ========================================== */
-@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css');
-
-/* 30대 선호 + 가독성 높은 Pretendard 폰트로 전면 교체 */
-.admin-dashboard-container, .admin-memo-day-component {
-    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
-    color: #1A1A1A;
-    line-height: 1.6;
+/* 테이블 내부 행 호버 효과 */
+.admin-table-style tbody tr:hover {
+    background-color: #F8FAFC;
 }
 
-/* ==========================================
-   2. 레이아웃 (대시보드 구조 및 사이드바 가로 확장)
-   ========================================== */
-.admin-dashboard-container {
-    display: flex;
-    max-width: 100%; 
-    margin: 0 auto;
-    min-height: 100vh;
-    gap: 16px; /* 공백을 살짝 넓혀 시원하게 배치 */
-    padding: 24px;
-    background-color: #F8F9FA; /* 배경을 화사하고 트렌디하게 변경 */
-    box-sizing: border-box;
-}
-
-/* 왼쪽 사이드바 - 요청에 따라 가로폭을 230px -> 300px로 대폭 확장 */
-.admin-side-box {
-    flex: 0 0 300px;
+/* 테이블 내부 관리 버튼 스타일 */
+.admin-table-style td button {
+    padding: 4px 10px;
+    font-size: 12px;
+    border: 1px solid #CBD5E0;
+    border-radius: 4px;
     background-color: #FFFFFF;
-    border-radius: 16px; /* 곡률을 높여 트렌디한 느낌 반영 */
-    padding: 24px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    align-self: flex-start;
-    box-sizing: border-box;
+    cursor: pointer;
+    transition: all 0.2s;
 }
 
-/* 오른쪽 메인 콘텐츠 */
-.admin-main-content {
-    flex: 1;
-    background-color: #FFFFFF;
-    border-radius: 16px;
-    padding: 32px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-    display: flex;
-    flex-direction: column;
-    gap: 32px;
-    box-sizing: border-box;
+.admin-table-style td button:first-of-type:hover {
+    background-color: #EDF2F7;
+    border-color: #A0AEC0;
 }
 
-/* 섹션별 공통 박스 */
-.admin-content-box {
-    background-color: #FFFFFF;
-    border: 1px solid #EAEFEA;
-    border-radius: 12px;
-    padding: 24px;
+.admin-table-style td button:last-of-type {
+    border-color: #FED7D7;
+    background-color: #FFF5F5;
+}
+
+.admin-table-style td button:last-of-type:hover {
+    background-color: #FEB2B2;
+    color: #9B2C2C;
 }
 
 /* ==========================================
-   3. 사이드바 내부 위젯 (시계, 메모장, 디데이 확대 버전)
+   6. AdminMemoDay (사이드바 내부 컴포넌트)
    ========================================== */
+
+/* 전체 컴포넌트 컨테이너 */
 .admin-memo-day-component {
     display: flex;
     flex-direction: column;
-    gap: 18px;
+    gap: 16px;
     width: 100%;
 }
 
-/* 시간/날짜 패널 - 어르신들을 위해 크기 대폭 확대 */
+/* 🕒 상단 실시간 시계 패널 */
 .admin-time-panel {
-    background: linear-gradient(135deg, #2D3748, #1A202C); /* 30대가 좋아하는 고급스러운 다크 그레이 톤 적용 */
-    padding: 20px;
-    border-radius: 12px;
-    color: #FFFFFF;
+    background: linear-gradient(135deg, #2D3748 0%, #1A202C 100%);
+    padding: 14px;
+    border-radius: 8px;
     text-align: center;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    color: #FFFFFF;
+    box-shadow: inset 0 1px 3px rgba(255, 255, 255, 0.1);
 }
 
 .admin-date-text {
-    font-size: 16px; /* 기존 14px -> 16px */
+    font-size: 12px;
     font-weight: 500;
-    color: #CBD5E0;
-    letter-spacing: 0.5px;
+    color: #A0AEC0;
+    margin-bottom: 2px;
 }
 
 .admin-time-text {
-    font-size: 38px; /* 기존 32px -> 38px 시원하게 확대 */
+    font-size: 20px;
     font-weight: 700;
-    color: #FFFFFF;
-    margin-top: 4px;
-    font-variant-numeric: tabular-nums; /* 숫자가 깜빡이며 움직이지 않도록 고정 */
+    font-variant-numeric: tabular-nums; /* 숫자가 변할 때 폰트가 흔들리는 현상 방지 */
+    letter-spacing: 0.5px;
 }
 
-/* 메모장 스타일 확대 */
+/* 📝 메모장 섹션 */
 .admin-sidebar-section {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
     width: 100%;
 }
 
+/* 일반 텍스트 에어리어 (위쪽 메모장) */
 .admin-memo-textarea {
     width: 100%;
-    height: 140px; /* 기존 120px -> 140px */
-    padding: 14px;
-    border: 1px solid #E2E8F0;
-    border-radius: 8px;
-    background-color: #F8FAFC;
-    resize: none;
-    font-size: 15px; /* 글자 크기 확대 (기존 13px) */
-    color: #334155;
-    font-family: inherit;
-    box-sizing: border-box;
-    transition: all 0.2s ease;
+    max-width: 100%;           /* 💡 옆으로 과도하게 퍼지는 것을 방지 */
+    height: 100px;             /* 높이를 살짝 키워 답답함을 해소 */
+    padding: 12px;             /* 내부 여백을 주어 글자가 테두리에 붙지 않게 처리 */
+    
+    /* 폰트 및 가독성 핵심 설정 */
+    font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 13px;
+    font-weight: 500;          /* 💡 글자 두께를 살짝 올려 또렷하게 만듦 */
+    line-height: 1.5;          /* 줄간격을 넓혀 겹쳐 보이지 않게 조절 */
+    letter-spacing: -0.3px;    /* 자간을 미세하게 좁혀 글자 가독성 극대화 */
+    color: #2D3748;            /* 너무 흐리지 않은 선명한 다크 그레이 */
+    
+    /* 줄바꿈 설정 */
+    white-space: pre-wrap;     /* 💡 공백과 줄바꿈을 그대로 유지 */
+    word-break: break-all;     /* 💡 영역 끝에 도달하면 글자 단위로 정확히 줄바꿈 */
+    
+    border: 1px solid #CBD5E0;
+    border-radius: 6px;
+    resize: none;              /* 사용자가 임의로 늘려 깨지는 현상 방지 */
+    background-color: #FAFAFA;
+    transition: all 0.2s ease-in-out;
 }
 
-.admin-memo-editor {
-    width: 100%;
-    min-height: 140px;
-    padding: 14px;
-    border: 1px solid #E2E8F0;
-    border-radius: 8px;
-    background-color: #F8FAFC;
-    font-size: 15px; /* 글자 크기 확대 (기존 13px) */
-    color: #334155;
-    overflow-y: auto;
-    box-sizing: border-box;
-    transition: all 0.2s ease;
-}
-
-.admin-memo-textarea:focus, 
-.admin-memo-editor:focus {
+/* 마우스 클릭(포커스) 시 스타일 */
+.admin-memo-textarea:focus {
     outline: none;
     border-color: #4A5568;
     background-color: #FFFFFF;
-    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.15);
+    box-shadow: 0 0 0 3px rgba(74, 85, 104, 0.1); /* 포커스 시 또렷한 시각 효과 */
 }
 
-/* 구분선 */
-.sidebar-divider {
-    border: 0;
-    height: 1px;
-    background: #E2E8F0;
-    margin: 8px 0;
+/* 에디터용 커스텀 불릿 입력창 */
+.admin-memo-editor {
+    width: 100%;
+    min-height: 80px;
+    max-height: 150px;
+    overflow-y: auto;
+    padding: 10px;
+    font-size: 13px;
+    border: 1px solid #E2E8F0;
+    border-radius: 6px;
+    background-color: #FFFDF5; /* 메모지 느낌의 은은한 노란 배경 */
+    outline: none;
 }
 
-/* ==========================================
-   4. D-Day 관리 섹션 (가독성 최적화)
-   ========================================== */
+.admin-memo-editor:focus {
+    border-color: #D69E2E;
+}
+
+/* 메모 저장 버튼 */
+.admin-save-btn {
+    width: 100%;
+    padding: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    background-color: #4A5568;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.admin-save-btn:hover {
+    background-color: #2D3748;
+}
+
+/* 📌 D-Day 관리 영역 */
 .admin-dday-manager {
     display: flex;
     flex-direction: column;
@@ -560,67 +429,71 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 2px;
 }
 
 .admin-dday-title {
-    font-size: 15px; /* 기존 12px -> 15px 대폭 확대 */
+    font-size: 14px;
     font-weight: 700;
-    color: #4A5568;
+    color: #2D3748;
 }
 
+/* D-Day 토글 버튼 (+ / ✕) */
 .admin-dday-toggle-btn {
-    border: none;
-    background: #2D3748;
-    color: #FFFFFF;
-    border-radius: 6px;
-    width: 26px;
-    height: 26px;
-    font-size: 16px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 1px solid #CBD5E0;
+    background-color: #FFFFFF;
+    font-size: 12px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background 0.2s ease;
+    transition: all 0.2s;
+}
+
+.admin-dday-toggle-btn:hover {
+    background-color: #EDF2F7;
 }
 
 .admin-dday-toggle-btn.open {
-    background: #E53E3E;
+    background-color: #E53E3E;
+    color: #FFFFFF;
+    border-color: #E53E3E;
 }
 
-/* 디데이 추가 폼 */
+/* D-Day 입력 폼 */
 .admin-dday-form {
-    background-color: #FFFFFF;
-    border: 1px solid #CBD5E0;
-    border-radius: 8px;
-    padding: 12px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
+    padding: 10px;
+    background-color: #F7FAFC;
+    border: 1px solid #E2E8F0;
+    border-radius: 6px;
 }
 
 .admin-dday-input {
     width: 100%;
-    padding: 8px;
-    font-size: 14px;
-    border: 1px solid #E2E8F0;
-    border-radius: 6px;
-    box-sizing: border-box;
-    font-family: inherit;
+    padding: 6px 8px;
+    font-size: 12px;
+    border: 1px solid #CBD5E0;
+    border-radius: 4px;
 }
 
 .admin-dday-submit-btn {
-    background: #2B6CB0 !important;
-    color: #FFFFFF !important;
-    border: none !important;
-    border-radius: 6px;
-    padding: 8px !important;
-    font-size: 13px !important;
-    font-weight: 600 !important;
+    width: 100%;
+    padding: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    background-color: #3182CE;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 4px;
     cursor: pointer;
 }
 
-/* 디데이 리스트 및 카드 - 어르신 시인성 확보 */
+/* D-Day 리스트 및 개별 카드 */
 .admin-dday-list {
     display: flex;
     flex-direction: column;
@@ -631,201 +504,541 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 14px; /* 기존보다 패딩 확장 */
-    background-color: #F8FAFC;
+    padding: 10px;
+    background-color: #FFFFFF;
     border: 1px solid #E2E8F0;
-    border-radius: 8px;
-    transition: transform 0.2s, box-shadow 0.2s;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
 }
 
-.dday-card:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+/* ⭐ 오늘이 당일(D-Day)일 때 강조 효과 및 애니메이션 */
+.dday-card.is-today {
+    border-color: #E53E3E;
+    background-color: #FFF5F5;
+    animation: pulseBorder 2s infinite;
+}
+
+@keyframes pulseBorder {
+    0% { box-shadow: 0 0 0 0 rgba(229, 62, 62, 0.4); }
+    70% { box-shadow: 0 0 0 6px rgba(229, 62, 62, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(229, 62, 62, 0); }
 }
 
 .dday-card-info {
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    width: 65%;
+    gap: 2px;
+    min-width: 0; /* 텍스트 생략 보장용 */
 }
 
 .dday-card-title {
-    font-size: 14px; /* 기존 11px -> 14px 확대 */
-    font-weight: 700;
-    color: #1A202C;
+    font-size: 13px;
+    font-weight: 600;
+    color: #2D3748;
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap;
 }
 
 .dday-card-date {
-    font-size: 11px; /* 기존 9px -> 11px 확대 */
+    font-size: 11px;
     color: #718096;
-    font-weight: 500;
 }
 
 .dday-card-action {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
 }
 
 .dday-card-count {
-    font-size: 15px; /* 기존 12px -> 15px로 시원하게 확대 */
-    font-weight: 800;
-    color: #E53E3E; /* 강렬한 레드 포인트 */
+    font-size: 12px;
+    font-weight: 700;
+    color: #2B6CB0;
     white-space: nowrap;
 }
 
+.dday-card.is-today .dday-card-count {
+    color: #E53E3E;
+}
+
 .dday-delete-btn {
+    background: none;
     border: none;
-    background: transparent;
     color: #A0AEC0;
-    font-size: 14px; /* 삭제 버튼도 클릭하기 편하게 확대 */
     cursor: pointer;
-    padding: 4px;
-    transition: color 0.2s;
+    font-size: 11px;
+    padding: 2px;
 }
 
 .dday-delete-btn:hover {
-    color: #E53E3E !important;
+    color: #E53E3E;
+}
+
+
+/* ==========================================
+   7. Ranking (대시보드 본문 상단 랭킹 보드)
+   ========================================== */
+
+/* 대시보드 랭킹 전체 구조: 가로 정렬 및 반응형 유연화 */
+.admin-ranking-container {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+}
+
+/* 좌우측 랭킹 카드 박스 (정확히 반반씩 차지하도록 유도) */
+.admin-ranking-card-box {
+    flex: 1;
+    min-width: 0; /* 테이블 밀림 깨짐 완벽 방지 */
+    background-color: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.01);
+}
+
+.admin-ranking-card-header h3 {
+    margin: 0 0 16px 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: #2D3748;
+}
+
+/* 랭킹 전용 컴팩트 테이블 스타일 */
+.admin-ranking-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    text-align: center;
+}
+
+.admin-ranking-table th {
+    background-color: #F8FAFC;
+    color: #718096;
+    font-weight: 600;
+    padding: 10px 8px;
+    border-bottom: 1px solid #E2E8F0;
+}
+
+.admin-ranking-table td {
+    padding: 12px 8px;
+    border-bottom: 1px solid #EDF2F7;
+    color: #4A5568;
+    vertical-align: middle;
+}
+
+/* 순위 강조 서식 */
+.rank-display {
+    font-weight: 700;
+    font-size: 14px;
+}
+.vip-emoji { color: #D69E2E; }   /* 왕관 색상 매칭 */
+.item-number { color: #E53E3E; } /* 인기 아이템 순위 색상 */
+
+/* 강조용 공통 텍스트 */
+.text-bold {
+    font-weight: 600;
+    color: #1A202C;
+}
+
+/* 상품명 글자 생략 로직 (창이 좁아질 때 가로 찢어짐 방지 핵심) */
+.item-name-ellipsis {
+    max-width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: left;
+    padding-left: 10px !important;
+}
+
+/* 누적 주문건수/판매수량 카운트 컬러 강조 */
+.text-count-blue {
+    font-weight: 700;
+    color: #3182CE;
+}
+.text-count-red {
+    font-weight: 700;
+    color: #E53E3E;
+}
+
+/* 회원 등급 뱃지 디자인 */
+.badge {
+    display: inline-block;
+    padding: 4px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 99px;
+}
+
+.badge-vip {
+    background-color: #FEFCBF;
+    color: #B7791F;
+}
+
+.badge-normal {
+    background-color: #EDF2F7;
+    color: #4A5568;
+}
+
+/* 💻 태블릿 및 노트북 미디어 쿼리 (가로 폭이 많이 좁아질 때 수직 정렬로 부드럽게 스위칭) */
+@media (max-width: 1024px) {
+    .admin-ranking-container {
+        flex-direction: column;
+        gap: 16px;
+    }
 }
 
 /* ==========================================
-   5. 버튼 스타일 (Buttons)
+   8. AddCompany (엑셀 일괄 업로더 컴포넌트)
    ========================================== */
-.admin-dashboard-container button {
-    font-family: inherit;
-    font-size: 14px; /* 버튼 기본 글자 크기 업 */
-    font-weight: 600;
-    padding: 10px 18px;
-    border-radius: 8px;
-    border: 1px solid #E2E8F0;
-    background-color: #FFFFFF;
-    color: #4A5568;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
 
-.admin-dashboard-container button:hover {
-    background-color: #EDF2F7;
-    border-color: #CBD5E0;
-}
-
-/* 사이드바 저장 버튼 */
-.admin-save-btn {
-    background-color: #2D3748 !important; /* 딥 차콜 */
-    color: #FFFFFF !important;
-    border: none !important;
-    padding: 12px !important;
-    font-size: 14px !important;
-    font-weight: 700;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
-.admin-save-btn:hover {
-    background-color: #1A202C !important;
-}
-
-/* 상단 메인 버튼 그룹 */
-.admin-button-group {
+/* 업로더 전체 바 구조 */
+.admin-excel-uploader-container {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     background-color: #F8FAFC;
-    padding: 16px;
-    border-radius: 12px;
+    padding: 6px 12px;
+    border: 1px solid #E2E8F0;
+    border-radius: 6px;
+    width: fit-content;
+}
+
+/* 📁 브라우저 기본 파일 선택 버튼을 완전히 숨김 */
+.excel-hidden-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+/* 🏷️ 대신 깔끔하게 디자인한 파일 선택 레이블 버튼 */
+.excel-file-label {
+    display: inline-block;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #4A5568;
+    background-color: #FFFFFF;
+    border: 1px solid #CBD5E0;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.excel-file-label:hover {
+    background-color: #EDF2F7;
+    border-color: #A0AEC0;
+}
+
+/* 📄 선택된 파일명 텍스트 서식 */
+.excel-filename-display {
+    font-size: 13px;
+    color: #718096;
+    max-width: 130px;          /* 이름이 너무 길면 말줄임 처리 */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 🚀 최종 [등록하기] 서버 전송 버튼 */
+.excel-upload-submit-btn {
+    padding: 6px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #FFFFFF;
+    background-color: #3182CE; /* 대시보드 포인트 블루 테마 */
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    white-space: nowrap;
+}
+
+.excel-upload-submit-btn:hover:not(:disabled) {
+    background-color: #2B6CB0;
+}
+
+/* 파일이 선택되지 않았거나 업로드 중일 때 비활성화 비주얼 */
+.excel-upload-submit-btn:disabled {
+    background-color: #E2E8F0;
+    color: #A0AEC0;
+    cursor: not-allowed;
+}
+
+/* 등록 대기/로딩 애니메이션 효과 */
+.excel-upload-submit-btn.is-loading {
+    background-color: #4A5568;
+    position: relative;
+}
+
+/* 💡 [공간 최적화] 사이드바 내부 좁은 상자에 들어갈 때 레이아웃 압축 */
+.sidebar-excel-box .admin-excel-uploader-container {
+    width: 100%;
+    flex-direction: column;   /* 사이드바 안에서는 세로로 오순도순 정렬 */
+    align-items: stretch;
+    padding: 10px;
+    gap: 8px;
+    background-color: transparent;
+    border: none;
+}
+
+.sidebar-excel-box .excel-filename-display {
+    max-width: 100%;
+    text-align: center;
+    font-size: 12px;
+}
+
+.sidebar-excel-box .excel-file-label,
+.sidebar-excel-box .excel-upload-submit-btn {
+    text-align: center;
+    width: 100%;
 }
 
 /* ==========================================
-   6. 타이포그래피 및 테이블 스타일 (기존 유지 및 가독성 보정)
+   9. AllOrderboard & Orderboard (데이터 보드 공통)
    ========================================== */
-.admin-dashboard-container h1 {
-    font-size: 30px;
-    font-weight: 800;
+
+/* 📦 개별 데이터 섹션 박스 테두리 디자인 고도화 */
+.admin-content-box {
+    background-color: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.01);
+}
+
+/* 🏷️ 테이블 상단 타이틀 바 정렬 */
+.admin-content-title-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #EDF2F7;
+    padding-bottom: 12px;
+    margin-bottom: 16px;
+}
+
+.admin-content-title-bar h3 {
+    font-size: 16px;
+    font-weight: 700;
     color: #1A202C;
     margin: 0;
 }
 
-.admin-dashboard-container h3 {
-    font-size: 19px;
-    font-weight: 700;
-    color: #2D3748;
-    margin-bottom: 16px;
+/* 🔢 보기 개수 조절 셀렉트 박스 */
+.admin-content-title-bar select {
+    padding: 6px 28px 6px 10px;
+    font-size: 13px;
+    border: 1px solid #CBD5E0;
+    border-radius: 6px;
+    color: #4A5568;
+    background-color: #FFFFFF;
+    cursor: pointer;
+}
+
+/* 🛠️ 상단 배치 일괄 처리 액션 버튼 그룹 */
+.admin-action-button-group {
     display: flex;
-    align-items: center;
     gap: 8px;
+    margin-bottom: 14px;
+}
+
+.admin-action-button-group button {
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* [상품 준비 완료 처리] 버튼 - 세컨더리 그레이 테마 */
+.admin-action-button-group button:nth-child(1) {
+    background-color: #EDF2F7;
+    color: #2D3748;
+    border: 1px solid #CBD5E0;
+}
+.admin-action-button-group button:nth-child(1):hover {
+    background-color: #E2E8F0;
+}
+
+/* [자동 배정] 버튼 - 프라이머리 딥블루 테마 */
+.admin-action-button-group button:nth-child(2) {
+    background-color: #3182CE;
+    color: #FFFFFF;
+    border: none;
+}
+.admin-action-button-group button:nth-child(2):hover {
+    background-color: #2B6CB0;
+}
+
+
+/* ==========================================
+   10. 어드민 표준 데이터 테이블 리스타일링
+   ========================================== */
+
+/* 가로 찢어짐 방지 가로 스크롤 컨테이너 */
+.admin-table-scroll {
+    width: 100%;
+    overflow-x: auto;
 }
 
 .admin-table-style {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 8px;
-    font-size: 14px; /* 테이블 글자 크기 살짝 업 */
+    font-size: 13px;
     text-align: left;
 }
 
+/* 테이블 헤더 서식 */
 .admin-table-style th {
     background-color: #F8FAFC;
     color: #4A5568;
-    font-weight: 700;
-    padding: 14px 12px;
-    border-top: 2px solid #2D3748;
-    border-bottom: 1px solid #E2E8F0;
+    font-weight: 600;
+    padding: 12px 14px;
+    border-bottom: 2px solid #E2E8F0;
+    white-space: nowrap;
 }
 
+/* 테이블 바디 셀 서식 */
 .admin-table-style td {
-    padding: 16px 12px;
-    border-bottom: 1px solid #E2E8F0;
-    color: #2D3748;
+    padding: 14px;
+    border-bottom: 1px solid #EDF2F7;
+    color: #4A5568;
     vertical-align: middle;
 }
 
-.admin-table-style tr:hover td {
-    background-color: #F1F5F9;
+/* 마우스 호버 시 행 강조 효과 */
+.admin-table-style tbody tr:hover {
+    background-color: #F8FAFC;
 }
 
-/* 기사 리스트 제한 및 스크롤바 */
-.admin-dashboard-container .driver-table-wrapper {
-    max-height: 320px; 
-    overflow-y: auto;  
-    border: 1px solid #E2E8F0;
-    border-radius: 12px;
-    margin-top: 12px;
+/* 데이터가 비어 있을 때 전용 경고 서식 */
+.table-no-data {
+    text-align: center !important;
+    color: #E53E3E !important;
+    font-weight: 600;
+    padding: 40px !important;
+    background-color: #FFF5F5;
+}
+
+/* 체크박스 크기 및 비율 고정 */
+.admin-table-style input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+/* 테이블 내부 조작 인라인 셀렉트/버튼 */
+.admin-table-style td select {
+    padding: 4px 8px;
+    font-size: 12px;
+    border: 1px solid #CBD5E0;
+    border-radius: 4px;
+    margin-right: 6px;
+}
+
+.admin-table-style td button {
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 600;
     background-color: #FFFFFF;
+    border: 1px solid #CBD5E0;
+    border-radius: 4px;
+    color: #4A5568;
+    cursor: pointer;
 }
 
-/* 페이지네이션 */
-.admin-dashboard-container .admin-pagination-container {
+.admin-table-style td button:hover {
+    background-color: #EDF2F7;
+    color: #2D3748;
+}
+
+
+/* ==========================================
+   11. 동적 컴포넌트 UI (페이지네이션 & 반품 탭 필터)
+   ========================================== */
+
+/* 🔢 하단 페이지네이션 바 */
+.admin-pagination-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 6px;
-    margin-top: 24px;
+    gap: 4px;
+    margin-top: 20px;
     padding-top: 16px;
-    border-top: 1px solid #E2E8F0;
+    border-top: 1px solid #EDF2F7;
 }
 
-.admin-dashboard-container .admin-pagination-container button.admin-active-page {
-    background-color: #2D3748;
+.admin-pagination-container button {
+    min-width: 32px;
+    height: 32px;
+    padding: 0 6px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #718096;
+    background-color: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.admin-pagination-container button:hover:not(:disabled) {
+    background-color: #EDF2F7;
+    color: #2D3748;
+}
+
+.admin-pagination-container button:disabled {
+    color: #CBD5E0;
+    cursor: not-allowed;
+    background-color: #F7FAFC;
+}
+
+/* 현재 활성화된 페이지 번호 강조 */
+.admin-pagination-container button.admin-active-page {
+    background-color: #3182CE;
     color: #FFFFFF;
-    border-color: #2D3748;
-    font-weight: 700;
+    border-color: #3182CE;
+    font-weight: 600;
 }
 
-/* 가로 스크롤 영역 */
-.admin-table-scroll {
-    width: 100%;
-    overflow-x: auto;
-    overflow-y: hidden;
+/* 🔄 반품/교환 테이블 내부 전용 세그먼트 탭 필터 */
+.admin-tab-filter-group {
+    display: flex;
+    background-color: #EDF2F7;
+    padding: 4px;
+    border-radius: 6px;
+    width: fit-content;
+    margin-bottom: 14px;
 }
 
-.admin-table-scroll .admin-table-style {
-    min-width: 1600px;
-    width: max-content;
+.admin-tab-filter-group button {
+    padding: 6px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #718096;
+    background: none;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s ease;
 }
 
-.admin-table-style th,
-.admin-table-style td {
-    white-space: nowrap;
+.admin-tab-filter-group button:hover {
+    color: #2D3748;
+}
+
+/* 활성화된 필터 스타일 카멜레온 변신 */
+.admin-tab-filter-group button.active {
+    background-color: #FFFFFF;
+    color: #2B6CB0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }

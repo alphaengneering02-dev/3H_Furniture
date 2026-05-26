@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import{useNavigate,useParams}from "react-router-dom";
 import Review from './Review';
+import "../../css/itemPageCss/itemDetail.css";
 
 const ItemDetail = () => {
 
@@ -24,6 +25,63 @@ const ItemDetail = () => {
         return JSON.parse(sessionStorage.getItem("user"))
     };
 
+    //판매상태 확인_상태랑 재고에 따라 구매 가능 여부 
+    const getSellStatusInfo = (item)=>{
+        if(!item){
+            return{
+                text:"-",
+                buyable:false,
+                message:"상품 정보가 없습니다.",
+            };
+        }
+        if(Number(item.itemStock || 0)<=0){
+            return{
+                text:"품절",
+                buyable:false,
+                message:"품절된 상품입니다."
+            };
+        }
+        if (item.itemSellStatus === "SELL") {
+        return {
+            text: "판매중",
+            buyable: true,
+            message: "",
+        };
+        }
+
+        if (item.itemSellStatus === "SOLD_OUT") {
+            return {
+                text: "품절",
+                buyable: false,
+                message: "품절된 상품입니다.",
+            };
+        }
+
+        if (item.itemSellStatus === "STOP") {
+            return {
+                text: "판매중지",
+                buyable: false,
+                message: "판매중지된 상품입니다.",
+            };
+        }
+
+        if (item.itemSellStatus === "COMING_SOON") {
+            return {
+                text: "판매예정",
+                buyable: false,
+                message: "판매예정 상품입니다.",
+            };
+        }
+
+        return {
+            text: item.itemSellStatus || "-",
+            buyable: false,
+            message: "판매중인 상품만 구매할 수 있습니다.",
+        
+        };
+    };
+
+    //장바구니 담기
     const handleAddCart =async()=>{
         const user = getLoginUser();
 
@@ -32,7 +90,10 @@ const ItemDetail = () => {
             navigate("/login");
             return;
         }
-
+        if(!getSellStatusInfo(item).buyable){
+            alert(getSellStatusInfo(item).message);
+            return;
+        }
         try{
             const formData = new FormData();
             formData.append("itemId", itemId);
@@ -59,12 +120,17 @@ const ItemDetail = () => {
         }
     };
 
+    //바로 구매하기
     const handleBuyNow = () =>{
         const user =getLoginUser();
 
         if(!user){
             alert("로그인이 필요합니다.")
             navigate("/login");
+            return;
+        }
+        if(!getSellStatusInfo(item).buyable){
+            alert(getSellStatusInfo(item).message);
             return;
         }
         navigate(`/order/${itemId}`);
@@ -120,50 +186,6 @@ const ItemDetail = () => {
         }
     };
 
-    const handleUpdateClick = () =>{
-        navigate(`/item/update/${itemId}`);
-    };
-
-
-
-    //삭제 관리......(admin에서)
-    const handleDeleteClick = async () => {
-        const confirmDelete = window.confirm("정말 이 상품을 삭제하시겠습니까?");
-
-        if(!confirmDelete){
-            return;
-        }
-
-        try{
-            /*아이템이미지가 아이템을 참조하고 있어서, 이미지가 있는 상품은 이미지 먼저 삭제하고
-            상품을 삭제하도록 순서를 맞춰야 함. 알았지? */
-
-            for(const img of itemImgs){
-                await axios.delete(
-                    `http://localhost:8080/api/itemImgs/${img.itemImgId}`,{
-                        withCredentials: true,
-                    }
-                );
-            }
-
-        await axios.delete(
-            `http://localhost:8080/api/admin/item/${itemId}`,{
-                withCredentials:true,
-            }
-        );
-
-        alert("상품이 삭제되었습니다.");
-        navigate("/item");
-    }catch(error){
-        console.error("상품 삭제 실패", error);
-
-        if(error.response){
-            console.log(error.response.data);
-        }
-        alert("상품 삭제 실패");
-    }
-    };
-
     if(!item){
         return <p>상품 불러오는 중....</p>;
     }
@@ -209,23 +231,31 @@ const ItemDetail = () => {
             <p>상품 가격: {formatPrice(item.itemPrice)}원</p>
             <p>상품 할인가격: {formatPrice(item.itemDiscountPrice)}원</p>
             <p>상품 최종가격: {formatPrice(item.itemFinalPrice)}원</p>
+            <p>상품 판매상태: {getSellStatusInfo(item).text}</p>
             <p>상품 재고: {item.itemStock}</p>
+            
+            {!getSellStatusInfo(item).buyable &&(
+                <p>{getSellStatusInfo(item).message}</p>
+            )}
 
+            {/*관리자는 상품 상세에서 직접 수정/삭제하지 않고, 관리자 상품/리뷰 관리 페이지로 이동 */}
             {isAdmin &&(
                 <div style={{marginTop:"20px"}}>
-                    <button type="button" onClick={handleUpdateClick}>상품 수정</button>
-
-                    <button type="button" onClick={handleDeleteClick} style={{marginLeft:"10px"}}>상품 삭제</button>
-
+                    <button type="button" onClick={()=>navigate("/admin/item")}>
+                        관리자 상품/리뷰 관리로 이동
+                    </button>
                 </div>
             )}
+
             {/*관리자 모드일 때는 장바구니 구매하기 안보이게 */}
             {!isAdmin && (
             <div style={{marginTop:"20px"}}>
 
-                <button type="button" onClick={handleAddCart}>장바구니 담기</button>
+                <button type="button" onClick={handleAddCart} disabled={!getSellStatusInfo(item).buyable}>
+                    장바구니 담기</button>
 
-                <button type="button" onClick={handleBuyNow} style={{marginLeft:"10px"}}>구매하기</button>
+                <button type="button" onClick={handleBuyNow} disabled={!getSellStatusInfo(item).buyable}>
+                    구매하기</button>
             </div>
             )}
 

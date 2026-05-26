@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import FindId_result from './FindId_result';
 import { Link, Route, Switch } from "react-router-dom";
 import axios from 'axios';
+import Header from '../main/Header';
+
+//FindId 전용 CSS 임포트
+import '../../css/memberPageCss/findId.css';
 
 const FindId = () => {
 
@@ -67,45 +71,62 @@ const FindId = () => {
     }
 
 
-
     return (
         <div>
-            FindId 페이지
-            
-            <h1> <Link to="/">로고</Link> </h1>
-
-            <h2>아이디 찾기</h2>
-            <h2> <Link to="/changePw">비밀번호 재설정</Link> </h2>
+            {/* Header 영역 */}
+            <div className="main-header">
+                <Header/>
+            </div>
 
 
-            {
-                showResult===false &&
-                <div>
-                    {/* 이름 */}
-                    <div>
-                        <p>이름</p>
-                        <input type='text' value={name} id='name' name='name' placeholder='이름' onChange={changeInput}/>
-                    </div>
-
-                    {/* 전화번호 또는 이메일 */}
-                    <div>
-                        <p>전화번호 또는 이메일</p>
-                        <input type='text' value={phoneORemail} id='phoneORemail' name='phoneORemail' placeholder='전화번호 또는 이메일' onChange={changeInput}/>
-                    </div>
-                
-
-                    <button onClick={onSubmit}>아이디 찾기</button>
-
-                    <Link to="/login">로그인</Link>
+            <div className="find-id-container">
+                {/* 상단 탭 메뉴 형태 네비게이션 */}
+                <div className="find-id-nav-tabs">
+                    <Link to="/findId" className="tab-active">아이디 찾기</Link>
+                    <Link to="/changePw">비밀번호 재설정</Link>
                 </div>
-            }
-            
 
-            {/* 아이디 찾기 클릭 시, FindId_result 화면으로 전환 (모듈화) */}
-            {
-                showResult===true &&
-                <FindId_result resultId={resultId}/>
-            }
+
+                {
+                    showResult===false
+                    ? (
+                        <form className="find-id-form">
+                            {/* 이름 필드 */}
+                            <div className="find-id-input-group">
+                                <p>이름</p>
+                                <input 
+                                    type='text' 
+                                    id='name' name='name' value={name}
+                                    placeholder='이름을 입력해주세요'
+                                    onChange={changeInput}
+                                    className="find-id-input-field"
+                                />
+                            </div>
+
+                            {/* 연락처 필드 */}
+                            <div className="find-id-input-group">
+                                <p>전화번호 또는 이메일</p>
+                                <input 
+                                    type='text'
+                                    id='phoneORemail' name='phoneORemail' value={phoneORemail}
+                                    placeholder='전화번호 또는 이메일을 입력해주세요' 
+                                    onChange={changeInput}
+                                    className="find-id-input-field"
+                                />
+                            </div>
+                        
+
+                            {/* 찾기 제출 / 로그인으로 돌아가기 버튼 컴포넌트군 */}
+                            <button onClick={onSubmit} className="find-id-submit-btn">아이디 찾기</button>
+                            <Link to="/login" className="find-id-footer-link">로그인</Link>
+                        </form>
+                    ) 
+                    : (
+                        //결과 화면으로 전환
+                        <FindId_result resultId={resultId}/>
+                    )
+                }
+            </div>
         </div>
     );
 };

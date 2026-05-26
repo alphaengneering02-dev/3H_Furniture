@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
+import '../../css/myPageCss/memberAddressUpdate.css';
 
 const MemberAddressUpdate = () => {
     const navigate = useNavigate();
@@ -97,41 +98,69 @@ const MemberAddressUpdate = () => {
             console.error("회원 수정 최종 에러 상세:", err.response);
             alert("정보 수정 처리 중 서버 오류가 발생했습니다.");
         });
-    };
+    }; // 👈 꼬여있던 handleSubmit 마감 괄호를 정확한 위치로 복구 완료
 
     return (
-        <div style={{ padding: '30px', maxWidth: '500px', margin: '0 auto' }}>
-            <h2>회원 정보 수정</h2>
-            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+        <div className="mypage-grid-container">
+            {/* ========================================================= */}
+            {/* [헤더 시작] 마이페이지와 동일한 상단 브랜드 바 레이아웃            */}
+            {/* ========================================================= */}
+            <header className="mypage-header-box" style={{ display: 'flex', justifyContent: 'space-between', padding: '10px', borderBottom: '1px solid #ccc' }}>
+                <div className="mypage-logo-box" onClick={() => navigate('/')} style={{ cursor: 'pointer', fontWeight: 'bold' }}>PROJECT CMYK</div>
                 <div>
-                    <label style={{ display: 'block', marginBottom: '5px' }}><strong>아이디</strong></label>
-                    <input type="text" name="id" value={fromData.id} disabled style={{ width: '100%', padding: '8px', backgroundColor: '#eee' }} />
+                    <button className="btn-header-action" onClick={() => navigate('/mypage')}>마이페이지</button>
+                    <button className="btn-header-action" onClick={() => navigate('/')}>메인으로</button>
                 </div>
-                <div>
-                    <label style={{ display: 'block', marginBottom: '5px' }}><strong>이름</strong></label>
-                    <input type="text" name="name" value={fromData.name} onChange={handleChange} style={{ width: '100%', padding: '8px' }} required />
+            </header>
+
+            {/* 🖥️ 정보수정 룸 단독형 명품 레이아웃 뷰포트 배치 */}
+            <div className="update-form-viewport">
+                <div className="update-form-card">
+                    <h2>회원 정보 수정</h2>
+                    
+                    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                        <div className="form-group-row">
+                            <label style={{ display: 'block', marginBottom: '5px' }}><strong>아이디</strong></label>
+                            <input type="text" name="id" value={fromData.id} disabled className="disabled-input" style={{ width: '100%', padding: '8px' }} />
+                        </div>
+                        <div className="form-group-row">
+                            <label style={{ display: 'block', marginBottom: '5px' }}><strong>이름</strong></label>
+                            <input type="text" name="name" value={fromData.name} onChange={handleChange} style={{ width: '100%', padding: '8px' }} required />
+                        </div>
+                        <div className="form-group-row">
+                            <label style={{ display: 'block', marginBottom: '5px' }}><strong>연락처</strong></label>
+                            <input type="text" name="phone" value={fromData.phone} onChange={handleChange} style={{ width: '100%', padding: '8px' }} required />
+                        </div>
+                        <div className="form-group-row">
+                            <label style={{ display: 'block', marginBottom: '5px' }}><strong>이메일</strong></label>
+                            <input type="email" name="email" value={fromData.email} onChange={handleChange} style={{ width: '100%', padding: '8px' }} required />
+                        </div>
+                        <div className="form-group-row">
+                            <label style={{ display: 'block', marginBottom: '5px' }}><strong>새 비밀번호</strong></label>
+                            <input type="password" name="password1" value={fromData.password1} onChange={handleChange} style={{ width: '100%', padding: '8px' }} required />
+                        </div>
+                        <div className="form-group-row">
+                            <label style={{ display: 'block', marginBottom: '5px' }}><strong>비밀번호 확인</strong></label>
+                            <input type="password" name="password2" value={fromData.password2} onChange={handleChange} style={{ width: '100%', padding: '8px' }} required />
+                        </div>
+                        <div className="form-action-row" style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+                            <button type="submit" className="mypage-action-btn" style={{ flex: 1, padding: '10px', color: '#fff', border: 'none', cursor: 'pointer', fontWeight: 'bold' }}>수정 완료</button>
+                            <button type="button" className="btn-header-action" onClick={() => navigate('/mypage')} style={{ flex: 1, padding: '10px', cursor: 'pointer' }}>취소</button>
+                        </div>
+                    </form>
                 </div>
-                <div>
-                    <label style={{ display: 'block', marginBottom: '5px' }}><strong>연락처</strong></label>
-                    <input type="text" name="phone" value={fromData.phone} onChange={handleChange} style={{ width: '100%', padding: '8px' }} required />
+            </div>
+
+            {/* ========================================================= */}
+            {/* [푸터 시작] 하단 기업 정보 및 미니멀 카피라이트 마크업          */}
+            {/* ========================================================= */}
+            <footer className="mypage-footer">
+                <div className="footer-content">
+                    <p className="footer-logo">PROJECT CMYK</p>
+                    <p className="footer-info">주식회사 씨엠와이케이 | 공동 프로젝트 팀 | 경기도 수원시 팔달구</p>
+                    <p className="footer-copy">© 2026 PROJECT CMYK. All Rights Reserved.</p>
                 </div>
-                <div>
-                    <label style={{ display: 'block', marginBottom: '5px' }}><strong>이메일</strong></label>
-                    <input type="email" name="email" value={fromData.email} onChange={handleChange} style={{ width: '100%', padding: '8px' }} required />
-                </div>
-                <div>
-                    <label style={{ display: 'block', marginBottom: '5px' }}><strong>새 비밀번호</strong></label>
-                    <input type="password" name="password1" value={fromData.password1} onChange={handleChange} style={{ width: '100%', padding: '8px' }} required />
-                </div>
-                <div>
-                    <label style={{ display: 'block', marginBottom: '5px' }}><strong>비밀번호 확인</strong></label>
-                    <input type="password" name="password2" value={fromData.password2} onChange={handleChange} style={{ width: '100%', padding: '8px' }} required />
-                </div>
-                <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
-                    <button type="submit" style={{ flex: 1, padding: '10px', backgroundColor: '#333', color: '#fff', border: 'none', cursor: 'pointer', fontWeight: 'bold' }}>수정 완료</button>
-                    <button type="button" onClick={() => navigate('/mypage')} style={{ flex: 1, padding: '10px', backgroundColor: '#ccc', border: 'none', cursor: 'pointer' }}>취소</button>
-                </div>
-            </form>
+            </footer>
         </div>
     );
 };

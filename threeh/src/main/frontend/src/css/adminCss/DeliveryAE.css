@@ -1,0 +1,200 @@
+/* ==========================================
+   📦 1. 페이지 전체 레이아웃 및 컨테이너
+   ========================================== */
+.delivery-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+    background-color: #F8FAFC;
+    min-height: 100vh;
+}
+
+.delivery-container {
+    width: 100%;
+    max-width: 600px;
+    background-color: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+    padding: 32px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+}
+
+/* 🏷️ 타이틀 스타일 */
+.delivery-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1A202C;
+    margin-bottom: 24px;
+    text-align: center;
+    letter-spacing: -0.5px;
+}
+
+
+/* ==========================================
+   📋 2. 폼 요소 및 입력 창 (Inputs)
+   ========================================== */
+.delivery-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #4A5568;
+}
+
+/* 표준 공통 입력 창 */
+.form-input {
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 14px;
+    border: 1px solid #CBD5E0;
+    border-radius: 6px;
+    color: #2D3748;
+    background-color: #FFFFFF;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+}
+
+.form-input::placeholder {
+    color: #A0AEC0;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #3182CE;
+    box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.15);
+}
+
+
+/* ==========================================
+   📞 3. 특수 입력 형태 (전화번호, 사업자번호 그룹)
+   ========================================== */
+.phone-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+}
+
+.phone-select {
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #CBD5E0;
+    border-radius: 6px;
+    color: #2D3748;
+    background-color: #FFFFFF;
+    cursor: pointer;
+    min-width: 80px;
+}
+
+.phone-input {
+    flex: 1;
+    padding: 10px 12px;
+    font-size: 14px;
+    border: 1px solid #CBD5E0;
+    border-radius: 6px;
+    color: #2D3748;
+    text-align: center;
+    min-width: 60px;
+}
+
+.phone-input:focus, .phone-select:focus {
+    outline: none;
+    border-color: #3182CE;
+}
+
+.phone-dash {
+    color: #718096;
+    font-weight: bold;
+}
+
+
+/* ==========================================
+   🛑 4. 읽기 전용 (Readonly) 및 섹션 구분 타이틀
+   ========================================== */
+.readonly-section {
+    opacity: 0.85;
+}
+
+.readonly-box {
+    background-color: #EDF2F7 !important;
+    color: #4A5568 !important;
+    border-color: #E2E8F0 !important;
+    cursor: not-allowed;
+    font-weight: 600;
+}
+
+/* 중간 섹션 경계선 및 타이틀 (Add용 배너 / Edit용 h3 공통) */
+.business-section, 
+.business-section-title {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 2px dashed #E2E8F0;
+    font-size: 16px;
+    font-weight: 700;
+    color: #2B6CB0;
+    letter-spacing: -0.3px;
+}
+
+
+/* ==========================================
+   🔘 5. 하단 버튼 컨트롤 그룹
+   ========================================== */
+.button-group {
+    display: flex;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+/* [등록하기], [수정완료] 메인 버튼 */
+.submit-btn {
+    flex: 2;
+    padding: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    background-color: #3182CE;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.submit-btn:hover {
+    background-color: #2B6CB0;
+}
+
+/* [취소] 서브 버튼 */
+.cancel-btn {
+    flex: 1;
+    padding: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    background-color: #FFFFFF;
+    color: #4A5568;
+    border: 1px solid #CBD5E0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.cancel-btn:hover {
+    background-color: #EDF2F7;
+    color: #2D3748;
+}
+
+/* 등록 페이지 단독 등록 버튼 호환성 대응 */
+form > .submit-btn {
+    width: 100%;
+    margin-top: 12px;
+}

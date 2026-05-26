@@ -54,10 +54,10 @@
 }
 
 .item-button:disabled {
-    border-color: #CFC7BD;
-    background-color: #CFC7BD;
-    color: #FFFFFF;
+    opacity: 0.45;
     cursor: not-allowed;
+    background-color: #cccccc;
+    color: #666666;
 }
 
 /* 보조 버튼 */
@@ -125,6 +125,7 @@
 
 .item-checkbox:disabled {
     cursor: not-allowed;
+    opacity: 0.5;
 }
 
 /* 상품 이미지 */

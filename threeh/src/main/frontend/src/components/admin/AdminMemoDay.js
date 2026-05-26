@@ -190,30 +190,38 @@ const AdminMemoDay = () => {
                     </form>
                 )}
 
-                <div className="admin-dday-list">
-                    {dDayList.map((item) => (
-                        <div key={item.id} className="dday-card">
-                            <div className="dday-card-info">
-                                <span className="dday-card-title">{item.title}</span>
-                                <span className="dday-card-date">{item.date}</span>
-                            </div>
+               <div className="admin-dday-list">
+    {dDayList.map((item) => {
+        // 현재 날짜와 타겟 날짜 비교해서 오늘이 D-Day인지 판별하는 로직 추가
+        const today = new Date(); today.setHours(0, 0, 0, 0);
+        const target = new Date(item.date); target.setHours(0, 0, 0, 0);
+        const isToday = (target.getTime() - today.getTime()) === 0;
 
-                            <div className="dday-card-action">
-                                <span className="dday-card-count">
-                                    {calculateDDay(item.date)}
-                                </span>
-                                <button 
-                                    type="button"
-                                    onClick={() => handleDeleteDDay(item.id)}
-                                    className="dday-delete-btn"
-                                    title="일정 삭제"
-                                >
-                                    ✕
-                                </button>
-                            </div>
-                        </div>
-                    ))}
+        return (
+            /* 오늘이 D-Day면 'is-today' 클래스가 붙어 색상이 변하고 깜빡입니다 */
+            <div key={item.id} className={`dday-card ${isToday ? 'is-today' : ''}`}>
+                <div className="dday-card-info">
+                    <span className="dday-card-title">{item.title}</span>
+                    <span className="dday-card-date">{item.date}</span>
                 </div>
+
+                <div className="dday-card-action">
+                    <span className="dday-card-count">
+                        {calculateDDay(item.date)}
+                    </span>
+                    <button 
+                        type="button"
+                        onClick={() => handleDeleteDDay(item.id)}
+                        className="dday-delete-btn"
+                        title="일정 삭제"
+                    >
+                        ✕
+                    </button>
+                </div>
+            </div>
+        );
+    })}
+</div>
             </div>
         </div> 
     );

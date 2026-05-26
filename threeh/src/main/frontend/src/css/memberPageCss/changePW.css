@@ -1,0 +1,207 @@
+/* ==========================================
+  ChangePw & ChangePw_result Page CSS
+   기준: global.css
+   - body 배경: #F9F8F6
+   - 컨텐츠 박스: #FFFFFF
+   - 기본 폰트: Noto Sans KR
+   - 포인트 폰트: Playfair Display
+========================================== */
+
+:root {
+  --changePW-black: #000000;
+  --changePW-middle-gray: #777;
+  --changePW-light-gray: #999;
+  --changePW-charcoal: #2B2D2F;
+  --changePW-dark-brown: #2F2A25;
+  --changePW-dark-beige: #8C7A6B;
+  --changePW-light-beige: #eee8e0;
+  --changePW-accent-gold: #D4B26F;
+  --changePW-alert-red: #FF3B30;
+  --changePW-success-green: #4CAF50;
+
+  --changePW-bg-ivory: #F9F8F6;
+  --changePW-bg-white: #FFFFFF;
+
+  --changePW-border-light: #E5E2DC;
+  --changePW-border-dark: #1A1A1A;
+
+  --changePW-font-sans: 'Noto Sans KR', sans-serif;
+  --changePW-font-serif: 'Playfair Display', serif;
+}
+
+
+/* 1. 전체 레이아웃 컨테이너 (중앙 정렬) */
+.change-pw-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 80vh;
+    padding: 70px 20px;
+    background: var(--changePW-bg-white);
+    font-family: var(--changePW-font-sans);
+}
+
+
+/* 상단 네비게이션 탭 (아이디 찾기 / 비밀번호 재설정) */
+.change-pw-nav-tabs {
+    display: flex;
+    width: 100%;
+    max-width: 400px;
+    border-bottom: 1px solid var(--changePW-border-light);
+    margin-bottom: 40px;
+}
+
+.change-pw-nav-tabs a {
+    flex: 1;
+    padding: 12px 0;
+    text-align: center;
+    font-size: 14px;
+    text-decoration: none;
+    color: var(--changePW-light-gray);
+    transition: all 0.3s;
+}
+
+/* 현재 활성화된 탭 (비밀번호 재설정 스타일) */
+.change-pw-nav-tabs a.tab-active {
+    color: var(--changePW-black);
+    font-weight: 500;
+    border: 1px solid var(--changePW-black);
+    border-bottom: 1px solid var(--changePW-bg-white);
+    margin-bottom: -1px;
+    background-color: var(--changePW-bg-white);
+}
+
+
+/* ==========================================
+   비밀번호 재설정 폼 및 입력 필드
+   ========================================== */
+.change-pw-form {
+    width: 100%;
+    max-width: 400px;
+}
+
+.change-pw-input-group {
+    margin-bottom: 25px;
+}
+
+/* 입력 필드 위 라벨 텍스트 */
+.change-pw-input-group p {
+    font-size: 12px;
+    color: var(--changePW-middle-gray);
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+/* 하단 라인만 렌더링되는 인풋 필드 */
+.change-pw-input-field {
+    width: 100%;
+    padding: 14px 0;
+    font-size: 14px;
+    border: none;
+    border-bottom: 1px solid var(--changePW-border-light);
+    background-color: transparent;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.change-pw-input-field:focus {
+    border-bottom: 1px solid var(--changePW-black);
+}
+
+.change-pw-input-field::placeholder {
+    color: var(--changePW-light-gray);
+}
+
+
+/* ==========================================
+   버튼 및 하단 링크
+   ========================================== */
+/* 블랙 메인 버튼 */
+.change-pw-submit-btn {
+    width: 100%;
+    max-width: 400px;
+    height: 55px;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--changePW-bg-white);
+    background-color: var(--changePW-black);
+    border: none;
+    cursor: pointer;
+    margin-top: 50px;
+    margin-bottom: 25px;
+    transition: background-color 0.3s;
+}
+
+.change-pw-submit-btn:hover {
+    background-color: var(--changePW-middle-gray);
+}
+
+/* 하단 로그인 페이지 이동 링크 */
+.change-pw-footer-link {
+    display: block;
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+    font-size: 14px;
+    color: var(--changePW-middle-gray);
+    text-decoration: none;
+    margin-top: 10px;
+    transition: color 0.2s;
+}
+
+.change-pw-footer-link:hover {
+    color: var(--changePW-black);
+}
+
+
+/* ==========================================
+   ChangePw_result (결과 화면)
+   ========================================== */
+.change-pw-result-box {
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    padding: 20px 0;
+}
+
+.change-pw-result-title {
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: var(--changePW-black);
+    margin-bottom: 35px;
+    letter-spacing: -0.5px;
+}
+
+/* 완료 후 노출되는 비밀번호 안내 필드 */
+.change-pw-result-field {
+    width: 100%;
+    padding: 16px 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--changePW-dark-brown);
+    text-align: center;
+    border: none;
+    border-bottom: 2px solid var(--changePW-black);
+    background-color: transparent;
+    margin-bottom: 40px;
+    outline: none;
+}
+
+/* 결과 화면 하단 메인 액션 버튼 */
+.change-pw-btn-primary {
+    width: 100%;
+    max-width: 400px;
+    height: 55px;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--changePW-bg-white);
+    background-color: var(--changePW-black);
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.change-pw-btn-primary:hover {
+    background-color: var(--changePW-middle-gray);
+}

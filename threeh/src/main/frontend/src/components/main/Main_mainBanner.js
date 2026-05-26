@@ -60,10 +60,17 @@ const Main_mainBanner = () => {
                     <li 
                         key={slide.id} 
                         className={slide.id}
-                        style={{minWidth: '100%', boxSizing: 'border-box'}}
+                        style={{
+                            minWidth: '100%', 
+                            boxSizing: 'border-box',
+                            padding: '55px 40px', 
+                            backgroundColor: '#f5f5f5'
+                        }}
                     > 
                         <Link to={slide.link}>
-                            <img src={slide.src} alt={slide.alt} style={{width: '100%', display: 'block'}} />
+                            <img src={slide.src} alt={slide.alt} 
+                                style={{width: '100%', display: 'block', borderRadius: '12px'}} 
+                            />
                         </Link>
                     </li>
                 ))}

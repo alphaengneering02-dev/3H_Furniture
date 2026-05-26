@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import FindId_result from './FindId_result';
 import ChangePw_result from './ChangePW_result';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import Header from '../main/Header';
+
+//ChangePW 전용 CSS 임포트
+import '../../css/memberPageCss/changePW.css';
 
 const ChangePw = () => {
 
@@ -72,45 +75,72 @@ const ChangePw = () => {
 
     return (
         <div>
-            ChangePW 페이지
-            
-            <h1> <Link to="/">로고</Link> </h1>
-
-            <h2> <Link to="/findId">아이디 찾기</Link> </h2>
-            <h2>비밀번호 재설정</h2>
+            {/* Header 영역 */}
+            <div className="main-header">
+                <Header/>
+            </div>
 
 
-            {
-                showResult===false &&
-                <div>
-                    {/* 아이디 */}
-                    <div>
-                        <input type='text' value={id} id='id' name='id' placeholder='아이디' onChange={changeInput}/>
-                    </div>
-
-                    {/* 기존 비밀번호 */}
-                    <div>
-                        <input type='password' value={oldPassword} id='oldPassword' name='oldPassword' placeholder='기존 비밀번호' onChange={changeInput}/>
-                    </div>
-
-                    {/* 새 비밀번호 */}
-                    <div>
-                        <input type='password' value={newPassword} id='newPassword' name='newPassword' placeholder='새로운 비밀번호' onChange={changeInput}/>
-                    </div>
-                
-
-                    <button onClick={onSubmit}>비밀번호 재설정</button>
-
-                    <Link to="/login">로그인</Link>
+            <div className="change-pw-container">
+                {/* 네비게이션 탭 영역 (현재 탭 활성화) */}
+                <div className="change-pw-nav-tabs">
+                    <Link to="/findId">아이디 찾기</Link>
+                    <Link to="/changePw" className="tab-active">비밀번호 재설정</Link>
                 </div>
-            }
 
 
-            {/* 비밀번호 재설정 클릭 시, ChangePw_result 화면으로 전환 (모듈화) */}
-            {
-                showResult===true &&
-                <ChangePw_result resultPw={resultPw}/>
-            }
+                
+                {
+                    showResult===false
+                    ? (
+                        <form className="change-pw-form">
+                            {/* 아이디 필드 */}
+                            <div className="change-pw-input-group">
+                                <p>아이디</p>
+                                <input 
+                                    type='text' 
+                                    value={id} id='id' name='id' placeholder='아이디를 입력해주세요' 
+                                    className="change-pw-input-field"
+                                    onChange={changeInput}
+                                />
+                            </div>
+
+                            {/* 기존 비밀번호 필드 */}
+                            <div className="change-pw-input-group">
+                                <p>기존 비밀번호</p>
+                                <input 
+                                    type='password' 
+                                    value={oldPassword} id='oldPassword' name='oldPassword' 
+                                    placeholder='현재 비밀번호를 입력해주세요' 
+                                    className="change-pw-input-field"
+                                    onChange={changeInput}
+                                />
+                            </div>
+
+                            {/* 새 비밀번호 필드 */}
+                            <div className="change-pw-input-group">
+                                <p>새로운 비밀번호</p>
+                                <input 
+                                    type='password' 
+                                    value={newPassword} id='newPassword' name='newPassword' 
+                                    placeholder='새롭게 변경할 비밀번호를 입력해주세요' 
+                                    className="change-pw-input-field"
+                                    onChange={changeInput}
+                                />
+                            </div>
+                        
+
+                            {/* 재설정 제출 / 로그인으로 돌아가기 버튼 컴포넌트 군 */}
+                            <button onClick={onSubmit} className="change-pw-submit-btn">비밀번호 재설정</button>
+                            <Link to="/login" className="change-pw-footer-link">로그인</Link>
+                        </form>
+                    )
+                    : (
+                        //결과 화면으로 전환
+                        <ChangePw_result resultPw={resultPw}/>
+                    )
+                }
+            </div>
         </div>
     );
 };

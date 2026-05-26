@@ -3,8 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { Link } from "react-router-dom";
 import axios from 'axios';
 import AddCompany from './AddCompany';
+import AllOrderboard from './AllOrderboard';
 import Orderboard from './Orderboard';
 import AdminMemoDay from './AdminMemoDay';
+import Ranking from './Ranking';
 import '../../css/adminCss/AdminDashboard.css';
 
 const AdminDashboard = () => {
@@ -16,6 +18,40 @@ const AdminDashboard = () => {
 
     const [orders, setOrders] = useState([]);
     const [items, setItems] = useState([]);
+
+    // 상품 번호를 입력받아 검증 후 상세 페이지로 이동하는 함수
+const handleEditItemDetail = async () => {
+    const itemIdRaw = window.prompt("수정하거나 삭제할 상품 번호(ID)를 입력해주세요:");
+    
+    // 1. 입력 취소 및 빈 값 예외 처리
+    if (!itemIdRaw) return; 
+
+    const itemId = Number(itemIdRaw);
+    if (isNaN(itemId)) {
+        alert("올바른 상품 번호(숫자)를 입력해주세요.");
+        return;
+    }
+
+    try {
+        // 2. 백엔드 Controller (@GetMapping("/{itemId}"))에 상품이 존재하는지 먼저 확인
+        // 백엔드 @RequestMapping("/api/item") 주소에 맞춰 요청을 보냅니다.
+        const response = await axios.get(`/api/item/${itemId}`);
+        
+        if (response.data) {
+            // 3. 상품이 확인되면 리액트 라우터 화면 경로인 /item/:itemId 로 이동
+            navigate(`/item/${itemId}`);
+        } else {
+            alert("존재하지 않는 상품 번호입니다.");
+        }
+    } catch (error) {
+        console.error("상품 조회 실패:", error);
+        if (error.response?.status === 404) {
+            alert("해당 상품을 찾을 수 없습니다.");
+        } else {
+            alert("상품 조회 중 오류가 발생했습니다. 번호를 다시 확인해주세요.");
+        }
+    }
+};
 
     const handleDeleteDelivery = async (deliveryId) => {
         if (!window.confirm("정말 이 기사를 삭제하시겠습니까?")) return;
@@ -199,15 +235,18 @@ const fetchDeliveries = async () => {
             <div className="admin-control-panel">
                 
                 {/* 4-A. 상품 관리 파트 */}
-                <div className="panel-group">
-                    <div className="panel-title">📦 상품 마스터 관리</div>
-                    <div className="panel-buttons">
-                        <Link to="/item/create" className="full-width-link">
-                            <button className="admin-menu-btn type-product">개별 상품 추가</button>
-                        </Link>
-                        <button className="admin-menu-btn type-product-edit">상품 수정 / 삭제</button>
+                    <div className="panel-group">
+                        <div className="panel-title">📦 상품 마스터 관리</div>
+                        <div className="panel-buttons">
+                            <Link to="/item/create" className="full-width-link">
+                                <button className="admin-menu-btn type-product">개별 상품 추가</button>
+                            </Link>
+                            {/* 💡 수정 1: 사이드바 내부의 수정 버튼에 onClick 추가 */}
+                            <button className="admin-menu-btn type-product-edit" onClick={handleEditItemDetail}>
+                                상품 수정 / 삭제
+                            </button>
+                        </div>
                     </div>
-                </div>
 
                 {/* 4-B. 배송 파트너 파트 */}
                 <div className="panel-group">
@@ -236,21 +275,36 @@ const fetchDeliveries = async () => {
 
                 <h1>Admin Dashboard</h1>
 
+                <Ranking />
+
                 <div className="admin-button-group">
                     <Link to="/item/create">
                     <button>상품 추가</button>
                     </Link>
                     <button>상품 수정/삭제</button>
-                    <p>수정 삭제는 어드민만 볼 수 있는 상품리스트를 만들어서로 이동?</p>
                 </div>
 
-                
+                <AllOrderboard 
+                    orders={orders}
+                    items={items}
+                    handleDriverSelect={handleDriverSelect}
+                    handleAssignDriver={handleAssignDriver}
+                    handleStatusChange={handleStatusChange}
+                />
 
 <div className="admin-content-box">
     
-   
     <div className="admin-content-title-bar">
-        <h3>배송 파트너</h3>        
+        {/* h3 태그와 버튼이 가로로 배치되도록 구성 */}
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+            <h3>배송 파트너</h3>         
+            <Link to="/admin/driver" style={{ marginLeft: '12px' }}>
+                <button className="admin-add-driver-btn" style={{ padding: '4px 10px', fontSize: '14px' }}>
+                    기사 페이지 이동
+                </button>
+            </Link>
+        </div>
+
         <div className="admin-header-actions">          
             <div className="admin-excel-upload-wrapper">
                 <span className="excel-label">엑셀 등록:</span>
@@ -262,73 +316,56 @@ const fetchDeliveries = async () => {
             </Link>
         </div>
     </div>
-<div className="driver-table-wrapper">
 
-                    <table className="admin-table-style">
-                        <thead>
-                            <tr>
-                                <th>회사</th>
-                                <th>기사명</th>
-                                <th>연락처</th>
-                                <th>상태</th>
-                                <th>관리</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            
-
-                            {items.length === 0 ? (
-                                
-                                <tr>
-                                    <td colSpan="5">
-                                        등록된 기사가 없습니다.
-                    </td>
+    <div className="driver-table-wrapper">
+        <table className="admin-table-style">
+            <thead>
+                <tr>
+                    <th>회사</th>
+                    <th>기사명</th>
+                    <th>연락처</th>
+                    <th>상태</th>
+                    <th>관리</th>
                 </tr>
-            ) : (
-                items.map((item) => (
-                    <tr key={item.deliveryId}>
-                        <td>
-                            {item.companyName || item.businessName || "회사 정보 없음"}
-                        </td>
+            </thead>
 
-                        <td>
-                            {item.deliveryName}
-                        </td>
-
-            
-                        <td>
-                            {item.deliveryPhone}
-                        </td>
-
-                        <td>
-                            <b style={{
-                                color: item.status === 'WAITING' ? 'blue' : 'black'
-                            }}>
-                                {item.status}
-                            </b>
-                        </td>
-
-                        {/* 5. 관리 버튼 */}
-                        <td>
-                            <button 
-                                onClick={() => handleEditDelivery(item.deliveryId)}
-                                style={{ marginRight: '5px', padding: '2px 8px', cursor: 'pointer' }}
-                            >
-                                수정
-                            </button>
-                            <button 
-                                onClick={() => handleDeleteDelivery(item.deliveryId)}
-                                style={{ padding: '2px 8px', color: 'red', cursor: 'pointer' }}
-                            >
-                                삭제
-                            </button>
-                        </td>
+            <tbody>
+                {items.length === 0 ? (
+                    <tr>
+                        <td colSpan="5">등록된 기사가 없습니다.</td>
                     </tr>
-                ))
-            )}
-        </tbody>
-    </table>
+                ) : (
+                    items.map((item) => (
+                        <tr key={item.deliveryId}>
+                            <td>
+                                {item.companyName || item.businessName || "회사 정보 없음"}
+                            </td>
+                            <td>{item.deliveryName}</td>
+                            <td>{item.deliveryPhone}</td>
+                            <td>
+                                <b style={{ color: item.status === 'WAITING' ? 'blue' : 'black' }}>
+                                    {item.status}
+                                </b>
+                            </td>
+                            <td>
+                                <button 
+                                    onClick={() => handleEditDelivery(item.deliveryId)}
+                                    style={{ marginRight: '5px', padding: '2px 8px', cursor: 'pointer' }}
+                                >
+                                    수정
+                                </button>
+                                <button 
+                                    onClick={() => handleDeleteDelivery(item.deliveryId)}
+                                    style={{ padding: '2px 8px', color: 'red', cursor: 'pointer' }}
+                                >
+                                    삭제
+                                </button>
+                            </td>
+                        </tr>
+                    ))
+                )}
+            </tbody>
+        </table>
     </div>
 </div>
 
