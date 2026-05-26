@@ -568,7 +568,12 @@
     text-align: left;
 }
 
+
 /* 슬라이더의 넘치는 카드를 숨겨주는 윈도우 역할 창 */
+.main-product-slider-section {
+  position: relative;
+}
+
 .main-product-slider-section .main-slider-container {
     position: relative;
     width: 100%;
@@ -710,7 +715,7 @@
 /* ==========================================
    [까사미아 스타일] 하단 푸터 영역
    ========================================== */
-.mypage-footer {
+.main-mypage-footer {
     width: 100%;
     border-top: 1px solid #111111;
     margin-top: 100px;
@@ -718,12 +723,12 @@
     background-color: #ffffff;
 }
 
-.footer-content {
+.main-footer-content {
     max-width: 1200px;
     margin: 0 auto;
 }
 
-.footer-logo {
+.main-footer-logo {
     font-size: 16px;
     font-weight: 700;
     letter-spacing: 1px;
@@ -731,14 +736,14 @@
     color: #111111;
 }
 
-.footer-info {
+.main-footer-info {
     font-size: 12px;
     color: #666666;
     line-height: 1.6;
     margin: 0 0 8px 0;
 }
 
-.footer-copy {
+.main-footer-copy {
     font-size: 11px;
     color: #999999;
     margin: 0;
