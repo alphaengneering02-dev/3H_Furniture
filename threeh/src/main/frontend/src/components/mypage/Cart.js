@@ -5,8 +5,6 @@ import { getUrl } from '../../utils/BackendPath';
 import '../../css/myPageCss/cart.css';
 import { useToast } from '../../hook/useToast';
 
-const { success, error, warn, info } = useToast();
-
 const Cart = () => {
     const navigate = useNavigate();
     const [cartItems, setCartItems] = useState([]);
@@ -14,6 +12,8 @@ const Cart = () => {
 
     //체크박스 수동/전체 선택 상태 관리용
     const [selectedIds, setSelectedIds] = useState([]);
+    
+    const { success, error, warn, info } = useToast();
 
     const handleLogout = () => {
         if (window.confirm("로그아웃 하시겠습니까?")) {
