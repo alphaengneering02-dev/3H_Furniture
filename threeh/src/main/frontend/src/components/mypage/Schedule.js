@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useToast } from '../../hook/useToast';
 
 const Schedule = () => {
     const [orders, setOrders] = useState([]);
     const navigate = useNavigate();
+
+    const { success, error, warn, info } = useToast();
 
     // 반품 리펀드 페이지로 이동
     const moveToRefund = (orderId) => {

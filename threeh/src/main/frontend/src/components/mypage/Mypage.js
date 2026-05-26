@@ -5,6 +5,7 @@ import axios from 'axios';
 import DaumPostCode from 'react-daum-postcode';
 /* 💡 폴더명(mypageCss)과 파일명(myPage.css) 대소문자 규격 오차 없이 싱크 적용 */
 import '../../css/myPageCss/myPage.css';
+import { useToast } from '../../hook/useToast';
 
 const Mypage = () => {
     const navigate = useNavigate();
@@ -12,6 +13,8 @@ const Mypage = () => {
     const [addresses, setAddresses] = useState([]);
     const [orders, setOrders] = useState([]);
     const [isAllOrdersOpen, setIsAllOrdersOpen] = useState(false); // 구매내역 전체보기 토글
+
+    const { success, error, warn, info } = useToast();
 
     
     //북마크 추가_오현옥

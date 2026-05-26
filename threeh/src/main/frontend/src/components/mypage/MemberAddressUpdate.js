@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import '../../css/myPageCss/memberAddressUpdate.css';
+import { useToast } from '../../hook/useToast';
 
 const MemberAddressUpdate = () => {
     const navigate = useNavigate();
     const { id } = useParams(); // URL 파라미터에서 어떤 id든 동적으로 수신
+    const { success, error, warn, info } = useToast();
 
-    // 💡 조원의 변수명 양식인 fromData 스펙과 완벽하게 일치
+    // 조원의 변수명 양식인 fromData 스펙과 완벽하게 일치
     const [fromData, setFormData] = useState({
         id: id || '',
         name: '',

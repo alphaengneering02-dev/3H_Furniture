@@ -1,7 +1,10 @@
 import axios from 'axios';
 import React from 'react';
+import { useToast } from '../../hook/useToast';
 
 const CartItem = ({itemId, count}) => {
+
+    const { success, error, warn, info } = useToast();
 
     const handleAddToCart = () => {
         const params = new URLSearchParams();

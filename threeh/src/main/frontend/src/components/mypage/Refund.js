@@ -2,10 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../../css/myPageCss/refund.css';
+import { useToast } from '../../hook/useToast';
 
 const RefundPage = () => {
     const navigate = useNavigate();
     const [orders, setOrders] = useState([]);
+
+    const { success, error, warn, info } = useToast();
 
     // 부조장님 피드백 반영: 2대 대형 탭 구조
     const [activeTab, setActiveTab] = useState(1);
