@@ -118,7 +118,7 @@
 }
 
 /* 수량 변경 버튼 내 마이너스/플러스 단추 */
-.quantity-box button {
+.cart-quantity-box button {
     background-color: transparent !important;
     border: 1px solid #dfd1c0 !important;
     color: #555555 !important;
@@ -130,7 +130,7 @@
     transition: all 0.2s ease;
 }
 
-.quantity-box button:hover {
+.cart-quantity-box button:hover {
     background-color: #8C7A6B !important;
     border-color: #8C7A6B !important;
     color: #ffffff !important;
@@ -139,20 +139,20 @@
 /* ==========================================
    💳 4. 하단 정산 내역 및 최종 주문 전송 단추
    ========================================== */
-.total-price-box {
+.cart-total-price-box {
     border-top: 1px solid #dfd1c0 !important; 
     padding-top: 30px !important;
     margin-top: 50px !important;
 }
 
-.total-price-box h3 {
+.cart-total-price-box h3 {
     font-size: 15px !important;
     font-weight: 500 !important;
     color: #444444 !important;
 }
 
 /* ⚡ 최종 금액 수치 표시 박스: 헤더 베이지 소프트 칩 매칭 */
-.total-price-box h3 span {
+.cart-total-price-box h3 span {
     color: #5E4431 !important; /* 깊은 에스프레소 브라운 */
     font-size: 24px !important;
     font-weight: 700 !important;
