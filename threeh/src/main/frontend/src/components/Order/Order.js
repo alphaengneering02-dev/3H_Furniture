@@ -15,9 +15,7 @@ function Order(props) {
 
     const [orderData, setOrderData] = useState(null);
     const [isCartOrder, setIsCartOrder] = useState(false);
-    const [zipCode, setZipcode] = useState('');
-    const [address, setAddress] = useState('');
-    const [detailedAddress, setDetailedAddress] = useState('');
+    
     const [deliveryDate, setDeliveryDate] = useState('');
     
 
@@ -25,6 +23,18 @@ function Order(props) {
     const navigate = useNavigate();
 
     const user = sessionStorage.getItem("user");
+    const userId = user ? JSON.parse(user) : null;
+    const saveAddress = JSON.parse(localStorage.getItem(`addresses_${userId.id}`)) || [];
+    const defaultAddress = saveAddress.find(addr => addr.addressName === "기본 배송지");
+
+    // console.log("유저 정보", user);
+    // console.log("저장주소",saveAddress);
+    // console.log("기본주소", defaultAddress);
+
+
+    const [zipCode, setZipcode] = useState(defaultAddress?.zonecode || '');
+    const [address, setAddress] = useState(defaultAddress?.address || '');
+    const [detailedAddress, setDetailedAddress] = useState(defaultAddress?.detail || '');
   
 
     if(!user) {
@@ -40,7 +50,11 @@ function Order(props) {
 
     useEffect(() => {
 
-        
+            // if (defaultAddress) {
+            //     setZipcode(defaultAddress.zipCode || '');
+            //     setAddress(defaultAddress.address || '');
+            //     setDetailedAddress(defaultAddress.detail || '');
+            // }
 
         if(fromCart && orderItems){
 
@@ -55,7 +69,7 @@ function Order(props) {
 
             const requestBody = orderItems.map(item => Number(item.cartItemId));
 
-            console.log("백엔드 보낼 데이터 : ", requestBody);
+            // console.log("백엔드 보낼 데이터 : ", requestBody);
 
             //백엔드 검증 데이터 로드
             axios.post("/api/order/items", requestBody, {
@@ -65,7 +79,7 @@ function Order(props) {
                 withCredentials: true
             })
                 .then(res => {
-                    console.log("서버 검증 데이터: ", res.data);
+                    // console.log("서버 검증 데이터: ", res.data);
 
                     setOrderData(res.data); 
                     setIsCartOrder(true);
