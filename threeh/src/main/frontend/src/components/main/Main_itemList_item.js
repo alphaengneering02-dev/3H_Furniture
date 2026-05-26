@@ -25,9 +25,26 @@ const Main_itemList_item = ({item}) => {
     };
 
 
+    //상품 최종 가격 계산
+    //백엔드에서 itemFinalPrice가 오면 그 값을 사용
+    //없으면 원가-할인금액으로 계산
+    //천 단위 콤마 적용
+    const getFinalPrice = (item) => {
+        if (item.itemFinalPrice !== null && item.itemFinalPrice !== undefined) {
+            return Number(item.itemFinalPrice);
+        }
+
+        return Number(item.itemPrice || 0) - Number(item.itemDiscountPrice || 0);
+    };
+
+    const formatPrice = (price) => {
+        return Number(price || 0).toLocaleString();
+    };
+
+
 
     return (
-        <div className="item-card">
+        <div className="main-item-card">
             <div className="image-box">
                 {/* 상품 이미지 */}
                 <img src={item.imgUrl || "placeholder.png"} alt={item.itemName} />
@@ -35,7 +52,7 @@ const Main_itemList_item = ({item}) => {
                 <button className="wish-btn">♡</button>
             </div>
             <p className="item-name">{item.itemName || "상품명"}</p>
-            <h4 className="item-price">{item.itemPrice || "가격"}</h4>
+            <h4 className="item-price">{formatPrice(getFinalPrice(item))}원</h4>
         </div>
     );
 };

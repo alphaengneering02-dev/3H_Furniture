@@ -555,13 +555,13 @@
 /* ==========================================
    1. 부모 레이아웃 (상품 리스트 정렬 및 슬라이더 뷰포트)
 ========================================== */
-.itemList {
+.main-itemList {
     max-width: 1200px;
     margin: 0 auto;
     padding: 40px 20px;
 }
 
-.itemList h2 {
+.main-itemList h2 {
     font-size: 24px;
     font-weight: bold;
     margin-bottom: 24px;
@@ -569,14 +569,14 @@
 }
 
 /* 슬라이더의 넘치는 카드를 숨겨주는 윈도우 역할 창 */
-.product-slider-section .slider-container {
+.main-product-slider-section .main-slider-container {
     position: relative;
     width: 100%;
     overflow: hidden; /* 영역 밖으로 밀려난 5~8번 상품 카드 숨김 */
 }
 
 /* 8개의 카드가 수평 정렬되는 트랙 공간 */
-.product-slider-section .items {
+.main-product-slider-section .items {
     display: flex;
     gap: 20px; /* 카드간 고정 간격 */
     box-sizing: border-box;
@@ -584,7 +584,7 @@
 }
 
 /* 빈 상품 문구 */
-.itemList .item-empty-text {
+.main-itemList .item-empty-text {
     padding: 60px 0;
     margin: 0 auto;
     font-size: 15px;
@@ -594,9 +594,7 @@
 /* ==========================================
    2. 자식 레이아웃 (개별 상품 카드 & 세로 배열 유지)
 ========================================== */
-.item-card {
-    /* 8개 중 한 화면에 4개가 정확한 비율로 들어오도록 패딩/갭을 계산한 너비 계산식 적용 */
-    width: calc((100% - 60px) / 8); 
+.main-item-card {
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -604,7 +602,7 @@
 }
 
 /* 이미지 박스 스타일 */
-.item-card .image-box {
+.main-item-card .image-box {
     position: relative; 
     width: 100%;
     aspect-ratio: 1 / 1; 
@@ -614,14 +612,14 @@
     margin-bottom: 12px; 
 }
 
-.item-card .image-box img {
+.main-item-card .image-box img {
     width: 100%;
     height: 100%;
     object-fit: cover; 
 }
 
 /* 찜하기 하트 버튼 */
-.item-card .wish-btn {
+.main-item-card .wish-btn {
     position: absolute;
     top: 12px;
     right: 12px;
@@ -634,19 +632,19 @@
     transition: transform 0.2s ease;
 }
 
-.item-card .wish-btn:hover {
+.main-item-card .wish-btn:hover {
     transform: scale(1.1); 
 }
 
 /* 텍스트 정보 정렬 */
-.item-card .item-name {
+.main-item-card .item-name {
     font-size: 14px;
     color: #666;
     margin: 0 0 6px 0;
     text-align: left;
 }
 
-.item-card .item-price {
+.main-item-card .item-price {
     font-size: 16px;
     font-weight: bold;
     color: #111;
@@ -658,7 +656,7 @@
    3. 슬라이더 컴포넌트 전용 UI 컨트롤러 버튼 (까사미아 메인 배너 스타일 이식)
 ========================================== */
 /* 화살표 내비게이션 버튼 배치 */
-.product-slider-section .slider-btn-once {
+.main-product-slider-section .slider-btn-once {
     position: absolute;
     top: calc(50% - 25px); /* 이미지 박스 중간 지점에 균형감 있게 배치 */
     left: 50%; 
@@ -670,7 +668,7 @@
     z-index: 20;
 }
 
-.product-slider-section .slider-btn-once button {
+.main-product-slider-section .slider-btn-once button {
     background: none;
     border: none;
     cursor: pointer;
@@ -678,13 +676,13 @@
     padding: 0;
 }
 
-.product-slider-section .slider-btn-once button img {
+.main-product-slider-section .slider-btn-once button img {
     width: 45px;
     filter: drop-shadow(0px 2px 5px rgba(0,0,0,0.1));
 }
 
 /* 하단 인디케이터 도트 트랙 */
-.product-slider-section .slider-btn-indicator {
+.main-product-slider-section .slider-btn-indicator {
     display: flex;
     justify-content: center;
     gap: 10px;
@@ -693,7 +691,7 @@
     margin: 30px 0 0 0; /* 슬라이더 하단 여백 형성 */
 }
 
-.product-slider-section .slider-btn-indicator li {
+.main-product-slider-section .slider-btn-indicator li {
     width: 12px;
     height: 12px;
     background-color: #ccc;
@@ -703,7 +701,7 @@
 }
 
 /* 활성화 상태 인디케이터 컬러 융합 */
-.product-slider-section .slider-btn-indicator li.active {
+.main-product-slider-section .slider-btn-indicator li.active {
     background-color: var(--main-black, #000); 
 }
 

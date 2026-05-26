@@ -63,9 +63,7 @@ const Main = () => {
                     </div>
 
                     <div className="main-item-section">
-                        <Main_itemList totalItemList={totalItemList}/>  {/* 상품 목록(카드 형식) : 개발중 */}
-
-                        <Item/>  {/* 상품 목록 */}
+                        <Main_itemList totalItemList={totalItemList}/>  {/* 상품 목록(카드 형식) */}
                     </div>
                 </div>
             </div>

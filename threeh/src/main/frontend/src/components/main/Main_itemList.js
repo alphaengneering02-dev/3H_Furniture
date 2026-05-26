@@ -1,63 +1,148 @@
 import React, { useEffect, useState } from 'react';
 import Main_itemList_item from './Main_itemList_item';
-import icon_prev from '../../assets/icon_prev.png'; // 메인 배너와 동일한 아이콘 경로로 맞춰주세요
+import icon_prev from '../../assets/icon_prev.png';
 import icon_next from '../../assets/icon_next.png';
 
 const Main_itemList = ({ totalItemList }) => {
-    const [itemList, setItemList] = useState([]);
-    const [currentIndex, setCurrentIndex] = useState(0); // 슬라이드 그룹 인덱스 (0: 1~4번 상품, 1: 5~8번 상품)
+    const VISIBLE_COUNT = 4; // 화면에 노출될 카드 개수
+    const [itemList, setItemList] = useState([]); // 원본 8개 데이터
+    const [displayList, setDisplayList] = useState([]); // 앞뒤로 복제본이 추가된 전체 데이터
+    
+    // 시작 인덱스는 0이 아니라 앞쪽 복제본(4개)을 건너뛴 진짜 1번 카드 위치인 VISIBLE_COUNT로 설정
+    const [currentIndex, setCurrentIndex] = useState(VISIBLE_COUNT); 
+    const [isTransition, setIsTransition] = useState(true); // 눈속임 이동 시 애니메이션을 끄기 위한 상태
+    const [isClickable, setIsClickable] = useState(true);  // 광클 방지를 위한 클릭 잠금 상태
 
+    //무한 슬라이드(Infinite Carousel) 적용
     useEffect(() => {
         try {
             if (totalItemList && totalItemList.length > 0) {
-                // 기획 조건에 맞춰 상위 8개의 상품 데이터 추출
-                const slicedItemList = [...totalItemList].slice(0, 8);
-                setItemList(slicedItemList);
+                const sliced = [...totalItemList].slice(0, 8);
+                setItemList(sliced);
+                
+                // [무한 슬라이드 핵심 1] 앞뒤로 카드 복제본 붙이기
+                const head = sliced.slice(-VISIBLE_COUNT); // 끝부분 4개 (5, 6, 7, 8)
+                const tail = sliced.slice(0, VISIBLE_COUNT); // 앞부분 4개 (1, 2, 3, 4)
+                setDisplayList([...head, ...sliced, ...tail]);
             }
         } catch (error) {
             console.error("[ITEM LIST 영역에 상품 추가 실패]\n", error);
         }
     }, [totalItemList]);
 
-    // 8개 상품을 4개씩 2개의 그룹으로 나누어 제어합니다. (G1: index 0, G2: index 1)
+    // [무한 슬라이드 핵심 2] 끝에 도달했을 때 눈속임으로 제자리 찾아가기
+    useEffect(() => {
+        if (itemList.length === 0) return;
+
+        // CSS의 transition 시간(0.8s)과 동일하게 800ms 대기 후 실행
+        const transitionTime = 800; 
+
+        // 1. 오른쪽으로 끝까지 갔을 때 (뒤쪽 복제본 1번 위치)
+        if (currentIndex === itemList.length + VISIBLE_COUNT) {
+            const timeout = setTimeout(() => {
+                setIsTransition(false); // 스르륵 넘어가는 애니메이션 끄기
+                setCurrentIndex(VISIBLE_COUNT); // 진짜 1번 위치로 순간이동!
+            }, transitionTime);
+            return () => clearTimeout(timeout);
+        }
+        
+        // 2. 왼쪽으로 끝까지 갔을 때 (앞쪽 복제본 8번 위치)
+        if (currentIndex === 0) {
+            const timeout = setTimeout(() => {
+                setIsTransition(false); // 애니메이션 끄기
+                setCurrentIndex(itemList.length); // 진짜 8번 위치로 순간이동!
+            }, transitionTime);
+            return () => clearTimeout(timeout);
+        }
+    }, [currentIndex, itemList.length]);
+
+    // 1. 페이지 로딩 시 자동 슬라이드
+    useEffect(() => {
+        if (displayList.length === 0) return;
+
+        const autoSlide = setInterval(() => {
+            setIsTransition(true); // 이동할 땐 무조건 애니메이션 켜기
+            setCurrentIndex(prev => prev + 1);
+        }, 3000);
+
+        return () => clearInterval(autoSlide);
+    }, [displayList]);
+
+    // 2. 좌우 버튼 조작
     const handlePrev = () => {
-        setCurrentIndex(prevIndex => (prevIndex === 0 ? 1 : 0));
+        if (!isClickable) return; // 🌟 잠겨있으면 아무것도 안 하고 함수 종료 (광클 방지)
+        setIsClickable(false);    // 버튼 잠금
+        setIsTransition(true);
+        setCurrentIndex(prev => prev - 1);
+
+        // 애니메이션 시간(0.8s)이 끝난 후 다시 버튼 잠금 해제
+        setTimeout(() => setIsClickable(true), 800);
     };
 
     const handleNext = () => {
-        setCurrentIndex(prevIndex => (prevIndex === 1 ? 0 : 1));
+        if (!isClickable) return;
+        setIsClickable(false);
+        setIsTransition(true);
+        setCurrentIndex(prev => prev + 1);
+        
+        setTimeout(() => setIsClickable(true), 800);
     };
 
+    // 3. 인디케이터 클릭 시 이동
     const handleSelect = (index) => {
-        setCurrentIndex(index);
+        if (!isClickable) return;
+        setIsClickable(false);
+        setIsTransition(true);
+        setCurrentIndex(index + VISIBLE_COUNT);  // 인디케이터는 원본 8개 기준(0~7)이므로, 화면 인덱스는 +VISIBLE_COUNT 해줌
+
+        setTimeout(() => setIsClickable(true), 800);
+
+        setIsTransition(true);
+        
+        setCurrentIndex(index + VISIBLE_COUNT); 
     };
+
+    // 아이템 컨테이너 넓이 및 비율 계산 (복제본이 포함된 displayList 기준)
+    const containerWidth = displayList.length > 0 ? `${(displayList.length / VISIBLE_COUNT) * 100}%` : '100%';
+    const slidePercentage = displayList.length > 0 ? (100 / displayList.length) : 0;
+
+    // 현재 활성화된 진짜 인덱스 계산 (인디케이터에 불 들어오게 하기 위함)
+    let activeIndicator = currentIndex - VISIBLE_COUNT;
+    if (activeIndicator < 0) activeIndicator += itemList.length;
+    if (activeIndicator >= itemList.length) activeIndicator -= itemList.length;
 
     return (
-        <section className="itemList product-slider-section">
+        <section className="main-itemList main-product-slider-section">
             <h2>상품 목록</h2>
 
-            {/* 1. 상품 유무에 따른 전체 슬라이더 영역 조건 처리 */}
             {
-                itemList && itemList.length > 0 ? (
-                    /* 참일 때: 리액트 프래그먼트(<></>)로 슬라이더 전체 구조를 묶어줍니다. */
+                displayList && displayList.length > 0 ? (
                     <>
-                        {/* 슬라이더 전체를 감싸는 뷰포트 컨테이너 */}
-                        <div className="slider-container">
+                        <div className="main-slider-container" style={{ overflow: 'hidden' }}>
                             <article 
                                 className="items"
                                 style={{
-                                    transform: `translateX(-${currentIndex * 100}%)`,
-                                    transition: 'transform 1.2s ease-in-out', /* 천천히 돌아가도록 설정 */
+                                    transform: `translateX(-${currentIndex * slidePercentage}%)`,
+                                    // isTransition 상태에 따라 0.8초 애니메이션을 껐다 켰다 함
+                                    transition: isTransition ? 'transform 0.8s ease-in-out' : 'none', 
                                     display: 'flex',
-                                    width: '200%' /* 4개 세트가 2그룹이므로 부모폭의 2배 */
+                                    width: containerWidth
                                 }}
                             >
-                                {itemList.map(item => (
-                                    <Main_itemList_item key={item.itemId} item={item}/>
+                                {displayList.map((item, idx) => (
+                                    <div 
+                                        // 복제된 카드가 있으므로 itemId만 쓰면 중복 에러가 남. idx를 붙여서 고유하게!
+                                        key={`${item.itemId}-${idx}`} 
+                                        style={{ width: `${100 / displayList.length}%`, flexShrink: 0 }}
+                                    >
+                                        <Main_itemList_item item={item}/>
+                                    </div>
                                 ))}
                             </article>
+                        </div>
 
-                            {/* 이전 / 다음으로 이동 버튼 (움직이는 items 밖, slider-container 안에 배치) */}
+
+                        {/* 이전 / 다음으로 이동 버튼 (움직이는 items 밖, slider-container 안에 배치) */}
                             <div className="slider-btn-once">
                                 <button id="prev" name="prev" className="prev" onClick={handlePrev}>
                                     <img src={icon_prev} alt='이전으로'/>
@@ -66,21 +151,20 @@ const Main_itemList = ({ totalItemList }) => {
                                     <img src={icon_next} alt='다음으로'/>
                                 </button>
                             </div>
-                        </div>
 
-                        {/* 하단 인디케이터 버튼 */}
+
+                        {/* 하단 인디케이터 (복제본 빼고 진짜 원본 8개만큼만 보여줌) */}
                         <ul className="slider-btn-indicator">
-                            {[0, 1].map((index) => (
+                            {itemList.map((_, index) => (
                                 <li 
                                     key={index}
-                                    className={currentIndex === index ? 'active' : ''} 
+                                    className={activeIndicator === index ? 'active' : ''} 
                                     onClick={() => handleSelect(index)}
                                 ></li>
                             ))}
                         </ul>
                     </>
                 ) : (
-                    /* 거짓일 때: 상품이 없을 경우 문구만 노출 */
                     <p className="item-empty-text">상품이 없습니다.</p>
                 )
             }
