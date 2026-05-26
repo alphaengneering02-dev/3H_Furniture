@@ -14,12 +14,8 @@ function OrderInfo({orderType, setOrderType, zipcode, address, setZipcode, setAd
     return (
     <div className="order-page-wrapper">
   
-      {/* 상단 로고 영역 - 중앙 정렬 컨셉 */}
-      <div className="order-logo-area">
-        <Link to="/" className="order-logo-link">
-          3H
-        </Link>
-      </div>
+    
+      
 
       {/* 대형 타이틀 */}
       <h2 className="order-page-title">주문/결제</h2>
