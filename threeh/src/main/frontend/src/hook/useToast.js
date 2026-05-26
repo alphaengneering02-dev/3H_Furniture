@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 export const useToast = () => {
 
     const success = (message, options ={}) => {
-        toast.sucess(message, {
+        toast.success(message, {
             ...options,
         });
     }
