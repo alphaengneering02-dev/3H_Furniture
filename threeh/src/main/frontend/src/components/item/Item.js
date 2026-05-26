@@ -99,6 +99,12 @@ function Item() {
     );
   }, [selectedItems]);
 
+  //페이징
+  const [currentPage, setCurrentPage] = useState(1);
+
+  //한 페이지에 보여줄 상품 개수
+  const ITEMS_PER_PAGE =8;
+
   //상품 최종 가격 계산
   //백엔드에서 itemFinalPrice가 오면 그 값을 사용
   //없으면 원가-할인금액으로 계산
@@ -169,11 +175,11 @@ function Item() {
  };
 
  const canSellectItem = (item,showAlert =false)=>{
-    const sellStatusInfo = getSellStatusInfo
+    const sellStatusInfo = getSellStatusInfo(item);
 
-    if(!getSellStatusInfo.selectable){
+    if(!sellStatusInfo.selectable){
       if(showAlert){
-        alert(getSellStatusInfo.message);
+        alert(sellStatusInfo.message);
       }
       return false;
     }
@@ -640,25 +646,56 @@ function Item() {
     sessionStorage.removeItem(SELECTED_ITEMS_KEY);
   };
 
+  //페이징 계산
+  const totalPages = Math.ceil(items.length /ITEMS_PER_PAGE);
+  
+  const startIndex = (currentPage-1)*ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+
+  const pagedItems = items.slice(startIndex, endIndex);
+
+  const handlePgeChange =(page)=>{
+    if(page<1||page>totalPages){
+      return;
+    }
+
+    setCurrentPage(page);
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+
+
+
   //JSX부분^__________^===================================================
 
   return (
+    <>
+     <header className="item-temp-header">
+      <div className="item-temp-header-inner">
+        <h2 className="item-temp-logo">임시</h2>
+
+        <nav className="item-temp-nav">
+          <button type="button" onClick={() => navigate("/")}>
+            메인
+          </button>
+
+          {isUser && (
+            <button type="button" onClick={handlGoMyCart}>
+              장바구니
+            </button>
+          )}
+
+          {isAdmin && (
+            <button type="button" onClick={() => navigate("/admin/item")}>
+              관리자
+            </button>
+          )}
+        </nav>
+      </div>
+    </header>
+
     <div className="item-page">
       {/*상품 목록 페이지 제목 */}
       <h1 className="item-title">상품 목록</h1>
-
-      <button type="button" onClick={() => navigate("/")}>
-        메인으로가기
-      </button>
-
-      {/*내 장바구니로 가기_admin인경우 안보이게 기존 !isAdmin 이였는데 isUser로 변경*/}
-      {isUser && (
-        <div className="item-action-area">
-          <button type="button" onClick={handlGoMyCart}>
-            장바구니 보기
-          </button>
-        </div>
-      )}
 
       {/*관리자 로그인 시에만 관리자 상품/리뷰 관리 페이지 이동 버튼 표시 */}
       {isAdmin && (
@@ -670,11 +707,11 @@ function Item() {
       )}
 
       {/*상품 목록 표시 영역 */}
-      <div>
+      <div className="item-list">
         {items.length === 0 ? (
           <p className="item-empty-text">상품이 없습니다.</p>
         ) : (
-          items.map((item) => {
+          pagedItems.map((item) => {
             const selectable = canSellectItem(item, false);
 
             return (
@@ -690,6 +727,7 @@ function Item() {
                   />
                 )}
 
+                <div className="item-image-box">
                 {item.itemImgUrl ? (
                   <img
                     className="item-image"
@@ -699,6 +737,7 @@ function Item() {
                 ) : (
                   <p className="item-no-image">이미지 없음</p>
                 )}
+                </div>
 
                 <div className="item-info">
                   <Link className="item-link" to={`/item/${item.itemId}`}>
@@ -773,6 +812,34 @@ function Item() {
         )}
       </div>
 
+        {items.length>ITEMS_PER_PAGE&&(
+          <div className="item-pagination">
+            <button type="button" className="item-page-button" disabled={currentPage===1}
+            onClick={()=> handlePgeChange(currentPage-1)}>
+              이전
+            </button>
+
+              {Array.from({length:totalPages},(_,index)=>{
+                const page = index + 1;
+                
+                return(
+                  <button key={page} type="button" className={`item-page-button ${
+                    currentPage === page ? "item-page-button-active":""
+                  }`} onClick={()=>handlePgeChange(page)}>
+                    {page}
+                  </button>
+                );
+                })}
+
+                <button type="button" className="item-page-button" disabled={currentPage === totalPages}
+                onClick={()=>handlePgeChange(currentPage+1)}>
+
+                  다음
+                </button>
+
+          </div>
+        )}
+
       {/*기존은 !isAdmin이였는데 일반 유저면 보이게 바꿈*/}
       {isUser && selectedItems.length > 0 && (
         <div className="item-selected-box">
@@ -839,7 +906,7 @@ function Item() {
             총 가격: {formatPrice(getTotalPrice())}원
           </h3>
 
-          <div className="item-selecte-button-area">
+          <div className="item-selected-button-area">
             <button
               type="button"
               onClick={handleClearSelectedItems}
@@ -867,6 +934,10 @@ function Item() {
         </div>
       )}
     </div>
+    <footer className="item-temp-footer">
+      <p>Temporary Footer</p>
+    </footer>
+    </>
   );
 }
 

@@ -187,7 +187,7 @@ const ItemDetail = () => {
     };
 
     if(!item){
-        return <p>상품 불러오는 중....</p>;
+        return <p className="itemDetail-loading">상품 불러오는 중....</p>;
     }
 
     const mainImg = itemImgs.find((img)=> img.thumbnailYn === "Y");
@@ -196,52 +196,58 @@ const ItemDetail = () => {
     //=================================JSX구역===========================
 
     return (
-        <div>
-            <button type="button" onClick={()=>navigate("/item")}>
-                상품 목록
-            </button>
-            
-            <h1>상품 상세 페이지</h1>
+        <div className="itemDetail-page">
+            <div className="itemDetail-topArea">
+                <button type="button" className="itemDetail-button itemDetail-subButton" onClick={()=>navigate("/item")}>
+                    상품 목록
+                </button>
+            </div>
+            <h1 className="itemDetail-title">상품 상세 페이지</h1>
 
-            <h2>{item.itemName}</h2>
+            <h2 className="itemDetail-name">{item.itemName}</h2>
 
             {mainImg ? (
-                <div>
-                    <h3>대표 이미지</h3>
-                    <img src={`http://localhost:8080${mainImg.itemImgUrl}`} alt={mainImg.itemImgName} width="300"/>
+                <div className="itemDetail-mainImageArea">
+                    <h3 className="itemDetail-sectionTitle">대표 이미지</h3>
+                    <img  className="itemDetail-mainImage" src={`http://localhost:8080${mainImg.itemImgUrl}`} alt={mainImg.itemImgName} width="300"/>
                 </div>
             ) : (
-                <p>대표 이미지가 없습니다.</p>
+                <p className="itemDetail-emptyImageText">대표 이미지가 없습니다.</p>
             )}
 
             {subImgs.length>0 &&(
-                <div>
-                    <h3>서브 이미지</h3>
+                <div className="itemDetail-subImageArea">
+                    <h3 className="itemDetail-sectionTitle">서브 이미지</h3>
 
                     {subImgs.map((img)=>(
-                        <img key={img.itemImgId}src={`http://localhost:8080${img.itemImgUrl}`}alt={img.itemImgName} width="150" style={{marginRight: "10px", marginBottom:"10px",}}/>
+                        <img key={img.itemImgId} className="itemDetail-subImage" src={`http://localhost:8080${img.itemImgUrl}`}alt={img.itemImgName} width="150" style={{marginRight: "10px", marginBottom:"10px",}}/>
                     ))}
                 </div>
             )}
-            <hr/>
-
-            <p>카테고리: {item.itemCategory}</p>
-            <p>상품 설명: {item.itemDetail}</p>
-            <p>상품 색상: {item.itemColor}</p>
-            <p>상품 가격: {formatPrice(item.itemPrice)}원</p>
-            <p>상품 할인가격: {formatPrice(item.itemDiscountPrice)}원</p>
-            <p>상품 최종가격: {formatPrice(item.itemFinalPrice)}원</p>
-            <p>상품 판매상태: {getSellStatusInfo(item).text}</p>
-            <p>상품 재고: {item.itemStock}</p>
+            <hr className="itemDetail-divider"/>
             
+            <div className="itemDetail-info">
+            <p className="itemDetail-text">카테고리: {item.itemCategory}</p>
+            <p className="itemDetail-text">상품 설명: {item.itemDetail}</p>
+            <p className="itemDetail-text">상품 색상: {item.itemColor}</p>
+            <p className="itemDetail-text">상품 가격: {formatPrice(item.itemPrice)}원</p>
+            <p className="itemDetail-text">상품 할인가격: {formatPrice(item.itemDiscountPrice)}원</p>
+            <p className="itemDetail-text itemDetail-price">상품 최종가격: {formatPrice(item.itemFinalPrice)}원</p>
+            <p className="itemDetail-text">상품 판매상태:{" "} 
+                <span  className="itemDetail-status">
+                {getSellStatusInfo(item).text}
+                </span>
+            </p>
+            <p>상품 재고: {item.itemStock}</p>
+            </div>
             {!getSellStatusInfo(item).buyable &&(
-                <p>{getSellStatusInfo(item).message}</p>
+                <p className="itemDetail-warning">{getSellStatusInfo(item).message}</p>
             )}
 
             {/*관리자는 상품 상세에서 직접 수정/삭제하지 않고, 관리자 상품/리뷰 관리 페이지로 이동 */}
             {isAdmin &&(
-                <div style={{marginTop:"20px"}}>
-                    <button type="button" onClick={()=>navigate("/admin/item")}>
+                <div className="itemDetail-adminArea">
+                    <button type="button" className="itemDetail-button" onClick={()=>navigate("/admin/item")}>
                         관리자 상품/리뷰 관리로 이동
                     </button>
                 </div>
@@ -249,17 +255,18 @@ const ItemDetail = () => {
 
             {/*관리자 모드일 때는 장바구니 구매하기 안보이게 */}
             {!isAdmin && (
-            <div style={{marginTop:"20px"}}>
+            <div className="itemDetail-buttonArea">
 
-                <button type="button" onClick={handleAddCart} disabled={!getSellStatusInfo(item).buyable}>
+                <button type="button"  className="itemDetail-button" onClick={handleAddCart} disabled={!getSellStatusInfo(item).buyable}>
                     장바구니 담기</button>
 
-                <button type="button" onClick={handleBuyNow} disabled={!getSellStatusInfo(item).buyable}>
+                <button type="button" className="itemDetail-button itemDetail-subButton" onClick={handleBuyNow} disabled={!getSellStatusInfo(item).buyable}>
                     구매하기</button>
             </div>
             )}
-
+            <div className="itemDetail-reviewWrap">
             <Review itemId={itemId} isAdmin={isAdmin}/>
+            </div>
         </div>
     );
 };
