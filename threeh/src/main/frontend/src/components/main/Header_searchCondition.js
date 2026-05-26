@@ -78,14 +78,14 @@ const Header_searchCondition = ({searchKey, setSearchKey}) => {
     return (
          <section className='main-header-searchCondition'>
             {/* 조건창 상단바 */}
-            <article>
+            <article className='main-header-searchCondition-title'>
                 <h3>검색 조건</h3>
-                <button type='button' onClick={resetSearchKey}>전체 삭제</button>
+                <button className='deleteAll' type='button' onClick={resetSearchKey}>전체 삭제</button>
             </article>
 
 
             {/* 필터 세부조건 선택 영역 */}
-            <article>
+            <article className='main-header-searchCondition-filters'>
                 {/* 카테고리 그룹 */}
                 <div>
                     <p>카테고리</p>
