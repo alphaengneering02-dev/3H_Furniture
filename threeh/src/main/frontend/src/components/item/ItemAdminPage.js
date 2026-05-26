@@ -161,7 +161,21 @@ const ItemAdminPage = () => {
         }
 
         try {
-            // 상품이미지가 상품아이디를 FK하고 있어서, 이미지 먼저 지워야 됌.
+            //상품이 주문내역에 있던 상품인지 삭제 가능 여부 먼저 확인
+            const deletableResponse = await axios.get(
+                `http://localhost:8080/api/admin/item/${itemId}/deletable`,{
+                    withCredentials: true,
+                }
+            );
+
+            if(!deletableResponse.data){
+                alert(
+                    "이미 주문내역이 있는 상품은 삭제할 수 없습니다. 판매상태를 판매중지(STOP)로 변경해주세요."
+                );
+                return;
+            }
+
+            // 삭제 가능한 상품이면, 상품이미지가 상품아이디를 FK하고 있어서, 이미지 먼저 지워야 됌.
             const itemImgs = await getItemImgs(itemId);
 
             // 상품에 연결된 이미지 먼저 삭제
