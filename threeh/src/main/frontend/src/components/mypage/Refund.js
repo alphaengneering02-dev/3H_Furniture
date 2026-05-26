@@ -7,11 +7,11 @@ const RefundPage = () => {
     const navigate = useNavigate();
     const [orders, setOrders] = useState([]);
 
-    // ⚡ 부조장님 피드백 반영: 2대 대형 탭 구조
+    // 부조장님 피드백 반영: 2대 대형 탭 구조
     const [activeTab, setActiveTab] = useState(1);
     const [selectedOrder, setSelectedOrder] = useState(null);
 
-    // 📊 페이징 상태 변수
+    // 페이징 상태 변수
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
 
@@ -21,7 +21,7 @@ const RefundPage = () => {
         return savedUser ? JSON.parse(savedUser) : null;
     });
 
-    // 🔄 탭 메뉴에 따라 데이터를 스위칭해오는 함수
+    // 탭 메뉴에 따라 데이터를 스위칭해오는 함수
     const fetchTabData = (tabNumber) => {
         let apiUrl = 'http://localhost:8080/Member/order/available-refund'; 
         if (tabNumber === 2) {
@@ -70,7 +70,7 @@ const RefundPage = () => {
                         })
                     );
                     setSelectedOrder(null);
-                    navigate(`/item/detail/${itemId}`);
+                    navigate(`/item/${itemId}`);
                 })
                 .catch(err => {
                     console.error("교환 신청 오류:", err);
@@ -157,7 +157,7 @@ const RefundPage = () => {
                         <button className="sidebar-btn" onClick={() => navigate('/cart')}>장바구니 목록</button>
                     </aside>
 
-                    {/* 📄 우측 메인 양식 디스플레이 제어 보드 */}
+                    {/* 우측 메인 양식 디스플레이 제어 보드 */}
                     <main className="mypage-main-content" style={{ flex: 1, padding: '20px' }}>
                         
                         {/* 프로필 요약 퀵 컴포넌트 존 */}
@@ -167,7 +167,7 @@ const RefundPage = () => {
                         </div>
 
                         <div className="refund-container" style={{ width: '100%', maxWidth: '100%', padding: '0', margin: '0', border: 'none', boxShadow: 'none', background: 'transparent' }}>
-                            {/* 📋 2대 대형 탭바 */}
+                            {/* 2대 대형 탭바 */}
                             <div className="refund-tabs-bar">
                                 <button className={`refund-tab-btn ${activeTab === 1 ? 'active' : ''}`} onClick={() => handleTabClick(1)}>반품/교환 신청</button>
                                 <button className={`refund-tab-btn ${activeTab === 2 ? 'active' : ''}`} onClick={() => handleTabClick(2)}>반품/교환처리 현황</button>
@@ -177,7 +177,7 @@ const RefundPage = () => {
                                 {activeTab === 1 ? "반품 및 교환 신청" : "반품/교환 처리 현황"}
                             </h2>
 
-                            {/* 📊 격자형 가로 테이블 헤더 */}
+                            {/* 격자형 가로 테이블 헤더 */}
                             <div className="refund-table-header">
                                 <div className="th-select">선택</div>
                                 <div className="th-order-id">주문번호</div>
@@ -222,7 +222,7 @@ const RefundPage = () => {
                                             <div className="td-count">{order.count || 0}개</div>
                                             <div className="td-subtotal">{itemSubtotal.toLocaleString()}원</div>
                                             
-                                            {/* 💡 인호님 최종 스펙 반영: 반품접수완료 텍스트 가이드 출력 */}
+                                            {/* 인호님 최종 스펙 반영: 반품접수완료 텍스트 가이드 출력 */}
                                             <div className="td-status">
                                                 {order.orderState === 'CANCEL' ? "반품접수완료" : isProcessing ? "교환 접수" : "신청 가능"}
                                             </div>
@@ -233,7 +233,7 @@ const RefundPage = () => {
                                 )}
                             </div>
 
-                            {/* 🔢 페이징 바 */}
+                            {/* 페이징 바 */}
                             {totalPages > 1 && (
                                 <div className="refund-pagination-bar">
                                     <button className="page-arrow-btn" onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} disabled={currentPage === 1}>&lt; 이전</button>
@@ -246,7 +246,7 @@ const RefundPage = () => {
                                 </div>
                             )}
 
-                            {/* 📋 하단 제어 구역 */}
+                            {/* 하단 제어 구역 */}
                             {activeTab === 1 && (
                                 <div className="refund-action-submit-zone">
                                     <button 

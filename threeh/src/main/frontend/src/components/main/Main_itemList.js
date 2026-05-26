@@ -4,6 +4,56 @@ import icon_prev from '../../assets/icon_prev.png';
 import icon_next from '../../assets/icon_next.png';
 
 const Main_itemList = ({ totalItemList }) => {
+
+    //로그인한 유저 정보 가져오기
+    const getLoginUser = () => {
+        try {
+        //sesstionStroage에 저장된 로그인 사용자 정보 가져오기
+        return JSON.parse(sessionStorage.getItem("user"));
+        } catch (error) {
+        console.error("user 파싱 실패", error);
+        sessionStorage.removeItem("user");
+        return null;
+        }
+    };
+
+    const getUserRole = (user) => {
+        if (!user) {
+        return null;
+        }
+
+        if (typeof user.role === "string") {
+        return user.role;
+        }
+
+        if (user.role?.key) {
+        return user.role.key;
+        }
+
+        return null;
+    };
+
+    const user = getLoginUser();  //현재 로그인한 사용자 정보
+
+
+    //로그인한 사용자가 관리자인지 확인
+    const isAdminRole = (user) => {
+        const role = getUserRole(user);
+
+        return role === "ADMIN" || role === "ROLE_ADMIN";
+    };
+
+    //로그인한 사용자가 일반 회원인지 확인
+    const isUserRole = (user) => {
+        const role = getUserRole(user);
+
+        return role === "USER" || role === "ROLE_USER";
+    }
+
+    //비로그인 유저 확인
+    const isUser = isUserRole(user);
+
+
     const VISIBLE_COUNT = 4; // 화면에 노출될 카드 개수
     const [itemList, setItemList] = useState([]); // 원본 8개 데이터
     const [displayList, setDisplayList] = useState([]); // 앞뒤로 복제본이 추가된 전체 데이터
@@ -135,7 +185,7 @@ const Main_itemList = ({ totalItemList }) => {
                                         key={`${item.itemId}-${idx}`} 
                                         style={{ width: `${100 / displayList.length}%`, flexShrink: 0 }}
                                     >
-                                        <Main_itemList_item item={item}/>
+                                        <Main_itemList_item item={item} getLoginUser={getLoginUser} isUserRole={isUserRole} isUser={isUser}/>
                                     </div>
                                 ))}
                             </article>

@@ -568,7 +568,12 @@
     text-align: left;
 }
 
+
 /* 슬라이더의 넘치는 카드를 숨겨주는 윈도우 역할 창 */
+.main-product-slider-section {
+  position: relative;
+}
+
 .main-product-slider-section .main-slider-container {
     position: relative;
     width: 100%;
@@ -618,23 +623,29 @@
     object-fit: cover; 
 }
 
-/* 찜하기 하트 버튼 */
-.main-item-card .wish-btn {
+/* 북마크 버튼 */
+.main-item-card .main-bookmark-button {
     position: absolute;
     top: 12px;
     right: 12px;
+    /* background: transparent; */
     background: transparent;
     border: none;
     font-size: 20px;
     cursor: pointer;
     color: #333;
     z-index: 10;
-    transition: transform 0.2s ease;
+    transition: transform 0.2s ease, color 0.2s ease;
 }
 
-.main-item-card .wish-btn:hover {
+.main-item-card .main-bookmark-button:hover {
     transform: scale(1.1); 
 }
+
+.main-item-card .main-bookmark-active {
+    color: #B94A3A;
+}
+
 
 /* 텍스트 정보 정렬 */
 .main-item-card .item-name {
@@ -710,7 +721,7 @@
 /* ==========================================
    [까사미아 스타일] 하단 푸터 영역
    ========================================== */
-.mypage-footer {
+.main-mypage-footer {
     width: 100%;
     border-top: 1px solid #111111;
     margin-top: 100px;
@@ -718,12 +729,12 @@
     background-color: #ffffff;
 }
 
-.footer-content {
+.main-footer-content {
     max-width: 1200px;
     margin: 0 auto;
 }
 
-.footer-logo {
+.main-footer-logo {
     font-size: 16px;
     font-weight: 700;
     letter-spacing: 1px;
@@ -731,14 +742,14 @@
     color: #111111;
 }
 
-.footer-info {
+.main-footer-info {
     font-size: 12px;
     color: #666666;
     line-height: 1.6;
     margin: 0 0 8px 0;
 }
 
-.footer-copy {
+.main-footer-copy {
     font-size: 11px;
     color: #999999;
     margin: 0;

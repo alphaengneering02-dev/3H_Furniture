@@ -1,7 +1,8 @@
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { Navigate } from 'react-router-dom';
 
-const Main_itemList_item = ({item}) => {
+const Main_itemList_item = ({item, getLoginUser, isUserRole, isUser}) => {
 
     //이미지 상태 객체
     const [itemImgs, setItemImgs] = useState({});
@@ -42,14 +43,141 @@ const Main_itemList_item = ({item}) => {
     };
 
 
+    //==========================북마크 기능==========================
+    //컴포넌트가 처음 실행될 때 북마크 목록 조회
+    useEffect(() => {
+        getMyBookmarks();
+    }, [])
+
+    //북마크 토글 함수 추가
+    const isBookmarked = (itemId) => {  //북마크 여부 확인 함수
+        return bookmarkedItems.includes(itemId);
+    };
+    const [bookmarkedItems, setBookmarkedItems] = useState([]);  //북마크 상태 저장([201,223,230])
+
+    const handleToggleBookmark = async (itemId) => {
+        const loginUser = getLoginUser();
+
+        if (!loginUser) {
+        alert("로그인이 필요합니다.");
+        Navigate("/login");
+        return;
+        }
+
+        if (!isUserRole(loginUser)) {
+        alert("일반 회원만 북마크를 이용할 수 있습니다.");
+        return;
+        }
+
+        if (!loginUser.memberId) {
+        alert("회원 정보가 올바르지 않습ㄴ디ㅏ.");
+        console.log("로그인 유저:", loginUser);
+        return;
+        }
+
+        try {
+        const payload = {
+            memberId: loginUser.memberId,
+            itemId: itemId,
+            type: "ITEM",
+        };
+
+        const response = await axios.post(
+            "http://localhost:8080/api/bookmarks/toggle",
+            payload,
+            {
+            withCredentials: true,
+            }
+        );
+
+        console.log("북마크 응답:", response.data);
+
+        if (response.data.bookmarked) {
+            //북마크 추가
+            setBookmarkedItems((prev) => {
+            if (prev.includes(itemId)) {
+                return prev;
+            }
+            return [...prev, itemId];
+            });
+        } else {
+            //북마크 삭제
+            setBookmarkedItems((prev) =>
+            prev.filter((id) => id !== itemId)
+            );
+        }
+        } catch (error) {
+        console.error("북마크 처리 실패", error);
+
+        if (error.response) {
+            console.log("상태코드:", error.response.status);
+            console.log("응답메시지:", error.response.data);
+        }
+
+        alert("북마크 처리 실패");
+        }
+    };
+
+
+    //북마크 가져오기
+    const getMyBookmarks = async () => {
+        const loginUser = getLoginUser();
+
+        if (!loginUser || !isUserRole(loginUser)) {
+            return;
+        }
+
+        const memberId = loginUser.memberId;
+
+        if (!memberId) {
+            console.log("memberId가 없습니다:", loginUser);
+            return;
+        }
+
+        try {
+            const response = await axios.get(
+            `http://localhost:8080/api/bookmarks/member/${memberId}`,
+            {
+                withCredentials: true,
+            }
+            );
+
+            console.log("내 북마크 목록:", response.data);
+
+            const bookmarkedItems = response.data.map(
+            (bookmark) => bookmark.itemId
+            );
+
+            setBookmarkedItems(bookmarkedItems);
+        } catch (error) {
+            console.error("북마크 목록 조회 실패", error);
+        }
+    };
+    //===============================================================
+
+
 
     return (
         <div className="main-item-card">
             <div className="image-box">
                 {/* 상품 이미지 */}
                 <img src={item.imgUrl || "placeholder.png"} alt={item.itemName} />
-                {/* 찜하기 버튼 */}
-                <button className="wish-btn">♡</button>
+                {/* 북마크 버튼 */}
+                {/* <button className="main-bookmark-btn">♡</button> */}
+
+                {/*기존은 !isAdmin이였는데 일반 유저면 보이게 바꿈*/}
+                {isUser && (
+                    <button
+                        type="button"
+                        onClick={() => handleToggleBookmark(item.itemId)}
+                        className={`main-bookmark-button ${
+                            isBookmarked(item.itemId) ? "main-bookmark-active" : ""
+                        }`}
+                    >
+                        {isBookmarked(item.itemId) ? "♥" : "♡"}
+                    </button>
+                )}
+
             </div>
             <p className="item-name">{item.itemName || "상품명"}</p>
             <h4 className="item-price">{formatPrice(getFinalPrice(item))}원</h4>

@@ -70,7 +70,7 @@ const Main = () => {
 
 
             {/* Footer 영역 */}
-            <div className="mypage-footer">
+            <div className="main-mypage-footer">
                 <Footer/>
             </div>
         </div>

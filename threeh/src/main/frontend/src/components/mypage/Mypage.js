@@ -43,7 +43,7 @@ const Mypage = () => {
                 .then(res => {
                     setMember(res.data.member);
 
-                    // ⚡ [회원 전용 보관고 연동] 이 브라우저에 이 회원 이름으로 저장된 주소록이 있는지 확인
+                    // [회원 전용 보관고 연동] 이 브라우저에 이 회원 이름으로 저장된 주소록이 있는지 확인
                     const storageKey = `addresses_${res.data.member.id}`;
                     const localAddresses = localStorage.getItem(storageKey);
 
@@ -74,6 +74,7 @@ const Mypage = () => {
         }
     }, [navigate]);
 
+    //오현옥 북마크
     const getMyBookmarkedItems = async () => {
         if (!member || !member.memberId) {
             alert("회원 정보를 찾을 수 없습니다.");
@@ -124,16 +125,52 @@ const Mypage = () => {
         }
     };
 
-    const handleRefund = (orderId) => {
-        if (window.confirm(`주문번호 ${orderId}번을 교환/반품 하시겠습니까?'\n재고가 복구되고 주문이 삭제됩니다.`)) {
+
+    // 주문 취소
+    const handleCancelOrder = (orderId) => {
+        if (!window.confirm(`주문번호 ${orderId}번 주문을 취소하시겠습니까?`)) {
+            return;
+        }
+
+        const params = new URLSearchParams();
+        params.append('orderId', orderId);
+
+        // 백엔드의 구매취소 API 엔드포인트 호출
+        axios.post('http://localhost:8080/Member/order/cancel', params, { withCredentials: true })
+            .then(res => {
+                alert(res.data || "주문이 정상적으로 취소되었습니다.");
+                
+                // 상태값만 'CANCEL'로 변경하면 뱃지와 카드가 알아서 실시간으로 지워짐
+                setOrders(prevOrders => 
+                    prevOrders.map(order => 
+                        order.orderId === orderId ? { ...order, orderState: 'CANCEL' } : order
+                    )
+                );
+            })
+            .catch(err => {
+                alert(err.response?.data || "주문 취소 중 오류가 발생했습니다.");
+            });
+    };
+
+
+    const handleRefund = (orderId, itemId) => {
+        if(window.confirm(`주문번호 ${orderId}번을 교환 하시겠습니까?\n재고가 복구되고 주문이 삭제됩니다.`)) {
             const params = new URLSearchParams();
-            params.append('orderId', orderId);
-            axios.post('http://localhost:8080/Member/refund/process', params, { withCredentials: true })
+            params.append('orderId',orderId);
+
+            axios.post('http://localhost:8080/Member/refund/process',params, {withCredentials:true})
                 .then(res => {
                     alert(res.data);
-                    setOrders(orders.filter(order => order.id !== orderId));
+
+                    setOrders(prevOrders => prevOrders.filter(order => order.orderId !== orderId));
+
+                    if(itemId) {
+                        navigate(`/item/${itemId}`);
+                    }
                 })
-                .catch(err => alert("처리 중 오류 발생"))
+                .catch(err => {
+                    alert(err.response?.data || "처리 중 오류 발생");
+                })
         }
     }
 
@@ -161,8 +198,8 @@ const Mypage = () => {
         const newAddressObj = {
             id: Date.now(),
             addressName: "방금 검색한 주소",
-            zonecode: data.zonecode, // 인호님 오리지널 우편번호 필드 매핑
-            address: data.address,   // 인호님 오리지널 도로명주소 필드 매핑
+            zonecode: data.zonecode, // 우편번호 필드 매핑
+            address: data.address,   // 도로명주소 필드 매핑
             detail: ""
         };
 
@@ -269,12 +306,12 @@ const Mypage = () => {
         } catch (error) { alert("리뷰 삭제 실패"); }
     }
 
-    /* ⚡ [슬라이더 핸들러] 왼쪽 화살표 클릭 제어 */
+    /* [슬라이더 핸들러] 왼쪽 화살표 클릭 제어 */
     const handlePrevSlide = () => {
         setCurrentSlideIndex((prev) => Math.max(prev - 1, 0));
     };
 
-    /* ⚡ [슬라이더 핸들러] 오른쪽 화살표 클릭 제어 */
+    /* [슬라이더 핸들러] 오른쪽 화살표 클릭 제어 */
     const handleNextSlide = () => {
         const maxIndex = Math.max(orders.length - 4, 0);
         setCurrentSlideIndex((prev) => Math.min(prev + 1, maxIndex));
@@ -378,7 +415,8 @@ const Mypage = () => {
                             <h3 id="refund-section" className="info-section-title">
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                     구매내역
-                                    <span className="order-count-badge">총 {orders ? orders.length : 0}건</span>
+                                    <span className="order-count-badge">
+                                        총 {orders ? orders.filter(order => order.orderState !== 'CANCEL' && order.orderState !== 'EXCHANGEorREFUND').length : 0}건</span>
                                 </div>
                                 <button type="button" className="mypage-action-btn" style={{ padding: '4px 10px', fontSize: '12px' }} onClick={() => setIsAllOrdersOpen(!isAllOrdersOpen)}>
                                     {isAllOrdersOpen ? "접기 ▲" : "전체보기 ▼"}
@@ -398,7 +436,9 @@ const Mypage = () => {
                                     >
 
                                         {orders && orders.length > 0 ? (
-                                            orders.map((order, index) => (
+                                            orders
+                                            .filter(order => order.orderState !== 'CANCEL' && order.orderState !== 'EXCHANGEorREFUND' )
+                                            .map((order, index) => (
                                                 /* 낱개의 독립된 예쁜 정사각형 카드 인덱싱 */
                                                 <div key={order.orderId || order.id || index} className="order-square-card">
                                                     <div>
