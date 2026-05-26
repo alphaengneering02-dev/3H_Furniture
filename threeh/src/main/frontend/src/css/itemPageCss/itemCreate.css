@@ -1,0 +1,250 @@
+/* ================================
+   ItemCreate CSS
+   기준: global.css
+
+   global.css 기준:
+   - body 배경: #F9F8F6
+   - 컨텐츠 박스: #FFFFFF
+   - 기본 폰트: Noto Sans KR
+   - 포인트 폰트: Playfair Display
+
+   네이밍 규칙:
+   - 상품 등록 페이지 전용 클래스는 전부 itemCreate- 로 시작
+================================ */
+
+/* 전체 상품 등록 페이지 */
+.itemCreate-page {
+    max-width: 1240px;
+    min-height: 100vh;
+    margin: 0 auto;
+    padding: 40px 20px 80px;
+    background-color: #FFFFFF;
+    color: #2F2A25;
+}
+
+/* 페이지 제목 */
+.itemCreate-title {
+    margin-bottom: 32px;
+    font-family: 'Playfair Display', serif;
+    font-size: 38px;
+    font-weight: 600;
+    color: #2F2A25;
+    letter-spacing: -0.5px;
+}
+
+/* 상품 등록 form */
+.itemCreate-form {
+    width: 100%;
+    max-width: 760px;
+}
+
+/* 입력 항목 한 줄 */
+.itemCreate-formRow {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+/* label */
+.itemCreate-label {
+    font-size: 14px;
+    font-weight: 700;
+    color: #2F2A25;
+}
+
+/* input 공통 */
+.itemCreate-input {
+    width: 100%;
+    padding: 11px 12px;
+    border: 1px solid #CFC7BD;
+    background-color: #FFFFFF;
+    color: #2F2A25;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 14px;
+}
+
+/* select 공통 */
+.itemCreate-select {
+    width: 100%;
+    padding: 11px 12px;
+    border: 1px solid #CFC7BD;
+    background-color: #FFFFFF;
+    color: #2F2A25;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+/* textarea */
+.itemCreate-textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 11px 12px;
+    border: 1px solid #CFC7BD;
+    background-color: #FFFFFF;
+    color: #2F2A25;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    resize: none;
+}
+
+/* focus 공통 */
+.itemCreate-input:focus,
+.itemCreate-select:focus,
+.itemCreate-textarea:focus {
+    outline: none;
+    border-color: #2F2A25;
+}
+
+/* 상품 설명 글자 수 */
+.itemCreate-count {
+    margin-top: 4px;
+    font-size: 13px;
+    color: #8A8178;
+    text-align: right;
+}
+
+/* 구분선 */
+.itemCreate-divider {
+    margin: 34px 0;
+    border: none;
+    border-top: 1px solid #E5DED6;
+}
+
+/* 이미지 섹션 제목 */
+.itemCreate-sectionTitle {
+    margin-bottom: 20px;
+    font-size: 22px;
+    font-weight: 700;
+    color: #2F2A25;
+}
+
+/* 파일 input */
+.itemCreate-fileInput {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #CFC7BD;
+    background-color: #FBFAF8;
+    color: #4A4038;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 14px;
+}
+
+/* 서브 이미지 개수 */
+.itemCreate-fileCount {
+    margin-top: 8px;
+    font-size: 13px;
+    color: #8A8178;
+}
+
+/* 선택된 서브 이미지 목록 */
+.itemCreate-fileList {
+    margin-top: 12px;
+    list-style: none;
+}
+
+/* 선택된 서브 이미지 한 줄 */
+.itemCreate-fileItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    border: 1px solid #E5DED6;
+    background-color: #FBFAF8;
+    color: #4A4038;
+    font-size: 14px;
+}
+
+/* 파일명 */
+.itemCreate-fileName {
+    flex: 1;
+    word-break: break-all;
+}
+
+/* 버튼 영역 */
+.itemCreate-buttonArea {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 30px;
+}
+
+/* 공통 버튼 */
+.itemCreate-button {
+    padding: 11px 20px;
+    border: 1px solid #2F2A25;
+    background-color: #2F2A25;
+    color: #FFFFFF;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.itemCreate-button:hover {
+    background-color: #FFFFFF;
+    color: #2F2A25;
+}
+
+/* 삭제 버튼 */
+.itemCreate-dangerButton {
+    padding: 7px 12px;
+    border: 1px solid #B94A3A;
+    background-color: #B94A3A;
+    color: #FFFFFF;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.itemCreate-dangerButton:hover {
+    background-color: #FFFFFF;
+    color: #B94A3A;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+    .itemCreate-page {
+        padding: 30px 16px 60px;
+    }
+
+    .itemCreate-title {
+        font-size: 32px;
+    }
+
+    .itemCreate-form {
+        max-width: 100%;
+    }
+
+    .itemCreate-buttonArea {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .itemCreate-button,
+    .itemCreate-dangerButton {
+        width: 100%;
+    }
+
+    .itemCreate-fileItem {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
+
+@media (max-width: 480px) {
+    .itemCreate-title {
+        font-size: 28px;
+    }
+
+    .itemCreate-sectionTitle {
+        font-size: 20px;
+    }
+}
