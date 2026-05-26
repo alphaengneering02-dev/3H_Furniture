@@ -3,6 +3,7 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import PaymentFail from './PaymentFail';
 import { LinearProgress, Box, Typography } from '@mui/material';
+import '../../css/paymentCss/payment.css';
 
 function PaymentSuccess() {
 
@@ -22,6 +23,16 @@ function PaymentSuccess() {
         let ignored = false;
 
         const confirmPayment = async () => {
+
+            const savedSuccessData = JSON.parse(sessionStorage.getItem("successOrderData"));
+
+            if(savedSuccessData){
+                if (!ignored) {
+                setFinalOrderData(savedSuccessData);
+                setPayStatus("success");
+                }
+                return;
+            }
 
             const orderData = JSON.parse(sessionStorage.getItem("pendingOrder"));
 
@@ -55,6 +66,9 @@ function PaymentSuccess() {
                 if (!ignored) {
                 
                     setFinalOrderData(orderData); 
+
+                    sessionStorage.setItem("successOrderData", JSON.stringify(orderData));
+
                     sessionStorage.removeItem("pendingOrder");
                     setPayStatus("success");
                 }
@@ -125,7 +139,9 @@ function PaymentSuccess() {
             <p className='payment-label'>주문번호: {orderId?.slice(0, 8).toUpperCase()}</p>
             <p className='payment-label'>배송지: {finalOrderData?.deliveryAddr}</p>
             <p className='payment-label'>결제금액: {Number(amount).toLocaleString()}원</p>
-            <button className='payment-btn' onClick={() => navigate("/")}>홈으로</button>
+            <button className='payment-btn' onClick={() => { 
+                sessionStorage.removeItem("successOrderData");
+                navigate("/")}}>홈으로</button>
         </div>
     );
 }
