@@ -3,6 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios'; 
 import { getUrl } from '../../utils/BackendPath';
 import '../../css/myPageCss/cart.css';
+import { useToast } from '../../hook/useToast';
+
+const { success, error, warn, info } = useToast();
 
 const Cart = () => {
     const navigate = useNavigate();
