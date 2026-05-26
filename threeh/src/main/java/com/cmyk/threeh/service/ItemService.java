@@ -10,6 +10,7 @@ import com.cmyk.threeh.domain.Admins;
 import com.cmyk.threeh.domain.Item;
 import com.cmyk.threeh.repository.AdminsRepository;
 import com.cmyk.threeh.repository.ItemRepository;
+import com.cmyk.threeh.repository.OrderItemRepository;
 import com.cmyk.threeh.dto.ItemRequestDTO;
 import com.cmyk.threeh.dto.ItemResponseDTO;
 import com.cmyk.threeh.dto.ItemUpdateRequestDTO;
@@ -24,7 +25,7 @@ public class ItemService {
     
     private final ItemRepository itemRepository;
     private final AdminsRepository adminsRepository;
-    
+    private final OrderItemRepository orderItemRepository;
     //상품등록(관리자 검증 필요->관리자(admin)만 가능)
 
     public ItemResponseDTO createItems(ItemRequestDTO dto, String adLoginId){
@@ -93,6 +94,23 @@ public class ItemService {
     }
 
     //상품삭제(관리자(admin)만 가능)
+    //주문 내역이 있는 상품은 실제 삭제하면 주문내역이 깨지니까 삭제 불가.
+    //상품 삭제 가능 여부 확인
+
+    @Transactional(readOnly =true)
+    public boolean canDeleteItem(Long itemId, String adLoginId){
+        Admins admin = adminsRepository.findByAdLoginId(adLoginId)
+        .orElseThrow(()->new CustomException(ErrorCode.NO_PERMISSION));
+
+        Item item = itemRepository.findById(itemId)
+            .orElseThrow(()->new CustomException(ErrorCode.ITEMIMG_NOT_FOUND));
+
+            if(!item.getAdmin().getAdminId().equals(admin.getAdminId())){
+                throw new CustomException(ErrorCode.NO_PERMISSION);
+            }
+
+            return !orderItemRepository.existsByItem_ItemId(itemId);
+    }
 
     @Transactional
     public void deleteItem(Long itemId, String adLoginId){
@@ -107,6 +125,10 @@ public class ItemService {
         if(!item.getAdmin().getAdminId().equals(admin.getAdminId())){
             throw new CustomException(ErrorCode.NO_PERMISSION);
         }
+         //주문내역이 있는 상품은 삭제 불가
+        if(orderItemRepository.existsByItem_ItemId(itemId)){
+        throw new IllegalStateException("이미 주문내역이 있는 상품은 삭제할 수 없습니다. 판매중지로 변경해주세요.");
+    }
             itemRepository.delete(item);
     }
 

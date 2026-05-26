@@ -38,4 +38,7 @@ public interface OrderItemRepository extends JpaRepository<OrderItem,Long> {
         @Param("itemId")Long itemId,
         @Param("orderState")OrderState orderState
     );
+
+    //코딩 추가: 오현옥_상품삭제 관련
+    boolean existsByItem_ItemId(Long itemId);
 }

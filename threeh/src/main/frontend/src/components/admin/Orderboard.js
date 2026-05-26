@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import * as XLSX from 'xlsx';
 import '../../css/adminCss/AdminDashboard.css';
 
 const Orderboard = ({
@@ -15,9 +16,11 @@ const Orderboard = ({
     const [perPage5, setPerPage5] = useState(5); const [page5, setPage5] = useState(1);
     const [perPage6, setPerPage6] = useState(5); const [page6, setPage6] = useState(1);
 
-    // 💡 픽업 목록 전용 체크박스 상태 추가
     const [selectedPickupIds, setSelectedPickupIds] = useState([]);
     const [pickupFilter, setPickupFilter] = useState('ALL');
+
+    // 💡 수량 필터링 모달/토글 상태 추가
+    const [showSpecialList, setShowSpecialList] = useState(false);
 
     const renderItemName = (itemsList) => {
         if (!itemsList || itemsList.length === 0) return '';
@@ -27,87 +30,152 @@ const Orderboard = ({
     };
 
     const normalizedOrders = orders.map(o => {
-    let state = o.orderState || o.ORDER_STATE;
-    // 백엔드에서 한글로 올 경우 영문 조건과 호환되도록 치환
-    if (state === '교환또는환불') state = 'EXCHANGEorREFUND';
-    if (state === '주문취소') state = 'CANCEL';
-    if (state === '주문') state = 'ORDER';
-    if (state === '배송 준비중') state = 'READY';
+        let state = o.orderState || o.ORDER_STATE;
+        if (state === '교환또는환불') state = 'EXCHANGEorREFUND';
+        if (state === '주문취소') state = 'CANCEL';
+        if (state === '주문') state = 'ORDER';
+        if (state === '배송 준비중') state = 'READY';
 
-    return {
-        ...o,
-        orderId: o.orderId || o.ORDER_ID,
-        orderState: state, // 변환된 상태값 적용
-        deliveryStatus: o.deliveryStatus || o.DELIVERY_STATUS,
-        deliveryId: o.deliveryId || o.DELIVERY_ID,
-        deliveryAddr: o.deliveryAddr || o.DELIVERY_ADDR,
-        deliveryAddrDetail: o.deliveryAddrDetail || o.DELIVERY_ADDR_DETAIL,
-        orderDate: o.orderDate || o.ORDER_DATE,
-        orderitems: o.orderitems || o.orderItems || o.ITEMS || []
+        return {
+            ...o,
+            orderId: o.orderId || o.ORDER_ID,
+            orderState: state,
+            deliveryStatus: o.deliveryStatus || o.DELIVERY_STATUS,
+            deliveryId: o.deliveryId || o.DELIVERY_ID,
+            deliveryAddr: o.deliveryAddr || o.DELIVERY_ADDR,
+            deliveryAddrDetail: o.deliveryAddrDetail || o.DELIVERY_ADDR_DETAIL,
+            orderDate: o.orderDate || o.ORDER_DATE,
+            orderitems: o.orderitems || o.orderItems || o.ITEMS || []
+        };
+    }).sort((a, b) => {
+        // 날짜 객체 또는 문자열 비교를 통해 최신순 정렬
+        return new Date(b.orderDate) - new Date(a.orderDate);
+    });
+    // 💡 엑셀 다운로드 함수 추가
+    const downloadCompletedOrdersExcel = () => {
+        if (completedOrders.length === 0) {
+            alert("다운로드할 배송 완료 주문이 없습니다.");
+            return;
+        }
+
+        // 엑셀에 들어갈 데이터 포맷 가공 (화면의 테이블 구조와 매칭)
+        const excelData = completedOrders.map((order, index) => {
+            const totalOrderPrice = order.orderitems?.reduce((sum, item) => {
+                return sum + ((item.orderPrice || 0) * (item.count || 0));
+            }, 0) || 0;
+
+            const driverName = items.find(d => d.deliveryId === Number(order.deliveryId))?.deliveryName || "담당 기사";
+
+            return {
+                "번호": index + 1,
+                "주문ID": order.orderId,
+                "상품명": renderItemName(order.orderitems),
+                "총 수량": (order.orderitems?.reduce((sum, item) => sum + item.count, 0) || 0) + "개",
+                "판매 금액": totalOrderPrice.toLocaleString() + "원",
+                "담당 기사": driverName,
+                "배송 상태": "배송완료",
+                "주문일": order.orderDate?.split('T')[0] || ""
+            };
+        });
+
+        // 엑셀 워크시트 생성
+        const worksheet = XLSX.utils.json_to_sheet(excelData);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "배송완료목록");
+
+        // 열 너비 자동 조절 (옵션 - 깔끔하게 보이게 함)
+        const maxLen = excelData.reduce((w, r) => Math.max(w, ...Object.values(r).map(v => v.toString().length)), 10);
+        worksheet["!cols"] = Array(Object.keys(excelData[0]).length).fill({ wch: maxLen + 2 });
+
+        // 파일 다운로드 실행
+        XLSX.writeFile(workbook, `최종_배송_완료_목록_${new Date().toISOString().split('T')[0]}.xlsx`);
     };
-});
+
+
+    // 💡 [핵심 추가] 총 수량이 6개 또는 8개인 주문 필터링 로직
+    const specialOrders = normalizedOrders.filter(o => {
+        const totalCount = o.orderitems?.reduce((sum, item) => sum + (item.count || 0), 0) || 0;
+        return totalCount === 6 || totalCount === 8;
+    });
+
+    // 💡 [핵심 추가] 엑셀(CSV) 다운로드 함수
+    const downloadCSV = () => {
+    if (specialOrders.length === 0) {
+        alert("다운로드할 데이터가 없습니다.");
+        return;
+    }
+
+    // 엑셀 한글 깨짐 방지 BOM 추가
+    let csvContent = "\uFEFF"; 
+    csvContent += "주문번호,주문자,총수량,상품상세(셀내 줄바꿈),판매금액,배송상태,주문일\n";
+
+    specialOrders.forEach(o => {
+        const totalCount = o.orderitems?.reduce((sum, item) => sum + (item.count || 0), 0) || 0;
+        const totalPrice = o.orderitems?.reduce((sum, item) => sum + ((item.orderPrice || 0) * (item.count || 0)), 0) || 0;
+        
+        // 💡 핵심 수정: 각 상품 항목을 줄바꿈(\n)으로 연결합니다.
+        // CSV 문법 에러를 막기 위해 내부 데이터의 따옴표나 쉼표는 가볍게 정리해 줍니다.
+        const itemDetails = o.orderitems
+            .map(i => `• ${i.itemName.replace(/"/g, ' ')} (${i.count}개)`)
+            .join('\n'); // 👈 슬래시(/) 대신 엔터(\n)로 변경
+
+        // 💡 중요: ${itemDetails}를 감싸고 있는 큰따옴표("")가 있어야 한 셀 내부에서 엔터로 인식됩니다.
+        csvContent += `${o.orderId},${o.memberName || '미상'},${totalCount},"${itemDetails}",${totalPrice},${o.deliveryStatus || '미정'},${o.orderDate?.split('T')[0]}\n`;
+    });
+
+    // 다운로드 트리거
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `특수주문목록_6개_8개_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+};
+
+    // 기존 필터링 변수들
     const assignedOrders = normalizedOrders.filter(o => o.deliveryId && o.deliveryStatus === 'WAITING');
-    const unassignedOrders = normalizedOrders.filter(o => {   
-        const isReady = o.orderState === 'READY' || o.orderState === '배송 준비중' || o.orderState === 'ORDER'; // 'ORDER' 상태도 미배정에 포함되도록 보완
+    const unassignedOrders = normalizedOrders.filter(o => { 
+        const isReady = o.orderState === 'READY' || o.orderState === 'ORDER';
         const isUnassignedOrRejected = !o.deliveryId || o.deliveryStatus === null || o.deliveryStatus === 'REJECTED'; 
         return isReady && isUnassignedOrRejected;
     });
-
-    // 3. 일반 배송 진행 중 목록
     const shippingOrders = normalizedOrders.filter(o => o.deliveryStatus === 'SHIPPING');
-    
-    // 💡 4. [반품/교환 픽업 목록] 
     const pickupOrders = normalizedOrders.filter(o => {
-    // 1. 주문 상태가 EXCHANGEorREFUND 또는 CANCEL인지 확인
-    const isTargetState = o.orderState === 'EXCHANGEorREFUND' || o.orderState === 'CANCEL';
-
-    // 2. 배송 상태가 오직 'COMPLETED' 또는 'PICKUP'인 경우만 허용 (null, WAITING 원천 차단)
-    const currentStatus = o.deliveryStatus ? o.deliveryStatus.toUpperCase() : '';
-    const isPickupStatus = currentStatus === 'COMPLETED' || currentStatus === 'PICKUP'; 
-
-    // 두 조건 중 하나라도 만족하지 않으면 제외
-    if (!isTargetState || !isPickupStatus) return false;
-    
-    if (pickupFilter === 'ALL') return true;
-    return o.orderState === pickupFilter;
-});
-    
+        const isTargetState = o.orderState === 'EXCHANGEorREFUND' || o.orderState === 'CANCEL';
+        const currentStatus = o.deliveryStatus ? o.deliveryStatus.toUpperCase() : '';
+        const isPickupStatus = currentStatus === 'COMPLETED' || currentStatus === 'PICKUP'; 
+        if (!isTargetState || !isPickupStatus) return false;
+        if (pickupFilter === 'ALL') return true;
+        return o.orderState === pickupFilter;
+    });
     const completedOrders = normalizedOrders.filter(o => o.deliveryStatus === 'COMPLETED' && o.orderState !== 'EXCHANGEorREFUND' && o.orderState !== 'CANCEL');
 
-    // Slice 작업
     const pagedAssigned = assignedOrders.slice((page2 - 1) * perPage2, page2 * perPage2);
     const pagedUnassigned = unassignedOrders.slice((page3 - 1) * perPage3, page3 * perPage3);
     const pagedShipping = shippingOrders.slice((page4 - 1) * perPage4, page4 * perPage4);
     const pagedPickup = pickupOrders.slice((page5 - 1) * perPage5, page5 * perPage5);
     const pagedCompleted = completedOrders.slice((page6 - 1) * perPage6, page6 * perPage6);
 
-    // 💡 1️⃣ 픽업 개별 체크 핸들러
     const handleCheckPickup = (orderId) => {
-        setSelectedPickupIds(prev => 
-            prev.includes(orderId) ? prev.filter(id => id !== orderId) : [...prev, orderId]
-        );
+        setSelectedPickupIds(prev => prev.includes(orderId) ? prev.filter(id => id !== orderId) : [...prev, orderId]);
     };
 
-    // 💡 2️⃣ 픽업 현재 페이지 전체 체크 핸들러
     const handleAllCheckPickup = (e) => {
         const isChecked = e.target.checked;
         const currentPageIds = pagedPickup.map(o => o.orderId);
-
         if (isChecked) {
-            // 현재 페이지의 모든 ID를 기존 선택 목록과 병합 (중복 제거)
             setSelectedPickupIds(prev => Array.from(new Set([...prev, ...currentPageIds])));
         } else {
-            // 현재 페이지의 ID들만 선택 목록에서 해제
             setSelectedPickupIds(prev => prev.filter(id => !currentPageIds.includes(id)));
         }
     };
 
-    // 💡 3️⃣ 현재 페이지의 모든 항목이 체크되어 있는지 확인하는 상태 변수
-    const isAllPickupCheckedOnCurrentPage = 
-        pagedPickup.length > 0 && 
-        pagedPickup.every(o => selectedPickupIds.includes(o.orderId));
+    const isAllPickupCheckedOnCurrentPage = pagedPickup.length > 0 && pagedPickup.every(o => selectedPickupIds.includes(o.orderId));
 
     return (
+
         <div>
             {/* [배송 미배정] */}
             <div className="admin-content-box">
@@ -151,31 +219,20 @@ const Orderboard = ({
             <div className="admin-content-box">
                 <h3>배송 배정 완료 목록[O.S=READY,D.S=WAITING인 ordersDB]</h3>
                 <table className="admin-table-style">
-                    <thead><tr><th>번호</th><th>상품</th><th>갯수</th><th>판매 금액</th><th>배정된 기사</th><th>상태</th><th>주문일</th></tr></thead>
+                    <thead><tr><th>번호</th><th>상품</th><th>판매 금액</th><th>배정된 기사</th><th>상태</th><th>주문일</th></tr></thead>
                     <tbody>
-                    {pagedCompleted.map((order, index) => {
-                // 💡 해당 주문의 총 판매 금액 계산 (단가 * 수량의 합)
-                const totalOrderPrice = order.orderitems?.reduce((sum, item) => {
-                    return sum + ((item.orderPrice || 0) * (item.count || 0));
-                }, 0) || 0;
-
-                return (
-                    <tr key={order.orderId}>
-                        <td>{(page6 - 1) * perPage6 + index + 1}</td>
-                        <td>{renderItemName(order.orderitems)}</td>
-                        <td>{order.orderitems?.reduce((sum, item) => sum + item.count, 0) || 0}개</td>
-                        
-                        {/* 💡 주소 <td> 제거 후 계산된 총 금액을 원화 포맷(1,000원)으로 출력 */}
-                        <td><strong>{totalOrderPrice.toLocaleString()}원</strong></td>
-                        
-                        <td><span>{items.find(d => d.deliveryId === Number(order.deliveryId))?.deliveryName || "담당 기사"}</span></td>
-                        <td><span>배송완료</span></td>
-                        <td>{order.orderDate?.split('T')[0]}</td>
-                    </tr>
-                );
-            })}
-            {pagedCompleted.length === 0 && <tr><td colSpan="7">배송 완료된 주문이 없습니다.</td></tr>}
-        </tbody>
+                        {pagedAssigned.map((order, index) => (
+                            <tr key={order.orderId}>
+                                <td>{(page2 - 1) * perPage2 + index + 1}</td>
+                                <td>{renderItemName(order.orderitems)}</td>
+                                <td>{order.deliveryAddr} {order.deliveryAddrDetail}</td>
+                                <td><strong>{items.find(d => d.deliveryId === Number(order.deliveryId))?.deliveryName || "지정 기사"}</strong></td>
+                                <td><span>배송 대기중</span></td>
+                                <td>{order.orderDate?.split('T')[0]}</td>
+                            </tr>
+                        ))}
+                        {assignedOrders.length === 0 && <tr><td colSpan="6">배정 완료된 주문이 없습니다.</td></tr>}
+                    </tbody>
                 </table>
             </div>
 
@@ -200,26 +257,143 @@ const Orderboard = ({
                 </table>
             </div>
 
+            {/* 💡 대용량 수량(6, 8개) 확인 및 다운로드 컨트롤러 바 */}
+            <div className="admin-content-box" style={{ border: '2px solid #007bff', backgroundColor: '#f0f7ff' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div>
+                        <h4 style={{ margin: 0, color: '#0056b3' }}>📦 대량 수량 조건 조회 (총 수량 6개 또는 8개)</h4>
+                        <p style={{ margin: '5px 0 0 0', fontSize: '13px', color: '#6c757d' }}>
+                            현재 대상 건수: <strong>{specialOrders.length}건</strong>
+                        </p>
+                    </div>
+                    <div>
+                        <button 
+                            onClick={() => setShowSpecialList(!showSpecialList)} 
+                            style={{ marginRight: '10px', padding: '8px 15px', cursor: 'pointer', backgroundColor: '#6c757d', color: '#fff', border: 'none', borderRadius: '4px' }}
+                        >
+                            {showSpecialList ? "목록 닫기" : "상세 목록 보기"}
+                        </button>
+                        <button 
+                            onClick={downloadCSV} 
+                            style={{ padding: '8px 15px', cursor: 'pointer', backgroundColor: '#28a745', color: '#fff', border: 'none', borderRadius: '4px', fontWeight: 'bold' }}
+                        >
+                            Excel(CSV) 다운로드
+                        </button>
+                    </div>
+                </div>
+
+                {/* 💡 토글 시 노출되는 상세 리스트 */}
+                {showSpecialList && (
+                    <div style={{ marginTop: '15px', backgroundColor: '#fff', padding: '10px', borderRadius: '4px', border: '1px solid #ced4da' }}>
+                        <table className="admin-table-style" style={{ margin: 0 }}>
+                            <thead>
+                                <tr>
+                                    <th>주문ID</th><th>주문자</th><th>상품 상세 내역</th><th>총 수량</th><th>총 금액</th><th>상태</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {specialOrders.length > 0 ? specialOrders.map(o => {
+                                    const tCount = o.orderitems?.reduce((sum, i) => sum + i.count, 0) || 0;
+                                    const tPrice = o.orderitems?.reduce((sum, i) => sum + (i.orderPrice * i.count), 0) || 0;
+                                    return (
+                                        <tr key={o.orderId}>
+                                            <td>{o.orderId}</td>
+                                            <td>{o.memberName}</td>
+                                            <td style={{ textAlign: 'left' }}>
+                                                {o.orderitems.map((i, idx) => (
+                                                    <div key={idx}>• {i.itemName} ({i.count}개) - {(i.orderPrice).toLocaleString()}원</div>
+                                                ))}
+                                            </td>
+                                            <td><strong style={{ color: '#007bff' }}>{tCount}개</strong></td>
+                                            <td>{tPrice.toLocaleString()}원</td>
+                                            <td>{o.deliveryStatus || '공급대기'}</td>
+                                        </tr>
+                                    );
+                                }) : <tr><td colSpan="6" style={{ textAlign: 'center' }}>조건에 맞는 주문이 없습니다.</td></tr>}
+                            </tbody>
+                        </table>
+                    </div>
+                )}
+            </div>
+
             {/* [최종 배송 완료 목록] */}
+             {/* [최종 배송 완료 목록] */}
             <div className="admin-content-box">
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    {/* 💡 엑셀 다운로드 버튼 */}
+                    <button 
+                        onClick={downloadCompletedOrdersExcel}
+                        style={{
+                            backgroundColor: '#28a745',
+                            color: 'white',
+                            border: 'none',
+                            padding: '8px 15px',
+                            borderRadius: '4px',
+                            cursor: 'pointer',
+                            fontWeight: 'bold',
+                            marginBottom: '10px'
+                        }}
+                    >
+                        📊 엑셀 다운로드
+                    </button>
+                </div>
                 <h3>✅ 최종 배송 완료 목록[O.S=PURCHASED,D.S=COMPLETED인 ordersDB]</h3>
                 <table className="admin-table-style">
-                    <thead><tr><th>번호</th><th>상품</th><th>수량</th><th>주소</th><th>담당 기사</th><th>상태</th><th>주문일</th></tr></thead>
+                    <thead><tr>
+                <th>번호</th>
+                <th>상품</th>
+                <th>수량</th>
+                <th>판매 금액</th>
+                <th>담당 기사</th>
+                <th>상태</th>
+                <th>주문일</th>
+            </tr></thead>
                     <tbody>
-                        {pagedCompleted.map((order, index) => (
-                            <tr key={order.orderId}>
-                                <td>{(page6 - 1) * perPage6 + index + 1}</td>
-                                <td>{renderItemName(order.orderitems)}</td>
-                                <td>{order.orderitems?.reduce((sum, item) => sum + item.count, 0) || 0}개</td>
-                                <td>{order.deliveryAddr} {order.deliveryAddrDetail}</td>
-                                <td><span>{items.find(d => d.deliveryId === Number(order.deliveryId))?.deliveryName || "담당 기사"}</span></td>
-                                <td><span>배송완료</span></td>
-                                <td>{order.orderDate?.split('T')[0]}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
+            {pagedCompleted.map((order, index) => {
+                const totalOrderPrice = order.orderitems?.reduce((sum, item) => {
+                    return sum + ((item.orderPrice || 0) * (item.count || 0));
+                }, 0) || 0;
+
+                return (
+                    <tr key={order.orderId}>
+                        <td>{(page6 - 1) * perPage6 + index + 1}</td>
+                        <td>{renderItemName(order.orderitems)}</td>
+                        <td>{order.orderitems?.reduce((sum, item) => sum + item.count, 0) || 0}개</td>
+                        <td><strong>{totalOrderPrice.toLocaleString()}원</strong></td>
+                        <td><span>{items.find(d => d.deliveryId === Number(order.deliveryId))?.deliveryName || "담당 기사"}</span></td>
+                        <td><span>배송완료</span></td>
+                        <td>{order.orderDate?.split('T')[0]}</td>
+                    </tr>
+                );
+            })}
+            {pagedCompleted.length === 0 && <tr><td colSpan="7">배송 완료된 주문이 없습니다.</td></tr>}
+        </tbody>
+    </table>
+
+    {/* 💡 테이블 바로 밑(주문일 라인 아래)에 전체 판매 금액 토탈 바 추가 */}
+    {completedOrders.length > 0 && (
+        <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            backgroundColor: '#f8f9fa',
+            padding: '15px 20px',
+            border: '1px solid #dee2e6',
+            borderTop: 'none', // 테이블과 자연스럽게 이어지도록 위쪽 선만 제거
+            borderRadius: '0 0 4px 4px',
+            fontSize: '16px',
+            fontWeight: 'bold'
+        }}>
+            <span style={{ color: '#495057' }}>📈 배송 완료 총 판매 금액 (Total)</span>
+            <span style={{ color: '#dc3545', fontSize: '20px' }}>
+                {completedOrders.reduce((grandTotal, order) => {
+                    const orderSum = order.orderitems?.reduce((sum, item) => sum + ((item.orderPrice || 0) * (item.count || 0)), 0) || 0;
+                    return grandTotal + orderSum;
+                }, 0).toLocaleString()}원
+            </span>
+        </div>
+    )}
+</div>
 
             {/* [반품/교환 픽업 신청 목록] */}
             <div className="admin-content-box">
@@ -231,7 +405,6 @@ const Orderboard = ({
                     <button onClick={() => setPickupFilter('CANCEL')}>취소</button>
                 </div>
 
-                {/* 💡 상단에 다중 처리가 필요할 경우 표시할 선택 건수 안내 (선택 사항) */}
                 {selectedPickupIds.length > 0 && (
                     <div style={{ marginBottom: '10px', color: '#007bff', fontWeight: 'bold' }}>
                         선택된 반품/교환 건: {selectedPickupIds.length}건
@@ -241,7 +414,6 @@ const Orderboard = ({
                 <table className="admin-table-style">
                     <thead>
                         <tr>
-                            {/* 💡 제목줄 한꺼번에 체크박스 추가 */}
                             <th>
                                 <input 
                                     type="checkbox" 
@@ -257,7 +429,6 @@ const Orderboard = ({
                             const currentItems = order.orderitems || order.orderItems || [];
                             return (
                                 <tr key={order.orderId}>
-                                    {/* 💡 데이터 행 개별 체크박스 추가 */}
                                     <td>
                                         <input 
                                             type="checkbox" 
@@ -271,7 +442,6 @@ const Orderboard = ({
                                     <td>{order.deliveryAddr} {order.deliveryAddrDetail}</td>
                                     <td><span>{order.orderState === 'EXCHANGEorREFUND' ? '교환/반품 접수' : '취소 접수'}</span></td>
                                     <td>
-                                        {/* 💡 핵심 변경 구간: deliveryId가 있고 deliveryStatus가 'PICKUP'인 경우 지정 완료 UI 노출 */}
                                         {order.deliveryId && order.deliveryStatus === 'PICKUP' ? (
                                             <div>
                                                 <strong>{items.find(d => d.deliveryId === Number(order.deliveryId))?.deliveryName} 기사님 </strong>
@@ -283,7 +453,6 @@ const Orderboard = ({
                                                     <option value="">픽업 기사 선택</option>
                                                     {items.map(driver => <option key={driver.deliveryId} value={driver.deliveryId}>{driver.deliveryName}</option>)}
                                                 </select>
-                                                {/* 💡 두 번째 인자로 'PICKUP' 문자열 상태값을 직접 넘겨줍니다 */}
                                                 <button onClick={() => handleAssignDriver(order.orderId, 'PICKUP')}>픽업 배정</button>
                                             </>
                                         )}
@@ -298,4 +467,5 @@ const Orderboard = ({
         </div>
     );
 };
+
 export default Orderboard;

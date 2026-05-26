@@ -2,7 +2,6 @@ package com.cmyk.threeh.service;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.multipart.MultipartFile;
@@ -127,24 +126,64 @@ public class ItemImgService {
             File folder = new File(uploadPath);
             
             if(!folder.exists()){
-                folder.mkdirs();
+                boolean created = folder.mkdirs();
+                if(!created&&!folder.exists()){
+                    throw new RuntimeException("이미지 업로드 폴더 생성에 실패했습니다.:"+uploadPath);
+                }
             }
 
             String originalFileName = file.getOriginalFilename();
+            
+            if(originalFileName == null || originalFileName.trim().isEmpty()){
+                throw new RuntimeException("파일명이 없는 이미지는 업로드 할 수 없습니다.");
+            }
 
-            String ext = originalFileName.substring(originalFileName.lastIndexOf("."));
+            //파일명에 들어가면 문제될 수 있는 문자 제거
 
-            String savedFileName =UUID.randomUUID().toString() + ext;
+            String safeItemName = item.getItemName()
+            .replaceAll("[\\\\/:*?\"<>|]", "_")
+            .replaceAll("\\s+", "_");
 
+            String safeOriginalFileName = originalFileName
+            .replaceAll("[\\\\/:*?\"<>|]", "_")
+            .replaceAll("\\s+", "_");
+
+            // String ext = originalFileName.substring(originalFileName.lastIndexOf("."));
+
+            //랜덤으로 이미지 파일명으로  저장 기존 코딩
+            //String savedFileName =UUID.randomUUID().toString() + ext;
+
+            String savedFileName = safeItemName + "_" + safeOriginalFileName;
             File saveFile = new File(uploadPath + savedFileName);
 
+            //같은 이름 파일이 이미 있으면 덮어쓰기 방지
+            if(saveFile.exists()){
+                String fileExt = "";
+                String nameOnly = savedFileName;
+                int dotIndex = savedFileName.lastIndexOf(".");
+
+                if(dotIndex > -1){
+                    nameOnly = savedFileName.substring(0, dotIndex);
+                    fileExt = savedFileName.substring(dotIndex);
+                }
+
+                savedFileName = nameOnly + "_" + System.currentTimeMillis() + fileExt;
+                saveFile = new File(uploadPath + savedFileName);
+            }
             file.transferTo(saveFile);
 
             ItemImg itemImg = new ItemImg();
 
             itemImg.setItem(item);
             itemImg.setItemImgName(originalFileName);
-            itemImg.setItemImgUrl(uploadUrl + savedFileName);
+
+            //itemImg.setItemImgUrl(uploadUrl + savedFileName);
+            //팀원 중 /upload/item으로 쓰면 url이 깨질 수 있으니까 /upload/item/이렇게 되도록
+            String imageUrl = uploadUrl.endsWith("/")
+            ?uploadUrl + savedFileName
+            :uploadUrl + "/" + savedFileName;
+            itemImg.setItemImgUrl(imageUrl);
+
             itemImg.setItemSubImgUrl(null);
             itemImg.setThumbnailYn(thumbnailYn !=null ? thumbnailYn : SubImg.N);
 
@@ -205,7 +244,30 @@ public class ItemImgService {
         //이미지 존재 확인
         validateImgIs(itemImg,admin);
     
+         //물리적 이미지 파일 삭제
+        String itemImgUrl = itemImg.getItemImgUrl();
+
+        String normalizedUploadUrl = uploadUrl.endsWith("/")
+        ?uploadUrl
+        :uploadUrl + "/";
+
+        if(itemImgUrl != null && itemImgUrl.startsWith(normalizedUploadUrl)){
+            String savedFileName = itemImgUrl.replace(normalizedUploadUrl, "");
+
+            File deleteFile = new File(uploadPath + savedFileName);
+
+            if(deleteFile.exists()){
+                boolean deleted = deleteFile.delete();
+
+                if(!deleted){
+                    System.out.println("물리적 이미지 파일 삭제 실패: " + deleteFile.getAbsolutePath());
+                }
+            }
+        }
+
+        //DB 이미지 데이터 삭제
         itemImgRepository.delete(itemImg);
+
 
     }
 

@@ -34,6 +34,7 @@ public class MemberAddressController {
 
     private final MemberAddressService memberAddressService;
     private final MemberService memberService; 
+    private final com.cmyk.threeh.service.OrderService orderService;
     
     @Autowired
     private OrderRepository orderRepository;
@@ -42,6 +43,34 @@ public class MemberAddressController {
     //로그인 아이디 꺼내기 공통 메서드(소셜)
     private String getLoginIdOrNull(Principal principal){
         return GetLoginId.getloginId(principal);
+    }
+
+
+    //반품 로직 DB CANCEL
+    @PostMapping("/order/cancel")
+    @org.springframework.transaction.annotation.Transactional
+        public ResponseEntity<String> cancelOrder(
+            @RequestParam("orderId") Long orderId,
+            @RequestParam("itemId") Long itemId,
+            Principal principal) {
+
+                System.out.print("단품 취소 수신(주문: " + orderId + ", 상품: " + itemId + ")");
+
+                String loginId = getLoginIdOrNull(principal);
+                if (loginId == null) {
+                return ResponseEntity.status(401).body("로그인이 필요합니다.");
+        }
+        
+          try {
+            // 2. 조장님이 주입해 두신 orderService(또는 해당 서비스 객체명)의 cancelOrder 함수를 다이렉트로 가동합니다!
+            // 💡 이 코드가 가동되면 DB에서 해당 상품 한 건이 빠지고, 모든 상품이 다 취소되면 주문 상태가 'CANCEL'로 최종 변경됩니다.
+            orderService.cancelOrder(orderId, itemId); 
+            
+            return ResponseEntity.ok("선택하신 상품의 주문 취소가 완료되었습니다.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body("취소 실패: " + e.getMessage());
+        }
     }
 
     // 마이페이지 홈

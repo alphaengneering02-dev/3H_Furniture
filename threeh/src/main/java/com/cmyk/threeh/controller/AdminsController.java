@@ -262,25 +262,32 @@ public ResponseEntity<?> getAllOrdersForAdmin() {
 }
 
 //엑셀 등록용
-@PostMapping("/delivery/bulk")
-public ResponseEntity<?> bulkInsert(
-        @RequestBody List<DeliveryExcelDTO> list,
-        @AuthenticationPrincipal CustomMemberDetails user
-) {
-    Admins admin = user.getAdmins();
+// 💡 누락/중복 데이터가 있을 때 실패 목록을 리액트로 돌려주는 최종 API
+    @PostMapping("/delivery/bulk")
+    public ResponseEntity<?> bulkUpload(
+            @RequestBody List<DeliveryExcelDTO> dtos, 
+            @AuthenticationPrincipal CustomMemberDetails user
+    ) {
+        // 1. 시큐리티 세션에 인증된 관리자 정보 객체 가져오기
+        if (user == null || user.getAdmins() == null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("로그인 정보가 없거나 관리자만 등록 가능합니다.");
+        }
 
-    if (admin == null) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                .body("관리자만 등록 가능합니다.");
+        Admins admin = user.getAdmins();
+        Long adminId = admin.getAdminId(); 
+
+        // 2. 서비스 실행 및 실패 목록 수집
+        List<DeliveryExcelDTO> failedList = deliveryService.bulkInsert(dtos, adminId);
+
+        // 3. 실패 자료가 존재할 경우 400 에러와 함께 실패 목록 반환 -> 리액트에서 엑셀 다운로드 트리거
+        if (!failedList.isEmpty()) {
+            return ResponseEntity.badRequest().body(failedList);
+        }
+
+        // 4. 모두 성공 시
+        return ResponseEntity.ok("전체 등록 성공!");
     }
-
-    Long adminId = admin.getAdminId();
-
-    deliveryService.bulkInsert(list, adminId);
-
-    return ResponseEntity.ok().build();
-}
-
    
 
     // 1. 주문 상태 단순 변경 (예: ORDER -> READY 변경, CANCEL시 기사 삭제 방지)

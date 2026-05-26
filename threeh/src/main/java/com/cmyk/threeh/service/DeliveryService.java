@@ -1,5 +1,6 @@
 package com.cmyk.threeh.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -118,52 +119,58 @@ public class DeliveryService {
     }
 
     //엑셀
-    public void bulkInsert(List<DeliveryExcelDTO> list, Long adminId) {
+   @Transactional(propagation = org.springframework.transaction.annotation.Propagation.NOT_SUPPORTED)
+    public List<DeliveryExcelDTO> bulkInsert(List<DeliveryExcelDTO> list, Long adminId) {
+        Admins admin = adminsRepository.findById(adminId)
+                .orElseThrow(() -> new RuntimeException("관리자 정보가 없습니다."));
 
-    Admins admin = adminsRepository.findById(adminId)
-            .orElseThrow(() -> new RuntimeException("관리자 정보가 없습니다."));
+        List<DeliveryExcelDTO> failedList = new ArrayList<>();
 
-    for (DeliveryExcelDTO excelDto : list) {
+        for (DeliveryExcelDTO excelDto : list) {
+            try {
+                // 1. 핸드폰 번호 중복 검사
+                if (deliveryRepository.existsByDeliveryPhone(excelDto.getDeliveryPhone())) {
+                    excelDto.setFailReason("이미 등록된 핸드폰 번호입니다.");
+                    failedList.add(excelDto);
+                    continue; 
+                }
 
-        Delivery delivery = new Delivery();
+                // 2. 차량 번호 중복 검사
+                if (deliveryRepository.existsByDeliveryCarNo(excelDto.getDeliveryCarNo())) {
+                    excelDto.setFailReason("이미 등록된 차량 번호입니다.");
+                    failedList.add(excelDto);
+                    continue; 
+                }
 
-        delivery.setAdmin(admin);
+                Delivery delivery = new Delivery();
+                delivery.setAdmin(admin);
+                delivery.setCompanyName(excelDto.getCompanyName());
+                delivery.setBusinessName(excelDto.getBusinessName());
+                delivery.setBusinessNo(excelDto.getBusinessNo());
+                delivery.setBusinessPhone(excelDto.getBusinessPhone());
+                delivery.setBusinessAddr(excelDto.getBusinessAddr());
+                delivery.setDeliveryName(excelDto.getDeliveryName());
+                delivery.setDeliveryPhone(excelDto.getDeliveryPhone());
+                delivery.setDeliveryCarNo(excelDto.getDeliveryCarNo());
 
-        delivery.setCompanyName(excelDto.getCompanyName());
-        delivery.setBusinessName(excelDto.getBusinessName());
-        delivery.setBusinessNo(excelDto.getBusinessNo());
-        delivery.setBusinessPhone(excelDto.getBusinessPhone());
-        delivery.setBusinessAddr(excelDto.getBusinessAddr());
+                delivery.setStatus(
+                    excelDto.getStatus() != null && !excelDto.getStatus().isEmpty()
+                        ? DeliveryStatus.valueOf(excelDto.getStatus())
+                        : DeliveryStatus.WAITING
+                );
 
-        delivery.setDeliveryName(excelDto.getDeliveryName());
-        delivery.setDeliveryPhone(excelDto.getDeliveryPhone());
-        delivery.setDeliveryCarNo(excelDto.getDeliveryCarNo());
+                // 개별 저장 수행 (트랜잭션이 묶여있지 않아 즉시 반영됩니다)
+                deliveryRepository.save(delivery);
 
-        // status 처리 핵심 위치
-        delivery.setStatus(
-            excelDto.getStatus() != null
-                ? DeliveryStatus.valueOf(excelDto.getStatus())
-                : DeliveryStatus.WAITING
-        );
-
-        deliveryRepository.save(delivery);
+            } catch (Exception e) {
+                // DB 제약조건 등 예기치 못한 에러가 나더라도 트랜잭션 전체가 롤백되지 않고 해당 건만 실패 처리
+                excelDto.setFailReason("등록 중 알 수 없는 오류 발생: " + e.getMessage());
+                failedList.add(excelDto);
+            }
+        }
+        return failedList;
     }
+
 }
-
-@Transactional
-public void assignDelivery(Long orderId, Long deliveryId) {
-
-    Delivery delivery = deliveryRepository.findById(deliveryId)
-            .orElseThrow(() -> new RuntimeException("기사 없음"));
-
-    // 기사 상태 체크
-    if (delivery.getStatus() != DeliveryStatus.WAITING) {
-        throw new RuntimeException("배정 불가능한 기사입니다.");
-    }
-
-    }
-
-}
-
 
 
