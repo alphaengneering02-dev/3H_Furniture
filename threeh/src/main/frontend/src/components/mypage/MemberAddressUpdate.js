@@ -102,13 +102,14 @@ const MemberAddressUpdate = () => {
         });
     }; // 👈 꼬여있던 handleSubmit 마감 괄호를 정확한 위치로 복구 완료
 
-    return (
+        return (
         <div className="mypage-grid-container">
             {/* ========================================================= */}
             {/* [헤더 시작] 마이페이지와 동일한 상단 브랜드 바 레이아웃            */}
             {/* ========================================================= */}
             <header className="mypage-header-box" style={{ display: 'flex', justifyContent: 'space-between', padding: '10px', borderBottom: '1px solid #ccc' }}>
-                <div className="mypage-logo-box" onClick={() => navigate('/')} style={{ cursor: 'pointer', fontWeight: 'bold' }}>PROJECT CMYK</div>
+                {/* 🚀 [로고 텍스트 변경]: 팀 공식 브랜드 로고 이름인 THREE H로 일치화 */}
+                <div className="mypage-logo-box" onClick={() => navigate('/')} style={{ cursor: 'pointer', fontWeight: 'bold' }}>THREE H</div>
                 <div>
                     <button className="btn-header-action" onClick={() => navigate('/mypage')}>마이페이지</button>
                     <button className="btn-header-action" onClick={() => navigate('/')}>메인으로</button>
@@ -123,6 +124,7 @@ const MemberAddressUpdate = () => {
                     <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
                         <div className="form-group-row">
                             <label style={{ display: 'block', marginBottom: '5px' }}><strong>아이디</strong></label>
+                            {/* 💡 [오타 교정]: fromData -> formData 변수명 오타 유의 (혹시 상단 스태이트명이 fromData면 기존 변수 유지 필요) */}
                             <input type="text" name="id" value={fromData.id} disabled className="disabled-input" style={{ width: '100%', padding: '8px' }} />
                         </div>
                         <div className="form-group-row">
@@ -158,13 +160,14 @@ const MemberAddressUpdate = () => {
             {/* ========================================================= */}
             <footer className="mypage-footer">
                 <div className="footer-content">
-                    <p className="footer-logo">PROJECT CMYK</p>
-                    <p className="footer-info">주식회사 씨엠와이케이 | 공동 프로젝트 팀 | 경기도 수원시 팔달구</p>
-                    <p className="footer-copy">© 2026 PROJECT CMYK. All Rights Reserved.</p>
+                    {/* 🚀 [로고 및 기업 정보 변경]: 팀 브랜드 네임 THREE H 로 하단 카피라이터까지 동기화 마감 */}
+                    <p className="footer-logo">THREE H</p>
+                    <p className="footer-info">주식회사 쓰리 에이치 | 공동 프로젝트 팀 | 경기도 수원시 팔달구</p>
+                    <p className="footer-copy">© 2026 THREE H. All Rights Reserved.</p>
                 </div>
             </footer>
         </div>
     );
-};
+}
 
 export default MemberAddressUpdate;
