@@ -10,6 +10,7 @@ import Signup_site from '../components/member/Signup_site';
 import FindId from '../components/member/FindId';
 import ChangePW from '../components/member/ChangePW';
 
+
 //오현옥
 import Item from '../components/item/Item';
 import ItemDetail from '../components/item/ItemDetail';
@@ -20,6 +21,7 @@ import ItemAdminPage from '../components/item/ItemAdminPage';
 //김승우
 import Order from '../components/Order/Order';
 import PaymentSuccess from '../components/payment/PaymentSuccess';
+import Layout from '../global/Layout';
 
 //김태양
 import AdminDashboard from '../components/admin/AdminDashboard';
@@ -38,43 +40,47 @@ import Schedule from '../components/mypage/Schedule';
 
 
 
+
 const Router = () => {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<Main/>} />
-                <Route path="/searchResult" element={<SearchResult/>} />
-                <Route path="/login" element={<Login/>} />
-                <Route path="/oauth/success" element={<OAuth2Success/>} />
-                <Route path="/signup" element={<Signup/>} />
-                <Route path="/signup_site" element={<Signup_site/>} />
-                <Route path="/findId" element={<FindId/>} />
-                <Route path="/ChangePw" element={<ChangePW/>} />
-                
-                <Route path="/item" element={<Item/>} />
-                <Route path="/item/:itemId" element={<ItemDetail/>} />
-                <Route path="/item/create" element={<ItemCreate/>} />
-                <Route path="/item/update/:itemId" element={<ItemUpdate/>} />
-                <Route path="/admin/item" element={<ItemAdminPage/>} />
 
-                <Route path="/mypage" element={<Mypage/>} />
-                <Route path='/cart' element={<Cart/>}/>
-                <Route path="/cart/return" element={<Refund />} />
-                <Route path="/member/update/:id" element={<MemberAddressUpdate />} />
-                <Route path="/mypage/schedule" element={<Schedule />} />
+                <Route element={<Layout />}>
+                
+                    <Route path="/" element={<Main/>} />
+                    <Route path="/searchResult" element={<SearchResult/>} />
+                    <Route path="/login" element={<Login/>} />
+                    <Route path="/oauth/success" element={<OAuth2Success/>} />
+                    <Route path="/signup" element={<Signup/>} />
+                    <Route path="/signup_site" element={<Signup_site/>} />
+                    <Route path="/findId" element={<FindId/>} />
+                    <Route path="/ChangePw" element={<ChangePW/>} />
+                    
+                    <Route path="/item" element={<Item/>} />
+                    <Route path="/item/:itemId" element={<ItemDetail/>} />
+                    <Route path="/item/create" element={<ItemCreate/>} />
+                    <Route path="/item/update/:itemId" element={<ItemUpdate/>} />
+                    <Route path="/admin/item" element={<ItemAdminPage/>} />
 
+                    <Route path="/mypage" element={<Mypage/>} />
+                    <Route path='/cart' element={<Cart/>}/>
+                    <Route path="/cart/return" element={<Refund />} />
+                    <Route path="/member/update/:id" element={<MemberAddressUpdate />} />
+                    <Route path="/mypage/schedule" element={<Schedule />} />
+
+                    <Route path="/payment/toss/success" element={<PaymentSuccess/>} />
+                    <Route path='/order/order' element={<Order/>} />
+                    <Route path="/order/:itemId" element={<Order/>} />
+                    <Route path='/payment/fail' element={<PaymentFail/>} />
+               
+              
                 
-                <Route path="/admin" element={<AdminDashboard/>} />
-                <Route path="/admin/delivery" element={<AddDelivery/>} />
-                <Route path="/admin/delivery/:deliveryId" element={<EditDelivery/>} />
-                <Route path="/admin/driver" element={<DriverPage/>} />
-                
-                
-                <Route path="/payment/toss/success" element={<PaymentSuccess/>} />
-                <Route path='/order/order' element={<Order/>} />
-                <Route path="/order/:itemId" element={<Order/>} />
-                <Route path='/payment/fail' element={<PaymentFail/>} />
-             
+                    <Route path="/admin" element={<AdminDashboard/>} />
+                    <Route path="/admin/delivery" element={<AddDelivery/>} />
+                    <Route path="/admin/delivery/:deliveryId" element={<EditDelivery/>} />
+                    <Route path="/admin/driver" element={<DriverPage/>} />
+                </Route>
                 
             </Routes>
         </BrowserRouter>

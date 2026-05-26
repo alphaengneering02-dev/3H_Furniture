@@ -12,11 +12,14 @@ import icon_login from '../../assets/icon_login.png';
 import icon_signup from '../../assets/icon_signup.png';
 import axios, { all } from 'axios';
 import Header_searchCondition from './Header_searchCondition';
+import { useToast } from '../../hook/useToast';
 
 // 헤더
 const Header = () => {
     const navigate = useNavigate();
     const [user, setUser] = useState({});  //로그인한 회원정보 저장객체
+
+    const { success, error, warn, info} = useToast();
 
     const getSession = () => {
         try {
@@ -56,10 +59,12 @@ const Header = () => {
             sessionStorage.clear()
             setUser(null) // 상태 초기화
             console.log("로그아웃 성공!")
-            alert("로그아웃 되었습니다.")
+            info("로그아웃 되었습니다.")
             
             //메인 페이지로 이동
-            navigate("/")
+            setTimeout(() => {
+                navigate("/")
+            }, 400);
         } catch (error) {
             console.error("로그아웃 실패! 서버 연결 실패 혹은 네트워크 오류:", error)
         }
