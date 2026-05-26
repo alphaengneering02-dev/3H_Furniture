@@ -313,12 +313,12 @@ order-input:focus {
   padding-bottom: 15px;
   border-bottom: 1px solid #f0f0f0;
 }
-.summary-label {
+.order-summary-label {
   font-size: 16px;
   font-weight: 600;
   color: #222222;
 }
-.summary-value-total {
+.order-summary-value-total {
   font-size: 22px;
   font-weight: 700;
   color: #ff4d4f; /* 최종 결제 금액 레드 포인트 컬러 */

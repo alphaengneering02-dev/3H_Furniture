@@ -204,8 +204,8 @@ function OrderItemInfo( { orderData, orderType, zipCode, address, deliveryDate, 
                 {/* 2. 최종 결제 금액 및 결제 버튼 블록 (상품 블록 외부에 독립적으로 위치) */}
                 <div className="order-summary-block">
                     <div className="order-summary-row">
-                    <span className="summary-label">최종 결제금액</span>
-                    <span className="summary-value-total">
+                    <span className="order-summary-label">최종 결제금액</span>
+                    <span className="order-summary-value-total">
                         {orderData?.items && orderData.items.length > 0
                         ? orderData.items.reduce((acc, item) => acc + (item.price * item.count), 0).toLocaleString()
                         : (orderData?.price || 0).toLocaleString()

@@ -4,7 +4,9 @@ import OrderUser from './OrderUser';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import OrderItemInfo from './OrderItemInfo';
-import CartItem from '../mypage/CartItem';
+import { useToast } from '../../hook/useToast';
+import Header from '../main/Header';
+import Footer from '../main/Footer';
 
 function Order(props) {
 
@@ -35,10 +37,12 @@ function Order(props) {
     const [zipCode, setZipcode] = useState(defaultAddress?.zonecode || '');
     const [address, setAddress] = useState(defaultAddress?.address || '');
     const [detailedAddress, setDetailedAddress] = useState(defaultAddress?.detail || '');
+
+    const { success, error, warn } = useToast();
   
 
     if(!user) {
-        alert("잘못된 접근이거나 세션이 만료되었습니다.");
+        warn("잘못된 접근이거나 세션이 만료되었습니다.");
         navigate('/login');
     }
 
@@ -93,7 +97,7 @@ function Order(props) {
 
                 .catch(error =>  {
                     console.log(error)
-                    alert("상품 정보를 불러오는데 실패");
+                    error("상품 정보를 불러오는데 실패");
                     //navigate('/cart');
                 })
             
@@ -110,14 +114,14 @@ function Order(props) {
                         //  401 (Unauthorized)
                         if (error.response.status === 401) {
                             console.error("인증 실패: 로그인 세션이 만료되었습니다.");
-                            alert("로그인이 만료되었습니다. 다시 로그인해주세요.");
+                            warn("로그인이 만료되었습니다. 다시 로그인해주세요.");
                             navigate('/login', { state: { from: location.pathname } });
                         } 
 
                         // 3. 그 외 400, 500 등 서버 에러
                         else {
                             console.error(`서버 에러 (${error.response.status}):`, error.response.data);
-                            alert("상품 정보를 불러오는 중 오류가 발생했습니다.");
+                            error("상품 정보를 불러오는 중 오류가 발생했습니다.");
                         }
                     } 
                     // 4. 서버 응답 자체가 없는 경우 (네트워크 에러 등)
@@ -138,6 +142,10 @@ function Order(props) {
 
     return (
         <>
+            <div className='main-header'>
+            <Header/>
+            </div>
+
             <OrderInfo 
                 setOrderType={setOrderType} 
                 orderType={orderType} 
@@ -164,6 +172,11 @@ function Order(props) {
                 deliveryDate={deliveryDate}
                 detailedAddress={detailedAddress}
                />
+            
+
+            <div className="main-mypage-footer">
+                <Footer/>
+            </div>
         </>
     );
 }

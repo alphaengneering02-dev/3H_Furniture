@@ -45,6 +45,7 @@ const Router = () => {
     return (
         <BrowserRouter>
             <Routes>
+
                 <Route element={<Layout />}>
                 
                     <Route path="/" element={<Main/>} />
@@ -73,12 +74,13 @@ const Router = () => {
                     <Route path="/order/:itemId" element={<Order/>} />
                     <Route path='/payment/fail' element={<PaymentFail/>} />
                
-                </Route>
+              
                 
                     <Route path="/admin" element={<AdminDashboard/>} />
                     <Route path="/admin/delivery" element={<AddDelivery/>} />
                     <Route path="/admin/delivery/:deliveryId" element={<EditDelivery/>} />
                     <Route path="/admin/driver" element={<DriverPage/>} />
+                </Route>
                 
             </Routes>
         </BrowserRouter>
