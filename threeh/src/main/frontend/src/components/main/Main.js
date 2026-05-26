@@ -52,9 +52,6 @@ const Main = () => {
 
 
             <div className="main-body-wrapper">
-                
-
-
                 {/* Contents 영역 */}
                 {/* global.css의 공통 레이아웃인 casamia-container를 사용하여 규격을 강제합니다. */}
                 <div className="casamia-container main-container">

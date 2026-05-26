@@ -125,14 +125,14 @@
     position: relative;
 }
 
-.main-header-topBox .main-header-search .bar {
+.main-header-topBox .main-header-search .main-header-bar {
     display: flex;
     align-items: center;
     border-bottom: 2px solid var(--main-black); /* 까사미아 특유의 하단 굵은 라인 강조 */
     padding: 4px 0;
 }
 
-.main-header-topBox .main-header-search .bar input {
+.main-header-topBox .main-header-search .main-header-bar input {
   flex: 1;
   border: none;
   outline: none;
@@ -142,12 +142,12 @@
   background: none;
 }
 
-.main-header-topBox .main-header-search .bar input::placeholder {
+.main-header-topBox .main-header-search .main-header-bar input::placeholder {
   color: var(--main-light-gray);
   font-weight: bold;
 }
 
-.main-header-topBox .main-header-search .bar button {
+.main-header-topBox .main-header-search .main-header-bar button {
   background: none;
   border: none;
   cursor: pointer;
@@ -157,7 +157,7 @@
   padding: 4px;
 }
 
-.main-header-topBox .main-header-search .bar button img {
+.main-header-topBox .main-header-search .main-header-bar button img {
   width: 22px !important;
   opacity: 0.8;
 }
@@ -228,7 +228,7 @@
 }
 
 /* 검색 조건 상단 타이틀 바 */
-.main-header-topBox .main-header-search .main-header-searchCondition article:first-child {
+.main-header-topBox .main-header-search .main-header-searchCondition .main-header-searchCondition-title {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -244,7 +244,7 @@
   color: var(--main-black);
 }
 
-.main-header-topBox .main-header-search .main-header-searchCondition button[type='button'] {
+.main-header-topBox .main-header-search .main-header-searchCondition .deleteAll {
   background: none;
   border: none;
   font-size: 12px;
@@ -253,24 +253,24 @@
   cursor: pointer;
 }
 
-.main-header-topBox .main-header-search .main-header-searchCondition button[type='button']:hover {
+.main-header-topBox .main-header-search .main-header-searchCondition .deleteAll:hover {
   color: var(--main-black);
 }
 
 /* 카테고리, 색상 개별 아이템 그룹화 */
-.main-header-topBox .main-header-search .main-header-searchCondition article:last-child {
+.main-header-topBox .main-header-search .main-header-searchCondition .main-header-searchCondition-filters {
   display: flex;
   flex-direction: column;
   gap: 22px;
 }
 
-.main-header-topBox .main-header-search .main-header-searchCondition article:last-child > div {
+.main-header-topBox .main-header-search .main-header-searchCondition .main-header-searchCondition-filters > div {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.main-header-topBox .main-header-search .main-header-searchCondition article:last-child p {
+.main-header-topBox .main-header-search .main-header-searchCondition .main-header-searchCondition-filters p {
   margin: 0;
   font-size: 13px;
   font-weight: 600;
@@ -278,7 +278,7 @@
 }
 
 /* 체크박스 정렬 행 */
-.main-header-topBox .main-header-search .main-header-searchCondition article:last-child div > div {
+.main-header-topBox .main-header-search .main-header-searchCondition .main-header-searchCondition-filters div > div {
   display: flex;
   flex-wrap: wrap;
   gap: 14px;
@@ -543,18 +543,18 @@
     background-color: var(--main-black, #000); /* 현재 활성화된 버튼 색상 */
 }
 
-/* /========================================== */
-
-/* 상품 목록 영역 */
-.main-item-section {
-  width: 100%;
-}
-
 
 
 /* ==========================================
    1. 부모 레이아웃 (상품 리스트 정렬 및 슬라이더 뷰포트)
 ========================================== */
+/* 상품 목록 영역 */
+.main-item-section {
+  width: 100%;
+}
+
+/* /========================================== */
+
 .main-itemList {
     max-width: 1200px;
     margin: 0 auto;
@@ -581,7 +581,7 @@
 }
 
 /* 8개의 카드가 수평 정렬되는 트랙 공간 */
-.main-product-slider-section .items {
+.main-product-slider-section .main-items {
     display: flex;
     gap: 20px; /* 카드간 고정 간격 */
     box-sizing: border-box;
@@ -589,12 +589,13 @@
 }
 
 /* 빈 상품 문구 */
-.main-itemList .item-empty-text {
+.main-itemList .main-item-empty-text {
     padding: 60px 0;
     margin: 0 auto;
     font-size: 15px;
     color: #8A8178;
 }
+
 
 /* ==========================================
    2. 자식 레이아웃 (개별 상품 카드 & 세로 배열 유지)
@@ -607,7 +608,7 @@
 }
 
 /* 이미지 박스 스타일 */
-.main-item-card .image-box {
+.main-item-card .main-image-box {
     position: relative; 
     width: 100%;
     aspect-ratio: 1 / 1; 
@@ -615,9 +616,10 @@
     border-radius: 12px; 
     overflow: hidden;
     margin-bottom: 12px; 
+    text-align: center;
 }
 
-.main-item-card .image-box img {
+.main-item-card .main-image-box img {
     width: 100%;
     height: 100%;
     object-fit: cover; 
@@ -648,26 +650,26 @@
 
 
 /* 텍스트 정보 정렬 */
-.main-item-card .item-name {
+.main-item-card .main-item-name {
     font-size: 14px;
     color: #666;
     margin: 0 0 6px 0;
-    text-align: left;
+    text-align: center;
 }
 
-.main-item-card .item-price {
+.main-item-card .main-item-price {
     font-size: 16px;
     font-weight: bold;
     color: #111;
     margin: 0;
-    text-align: left;
+    text-align: center;
 }
 
 /* ==========================================
    3. 슬라이더 컴포넌트 전용 UI 컨트롤러 버튼 (까사미아 메인 배너 스타일 이식)
 ========================================== */
 /* 화살표 내비게이션 버튼 배치 */
-.main-product-slider-section .slider-btn-once {
+.main-product-slider-section .main-slider-btn-once {
     position: absolute;
     top: calc(50% - 25px); /* 이미지 박스 중간 지점에 균형감 있게 배치 */
     left: 50%; 
@@ -679,7 +681,7 @@
     z-index: 20;
 }
 
-.main-product-slider-section .slider-btn-once button {
+.main-product-slider-section .main-slider-btn-once button {
     background: none;
     border: none;
     cursor: pointer;
@@ -687,13 +689,13 @@
     padding: 0;
 }
 
-.main-product-slider-section .slider-btn-once button img {
+.main-product-slider-section .main-slider-btn-once button img {
     width: 45px;
     filter: drop-shadow(0px 2px 5px rgba(0,0,0,0.1));
 }
 
 /* 하단 인디케이터 도트 트랙 */
-.main-product-slider-section .slider-btn-indicator {
+.main-product-slider-section .main-slider-btn-indicator {
     display: flex;
     justify-content: center;
     gap: 10px;
@@ -702,7 +704,7 @@
     margin: 30px 0 0 0; /* 슬라이더 하단 여백 형성 */
 }
 
-.main-product-slider-section .slider-btn-indicator li {
+.main-product-slider-section .main-slider-btn-indicator li {
     width: 12px;
     height: 12px;
     background-color: #ccc;
@@ -712,7 +714,7 @@
 }
 
 /* 활성화 상태 인디케이터 컬러 융합 */
-.main-product-slider-section .slider-btn-indicator li.active {
+.main-product-slider-section .main-slider-btn-indicator li.active {
     background-color: var(--main-black, #000); 
 }
 

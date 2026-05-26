@@ -170,7 +170,7 @@ const Main_itemList = ({ totalItemList }) => {
                     <>
                         <div className="main-slider-container" style={{ overflow: 'hidden' }}>
                             <article 
-                                className="items"
+                                className="main-items"
                                 style={{
                                     transform: `translateX(-${currentIndex * slidePercentage}%)`,
                                     // isTransition 상태에 따라 0.8초 애니메이션을 껐다 켰다 함
@@ -192,8 +192,8 @@ const Main_itemList = ({ totalItemList }) => {
                         </div>
 
 
-                        {/* 이전 / 다음으로 이동 버튼 (움직이는 items 밖, slider-container 안에 배치) */}
-                            <div className="slider-btn-once">
+                        {/* 이전 / 다음으로 이동 버튼 (움직이는 main-items 밖, slider-container 안에 배치) */}
+                            <div className="main-slider-btn-once">
                                 <button id="prev" name="prev" className="prev" onClick={handlePrev}>
                                     <img src={icon_prev} alt='이전으로'/>
                                 </button>
@@ -204,7 +204,7 @@ const Main_itemList = ({ totalItemList }) => {
 
 
                         {/* 하단 인디케이터 (복제본 빼고 진짜 원본 8개만큼만 보여줌) */}
-                        <ul className="slider-btn-indicator">
+                        <ul className="main-slider-btn-indicator">
                             {itemList.map((_, index) => (
                                 <li 
                                     key={index}
@@ -215,7 +215,7 @@ const Main_itemList = ({ totalItemList }) => {
                         </ul>
                     </>
                 ) : (
-                    <p className="item-empty-text">상품이 없습니다.</p>
+                    <p className="main-item-empty-text">상품이 없습니다.</p>
                 )
             }
         </section>

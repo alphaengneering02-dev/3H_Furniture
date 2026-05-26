@@ -158,7 +158,7 @@ const Header = () => {
                         <div className="main-header-search">
                             <form method="get">
                                 {/* 검색창 */}
-                                <section className='bar'>
+                                <section className='main-header-bar'>
                                     <button type="button" id="do" className="do">
                                         <img 
                                             src={icon_search} alt="검색" 
