@@ -38,7 +38,7 @@ function Order(props) {
     const [address, setAddress] = useState(defaultAddress?.address || '');
     const [detailedAddress, setDetailedAddress] = useState(defaultAddress?.detail || '');
 
-    const { success, error, warn } = useToast();
+    const { success, error: toastError, warn, info } = useToast();
   
 
     if(!user) {
@@ -97,7 +97,7 @@ function Order(props) {
 
                 .catch(error =>  {
                     console.log(error)
-                    error("상품 정보를 불러오는데 실패");
+                    toastError("상품 정보를 불러오는데 실패");
                     //navigate('/cart');
                 })
             
@@ -121,16 +121,16 @@ function Order(props) {
                         // 3. 그 외 400, 500 등 서버 에러
                         else {
                             console.error(`서버 에러 (${error.response.status}):`, error.response.data);
-                            error("상품 정보를 불러오는 중 오류가 발생했습니다.");
+                            toastError("상품 정보를 불러오는 중 오류가 발생했습니다.");
                         }
                     } 
                     // 4. 서버 응답 자체가 없는 경우 (네트워크 에러 등)
                     else if (error.request) {
-                        console.error("응답 없음: 서버와 통신할 수 없습니다.");
+                        console.toastError("응답 없음: 서버와 통신할 수 없습니다.");
                     } 
                     // 5. 기타 코드 에러
                     else {
-                        console.error("Error:", error.message);
+                        console.toastError("Error:", error.message);
                     }
                 });
         }
@@ -143,7 +143,7 @@ function Order(props) {
     return (
         <>
             <div className='main-header'>
-            <Header/>
+                <Header/>
             </div>
 
             <OrderInfo 

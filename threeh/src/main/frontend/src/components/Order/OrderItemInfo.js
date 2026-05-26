@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getUrl } from '../../utils/BackendPath';
 import '../../css/orderPageCss/orderPage.css';
+import { useToast } from '../../hook/useToast';
 
 
 
@@ -12,6 +13,8 @@ function OrderItemInfo( { orderData, orderType, zipCode, address, deliveryDate, 
   
     const isLoadingRef = useRef(false);
     const navigate = useNavigate();
+
+    const { success, error, warn, info} = useToast();
       
        
    
@@ -21,17 +24,17 @@ function OrderItemInfo( { orderData, orderType, zipCode, address, deliveryDate, 
            if(isLoadingRef.current) return; 
 
            if(!orderType) {
-                alert("배송 및 설치 방법을 선택하세요");
+                warn("배송 및 설치 방법을 선택하세요");
                 return;
            }
 
            if(!address) {
-                alert("주소를 입력해주세요");
+                warn("주소를 입력해주세요");
                 return;
            }
 
            if(!deliveryDate){
-                alert("배송 희망 날짜를 선택해주세요");
+                warn("배송 희망 날짜를 선택해주세요");
                 return;
            }
 
@@ -119,21 +122,21 @@ function OrderItemInfo( { orderData, orderType, zipCode, address, deliveryDate, 
                     failUrl: 'http://localhost:3000/payment/toss/fail'
                 });
 
-            } catch (error) {
-                const status = error.response?.status;
+            } catch (err) {
+                const status = err.response?.status;
 
-                if (error.response && error.response.data) {
+                if (err.response && err.response.data) {
 
-                    const errorMessage = typeof error.response.data === 'string' 
-                    ? error.response.data 
-                    : (error.response.data.message || error.response.data.error || "결제 요청 중 오류가 발생했습니다.");
-                    alert(`결제 실패: ${errorMessage}`);
+                    const errorMessage = typeof err.response.data === 'string' 
+                    ? err.response.data 
+                    : (err.response.data.message || err.response.data.error || "결제 요청 중 오류가 발생했습니다.");
+                    error(`결제 실패: ${errorMessage}`);
                     
                 } else if (status === 400) {
-                    alert("로그인이 필요한 서비스입니다.");
+                    warn("로그인이 필요한 서비스입니다.");
                     navigate("/login"); // 로그인 페이지로
                 } else {
-                    alert("결제에 실패했습니다. 다시 시도해주세요.");
+                    error("결제에 실패했습니다. 다시 시도해주세요.");
                 }
             } finally {
                 isLoadingRef.current = false;
