@@ -80,13 +80,13 @@
 }
 
 /* 컬럼별 가로 비율 정밀 분할 레이아웃 (총합 100% 칼정렬 기하학) */
-.th-select, .td-select             { width: 6%;  display: flex; justify-content: center; align-items: center; }
-.th-order-id, .td-order-id         { width: 12%; text-align: center; }
-.th-product-name, .td-product-name { width: 36%; text-align: left; padding-left: 15px; box-sizing: border-box; }
-.th-price, .td-price               { width: 12%; text-align: right; padding-right: 15px; box-sizing: border-box; }
-.th-count, .td-count               { width: 8%;  text-align: center; }
-.th-subtotal, .td-subtotal         { width: 14%; text-align: right; padding-right: 15px; box-sizing: border-box; }
-.th-status, .td-status             { width: 12%; text-align: center; }
+.refund-th-select, .refund-td-select             { width: 6%;  display: flex; justify-content: center; align-items: center; }
+.refund-th-order-id, .refund-td-order-id         { width: 12%; text-align: center; }
+.refund-th-product-name, .refund-td-product-name { width: 36%; text-align: left; padding-left: 15px; box-sizing: border-box; }
+.refund-th-price, .refund-td-price               { width: 12%; text-align: right; padding-right: 15px; box-sizing: border-box; }
+.refund-th-count, .refund-td-count               { width: 8%;  text-align: center; }
+.refund-th-subtotal, .refund-td-subtotal         { width: 14%; text-align: right; padding-right: 15px; box-sizing: border-box; }
+.refund-th-status, .refund-td-status             { width: 12%; text-align: center; }
 
 /* ==========================================
    3. 테이블 바디 및 데이터 행 아이템 카드
@@ -112,19 +112,19 @@
 }
 
 /* 라디오 버튼 원형 마감 크기 */
-.td-select input[type="radio"] {
+.refund-td-select input[type="radio"] {
     width: 16px;
     height: 16px;
     cursor: pointer;
     accent-color: #111111;
 }
 
-.td-order-id {
+.refund-td-order-id {
     color: #555555;
     font-size: 13px;
 }
 
-.td-product-name {
+.refund-td-product-name {
     display: flex;
     flex-direction: column;
     gap: 4px;
@@ -135,21 +135,21 @@
     font-weight: 500;
 }
 
-.td-price {
+.refund-td-price {
     color: #111111;
 }
 
-.td-count {
+.refund-td-count {
     color: #444444;
 }
 
 /* 장바구니 합산 내역처럼 소계금액 강력 700 고정 */
-.td-subtotal {
+.refund-td-subtotal {
     font-weight: 700;
     color: #111111;
 }
 
-.td-status {
+.refund-td-status {
     font-size: 13px;
     font-weight: 500;
     color: #444444;
@@ -176,7 +176,7 @@
     margin-top: 40px;
 }
 
-.page-arrow-btn {
+.refund-page-arrow-btn {
     background: none;
     border: none;
     font-size: 13px;
@@ -185,17 +185,17 @@
     padding: 4px 8px;
 }
 
-.page-arrow-btn:disabled {
+.refund-page-arrow-btn:disabled {
     color: #dddddd;
     cursor: default;
 }
 
-.page-number-group {
+.refund-page-number-group {
     display: flex;
     gap: 12px;
 }
 
-.page-num-btn {
+.refund-page-num-btn {
     background: none;
     border: none;
     font-size: 13px;
@@ -208,7 +208,7 @@
     justify-content: center;
 }
 
-.page-num-btn.active {
+.refund-page-num-btn.active {
     color: #111111;
     font-weight: 700;
     border-bottom: 2px solid #111111; /* 활성화 번호 아랫선 마킹 */

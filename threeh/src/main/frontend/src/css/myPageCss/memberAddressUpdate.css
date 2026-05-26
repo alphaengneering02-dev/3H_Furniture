@@ -43,13 +43,13 @@
 }
 
 /* 입력 폼 내부 각각의 Row 가이드 라인 */
-.form-group-row {
+.update-form-group-row {
     width: 100% !important;
     margin-bottom: 12px !important; /* 칸끼리 겹치지 않게 마진 여백 추가 */
 }
 
 /* 인풋 입력창 프리미엄 미니멀 스타일 커스텀 */
-.form-group-row input {
+.update-form-group-row input {
     width: 100% !important;
     height: 40px !important;
     padding: 0 10px !important;
@@ -63,14 +63,14 @@
 }
 
 /* 인풋 입력창에 마우스를 클릭했을 때(Focus) 하이라이트 효과 */
-.form-group-row input:focus {
+.update-form-group-row input:focus {
     outline: none !important;
     border-color: #8C7A6B !important; /* 까사미아 브라운선으로 변경 */
     background-color: #fdfbf7 !important; /* 은은한 조명 무드 투과 */
 }
 
 /* 수정 불가능한 아이디 창 전용 락(Lock) 스타일 */
-.form-group-row .disabled-input {
+.update-form-group-row .disabled-input {
     background-color: #F5F4F0 !important;
     color: #888888 !important;
     border: 1px solid #E2DDD5 !important;

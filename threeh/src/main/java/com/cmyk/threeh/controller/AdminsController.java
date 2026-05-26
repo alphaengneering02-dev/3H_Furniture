@@ -161,24 +161,39 @@ public ResponseEntity<AdminsDTO> getAdminIdByLoginId(@PathVariable("loginId") St
 @PostMapping("/orders/{orderId}/assign")
 public ResponseEntity<?> assignOrderToDelivery(
         @PathVariable("orderId") Long orderId, 
-        @RequestBody Map<String, Long> payload) {
+        @RequestBody Map<String, Object> payload) { // String과 Long을 모두 받기 위해 Object로 변경
     
-    Long deliveryId = payload.get("deliveryId");
-    if (deliveryId == null) {
+    if (payload.get("deliveryId") == null) {
         return ResponseEntity.badRequest().body("기사 ID가 누락되었습니다.");
     }
+    
+    Long deliveryId = Long.parseLong(payload.get("deliveryId").toString());
+    // 프론트에서 넘겨준 targetStatus(WAITING 또는 PICKUP) 수집, 없으면 기본값 WAITING
+    String deliveryStatusStr = payload.getOrDefault("deliveryStatus", "WAITING").toString();
 
     try {
-        // 기사 배정 처리 (주문에 기사 ID 맵핑)
-        adminsService.assignOrder(orderId, deliveryId);
-        
         Orders order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
+                
+        Delivery driver = deliveryRepository.findById(deliveryId)
+                .orElseThrow(() -> new RuntimeException("기사를 찾을 수 없습니다."));
 
-        order.changeDeliveryStatus(null); 
-        orderRepository.save(order);
+        // 1. 상태 분기 처리
+        if ("PICKUP".equals(deliveryStatusStr)) {
+            // 💡 픽업 배정일 때는 orderState(EXCHANGEorREFUND 등)를 절대로 READY로 바꾸지 않고 유지!
+            order.setDelivery(driver);
+            order.changeDeliveryStatus(DeliveryStatus.PICKUP);
+            driver.setStatus(DeliveryStatus.PICKUP);
+        } else {
+            // 💡 일반 배송 배정일 때만 기존 서비스 로직 실행 (또는 아래처럼 직접 처리)
+            adminsService.assignOrder(orderId, deliveryId);
+            order.changeDeliveryStatus(DeliveryStatus.WAITING);
+        }
         
-        return ResponseEntity.ok("배정이 완료되었습니다. 기사의 수락을 대기합니다.");
+        orderRepository.save(order);
+        deliveryRepository.save(driver);
+        
+        return ResponseEntity.ok("배정이 완료되었습니다.");
     } catch (Exception e) {
         return ResponseEntity.internalServerError().body("배정 중 오류: " + e.getMessage());
     }
@@ -454,14 +469,40 @@ public ResponseEntity<?> completeDelivery(@PathVariable Long orderId) {
         return ResponseEntity.badRequest().body("해당 주문에 배정된 기사가 없습니다.");
     }
     
-    // 1. 기사의 상태를 COMPLETED로 변경
-    order.getDelivery().setStatus(DeliveryStatus.COMPLETED);
+    // 현재 배송 상태와 주문 상태를 미리 파악합니다.
+    DeliveryStatus currentDeliveryStatus = order.getDeliveryStatus();
+    OrderState currentOrderState = order.getOrderState();
 
-    // 💡 2. [추가] 주문(Orders)의 배송 상태도 COMPLETED로 함께 변경!
-    order.changeDeliveryStatus(DeliveryStatus.COMPLETED);
+    // =============================================================
+    // 🔄 [수정] 반품/교환/취소 건의 '수거 완료(PICKUP 상태에서 완료)'인 경우
+    // =============================================================
+    if (currentDeliveryStatus == DeliveryStatus.PICKUP) {
+        System.out.println("📦 [회수 완료 처리] PICKUP -> COMPLETED 전환 (주문 상태 " + currentOrderState + " 유지)");
+        
+        // 기사와 주문의 배송 상태는 완료(COMPLETED)로 바꾸되
+        order.getDelivery().setStatus(DeliveryStatus.COMPLETED);
+        order.changeDeliveryStatus(DeliveryStatus.COMPLETED);
+        
+        // 🔥 핵심: 기존의 EXCHANGEorREFUND 또는 CANCEL 상태가 변하지 않도록 강제로 다시 한번 세팅하거나 보존합니다.
+        order.changeOrderState(currentOrderState); 
+    } 
+    // =============================================================
+    // 🚚 [기본] 일반 배송 건의 '배송 완료'인 경우
+    // =============================================================
+    else {
+        System.out.println("🚚 [일반 배송 완료 처리] SHIPPING -> COMPLETED 전환");
+        order.getDelivery().setStatus(DeliveryStatus.COMPLETED);
+        order.changeDeliveryStatus(DeliveryStatus.COMPLETED);
+        
+        // 일반 배송 완료 시 주문 상태를 유지하거나 비즈니스 규칙에 맞게 세팅 (필요시 추가)
+        if (currentOrderState == OrderState.ORDER) {
+            // 필요하다면 배송완료 후의 특정 OrderState로 변경 가능 (ex: order.changeOrderState(OrderState.COMPLETE);)
+            order.changeOrderState(currentOrderState);
+        }
+    }
 
     orderRepository.save(order);
-    return ResponseEntity.ok("배송 완료 처리되었습니다.");
+    return ResponseEntity.ok("완료 처리되었습니다.");
 }
 
 //기사님 복귀(complete -> waiting)

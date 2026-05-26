@@ -26,19 +26,26 @@ const Orderboard = ({
         return extraCount > 0 ? `${firstName} 외 ${extraCount}개 상품` : firstName;
     };
 
-    const normalizedOrders = orders.map(o => ({
+    const normalizedOrders = orders.map(o => {
+    let state = o.orderState || o.ORDER_STATE;
+    // 백엔드에서 한글로 올 경우 영문 조건과 호환되도록 치환
+    if (state === '교환또는환불') state = 'EXCHANGEorREFUND';
+    if (state === '주문취소') state = 'CANCEL';
+    if (state === '주문') state = 'ORDER';
+    if (state === '배송 준비중') state = 'READY';
+
+    return {
         ...o,
         orderId: o.orderId || o.ORDER_ID,
-        orderState: o.orderState || o.ORDER_STATE,
+        orderState: state, // 변환된 상태값 적용
         deliveryStatus: o.deliveryStatus || o.DELIVERY_STATUS,
         deliveryId: o.deliveryId || o.DELIVERY_ID,
         deliveryAddr: o.deliveryAddr || o.DELIVERY_ADDR,
         deliveryAddrDetail: o.deliveryAddrDetail || o.DELIVERY_ADDR_DETAIL,
         orderDate: o.orderDate || o.ORDER_DATE,
         orderitems: o.orderitems || o.orderItems || o.ITEMS || []
-    }));
-
-    // 💡 [수정 포인트] 필터 대상 대상을 원본(orders)에서 규격화된 데이터(normalizedOrders)로 교체
+    };
+});
     const assignedOrders = normalizedOrders.filter(o => o.deliveryId && o.deliveryStatus === 'WAITING');
     const unassignedOrders = normalizedOrders.filter(o => {   
         const isReady = o.orderState === 'READY' || o.orderState === '배송 준비중' || o.orderState === 'ORDER'; // 'ORDER' 상태도 미배정에 포함되도록 보완
@@ -46,17 +53,24 @@ const Orderboard = ({
         return isReady && isUnassignedOrRejected;
     });
 
+    // 3. 일반 배송 진행 중 목록
     const shippingOrders = normalizedOrders.filter(o => o.deliveryStatus === 'SHIPPING');
     
+    // 💡 4. [반품/교환 픽업 목록] 
     const pickupOrders = normalizedOrders.filter(o => {
-        const isTargetState = o.orderState === 'EXCHANGEorREFUND' || o.orderState === 'CANCEL';
-        // SQL 결과 PICKUP 상태인 데이터를 인지하도록 보완
-        const isPickupStatus = o.deliveryStatus === 'COMPLETED' || o.deliveryStatus === 'PICKUP' || !o.deliveryStatus; 
+    // 1. 주문 상태가 EXCHANGEorREFUND 또는 CANCEL인지 확인
+    const isTargetState = o.orderState === 'EXCHANGEorREFUND' || o.orderState === 'CANCEL';
 
-        if (!isTargetState) return false;
-        if (pickupFilter === 'ALL') return true;
-        return o.orderState === pickupFilter;
-    });
+    // 2. 배송 상태가 오직 'COMPLETED' 또는 'PICKUP'인 경우만 허용 (null, WAITING 원천 차단)
+    const currentStatus = o.deliveryStatus ? o.deliveryStatus.toUpperCase() : '';
+    const isPickupStatus = currentStatus === 'COMPLETED' || currentStatus === 'PICKUP'; 
+
+    // 두 조건 중 하나라도 만족하지 않으면 제외
+    if (!isTargetState || !isPickupStatus) return false;
+    
+    if (pickupFilter === 'ALL') return true;
+    return o.orderState === pickupFilter;
+});
     
     const completedOrders = normalizedOrders.filter(o => o.deliveryStatus === 'COMPLETED' && o.orderState !== 'EXCHANGEorREFUND' && o.orderState !== 'CANCEL');
 
@@ -137,20 +151,31 @@ const Orderboard = ({
             <div className="admin-content-box">
                 <h3>배송 배정 완료 목록[O.S=READY,D.S=WAITING인 ordersDB]</h3>
                 <table className="admin-table-style">
-                    <thead><tr><th>번호</th><th>상품</th><th>주소</th><th>배정된 기사</th><th>상태</th><th>주문일</th></tr></thead>
+                    <thead><tr><th>번호</th><th>상품</th><th>갯수</th><th>판매 금액</th><th>배정된 기사</th><th>상태</th><th>주문일</th></tr></thead>
                     <tbody>
-                        {pagedAssigned.map((order, index) => (
-                            <tr key={order.orderId}>
-                                <td>{(page2 - 1) * perPage2 + index + 1}</td>
-                                <td>{renderItemName(order.orderitems)}</td>
-                                <td>{order.deliveryAddr} {order.deliveryAddrDetail}</td>
-                                <td><strong>{items.find(d => d.deliveryId === Number(order.deliveryId))?.deliveryName || "지정 기사"}</strong></td>
-                                <td><span>배송 대기중</span></td>
-                                <td>{order.orderDate?.split('T')[0]}</td>
-                            </tr>
-                        ))}
-                        {assignedOrders.length === 0 && <tr><td colSpan="6">배정 완료된 주문이 없습니다.</td></tr>}
-                    </tbody>
+                    {pagedCompleted.map((order, index) => {
+                // 💡 해당 주문의 총 판매 금액 계산 (단가 * 수량의 합)
+                const totalOrderPrice = order.orderitems?.reduce((sum, item) => {
+                    return sum + ((item.orderPrice || 0) * (item.count || 0));
+                }, 0) || 0;
+
+                return (
+                    <tr key={order.orderId}>
+                        <td>{(page6 - 1) * perPage6 + index + 1}</td>
+                        <td>{renderItemName(order.orderitems)}</td>
+                        <td>{order.orderitems?.reduce((sum, item) => sum + item.count, 0) || 0}개</td>
+                        
+                        {/* 💡 주소 <td> 제거 후 계산된 총 금액을 원화 포맷(1,000원)으로 출력 */}
+                        <td><strong>{totalOrderPrice.toLocaleString()}원</strong></td>
+                        
+                        <td><span>{items.find(d => d.deliveryId === Number(order.deliveryId))?.deliveryName || "담당 기사"}</span></td>
+                        <td><span>배송완료</span></td>
+                        <td>{order.orderDate?.split('T')[0]}</td>
+                    </tr>
+                );
+            })}
+            {pagedCompleted.length === 0 && <tr><td colSpan="7">배송 완료된 주문이 없습니다.</td></tr>}
+        </tbody>
                 </table>
             </div>
 
@@ -244,14 +269,24 @@ const Orderboard = ({
                                     <td>{renderItemName(currentItems)}</td>
                                     <td>{currentItems.reduce((sum, i) => sum + (i.count || 0), 0)}개</td>
                                     <td>{order.deliveryAddr} {order.deliveryAddrDetail}</td>
-                                    {/* 기존 코드의 오타 매핑('EXCHANGEorREFUND') 대응 보완 */}
                                     <td><span>{order.orderState === 'EXCHANGEorREFUND' ? '교환/반품 접수' : '취소 접수'}</span></td>
                                     <td>
-                                        <select value={selectedDrivers[order.orderId] || ""} onChange={(e) => handleDriverSelect(order.orderId, e.target.value)}>
-                                            <option value="">픽업 기사 선택</option>
-                                            {items.map(driver => <option key={driver.deliveryId} value={driver.deliveryId}>{driver.deliveryName}</option>)}
-                                        </select>
-                                        <button onClick={() => handleAssignDriver(order.orderId, true)}>픽업 배정</button>
+                                        {/* 💡 핵심 변경 구간: deliveryId가 있고 deliveryStatus가 'PICKUP'인 경우 지정 완료 UI 노출 */}
+                                        {order.deliveryId && order.deliveryStatus === 'PICKUP' ? (
+                                            <div>
+                                                <strong>{items.find(d => d.deliveryId === Number(order.deliveryId))?.deliveryName} 기사님 </strong>
+                                                <span style={{ color: '#28a745', fontWeight: 'bold' }}>(픽업 배정 완료)</span>
+                                            </div>
+                                        ) : (
+                                            <>
+                                                <select value={selectedDrivers[order.orderId] || ""} onChange={(e) => handleDriverSelect(order.orderId, e.target.value)}>
+                                                    <option value="">픽업 기사 선택</option>
+                                                    {items.map(driver => <option key={driver.deliveryId} value={driver.deliveryId}>{driver.deliveryName}</option>)}
+                                                </select>
+                                                {/* 💡 두 번째 인자로 'PICKUP' 문자열 상태값을 직접 넘겨줍니다 */}
+                                                <button onClick={() => handleAssignDriver(order.orderId, 'PICKUP')}>픽업 배정</button>
+                                            </>
+                                        )}
                                     </td>
                                     <td>{order.orderDate?.split('T')[0]}</td>
                                 </tr>
@@ -263,5 +298,4 @@ const Orderboard = ({
         </div>
     );
 };
-
 export default Orderboard;

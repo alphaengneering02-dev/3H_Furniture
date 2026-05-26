@@ -57,7 +57,7 @@ const DriverPage = () => {
         const pickups = dbOrders.filter(o => 
             o.deliveryStatus === 'PICKUP' && (o.orderState === 'EXCHANGEorREFUND' || o.orderState === 'CANCEL')
         );
-        
+
         setOrders(newOrders);
         setAcceptedOrders(accepted); 
         setShippingOrders(shipping);

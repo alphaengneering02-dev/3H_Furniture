@@ -152,7 +152,7 @@ body {
 }
 
 /* 프로필 타이틀 요약 박스 */
-.profile-icon-box {
+.mypage-profile-icon-box {
     display: flex;
     align-items: center;
     background: #ffffff;
@@ -162,7 +162,7 @@ body {
     box-shadow: 8px 8px 0px #ede2d5; 
 }
 
-.profile-avatar-circle {
+.mypage-profile-avatar-circle {
     font-family: 'Playfair Display', serif;
     font-size: 26px;
     font-weight: 700;
@@ -176,7 +176,7 @@ body {
 }
 
 /* 섹션 대제목 타이틀 라벨 */
-.info-section-title {
+.mypage-info-section-title {
     font-size: 16px;
     font-weight: 900;
     color: #111111;
@@ -188,7 +188,7 @@ body {
     border-bottom: 2px solid #111111; 
     padding-bottom: 10px;
 }
-.info-section-title::after {
+.mypage-info-section-title::after {
     content: "3H PREMIUM FURNITURE";
     font-family: 'Playfair Display', serif;
     font-size: 11px;
@@ -198,7 +198,7 @@ body {
 }
 
 /* 회원정보 및 공통 데이터 블록 디자인 */
-.info-data-block {
+.mypage-info-data-block {
     display: flex;
     flex-direction: column; 
     gap: 18px;
@@ -211,7 +211,7 @@ body {
     box-sizing: border-box;
 }
 
-.info-data-block p {
+.mypage-info-data-block p {
     margin: 0;
     font-size: 14px;
     color: #111111;
@@ -220,7 +220,7 @@ body {
     padding-bottom: 6px;
 }
 
-.info-data-block p strong {
+.mypage-info-data-block p strong {
     font-weight: 700;
     color: #8C7A6B; 
     margin-right: 15px;
@@ -232,7 +232,7 @@ body {
 /* ==========================================
    5. 구매내역 가로형 슬라이더 쇼룸
    ========================================== */
-.order-slider-wrapper {
+.mypage-order-slider-wrapper {
     display: flex;
     align-items: center;
     border: 2px solid #111111; 
@@ -244,7 +244,7 @@ body {
     box-shadow: inset 0 0 25px rgba(140, 122, 107, 0.04);
 }
 
-.slider-arrow-btn {
+.mypage-slider-arrow-btn {
     background-color: #ffffff;
     border: 1px solid #111111;
     width: 36px;
@@ -260,23 +260,23 @@ body {
     z-index: 10;
     transition: all 0.2s ease;
 }
-.slider-arrow-btn:hover:not(:disabled) { background-color: #111111; color: #ffffff; }
-.slider-arrow-btn:disabled { border-color: #eeeeee; color: #dddddd; cursor: not-allowed; }
+.mypage-slider-arrow-btn:hover:not(:disabled) { background-color: #111111; color: #ffffff; }
+.mypage-slider-arrow-btn:disabled { border-color: #eeeeee; color: #dddddd; cursor: not-allowed; }
 
-.order-slider-container { 
+.mypage-order-slider-container { 
     flex: 1; 
     overflow: hidden !important; 
     padding: 8px; 
     margin: 0 15px;
 }
-.order-slider-track { 
+.mypage-order-slider-track { 
     display: flex !important; 
     gap: 16px !important; 
     width: 100% !important;
 }
 
 /* 개별 사각 카드 쇼룸 판넬 */
-.order-square-card {
+.mypage-order-square-card {
     flex: 0 0 calc(25% - 12px) !important; 
     max-width: calc(25% - 12px) !important;
     box-sizing: border-box;
@@ -291,13 +291,13 @@ body {
     transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-.order-square-card:hover {
+.mypage-order-square-card:hover {
     transform: translateY(-6px);
     border-color: #111111;
     box-shadow: 0 15px 30px rgba(140, 122, 107, 0.16);
 }
 
-.order-square-card p:nth-child(2) {
+.mypage-order-square-card p:nth-child(2) {
     font-size: 14px;
     font-weight: 700;
     line-height: 1.4;
@@ -311,7 +311,7 @@ body {
 
 /* ① 미니멀 헤더 액션 라인 버튼 (로그아웃, 메인으로, 정보수정, 상품보기) */
 .mypage-header-box button,
-.profile-icon-box button:last-of-type,
+.mypage-profile-icon-box button:last-of-type,
 tbody button {
     background-color: transparent !important;
     border: 1px solid #111111 !important;
@@ -326,7 +326,7 @@ tbody button {
 }
 
 .mypage-header-box button:hover,
-.profile-icon-box button:last-of-type:hover,
+.mypage-profile-icon-box button:last-of-type:hover,
 tbody button:hover {
     background-color: #111111 !important;
     color: #FFFFFF !important;
@@ -372,7 +372,7 @@ tbody button:hover {
 /* -------------------------------------------------------------------------
    [배송지 추가 헤더 내부 순서 뒤집기] 
    ------------------------------------------------------------------------- */
-.address-section-header {
+.mypage-address-section-header {
     display: flex !important;
     flex-direction: column !important; /* 가로 배열을 세로 배열로 변경 */
     align-items: flex-start !important; /* 왼쪽 정렬 */
@@ -381,13 +381,13 @@ tbody button:hover {
 }
 
 /* 제목 라벨을 헤더 박스 내에서 첫 번째로 배치 */
-.address-section-header > h3 {
+.mypage-address-section-header > h3 {
     order: 1 !important;
     width: 100% !important;
 }
 
 /* [+ 새 배송지 검색] 버튼 박스를 제목 아래인 두 번째로 강제 배치 */
-.address-section-header > button {
+.mypage-address-section-header > button {
     order: 2 !important;
     margin-bottom: 5px !important; /* 우편번호 창과의 간격 확보 */
 }
@@ -405,7 +405,7 @@ tbody button:hover {
 /* -------------------------------------------------------------------------
    [배송지 추가 헤더 내부 순서 뒤집기 및 간격 미세 압축] 
    ------------------------------------------------------------------------- */
-.address-section-header {
+.mypage-address-section-header {
     display: flex !important;
     flex-direction: column !important; /* 가로 배열을 세로 배열로 변경 */
     align-items: flex-start !important; /* 왼쪽 정렬 */
@@ -415,7 +415,7 @@ tbody button:hover {
 }
 
 /* 제목 라벨을 헤더 박스 내에서 첫 번째로 배치 */
-.address-section-header > h3 {
+.mypage-address-section-header > h3 {
     order: 1 !important;
     width: 100% !important;
     margin: 0 0 10px 0 !important; /* 글씨와 버튼 사이 간격을 10px로 세밀하게 고정 */
@@ -423,7 +423,7 @@ tbody button:hover {
 }
 
 /* [+ 새 배송지 검색] 버튼 박스를 제목 아래인 두 번째로 강제 배치 */
-.address-section-header > button {
+.mypage-address-section-header > button {
     order: 2 !important;
     margin: 0 0 15px 0 !important; /* 버튼 아래 배송지 리스트/카카오창과의 최소 간격만 확보 */
 }
@@ -531,7 +531,7 @@ tbody button:hover {
    ========================================================================= */
 
 /* 1. 프로필 박스 내부 "김인호님" 회원이름 글씨 선명도 및 두께 강화 */
-.profile-icon-box .profile-avatar-circle {
+.mypage-profile-icon-box .profile-avatar-circle {
     color: #111111 !important; /* 연한 갈색 무드에서 선명한 딥 블랙으로 변경 */
     font-weight: 800 !important; /* 글씨 두께를 가장 두껍게 보정 */
     text-shadow: none !important; /* 흐릿해 보일 수 있는 그림자 제거 */
@@ -604,12 +604,12 @@ tbody button:hover {
    ========================================================================= */
 
 /* 1. 프로필 박스 하단의 거대한 공백을 25px로 압축 */
-.profile-icon-box {
+.mypage-profile-icon-box {
     margin-bottom: 25px !important;
 }
 
 /* 2. 섹션 대제목 타이틀(회원정보, 배송지 추가 등)의 상단 여백을 25px로 대폭 줄임 */
-.info-section-title {
+.mypage-info-section-title {
     margin: 25px 0 15px 0 !important; /* 상단 여백을 55px -> 25px로 압축 */
     padding-bottom: 8px !important;
 }
@@ -625,7 +625,7 @@ tbody button:hover {
 }
 
 /* 5. 배송지 설정 헤더 박스의 상단 여백 보정 */
-.address-section-header {
+.mypage-address-section-header {
     margin-top: 25px !important; /* 40px -> 25px로 좁힘 */
 }
 
@@ -703,7 +703,7 @@ tbody button:hover {
 }
 
 /* 4. 격자로 정렬이 풀렸을 때 인호님의 예쁜 사각 카드가 찌그러지지 않게 크기 보정 */
-.order-slider-track.grid-view .order-square-card {
+.mypage-order-slider-track.grid-view .order-square-card {
     flex: none !important;
     max-width: 100% !important;
     width: 100% !important;
@@ -713,7 +713,7 @@ tbody button:hover {
 }
 
 /* 5. 카드 내부 글씨들이 바둑판 정렬에서도 한눈에 들어오도록 텍스트 줄바꿈 방지 세팅 */
-.order-slider-track.grid-view .order-square-card p {
+.mypage-order-slider-track.grid-view .order-square-card p {
     white-space: normal !important; /* 상품명이 길어도 깨지지 않게 줄바꿈 수용 */
 }
 
@@ -728,7 +728,7 @@ tbody button:hover {
    ========================================================================= */
 
 /* 전체보기 모드일 때 가로로 길게 늘어지던 트랙 폭을 100% 화면폭으로 초기화 */
-.order-slider-track.grid-view {
+.mypage-order-slider-track.grid-view {
     width: 100% !important; /* 400% 등으로 늘어나던 가로폭을 현재 상자 폭으로 리셋 */
     transform: none !important; /* 좌우로 밀어내던 이동 공식을 완전히 삭제 */
 }
@@ -805,7 +805,7 @@ tbody button:hover {
 
 /* 2. 인호님이 JSX에 새로 추가한 실제 <div> 박스 배너의 크기와 사진 강제 주입 */
 .mypage-sidebar .sidebar-furniture-banner,
-.sidebar-furniture-banner {
+.mypage-sidebar-furniture-banner {
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
@@ -826,7 +826,7 @@ tbody button:hover {
 
 /* 3. 마우스를 올렸을 때 손가락 모양 반응 및 고급스럽게 솟아오르는 리빙 무드 모션 */
 .mypage-sidebar .sidebar-furniture-banner:hover,
-.sidebar-furniture-banner:hover {
+.mypage-sidebar-furniture-banner:hover {
     cursor: pointer !important;
     transform: translateY(-6px) !important; 
     border-color: #8C7A6B !important; /* 까사미아 브라운선 하이라이트 */
