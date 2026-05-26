@@ -154,7 +154,7 @@ const AdminMemoDay = () => {
             </div>
 
             {/* 내부 구분선 */}
-            <hr className="sidebar-divider" />
+            <hr className="admin-sidebar-divider" />
 
             {/* 4. 로컬 D-day 설정 섹션 */}
             <div className="admin-dday-manager">
