@@ -4,6 +4,8 @@ import axios from 'axios';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../../css/itemPageCss/itemCreate.css";
+import Header from "../main/Header";
+import Footer from "../main/Footer";
 
 //상품 등록
 const ItemCreate = () => {
@@ -212,6 +214,9 @@ const ItemCreate = () => {
     
 
     return (
+        <div>
+            {/*헤더영역 메이에서 가져옴 */}
+            <Header/>
         <div className="itemCreate-page">
             <ToastContainer
                 position="top-center"
@@ -350,6 +355,9 @@ const ItemCreate = () => {
                 </div>
             </form>
         </div>
+        {/*푸터영역*/}
+        <Footer/>
+    </div>
     );
 };
 
