@@ -2,9 +2,11 @@ package com.cmyk.threeh.controller;
 
 import com.cmyk.threeh.repository.MemberRepository;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -28,6 +30,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cmyk.threeh.domain.Member;
+import com.cmyk.threeh.dto.BookmarksDTO;
+import com.cmyk.threeh.dto.ItemResponseDTO;
 import com.cmyk.threeh.dto.MemberDTO;
 import com.cmyk.threeh.form.SignupUpdateForm;
 import com.cmyk.threeh.global.error.CustomException;
@@ -149,6 +153,37 @@ public class MemberController {
         return dto;
 
     }
+
+
+    //회원리스트 조회
+    @GetMapping("/list")
+    public List<MemberDTO> getMemberList(){
+
+        //List<Member 엔티티> ---> List<Member dto>
+        List<Member> entityList = memberService.getUserList();
+        List<MemberDTO> dtoList = new ArrayList<MemberDTO>();
+
+        for(Member entity : entityList) {
+            MemberDTO dto = new MemberDTO();
+
+            dto.setMemberId(entity.getMemberId());
+            dto.setId(entity.getId());
+            dto.setPassword(entity.getPassword());
+            dto.setName(entity.getName());
+            dto.setEmail(entity.getEmail());
+            dto.setPhone(entity.getPhone());
+            dto.setRole(entity.getRole());
+            dto.setRegNo(entity.getRegNo());
+            dto.setCreatedAt(entity.getCreatedAt());
+            dto.setUpdatedAt(entity.getUpdatedAt());
+
+            dtoList.add(dto);
+        }
+
+        return dtoList;
+
+    }
+
 
     //태양 orders에서 멤버에서 연락처 받아오는 용
 
