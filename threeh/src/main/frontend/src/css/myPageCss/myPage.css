@@ -1,8 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,500;0,600;1,400&display=swap');
 
-
 /* =========================================================================
-   🏢 PROJECT CMYK - 마이페이지 최종 텍스트 밸런싱 및 탈퇴 시인성 강화 시스템
+   🏢 PROJECT CMYK - 마이페이지 최종 텍스트 밸런싱 및 탈퇴 시인성 강화 시스템 (파트 1)
    ========================================================================= */
 
 body {
@@ -19,7 +18,7 @@ body {
     max-width: 100% !important;
     margin: 0 auto;
     padding: 0 !important; 
-    color: #111111;
+    color: #444444 !important; /* ⚡ [보정] #111111에서 팀 공통 중화된 먹색으로 밸런싱 */
     box-sizing: border-box;
     background-color: #FFFFFF !important; /* 팀 공통 컨텐츠 영역 화이트 지정 */
     min-height: 100vh;
@@ -30,8 +29,8 @@ body {
    ========================================== */
 .mypage-header-box {
     width: 100%;
-    background-color: #ede2d5 !important; 
-    border-bottom: 2px solid #111111 !important; 
+    background-color: #ede2d5 !important; /* 시그니처 베이지 */
+    border-bottom: 2px solid #5E4431 !important; /* ⚡ [보정] 투박한 검정에서 에스프레소 브라운으로 고급화 */
     padding: 28px calc((100% - 1200px) / 2) !important; /* 본문 1200px 축과 칼대칭 */
     display: flex !important;
     justify-content: space-between !important;
@@ -51,6 +50,7 @@ body {
     font-weight: 700;
     font-size: 26px;
     letter-spacing: 2px;
+    color: #5E4431 !important; /* ⚡ 에스프레소 브라운 적용 */
     text-shadow: 1px 1px 0px rgba(255,255,255,0.8);
 }
 
@@ -85,7 +85,7 @@ body {
 .mypage-sidebar > div:first-child {
     background: linear-gradient(135deg, #ede2d5 0%, #dfd1c0 100%) !important;
     padding: 28px 24px !important;
-    border-bottom: 2px solid #111111 !important;
+    border-bottom: 2px solid #5E4431 !important; /* ⚡ 에스프레소 브라운 선 */
     margin-bottom: 25px;
     box-shadow: 5px 5px 0px rgba(140, 122, 107, 0.15); 
 }
@@ -108,14 +108,15 @@ body {
     border-right: 1px solid #dfd1c0;
     transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
     letter-spacing: -0.3px;
+    border-radius: 0px !important; /* ⚡ [팀 규칙] 직각 유지 */
 }
 
-.mypage-sidebar .sidebar-btn:first-of-type { border-top: 1px solid #111111; }
-.mypage-sidebar .sidebar-btn:last-of-type { border-bottom: 1px solid #111111; margin-bottom: 50px; }
+.mypage-sidebar .sidebar-btn:first-of-type { border-top: 1px solid #5E4431 !important; }
+.mypage-sidebar .sidebar-btn:last-of-type { border-bottom: 1px solid #5E4431 !important; margin-bottom: 50px; }
 
 .mypage-sidebar .sidebar-btn:hover {
     color: #ffffff;
-    background-color: #8C7A6B !important; 
+    background-color: #8C7A6B !important; /* 피크브라운 */
     padding-left: 34px !important; 
 }
 
@@ -129,7 +130,7 @@ body {
     background-image: url(//localhost:8080/static/images/k5_2.jpg); 
     background-size: cover;       
     background-position: center;  
-    border: 2px solid #111111;    
+    border: 2px solid #5E4431 !important; /* ⚡ 에스프레소 브라운 선 */   
     background-color: transparent !important; 
     box-shadow: 0 20px 40px rgba(140, 122, 107, 0.18); 
     transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
@@ -137,7 +138,7 @@ body {
 .mypage-sidebar:hover::after {
     transform: translateY(-6px); 
     box-shadow: 0 30px 60px rgba(140, 122, 107, 0.28);
-    border-color: #8C7A6B;
+    border-color: #8C7A6B !important; /* 피크브라운 */
 }
 
 /* ==========================================
@@ -158,7 +159,7 @@ body {
     background: #ffffff;
     padding: 35px 45px;
     margin-bottom: 45px;
-    border: 2px solid #111111;
+    border: 2px solid #5E4431 !important; /* ⚡ 에스프레소 브라운 선 */
     box-shadow: 8px 8px 0px #ede2d5; 
 }
 
@@ -166,11 +167,11 @@ body {
     font-family: 'Playfair Display', serif;
     font-size: 26px;
     font-weight: 700;
-    color: #8C7A6B;
+    color: #8C7A6B; /* 피크브라운 */
     background: none;
     width: auto;
     height: auto;
-    border-radius: 0;
+    border-radius: 0 !important; /* ⚡ 직각 유지 */
     margin-right: auto;
     letter-spacing: -0.5px;
 }
@@ -179,13 +180,13 @@ body {
 .mypage-info-section-title {
     font-size: 16px;
     font-weight: 900;
-    color: #111111;
+    color: #444444 !important;
     margin: 55px 0 25px 0 !important;
     letter-spacing: -0.5px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-bottom: 2px solid #111111; 
+    border-bottom: 2px solid #5E4431 !important; /* ⚡ 에스프레소 브라운 선 */
     padding-bottom: 10px;
 }
 .mypage-info-section-title::after {
@@ -203,18 +204,19 @@ body {
     flex-direction: column; 
     gap: 18px;
     padding: 30px 25px; 
-    border: 1px solid #111111;
+    border: 1px solid #dfd1c0 !important; /* ⚡ 너무 튀던 검정선에서 연화된 브라운선으로 교체 */
     margin-bottom: 40px;
     background-color: #ffffff;
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.02);
     width: 100% !important;
     box-sizing: border-box;
+    border-radius: 0px !important;
 }
 
 .mypage-info-data-block p {
     margin: 0;
     font-size: 14px;
-    color: #111111;
+    color: #444444 !important;
     line-height: 1.6;
     border-bottom: 1px solid #fcfbfa; 
     padding-bottom: 6px;
@@ -222,7 +224,7 @@ body {
 
 .mypage-info-data-block p strong {
     font-weight: 700;
-    color: #8C7A6B; 
+    color: #8C7A6B; /* 피크브라운 */
     margin-right: 15px;
     display: inline-block;
     width: 80px; 
@@ -230,38 +232,50 @@ body {
 }
 
 /* =========================================================================
-   📦 5. 구매내역 가로형 슬라이더 쇼룸 (카드 크기 축소 및 테두리 블랙 강화)
+   📦 5. 구매내역 가로형 슬라이더 쇼룸 (글로벌 밸런싱 및 에스프레소 소프트 라인 적용)
    ========================================================================= */
 .mypage-order-slider-wrapper {
     display: flex;
     align-items: center;
-    border: 2px solid #111111; 
-    padding: 25px 15px; /* 💡 상하 패딩을 줄여 전체적인 슬라이더 두께를 슬림하게 조정 */
+    border: 2px solid #5E4431 !important; /* ⚡ [보정] 강한 블랙에서 깊은 에스프레소 브라운 선으로 교체 */
+    padding: 25px 15px; 
     margin-bottom: 45px;
-    background: linear-gradient(to right, #ffffff, #fcfbfa); 
+    background: linear-gradient(to right, #ffffff, #fdfbf7); /* ⚡ 글로벌 스펙 소프트 베이지 매칭 */
     width: 100% !important;
     box-sizing: border-box;
     box-shadow: inset 0 0 25px rgba(140, 122, 107, 0.04);
 }
 
+/* 슬라이더 좌우 화살표 버튼 */
 .mypage-slider-arrow-btn {
     background-color: #ffffff;
-    border: 1px solid #111111;
-    width: 32px; /* 💡 화살표 버튼 크기도 카드 축소 비율에 맞춰 미세 조정 */
+    border: 1px solid #dfd1c0 !important; /* ⚡ 연화된 브라운 선 적용 */
+    width: 32px; 
     height: 32px;
     font-size: 14px;
     font-weight: 700;
     cursor: pointer;
-    color: #111111;
+    color: #444444 !important; /* ⚡ 중화된 먹색 적용 */
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
     z-index: 10;
-    transition: all 0.2s ease;
+    border-radius: 0px !important; /* ⚡ [팀 규칙] 직각 유지 */
+    transition: all 0.2s ease-in-out;
 }
-.mypage-slider-arrow-btn:hover:not(:disabled) { background-color: #111111; color: #ffffff; }
-.mypage-slider-arrow-btn:disabled { border-color: #eeeeee; color: #dddddd; cursor: not-allowed; }
+
+.mypage-slider-arrow-btn:hover:not(:disabled) { 
+    background-color: #8C7A6B !important; /* ⚡ 피크브라운 반전 */
+    color: #ffffff !important; 
+    border-color: #8C7A6B !important;
+}
+
+.mypage-slider-arrow-btn:disabled { 
+    border-color: #ede2d5 !important; 
+    color: #dfd1c0 !important; 
+    cursor: not-allowed; 
+}
 
 .mypage-order-slider-container { 
     flex: 1; 
@@ -274,7 +288,7 @@ body {
 /* [슬라이더 모드 기본형 트랙 설정] */
 .mypage-order-slider-track { 
     display: flex !important; 
-    gap: 14px !important; /* 카드 사이 간격 조율 */
+    gap: 14px !important; 
     width: max-content !important; 
     flex-wrap: nowrap !important;  
     transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
@@ -283,30 +297,32 @@ body {
 /* [전체보기 활성화 시 격자(Grid) 전환 구조] */
 .mypage-order-slider-track.grid-view {
     display: grid !important;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)) !important; /* 💡 격자 모드 시 최소 크기도 180px 슬림 규격 반영 */
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)) !important; 
     gap: 14px !important;
     width: 100% !important;        
     flex-wrap: wrap !important;     
     transform: none !important;     
 }
 
-/* 📐 [개별 사각 카드 쇼룸 판넬 - 크기 다이어트 및 라인 극대화] */
+/* 📐 [개별 사각 카드 쇼룸 판넬 - 크기 다이어트 유지 및 라인 연화] */
 .mypage-order-square-card {
-    flex: 0 0 180px !important;       /* 🚨 [크기 축소]: 가로폭을 기존 212px에서 180px로 대폭 줄여 컴팩트하게 배치 */
+    flex: 0 0 180px !important;       
     width: 180px !important;          
     max-width: 180px !important;
-    min-height: 210px !important;     /* 🚨 [크기 축소]: 세로 높이를 기존 240px에서 210px로 슬림화 */
+    min-height: 210px !important;     
     box-sizing: border-box;
     
-    /* 🚨 [테두리 극대화]: 선명도를 위해 눈에 가장 확실하게 띄는 매트한 차콜 블랙 컬러(#333)로 2px 묵직하게 각인 */
-    border: 2px solid #333333 !important; 
+    /* ⚡ [보정] 붕 뜨던 매트차콜(#333) 대신 글로벌 기준선인 에스프레소 연화 선 적용 */
+    border: 1px solid #dfd1c0 !important; 
+    border-top: 4px solid #ede2d5 !important; /* ⚡ [팀 규칙] 미니 시그니처 탑 선 배치 */
+    border-radius: 0px !important;            /* ⚡ [팀 규칙] 완벽한 직각 마감 */
     
-    padding: 16px 14px; /* 내부 여백도 카드 크기에 맞게 축소 */
+    padding: 16px 14px; 
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     background-color: #ffffff !important; 
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04); 
+    box-shadow: 0 4px 12px rgba(140, 122, 107, 0.04); 
     transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
@@ -317,19 +333,20 @@ body {
     width: 100% !important;
 }
 
-/* 🔥 마우스를 올렸을 때는 완벽한 올블랙 테두리로 완전 대칭 변환 */
+/* 🔥 마우스를 올렸을 때 인터랙션 밸런싱 */
 .mypage-order-square-card:hover {
     transform: translateY(-5px);
-    border-color: #111111 !important;
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+    border-color: #8C7A6B !important; /* ⚡ 올블랙 대신 명품 무드의 피크브라운으로 확장 */
+    box-shadow: 0 12px 24px rgba(140, 122, 107, 0.12);
 }
 
 .mypage-order-square-card p:nth-child(2) {
-    font-size: 13px; /* 카드 크기가 줄어들었으므로 폰트 크기도 13px로 조화롭게 매칭 */
+    font-size: 13px; 
     font-weight: 700;
     line-height: 1.4;
-    color: #111111 !important; 
+    color: #444444 !important; /* ⚡ 중화된 먹색 적용 */
 }
+
 
 
 /* =========================================================================
@@ -341,40 +358,41 @@ body {
 .mypage-profile-icon-box button:last-of-type,
 tbody button {
     background-color: transparent !important;
-    border: 1px solid #111111 !important;
-    color: #111111 !important;
+    border: 1px solid #dfd1c0 !important; /* ⚡ [보정] 강한 검정선에서 에스프레소 연화 선으로 교체 */
+    color: #444444 !important;            /* ⚡ [보정] 눈이 피로한 블랙에서 중화된 먹색으로 변경 */
     padding: 8px 18px !important;
     font-size: 12px !important;
     font-weight: 700 !important;
     letter-spacing: 0.5px !important;
     cursor: pointer !important;
-    border-radius: 0px !important; /* 모던 직각 마감 */
+    border-radius: 0px !important; /* 모던 직각 마감 유지 */
     transition: all 0.25s ease-in-out !important;
 }
 
 .mypage-header-box button:hover,
 .mypage-profile-icon-box button:last-of-type:hover,
 tbody button:hover {
-    background-color: #111111 !important;
+    background-color: #8C7A6B !important; /* ⚡ [보정] 올블랙 반전 대신 고급스러운 피크브라운 채우기 */
     color: #FFFFFF !important;
+    border-color: #8C7A6B !important;
 }
 
 /* ② 시그니처 딥 브라운 메인 버튼 (북마크 토글, 배송지 검색, 수정완료 등 공통) */
 .mypage-action-btn {
-    background-color: #8C7A6B !important; /* 까사미아풍 피크브라운 색상 */
+    background-color: #8C7A6B !important; /* 까사미아풍 피크브라운 색상 유지 */
     border: 1px solid #8C7A6B !important;
     color: #FFFFFF !important;
     padding: 9px 20px !important;
     font-size: 13px !important;
     font-weight: 700 !important;
-    border-radius: 0px !important;
+    border-radius: 0px !important; /* 직각 유지 */
     cursor: pointer !important;
     transition: all 0.2s ease-in-out !important;
     box-shadow: 0 3px 6px rgba(140, 122, 107, 0.12);
 }
 
 .mypage-action-btn:hover {
-    background-color: #5E4431 !important; /* 딥 에스프레소 초콜릿 색상 */
+    background-color: #5E4431 !important; /* 딥 에스프레소 초콜릿 색상 유지 */
     border-color: #5E4431 !important;
     box-shadow: 0 6px 15px rgba(94, 68, 49, 0.25);
 }
@@ -397,7 +415,7 @@ tbody button:hover {
 }
 
 /* -------------------------------------------------------------------------
-   [배송지 추가 헤더 내부 순서 뒤집기] 
+   [배송지 추가 헤더 내부 순서 뒤집기] - 순서 제어 기능 원본 100% 보존
    ------------------------------------------------------------------------- */
 .mypage-address-section-header {
     display: flex !important;
@@ -419,8 +437,9 @@ tbody button:hover {
     margin-bottom: 5px !important; /* 우편번호 창과의 간격 확보 */
 }
 
+
 /* =========================================================================
-   [레이아웃 최종 마감] JSX 수정 없이 버튼 박스를 제목 아래로 배치하는 정렬 시스템
+   [레이아웃 최종 마감] JSX 수정 없이 버튼 박스를 제목 아래로 배치하는 정렬 시스템 (최종 압축형)
    ========================================================================= */
 
 /* 메인 대시보드 박스를 세로 배치 구조로 선언 */
@@ -436,7 +455,7 @@ tbody button:hover {
     display: flex !important;
     flex-direction: column !important; /* 가로 배열을 세로 배열로 변경 */
     align-items: flex-start !important; /* 왼쪽 정렬 */
-    gap: 0px !important; /* 내부 기본 여백 완전히 제거 */
+    gap: 0px !important; /* 내부 기본 여백 완전히 제거하여 타이밍 왜곡 방지 */
     margin-top: 40px !important;
     margin-bottom: 0px !important;
 }
@@ -447,16 +466,21 @@ tbody button:hover {
     width: 100% !important;
     margin: 0 0 10px 0 !important; /* 글씨와 버튼 사이 간격을 10px로 세밀하게 고정 */
     padding: 0 !important;
+    color: #444444 !important; /* ⚡ [팀 규격 매칭] 중화된 먹색 텍스트 유지 */
 }
 
 /* [+ 새 배송지 검색] 버튼 박스를 제목 아래인 두 번째로 강제 배치 */
 .mypage-address-section-header > button {
     order: 2 !important;
     margin: 0 0 15px 0 !important; /* 버튼 아래 배송지 리스트/카카오창과의 최소 간격만 확보 */
+    
+    /* ⚡ [확인 및 방어] 혹시 기본 테두리나 곡률이 풀리는 것을 방지하기 위한 팀 컨벤션 주입 */
+    border-radius: 0px !important; 
 }
 
+
 /* -------------------------------------------------------------------------
-   [대시보드 전체 섹션 최종 노출 순서 제어]
+   [대시보드 전체 섹션 최종 노출 순서 제어] - 순서 제어 기능 원본 100% 보존
    ------------------------------------------------------------------------- */
 
 /* [순서 1] 회원정보 타이틀 및 데이터 영역 (맨 위) */
@@ -503,26 +527,29 @@ tbody button:hover {
    ========================================================================= */
 .mypage-main-content .info-content-box .link-withdraw-trigger,
 .mypage-main-content .info-content-box div[style*="justify-content: flex-end"] span {
-    color: #A63D2D !important; /* 👈 잘 안 보이던 회색을 라운지 버건디 레드로 전면 변경 */
+    /* ⚡ [보정] 붕 뜨던 인공적인 레드 대신 프리미엄 라운지에 걸맞은 깊은 마룬 브라운 레드로 밸런싱 */
+    color: #8A4F25 !important; 
     font-size: 13px !important;
-    font-weight: 700 !important; /* 👈 글씨 두께를 두껍게 주어 주목도 상승 */
+    font-weight: 700 !important; /* 글씨 두께 두껍게 주목도 유지 */
     letter-spacing: -0.3px !important;
     cursor: pointer !important;
     text-decoration: none !important;
-    border-bottom: 1px dashed #A63D2D !important; /* 세련된 밑줄 추가 */
+    border-bottom: 1px dashed #8A4F25 !important; /* 세련된 밑줄 추가 */
     padding-bottom: 2px !important;
-    opacity: 0.75 !important;
+    opacity: 0.8 !important; /* 조금 더 선명하게 인지되도록 기본 불투명도 미세 상향 */
     transition: all 0.2s ease-in-out !important;
 }
 
 /* 마우스를 올렸을 때(Hover) 피드백 효과 */
 .mypage-main-content .info-content-box .link-withdraw-trigger:hover,
 .mypage-main-content .info-content-box div[style*="justify-content: flex-end"] span:hover {
-    color: #801A24 !important; /* 더 깊은 딥 레드 로즈 색상 */
-    border-bottom: 1px solid #801A24 !important;
+    /* ⚡ [보정] 호버 시 딥 에스프레소 초콜릿 색상으로 완전히 녹아들게 처리하여 탈퇴 버튼의 품격 마감 */
+    color: #5E4431 !important; 
+    border-bottom: 1px solid #5E4431 !important;
     opacity: 1 !important;
-    text-shadow: 0 0 1px rgba(128, 26, 36, 0.1);
+    text-shadow: 0 0 1px rgba(94, 68, 49, 0.2);
 }
+
 
 /* =========================================================================
    [디자인 통일] 프로필 박스의 입체 섀도우 효과를 모든 데이터 박스에 확산 적용
@@ -530,23 +557,25 @@ tbody button:hover {
 
 /* 1. 회원정보, 배송지 주소록, 나의 리뷰 관리 블록의 외곽선 및 입체 섀도우 통일 */
 .mypage-main-content .info-content-box .info-data-block {
-    border: 2px solid #111111 !important; /* 프로필 박스와 동일한 두께로 통일 */
-    box-shadow: 8px 8px 0px #ede2d5 !important; /* 까사미아 시그니처 소프트베이지 섀도우 */
+    border: 2px solid #5E4431 !important; /* ⚡ [보정] 강한 블랙에서 깊은 에스프레소 브라운 두께선으로 통일 */
+    box-shadow: 8px 8px 0px #ede2d5 !important; /* 까사미아 시그니처 소프트베이지 섀도우 유지 */
     background-color: #ffffff !important;
     margin-bottom: 50px !important; /* 박스 간 하단 간격 균형 조율 */
+    border-radius: 0px !important;   /* ⚡ [팀 규칙] 직각 마감 */
     transition: all 0.3s ease-in-out !important;
 }
 
 /* 2. 구매내역 가로형 슬라이더 쇼룸 프레임 외곽선 및 입체 섀도우 매칭 */
 .mypage-main-content .info-content-box .order-slider-wrapper {
-    border: 2px solid #111111 !important; /* 두께 일치 */
+    border: 2px solid #5E4431 !important; /* ⚡ [보정] 에스프레소 브라운으로 두께 일치 */
     box-shadow: 8px 8px 0px #ede2d5 !important; /* 동일한 무광 입체 섀도우 투사 */
     background-color: #ffffff !important;
     margin-bottom: 50px !important;
+    border-radius: 0px !important;   /* ⚡ [팀 규칙] 직각 마감 */
     transition: all 0.3s ease-in-out !important;
 }
 
-/* 디자인 디테일 힌트: 박스들에 마우스를 올렸을 때 살짝 들어 올려지는 인터랙션 추가 (선택사항) */
+/* 박스들에 마우스를 올렸을 때 살짝 들어 올려지는 인터랙션 (기능 원본 보존) */
 .mypage-main-content .info-content-box .info-data-block:hover,
 .mypage-main-content .info-content-box .order-slider-wrapper:hover {
     transform: translate(-2px, -2px) !important;
@@ -559,15 +588,15 @@ tbody button:hover {
 
 /* 1. 프로필 박스 내부 "김인호님" 회원이름 글씨 선명도 및 두께 강화 */
 .mypage-profile-icon-box .profile-avatar-circle {
-    color: #111111 !important; /* 연한 갈색 무드에서 선명한 딥 블랙으로 변경 */
-    font-weight: 800 !important; /* 글씨 두께를 가장 두껍게 보정 */
+    color: #5E4431 !important; /* ⚡ [보정] 붕 뜨던 블랙 대신 묵직한 에스프레소 브라운으로 선명도 확보 */
+    font-weight: 800 !important; /* 글씨 두께 최상위 보정 유지 */
     text-shadow: none !important; /* 흐릿해 보일 수 있는 그림자 제거 */
 }
 
 /* 2. 회원정보 블록 내부 [아이디, 연락처, 이메일] 데이터 텍스트 전체 진하게 처리 */
 .mypage-main-content .info-content-box .info-data-block p {
-    color: #111111 !important; /* 본문 텍스트 색상을 깊고 진한 블랙으로 고정 */
-    font-weight: 500 !important; /* 일반 글씨도 가독성을 위해 두께 소폭 상향 */
+    color: #444444 !important; /* ⚡ [보정] 투박한 블랙 대신 팀 공통 중화된 먹색으로 밸런싱 */
+    font-weight: 500 !important; /* 일반 글씨 두께 상향 유지 */
 }
 
 /* 3. 회원정보 항목명(strong 태그) 강조색 보정 */
@@ -582,52 +611,53 @@ tbody button:hover {
 
 /* 구매내역을 감싸는 전체 슬라이더 프레임 상자의 색감 강화 */
 .mypage-main-content .info-content-box .order-slider-wrapper {
-    background: #FFFFFF !important; /* 흐릿한 그라데이션에서 선명한 순백색으로 변경 */
-    border: 2px solid #111111 !important; /* 외곽 테두리를 가장 진한 블랙으로 고정 */
-    box-shadow: 8px 8px 0px #EDE2D5 !important; /* 프로필/회원정보 박스와 동일한 두께감 배지 투사 */
+    background: #FFFFFF !important; /* 선명한 순백색 유지 */
+    border: 2px solid #5E4431 !important; /* ⚡ [보정] 외곽 테두리를 깊은 에스프레소 브라운으로 고정 */
+    box-shadow: 8px 8px 0px #EDE2D5 !important; /* 동일한 입체 섀도우 룩 매칭 */
 }
 
 /* 슬라이더 내부의 낱개 사각 상품 카드 디자인 가독성 보정 */
 .mypage-main-content .info-content-box .order-slider-wrapper .order-square-card {
-    border: 1px solid #111111 !important; /* 연한 선에서 진한 검정 외곽선으로 변경하여 시인성 확보 */
+    border: 1px solid #dfd1c0 !important; /* ⚡ [보정] 인공적인 블랙 선에서 연화된 브라운선으로 시인성 확보 */
     background-color: #FFFFFF !important;
 }
 
 /* 카드 내부 이늄(Enum) 상태 문구들을 더 또렷하게 강조 */
 .mypage-main-content .info-content-box .order-slider-wrapper .order-square-card p strong {
-    color: #111111 !important; /* "상태:", "배송:" 라벨 글씨 딥블랙 고정 */
+    color: #444444 !important; /* ⚡ [보정] "상태:", "배송:" 라벨 글씨 중화된 먹색 고정 */
 }
 
 /* =========================================================================
    [배송지 텍스트 밸런싱] 배송지 타이틀 글자 잘림 및 줄바꿈 차단 시스템
    ========================================================================= */
 
-/* 1. "추가된 배송지", "기본 배송지" 항목의 텍스트 줄바꿈을 절대 차단 */
+/* 1. "추가된 배송지", "기본 배송지" 항목의 텍스트 줄바꿈을 절대 차단 (기능 원본 보존) */
 .mypage-main-content .info-content-box .info-data-block div p strong,
 .mypage-main-content .info-content-box .info-data-block div p {
-    white-space: nowrap !important; /* 글자가 아래로 끊겨서 내려가는 현상을 절대 차단 */
+    white-space: nowrap !important; /* 글자 하단 단락 끊김 차단 */
     display: inline-flex !important;
     align-items: center;
 }
 
-/* 2. 우측 버튼들과 텍스트가 겹치지 않도록 유연하게 늘어나도록 리스트 정렬 보정 */
+/* 2. 우측 버튼들과 텍스트가 겹치지 않도록 유연하게 늘어나도록 리스트 정렬 보정 (기능 원본 보존) */
 .mypage-main-content .info-content-box .info-data-block > div[style*="display: flex"] {
     display: flex !important;
     justify-content: space-between !important;
     align-items: center !important;
-    gap: 20px !important; /* 텍스트와 우측 버튼 사이 안전 거리 확보 */
+    gap: 20px !important; /* 안전 거리 확보 */
     width: 100% !important;
 }
 
-/* 3. 배송지 이름 텍스트의 가시성 강조 */
+/* 3. 배송지 이름 텍스트의 가시성 강조 (기능 원본 보존) */
 .mypage-main-content .info-content-box .info-data-block p strong {
     font-size: 14px !important;
-    width: auto !important; /* 고정 크기를 해제하여 글자 길이에 맞게 가로로 자동 확장 */
+    width: auto !important; /* 자동 확장 활성화 */
     margin-right: 8px !important;
 }
 
+
 /* =========================================================================
-   [세로 간격 미세 조정] 대시보드 레이아웃 상하 공백 압축 오버라이딩
+   [세로 간격 미세 조정] 대시보드 레이아웃 상하 공백 압축 오버라이딩 (구조 원본 유지)
    ========================================================================= */
 
 /* 1. 프로필 박스 하단의 거대한 공백을 25px로 압축 */
@@ -661,16 +691,6 @@ tbody button:hover {
     margin-top: 40px !important; /* 60px -> 40px로 세밀하게 밀착 */
 }
 
-/* 구매내역 총 개수 표시 스타일링 */
-#refund-section span {
-    font-family: 'Noto Sans KR', sans-serif !important;
-    letter-spacing: -0.3px;
-    background-color: #F9F8F6;
-    padding: 2px 10px;
-    border: 1px solid #111111;
-    box-shadow: 2px 2px 0px #EDE2D5;
-}
-
 /* =========================================================================
    구매내역 타이틀 옆 수량 카운트 박스 초밀착 정렬 및 디자인 매칭
    ========================================================================= */
@@ -680,10 +700,6 @@ tbody button:hover {
     display: flex !important;
     justify-content: flex-start !important; /* 우측 정렬에서 왼쪽 정렬로 변경 */
     align-items: center !important;
-}
-
-/* "구매내역" 글씨 자체의 우측 마진을 없애고 세밀하게 조정 */
-#refund-section {
     gap: 8px !important; /* 글씨와 카운트 박스 사이의 간격을 8px로 초밀착 고정 */
 }
 
@@ -692,10 +708,14 @@ tbody button:hover {
     font-family: 'Noto Sans KR', sans-serif !important;
     font-size: 12px !important;
     font-weight: 700 !important;
-    color: #8C7A6B !important; /* 까사미아 시그니처 브라운 */
+    color: #8C7A6B !important; /* 까사미아 시그니처 브라운(피크브라운) 일치 */
     background-color: #F9F8F6 !important; /* 연한 아이보리 내부색 */
     padding: 3px 10px !important;
-    border: 1px solid #111111 !important; /* 미니멀리즘 블랙 단선 */
+    
+    /* ⚡ [보정] 투박한 블랙 단선에서 글로벌 에스프레소 연화 선으로 교체 및 완벽한 직각 마감 */
+    border: 1px solid #dfd1c0 !important; 
+    border-radius: 0px !important;
+    
     box-shadow: 3px 3px 0px #EDE2D5 !important; /* 프로필 미니 버전 입체 섀도우 */
     margin: 0 !important; /* 불필요한 밀림 마진 초기화 */
     display: inline-flex !important;
@@ -708,13 +728,18 @@ tbody button:hover {
 }
 
 /* =========================================================================
-   [구매내역 전체보기 확대 시스템] 격자 뷰포트 오버라이딩
+   [구매내역 전체보기 확대 시스템] 격자 뷰포트 오버라이딩 (구조 원본 유지)
    ========================================================================= */
 
 /* 1. 전체보기가 켜졌을 때 슬라이더 바깥 큰 상자의 가로 차단벽을 해제하고 아래로 확장 */
 .mypage-main-content .info-content-box .order-slider-wrapper:has(.grid-view) {
     min-height: auto !important;
     padding: 30px 25px !important;
+    
+    /* ⚡ [보정] 오버라이딩 시에도 튀어나올 수 있는 테두리 실선을 에스프레소 브라운으로 결합 수호 */
+    border: 2px solid #5E4431 !important;
+    border-radius: 0px !important;
+    
     transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
@@ -736,6 +761,11 @@ tbody button:hover {
     width: 100% !important;
     min-height: 240px !important;
     box-sizing: border-box !important;
+    
+    /* ⚡ [보정] 격자 뷰 확장 시 카드 외곽선도 맑고 연한 브라운선으로 일체감 부여 및 직각 사수 */
+    border: 1px solid #dfd1c0 !important;
+    border-radius: 0px !important;
+    
     animation: fadeInOrderCard 0.4s ease-in-out forwards;
 }
 
@@ -760,8 +790,9 @@ tbody button:hover {
     transform: none !important; /* 좌우로 밀어내던 이동 공식을 완전히 삭제 */
 }
 
+
 /* =========================================================================
-   [격자 뷰 강제 리셋] 상자 하나만 커지는 현상 완벽 해결
+   [격자 뷰 강제 리셋] 상자 하나만 커지는 현상 완벽 해결 (기능 원본 유지)
    ========================================================================= */
 
 /* 전체보기 모드일 때 인라인 스타일에 적힌 가로 이동 공식(transform, width)을 무력화 */
@@ -781,6 +812,10 @@ tbody button:hover {
     width: 100% !important; /* 격자 한 칸 크기에 1:1로 정확하게 핏 */
     min-height: 240px !important;
     box-sizing: border-box !important;
+    
+    /* ⚡ [보정] 격자 리셋 시에도 테두리 선을 맑고 연한 브라운선으로 일체감 부여 및 직각 사수 */
+    border: 1px solid #dfd1c0 !important;
+    border-radius: 0px !important;
 }
 
 /* =========================================================================
@@ -808,11 +843,14 @@ tbody button:hover {
     padding: 6px 14px !important;
     font-size: 12px !important;
     font-weight: 700 !important;
+    
+    /* ⚡ [팀 규격 매칭] 공용 서브 버튼 가이드에 맞추어 완전한 직각 마감 */
+    border-radius: 0px !important;
 }
 
-/* 4. [요청 반영] 타이틀 뒤에 나타나던 이상한 영문 가상 글씨 완전히 삭제 */
+/* 4. 타이틀 뒤에 나타나던 이상한 영문 가상 글씨 완전히 삭제 원본 유지 */
 #refund-section::after {
-    display: none !important; /* 기존 가구 영문 폰트 텍스트 무력화 제거 완료 */
+    display: none !important; 
     content: "" !important;
 }
 
@@ -820,7 +858,7 @@ tbody button:hover {
    🖼️ [먹통 완치] 사이드바 가구 목록 이동 배너 크기 및 클릭 영역 강제 활성화
    ========================================================================= */
 
-/* 1. 기존 사이드바 텍스트 뒤에 가상으로 그리던 유령 배경은 완전히 무력화 차단 */
+/* 1. 기존 사이드바 텍스트 뒤에 가상으로 그리던 유령 배경은 완전히 무력화 차단 원본 유지 */
 .mypage-sidebar::after {
     display: none !important;
     content: "" !important;
@@ -845,8 +883,9 @@ tbody button:hover {
     background-size: cover !important;       
     background-position: center !important;  
     
-    /* ⚡ 장바구니/정보수정과 일치하는 부드러운 브라운 테두리선 마감 */
+    /* ⚡ [팀 규격 매칭] 장바구니/정보수정과 일치하는 브라운 테두리선 및 완전한 직각 마감 */
     border: 1px solid #dfd1c0 !important;    
+    border-radius: 0px !important;
     box-shadow: 0 15px 35px rgba(140, 122, 107, 0.06) !important; 
     transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1) !important;
 }
@@ -856,18 +895,6 @@ tbody button:hover {
 .mypage-sidebar-furniture-banner:hover {
     cursor: pointer !important;
     transform: translateY(-6px) !important; 
-    border-color: #8C7A6B !important; /* 까사미아 브라운선 하이라이트 */
+    border-color: #8C7A6B !important; /* 까사미아 브라운선 하이라이트 일치 */
     box-shadow: 0 25px 50px rgba(140, 122, 107, 0.18) !important;
 }
-
-
-
-
-
-
-
-
-
-
-
-

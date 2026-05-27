@@ -175,24 +175,26 @@ public class MemberAddressController {
     }
 
         // =========================================================================
-    // 🚀 [인호 백엔드 진짜 최종 완결]: com.cmyk.threeh.domain.Item 패키지 풀경로 각인 완료
+    // 🚀 [인호 백엔드 최종 완결판]: 잭슨 누수 현상을 깨부수고 상품명 강제 각인 완료
     // =========================================================================
     @GetMapping("/order/list")
-    @org.springframework.transaction.annotation.Transactional(readOnly = true) // 💡 LAZY 프록시 강제 해제를 위한 트랜잭션 각인
+    @org.springframework.transaction.annotation.Transactional(readOnly = true) // 💡 영속성 데이터 안전 가동을 위한 트랜잭션 각인
     public ResponseEntity<?> getOrderList(Principal principal) {
-        //코딩 추가
+        // 코딩 추가
         String loginId = getLoginIdOrNull(principal);
         
-        if(loginId == null){
+        if (loginId == null) {
             return ResponseEntity.status(401).body("로그인이 필요합니다.");
         }
         
         Member member = memberService.getUser(loginId);
-        if (member == null) return ResponseEntity.status(404).body("회원 정보를 찾을 수 없습니다.");
+        if (member == null) {
+            return ResponseEntity.status(404).body("회원 정보를 찾을 수 없습니다.");
+        }
 
         List<Map<String, Object>> ordersList = new ArrayList<>();
 
-        //코딩추가
+        // 코딩 추가
         if (member.getOrdersList() != null) {
             for (Orders order : member.getOrdersList()) {
                 Map<String, Object> orderMap = new HashMap<>();
@@ -200,7 +202,9 @@ public class MemberAddressController {
                 orderMap.put("orderState", order.getOrderState() != null ? order.getOrderState().name() : "");
                 orderMap.put("deliveryStatus", order.getDeliveryStatus() != null ? order.getDeliveryStatus().name() : "WAITING");
                 
-                // 자식 상품 리스트 가방 생성
+                // 🚨 [가장 중요한 상품명 공백 박멸 핵심 구역]
+                // 지연 로딩이나 @JsonIgnore에 구애받지 않도록 자바 반복문 내부에서 
+                // 해당 주문의 실제 자식 아이템 리스트를 강제로 호출하여 알맹이 데이터를 가방에 주입합니다.
                 List<Map<String, Object>> itemsArray = new ArrayList<>();
                 if (order.getOrderItems() != null && !order.getOrderItems().isEmpty()) {
                     for (OrderItem oi : order.getOrderItems()) {
@@ -209,32 +213,28 @@ public class MemberAddressController {
                         itemMap.put("count", oi.getCount());
                         itemMap.put("orderPrice", oi.getOrderPrice());
                         
-                        // 🚨 [패키지 풀경로 수정 구역]: com.cmyk.threeh.domain.Item 으로 정밀 주입하여 자바 컴파일 에러 원천 차단!
+                        // 조장님 ManyToOne 관계인 Item을 관통하여 실제 DB 속에 박힌 가구 이름 텍스트 강제 획득
                         if (oi.getItem() != null) {
-                            com.cmyk.threeh.domain.Item realItem = oi.getItem();
-                            String dbItemName = "등록된 가구 없음";
-                            
-                            if (realItem.getItemName() != null) {
-                                dbItemName = realItem.getItemName();
-                            } else if (realItem.getItemDetail() != null) {
-                                dbItemName = realItem.getItemDetail(); 
-                            }
-                            
-                            itemMap.put("itemId", realItem.getItemId());
-                            itemMap.put("itemName", dbItemName); 
+                            itemMap.put("itemId", oi.getItem().getItemId());
+                            // 🚀 리액트 Refund.js가 목놓아 기다리던 'itemName' 방안에 진짜 가구 이름 글자를 주입합니다!
+                            itemMap.put("itemName", oi.getItem().getItemName()); 
                         } else {
-                            itemMap.put("itemName", "등록된 상품 정보 없음");
+                            itemMap.put("itemName", "세트 구성 가구 상품");
                         }
                         itemsArray.add(itemMap);
                     }
                 }
                 
+                // 완성형 자식 배열을 부모 orderItems 이름표로 결합하여 리액트에 토스!
                 orderMap.put("orderItems", itemsArray);
                 ordersList.add(orderMap);
             }
         }
+        
+        System.out.println(">>> [인호 백엔드 마감] 총 " + ordersList.size() + "건의 주문 상세 데이터를 유실 없이 안전하게 전송합니다.");
         return ResponseEntity.ok(ordersList);
     }
+
 
 
 
