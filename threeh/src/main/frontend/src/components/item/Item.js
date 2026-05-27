@@ -2,6 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import '../../css/itemPageCss/itemPage.css';
+import IconButton from "@mui/material/IconButton";
+import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 import Header from "../main/Header";
 import Footer from "../main/Footer";
 
@@ -774,41 +778,35 @@ function Item() {
                   )}
 
                   {/*기존은 !isAdmin이였는데 일반 유저면 보이게 바꿈*/}
-                  {isUser && (
-                    <button
-                      type="button"
-                      onClick={() => handleToggleBookmark(item.itemId)}
-                      className={`item-bookmark-button ${
-                        isBookmarked(item.itemId) ? "item-bookmark-active" : ""
-                      }`}
-                    >
-                      {isBookmarked(item.itemId) ? "♥" : "♡"}
-                    </button>
-                  )}
                 </div>
 
                 {/*기존은 !isAdmin이였는데 일반 유저면 보이게 바꿈*/}
                 {isUser && (
-                  <div className="item-card-button-area">
-                    <button
-                      type="button"
-                      className="item-button"
-                      disabled={!selectable}
-                      onClick={() => handleAddOneCart(item)}
-                    >
-                      장바구니 담기
-                    </button>
+                    <div className="item-card-icon-area">
+                      <IconButton
+                        type="button"
+                        className="item-card-icon-button"
+                        disabled={!selectable}
+                        onClick={() => handleAddOneCart(item)}
+                        aria-label="장바구니 담기"
+                      >
+                        <ShoppingBagOutlinedIcon fontSize="small" />
+                      </IconButton>
 
-                    <button
-                      type="button"
-                      className="item-button item-sub-button"
-                      disabled={!selectable}
-                      onClick={() => handleBuyNow(item)}
-                    >
-                      구매하기
-                    </button>
-                  </div>
-                )}
+                      <IconButton
+                        type="button"
+                        className="item-card-icon-button"
+                        onClick={() => handleToggleBookmark(item.itemId)}
+                        aria-label="북마크"
+                      >
+                        {isBookmarked(item.itemId) ? (
+                          <FavoriteIcon fontSize="small" className="item-card-favorite-active" />
+                        ) : (
+                          <FavoriteBorderIcon fontSize="small" />
+                        )}
+                      </IconButton>
+                    </div>
+                  )}
               </div>
             );
           })

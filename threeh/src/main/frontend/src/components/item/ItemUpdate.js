@@ -4,6 +4,8 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../../css/itemPageCss/itemUpdate.css";
+import Header from "../main/Header";
+import Footer from "../main/Footer";
 
 const ItemUpdate = () => {
 
@@ -232,6 +234,8 @@ const ItemUpdate = () => {
     };
 
     return (
+        <div>
+            <Header/>
         <div className="itemUpdate-page">
             <ToastContainer
                 position="top-center"
@@ -395,6 +399,8 @@ const ItemUpdate = () => {
                 </div>
             </form>
         </div>
+        <Footer/>
+    </div>
     );
 };
 

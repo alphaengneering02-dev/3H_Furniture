@@ -5,6 +5,8 @@ import Review from './Review';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../../css/itemPageCss/itemDetail.css";
+import Header from "../main/Header";
+import Footer from "../main/Footer";
 
 const ItemDetail = () => {
 
@@ -241,6 +243,8 @@ const ItemDetail = () => {
     //=================================JSX구역===========================
 
     return (
+        <div>
+            <Header/>
         <div className="itemDetail-page">
             <ToastContainer
                 position="top-center"
@@ -323,6 +327,8 @@ const ItemDetail = () => {
                 <Review itemId={itemId} isAdmin={isAdmin} />
             </div>
         </div>
+        <Footer/>
+    </div>
     );
 };
 
