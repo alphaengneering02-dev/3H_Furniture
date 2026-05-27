@@ -34,12 +34,12 @@ const Ranking = () => {
                     <tbody>
                         {vipRanking.map((vip) => (
                             <tr key={vip.memberId}>
-                                <td className="rank-display vip-emoji">{vip.rank}</td>
-                                <td className="text-bold">{vip.memberId}번 회원</td>
-                                <td className="text-count-blue">{vip.count}</td>
+                                <td className="admin-rank-display vip-emoji">{vip.rank}</td>
+                                <td className="admin-text-bold">{vip.memberId}번 회원</td>
+                                <td className="admin-text-count-blue">{vip.count}</td>
                                 <td>{vip.region}</td>
                                 <td>
-                                    <span className={`badge ${vip.status === '최우수 VIP' ? 'badge-vip' : 'badge-normal'}`}>
+                                    <span className={`badge ${vip.status === '최우수 VIP' ? 'badge-vip' : 'admin-badge-normal'}`}>
                                         {vip.status}
                                     </span>
                                 </td>
@@ -66,10 +66,10 @@ const Ranking = () => {
                     <tbody>
                         {itemRanking.map((item) => (
                             <tr key={item.rank}>
-                                <td className="rank-display item-number">{item.rank}</td>
-                                <td className="text-bold item-name-ellipsis">{item.name}</td>
+                                <td className="admin-rank-display item-number">{item.rank}</td>
+                                <td className="admin-text-bold item-name-ellipsis">{item.name}</td>
                                 <td>{item.category}</td>
-                                <td className="text-count-red">{item.sales}</td>
+                                <td className="admin-text-count-red">{item.sales}</td>
                             </tr>
                         ))}
                     </tbody>
