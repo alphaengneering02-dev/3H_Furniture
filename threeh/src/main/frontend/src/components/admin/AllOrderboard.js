@@ -44,27 +44,17 @@ const AllOrderboard = ({
     const activeOrders = Array.isArray(propOrders) ? propOrders : localOrders;
 
     useEffect(() => {
-        console.log("=========================================");
-        console.log("📡 [AllOrderboard 부모에게 받은 원본 propOrders]:", propOrders);
-        if (propOrders && propOrders.length > 0) {
-            console.log("👀 propOrders의 첫 번째 데이터 데이터 구조 분석:");
-            console.dir(propOrders[0]); 
-            console.table(propOrders);  
+        if (propOrders && propOrders.length > 0) {  
         }
         
         if (propOrders === undefined || propOrders === null) {
             console.warn("⚠️ 부모 컴포넌트에서 orders 데이터를 받지 못했습니다. 백엔드로 직접 요청합니다!");
             axios.get('/admin/orders')
                 .then(res => {
-                    console.log("🛰️ [백엔드 직접 조회 완료] 가져온 데이터:", res.data);
                     console.table(res.data);
                     setLocalOrders(res.data);
                 })
-                .catch(err => {
-                    console.error("❌ [백엔드 직접 조회 실패] URL 확인 필요 (/admin/orders):", err);
-                });
         }
-        console.log("=========================================");
     }, [propOrders]);
 
     const { handleAutoAssign } = useDriverAuto({

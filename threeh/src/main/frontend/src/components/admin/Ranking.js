@@ -6,18 +6,6 @@ const SAMPLE_DRIVERS = [];
 
 const Ranking = ({ orders = [], items = [] }) => {
 
-    // ==========================================
-    // 🚨 [디버깅 1단계] 부모가 던져준 최초 데이터 검사
-    // ==========================================
-    console.log("==================================================");
-    console.log("🔍 [Ranking 컴포넌트 진입] 전달된 Props 확인");
-    console.log("📦 부모가 준 orders 타입:", typeof orders, " / 배열 여부:", Array.isArray(orders));
-    console.log("📦 부모가 준 orders 실제 길이:", orders ? orders.length : 0, "건");
-    console.log("📦 부모가 준 orders 데이터 원본:", orders);
-    console.log("🚚 부모가 준 items 실제 길이:", items ? items.length : 0, "건");
-    console.log("🚚 부모가 준 items 데이터 원본:", items);
-    console.log("==================================================");
-
     const finalOrders = orders && orders.length > 0 ? orders : SAMPLE_ORDERS;
     const finalItems = items && items.length > 0 ? items : SAMPLE_DRIVERS;
 
@@ -25,14 +13,10 @@ const Ranking = ({ orders = [], items = [] }) => {
     // 👑 1. VIP 고객 랭킹 연산 및 추적
     // ==========================================
     const vipRanking = useMemo(() => {
-        console.log("🏃‍♂️ [VIP 계산 루프 시작]");
         const vipStatsMap = {};
 
         finalOrders.forEach((order, idx) => {
-            // memberId 속성이 진짜 존재하는지 검증
             if (idx === 0) {
-                console.log("💡 [샘플 데이터 첫번째 항목의 키값 분석]:", Object.keys(order));
-                console.log("💡 첫번째 항목의 memberId 값:", order.memberId);
             }
 
             const memberId = order.memberId;
@@ -45,10 +29,22 @@ const Ranking = ({ orders = [], items = [] }) => {
             const addr = order.deliveryAddr || "지역 정보 없음";
             const regionShort = addr.split(' ').slice(0, 2).join(' ');
 
+            const orderItemsArray = order.orderitems || order.orderItems || [];
+            const orderTotalPrice = orderItemsArray.reduce((sum, item) => {
+                return sum + (Number(item.orderPrice || 0) * Number(item.count || 0));
+            }, 0);
+
             if (!vipStatsMap[memberId]) {
-                vipStatsMap[memberId] = { memberId, name: memberName, count: 0, region: regionShort };
+                vipStatsMap[memberId] = { 
+                    memberId, 
+                    name: memberName, 
+                    count: 0, 
+                    totalSpent: 0, // 💡 누적 금액 필드 추가
+                    region: regionShort 
+                };
             }
             vipStatsMap[memberId].count += 1;
+            vipStatsMap[memberId].totalSpent += orderTotalPrice; // 💡 금액 누적
         });
 
         const result = Object.values(vipStatsMap)
@@ -59,8 +55,6 @@ const Ranking = ({ orders = [], items = [] }) => {
                 ...vip,
                 status: vip.count >= 5 ? '최우수 VIP' : '일반'
             }));
-
-        console.log("🎯 [VIP 최종 연산 결과 배열]:", result);
         return result;
     }, [finalOrders]);
 
@@ -68,15 +62,10 @@ const Ranking = ({ orders = [], items = [] }) => {
     // 🔥 2. 인기 아이템 랭킹 연산 및 추적
     // ==========================================
     const itemRanking = useMemo(() => {
-        console.log("🏃‍♂️ [인기 상품 계산 루프 시작]");
         const itemStatsMap = {};
 
         finalOrders.forEach((order, idx) => {
             const orderItemsArray = order.orderItems || order.orderitems;
-            
-            if (idx === 0) {
-                console.log("💡 첫번째 항목의 상품배열(orderItems):", orderItemsArray);
-            }
 
             if (!orderItemsArray || !Array.isArray(orderItemsArray)) {
                 console.warn(`⚠️ [경고] ${idx}번째 주문에 orderItems 배열이 없거나 형식이 잘못되었습니다.`);
@@ -102,8 +91,6 @@ const Ranking = ({ orders = [], items = [] }) => {
                 rank: idx + 1,
                 ...item
             }));
-
-        console.log("🎯 [인기 상품 최종 연산 결과 배열]:", result);
         return result;
     }, [finalOrders]);
 
@@ -111,14 +98,11 @@ const Ranking = ({ orders = [], items = [] }) => {
     // 🚚 3. 우수 배송 기사 랭킹 계산 및 추적
     // ==========================================
     const driverRanking = useMemo(() => {
-        console.log("🏃‍♂️ [배송 기사 계산 루프 시작]");
         const completedOrders = finalOrders.filter(o => {
             const deliveryStatus = String(o.deliveryStatus || '').toUpperCase();
             const orderState = String(o.orderState || '');
             return deliveryStatus === 'COMPLETED' && orderState !== '주문취소';
         });
-
-        console.log("💡 필터링된 완료된 주문 건수:", completedOrders.length, "건");
 
         const driverStatsMap = {};
         completedOrders.forEach(order => {
@@ -154,8 +138,6 @@ const Ranking = ({ orders = [], items = [] }) => {
             return b.count - a.count;
         })
         .slice(0, 3);
-
-        console.log("🎯 [배송 기사 최종 연산 결과 배열]:", result);
         return result;
     }, [finalOrders, finalItems]);
 
@@ -174,7 +156,7 @@ const Ranking = ({ orders = [], items = [] }) => {
                             <th>순위</th>
                             <th>회원(ID)</th>
                             <th>누적 주문</th>
-                            <th>주요 지역</th>
+                            <th>누적 금액</th>
                             <th>등급</th>
                         </tr>
                     </thead>
@@ -184,7 +166,7 @@ const Ranking = ({ orders = [], items = [] }) => {
                                 <td className="admin-rank-display admin-vip-emoji">{vip.rank}</td>
                                 <td className="admin-text-bold">{vip.name} ({vip.memberId})</td>
                                 <td className="admin-text-count-blue">{vip.count}건</td>
-                                <td>{vip.region}</td>
+                                <td className="admin-text-bold">{vip.totalSpent.toLocaleString()}원</td>
                                 <td>
                                     <span className={`admin-badge ${vip.status === '최우수 VIP' ? 'admin-badge-vip' : 'admin-badge-normal'}`}>
                                         {vip.status}
