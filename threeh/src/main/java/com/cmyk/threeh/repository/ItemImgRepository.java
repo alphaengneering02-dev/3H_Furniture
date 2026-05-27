@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.cmyk.threeh.domain.ItemImg;
 import com.cmyk.threeh.enums.SubImg;
 
+import lombok.extern.java.Log;
+
 public interface ItemImgRepository extends JpaRepository<ItemImg,Long>{
     
     //특정 상품의 모든 이미지 조회
@@ -19,4 +21,8 @@ public interface ItemImgRepository extends JpaRepository<ItemImg,Long>{
         SubImg suthumbnailYn
     );
 
+    //db삭제 성공 후 물리적 이미지 파일 삭제..제발되라..
+    List<ItemImg> findByItem_ItemId(Log itemId);
+    
+    void deleteByItem_ItemId(Long itemId);
 }

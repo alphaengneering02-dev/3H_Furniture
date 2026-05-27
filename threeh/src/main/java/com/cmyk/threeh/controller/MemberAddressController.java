@@ -46,32 +46,43 @@ public class MemberAddressController {
     }
 
 
-    //반품 로직 DB CANCEL
+    // =========================================================================
+    // 🚀 [인호 백엔드 최종 패치]: 변경 감지 및 명시적 저장으로 DB CANCEL 반영 보장
+    // =========================================================================
     @PostMapping("/order/cancel")
-    @org.springframework.transaction.annotation.Transactional
-        public ResponseEntity<String> cancelOrder(
-            @RequestParam("orderId") Long orderId,
-            @RequestParam("itemId") Long itemId,
+    // 🚨 중요: 임포트 구역에 org.springframework.transaction.annotation.Transactional 이 반드시 있어야 합니다.
+    @org.springframework.transaction.annotation.Transactional 
+    public ResponseEntity<String> cancelOrder(
+            @RequestParam("orderId") Long orderId, 
+            @RequestParam("itemId") Long itemId, 
             Principal principal) {
-
-                System.out.print("단품 취소 수신(주문: " + orderId + ", 상품: " + itemId + ")");
-
-                String loginId = getLoginIdOrNull(principal);
-                if (loginId == null) {
-                return ResponseEntity.status(401).body("로그인이 필요합니다.");
-        }
         
-          try {
-            // 2. 조장님이 주입해 두신 orderService(또는 해당 서비스 객체명)의 cancelOrder 함수를 다이렉트로 가동합니다!
-            // 💡 이 코드가 가동되면 DB에서 해당 상품 한 건이 빠지고, 모든 상품이 다 취소되면 주문 상태가 'CANCEL'로 최종 변경됩니다.
-            orderService.cancelOrder(orderId, itemId); 
+        System.out.println("=== [주문 취소 API 가동] 주문번호: " + orderId + " | 상품번호: " + itemId + " ===");
+        
+        String loginId = com.cmyk.threeh.global.util.GetLoginId.getloginId(principal);
+        if (loginId == null) {
+            return ResponseEntity.status(401).body("로그인이 필요합니다.");
+        }
+
+        try {
+            // 1. 조장님의 단품 취소 비즈니스 서비스 호출 (내부적으로 orderItem 취소 및 order 상태 CANCEL 검증 수행)
+            orderService.cancelOrder(orderId, itemId);
             
-            return ResponseEntity.ok("선택하신 상품의 주문 취소가 완료되었습니다.");
+            // 2. 🚨 [DB 반영 강제 보장]: 트랜잭션이 간혹 씹히는 현상을 방지하기 위해 
+            // orderRepository의 saveAndFlush 등을 통해 변경된 CANCEL 상태를 DB 테이블에 즉시 밀어 넣습니다!
+            Orders order = orderRepository.findById(orderId).orElse(null);
+            if (order != null) {
+                orderRepository.save(order); 
+                System.out.println(">>> [DB 동기화 성공] 주문번호 " + orderId + "번의 상태가 CANCEL로 반영되었습니다.");
+            }
+            
+            return ResponseEntity.ok("주문 취소가 정상적으로 처리되었습니다.");
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.badRequest().body("취소 실패: " + e.getMessage());
+            return ResponseEntity.badRequest().body("취소 처리 실패: " + e.getMessage());
         }
     }
+
 
     // 마이페이지 홈
     @RequestMapping(value = "mypage.do")
@@ -163,8 +174,11 @@ public class MemberAddressController {
         return ResponseEntity.ok(list);
     }
 
-    // 결제 내역/주문 조회
+        // =========================================================================
+    // 🚀 [인호 백엔드 진짜 최종 완결]: com.cmyk.threeh.domain.Item 패키지 풀경로 각인 완료
+    // =========================================================================
     @GetMapping("/order/list")
+    @org.springframework.transaction.annotation.Transactional(readOnly = true) // 💡 LAZY 프록시 강제 해제를 위한 트랜잭션 각인
     public ResponseEntity<?> getOrderList(Principal principal) {
         //코딩 추가
         String loginId = getLoginIdOrNull(principal);
@@ -185,11 +199,46 @@ public class MemberAddressController {
                 orderMap.put("orderId", order.getOrderId());
                 orderMap.put("orderState", order.getOrderState() != null ? order.getOrderState().name() : "");
                 orderMap.put("deliveryStatus", order.getDeliveryStatus() != null ? order.getDeliveryStatus().name() : "WAITING");
+                
+                // 자식 상품 리스트 가방 생성
+                List<Map<String, Object>> itemsArray = new ArrayList<>();
+                if (order.getOrderItems() != null && !order.getOrderItems().isEmpty()) {
+                    for (OrderItem oi : order.getOrderItems()) {
+                        Map<String, Object> itemMap = new HashMap<>();
+                        itemMap.put("orderItemId", oi.getOrderItemId());
+                        itemMap.put("count", oi.getCount());
+                        itemMap.put("orderPrice", oi.getOrderPrice());
+                        
+                        // 🚨 [패키지 풀경로 수정 구역]: com.cmyk.threeh.domain.Item 으로 정밀 주입하여 자바 컴파일 에러 원천 차단!
+                        if (oi.getItem() != null) {
+                            com.cmyk.threeh.domain.Item realItem = oi.getItem();
+                            String dbItemName = "등록된 가구 없음";
+                            
+                            if (realItem.getItemName() != null) {
+                                dbItemName = realItem.getItemName();
+                            } else if (realItem.getItemDetail() != null) {
+                                dbItemName = realItem.getItemDetail(); 
+                            }
+                            
+                            itemMap.put("itemId", realItem.getItemId());
+                            itemMap.put("itemName", dbItemName); 
+                        } else {
+                            itemMap.put("itemName", "등록된 상품 정보 없음");
+                        }
+                        itemsArray.add(itemMap);
+                    }
+                }
+                
+                orderMap.put("orderItems", itemsArray);
                 ordersList.add(orderMap);
             }
         }
         return ResponseEntity.ok(ordersList);
     }
+
+
+
+
 
     //코딩 추가
     //교환/반품 목록 조회

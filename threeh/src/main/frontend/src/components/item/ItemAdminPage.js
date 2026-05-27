@@ -175,8 +175,17 @@ const ItemAdminPage = () => {
                 return;
             }
 
+            //상품 삭제 API 하나만 호출
+            //이미지 DB 삭제, 상품DB삭제, 물리 파일 삭제는 백엔드에서 처리
+            await axios.delete(`http://localhost:8080/api/admin/item/${itemId}`,{
+                withCredentials: true,
+            });
+
+            alert("상품이 삭제되었습니다.");
+
+
             // 삭제 가능한 상품이면, 상품이미지가 상품아이디를 FK하고 있어서, 이미지 먼저 지워야 됌.
-            const itemImgs = await getItemImgs(itemId);
+            /*const itemImgs = await getItemImgs(itemId);
 
             // 상품에 연결된 이미지 먼저 삭제
             for (const img of itemImgs) {
@@ -193,7 +202,8 @@ const ItemAdminPage = () => {
                 withCredentials: true,
             });
 
-            alert("상품이 삭제되었습니다.");
+            alert("상품이 삭제되었습니다.");*/
+
 
             // 삭제 후 상품 목록 다시 불러오기
             getItems();
