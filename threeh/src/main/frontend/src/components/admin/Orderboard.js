@@ -258,25 +258,20 @@ const Orderboard = ({
             </div>
 
             {/* 💡 대용량 수량(6, 8개) 확인 및 다운로드 컨트롤러 바 */}
-            <div className="admin-content-box" style={{ border: '2px solid #007bff', backgroundColor: '#f0f7ff' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div className="admin-content-box">
+                <div>
                     <div>
-                        <h4 style={{ margin: 0, color: '#0056b3' }}>📦 대량 수량 조건 조회 (총 수량 6개 또는 8개)</h4>
-                        <p style={{ margin: '5px 0 0 0', fontSize: '13px', color: '#6c757d' }}>
+                        <h4>📦 대량 수량 조건 조회 (총 수량 6개 또는 8개)</h4>
+                        <p>
                             현재 대상 건수: <strong>{specialOrders.length}건</strong>
                         </p>
                     </div>
                     <div>
                         <button 
-                            onClick={() => setShowSpecialList(!showSpecialList)} 
-                            style={{ marginRight: '10px', padding: '8px 15px', cursor: 'pointer', backgroundColor: '#6c757d', color: '#fff', border: 'none', borderRadius: '4px' }}
-                        >
+                            onClick={() => setShowSpecialList(!showSpecialList)} >
                             {showSpecialList ? "목록 닫기" : "상세 목록 보기"}
                         </button>
-                        <button 
-                            onClick={downloadCSV} 
-                            style={{ padding: '8px 15px', cursor: 'pointer', backgroundColor: '#28a745', color: '#fff', border: 'none', borderRadius: '4px', fontWeight: 'bold' }}
-                        >
+                        <button onClick={downloadCSV}>
                             Excel(CSV) 다운로드
                         </button>
                     </div>
@@ -284,8 +279,8 @@ const Orderboard = ({
 
                 {/* 💡 토글 시 노출되는 상세 리스트 */}
                 {showSpecialList && (
-                    <div style={{ marginTop: '15px', backgroundColor: '#fff', padding: '10px', borderRadius: '4px', border: '1px solid #ced4da' }}>
-                        <table className="admin-table-style" style={{ margin: 0 }}>
+                    <div>
+                        <table className="admin-table-style">
                             <thead>
                                 <tr>
                                     <th>주문ID</th><th>주문자</th><th>상품 상세 내역</th><th>총 수량</th><th>총 금액</th><th>상태</th>
@@ -299,17 +294,17 @@ const Orderboard = ({
                                         <tr key={o.orderId}>
                                             <td>{o.orderId}</td>
                                             <td>{o.memberName}</td>
-                                            <td style={{ textAlign: 'left' }}>
+                                            <td>
                                                 {o.orderitems.map((i, idx) => (
                                                     <div key={idx}>• {i.itemName} ({i.count}개) - {(i.orderPrice).toLocaleString()}원</div>
                                                 ))}
                                             </td>
-                                            <td><strong style={{ color: '#007bff' }}>{tCount}개</strong></td>
+                                            <td><strong>{tCount}개</strong></td>
                                             <td>{tPrice.toLocaleString()}원</td>
                                             <td>{o.deliveryStatus || '공급대기'}</td>
                                         </tr>
                                     );
-                                }) : <tr><td colSpan="6" style={{ textAlign: 'center' }}>조건에 맞는 주문이 없습니다.</td></tr>}
+                                }) : <tr><td colSpan="6">조건에 맞는 주문이 없습니다.</td></tr>}
                             </tbody>
                         </table>
                     </div>
@@ -319,20 +314,10 @@ const Orderboard = ({
             {/* [최종 배송 완료 목록] */}
              {/* [최종 배송 완료 목록] */}
             <div className="admin-content-box">
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
                     {/* 💡 엑셀 다운로드 버튼 */}
                     <button 
                         onClick={downloadCompletedOrdersExcel}
-                        style={{
-                            backgroundColor: '#28a745',
-                            color: 'white',
-                            border: 'none',
-                            padding: '8px 15px',
-                            borderRadius: '4px',
-                            cursor: 'pointer',
-                            fontWeight: 'bold',
-                            marginBottom: '10px'
-                        }}
                     >
                         📊 엑셀 다운로드
                     </button>
@@ -372,20 +357,9 @@ const Orderboard = ({
 
     {/* 💡 테이블 바로 밑(주문일 라인 아래)에 전체 판매 금액 토탈 바 추가 */}
     {completedOrders.length > 0 && (
-        <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            backgroundColor: '#f8f9fa',
-            padding: '15px 20px',
-            border: '1px solid #dee2e6',
-            borderTop: 'none', // 테이블과 자연스럽게 이어지도록 위쪽 선만 제거
-            borderRadius: '0 0 4px 4px',
-            fontSize: '16px',
-            fontWeight: 'bold'
-        }}>
-            <span style={{ color: '#495057' }}>📈 배송 완료 총 판매 금액 (Total)</span>
-            <span style={{ color: '#dc3545', fontSize: '20px' }}>
+        <div>
+            <span>📈 배송 완료 총 판매 금액 (Total)</span>
+            <span>
                 {completedOrders.reduce((grandTotal, order) => {
                     const orderSum = order.orderitems?.reduce((sum, item) => sum + ((item.orderPrice || 0) * (item.count || 0)), 0) || 0;
                     return grandTotal + orderSum;
@@ -406,7 +380,7 @@ const Orderboard = ({
                 </div>
 
                 {selectedPickupIds.length > 0 && (
-                    <div style={{ marginBottom: '10px', color: '#007bff', fontWeight: 'bold' }}>
+                    <div>
                         선택된 반품/교환 건: {selectedPickupIds.length}건
                     </div>
                 )}
@@ -445,7 +419,7 @@ const Orderboard = ({
                                         {order.deliveryId && order.deliveryStatus === 'PICKUP' ? (
                                             <div>
                                                 <strong>{items.find(d => d.deliveryId === Number(order.deliveryId))?.deliveryName} 기사님 </strong>
-                                                <span style={{ color: '#28a745', fontWeight: 'bold' }}>(픽업 배정 완료)</span>
+                                                <span>(픽업 배정 완료)</span>
                                             </div>
                                         ) : (
                                             <>

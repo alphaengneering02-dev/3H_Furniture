@@ -199,20 +199,20 @@ const AdminMemoDay = () => {
 
         return (
             /* 오늘이 D-Day면 'is-today' 클래스가 붙어 색상이 변하고 깜빡입니다 */
-            <div key={item.id} className={`dday-card ${isToday ? 'is-today' : ''}`}>
-                <div className="dday-card-info">
-                    <span className="dday-card-title">{item.title}</span>
-                    <span className="dday-card-date">{item.date}</span>
+            <div key={item.id} className={`admin-dday-card ${isToday ? 'is-today' : ''}`}>
+                <div className="admin-dday-card-info">
+                    <span className="admin-dday-card-title">{item.title}</span>
+                    <span className="admin-dday-card-date">{item.date}</span>
                 </div>
 
-                <div className="dday-card-action">
-                    <span className="dday-card-count">
+                <div className="admin-dday-card-action">
+                    <span className="admin-dday-card-count">
                         {calculateDDay(item.date)}
                     </span>
                     <button 
                         type="button"
                         onClick={() => handleDeleteDDay(item.id)}
-                        className="dday-delete-btn"
+                        className="admin-dday-delete-btn"
                         title="일정 삭제"
                     >
                         ✕

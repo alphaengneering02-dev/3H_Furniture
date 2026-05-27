@@ -19,15 +19,23 @@ const AdminDashboard = () => {
 
     const [orders, setOrders] = useState([]);
     const [items, setItems] = useState([]);
-    const [searchTerm, setSearchTerm] = useState('');
-    const [searchType, setSearchType] = useState('all');
 
-    const [matchedMemberIds, setMatchedMemberIds] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');          
+    const [debouncedTerm, setDebouncedTerm] = useState('');   
+    const [searchType, setSearchType] = useState('all');
 
     // 상품 번호를 입력받아 검증 후 상세 페이지로 이동하는 함수
 const handleEditItemDetail = () => {
         navigate('/item'); 
     };
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedTerm(searchTerm);
+        }, 300); 
+
+        return () => clearTimeout(timer); 
+    }, [searchTerm]);
 
     const handleDeleteDelivery = async (deliveryId) => {
         if (!window.confirm("정말 이 기사를 삭제하시겠습니까?")) return;
@@ -86,40 +94,6 @@ const handleEditItemDetail = () => {
     }));
 };
 
-//검색
-
-const handleSearch = async () => {
-        const cleanTerm = searchTerm.toLowerCase().trim();
-        if (!cleanTerm) {
-            setMatchedMemberIds([]);
-            return;
-        }
-
-        const newMatchedIds = [];
-        // 전화번호나 상세 ID 조회가 필요한 경우를 위해 비동기 체크
-        if (searchType === 'all' || searchType === 'member') {
-            for (const order of orders) {
-                if (order.memberId && !newMatchedIds.includes(order.memberId)) {
-                    try {
-                        const memberRes = await axios.get(`/api/member/seq/${order.memberId}`);
-                        const memberData = memberRes.data;
-
-                        const loginIdMatch = memberData.id && memberData.id.toLowerCase().includes(cleanTerm);
-                        const cleanPhone = memberData.phone ? memberData.phone.replace(/-/g, '') : '';
-                        const phoneMatch = memberData.phone && (memberData.phone.includes(cleanTerm) || cleanPhone.includes(cleanTerm));
-
-                        if (loginIdMatch || phoneMatch) {
-                            newMatchedIds.push(order.memberId);
-                        }
-                    } catch (err) {
-                        console.error(`회원 ID ${order.memberId} 상세조회 실패:`, err);
-                    }
-                }
-            }
-        }
-        setMatchedMemberIds(newMatchedIds);
-    };
-
 const handleAssignDriver = async (orderId) => {
     const deliveryIdRaw = selectedDrivers[orderId];
 
@@ -162,7 +136,7 @@ const handleAssignDriver = async (orderId) => {
     }
 };
 
-    const cleanTerm = searchTerm.toLowerCase().trim();
+    const cleanTerm = debouncedTerm.toLowerCase().trim();
     const filteredOrders = orders.filter(order => {
         if (!cleanTerm) return true;
 
@@ -177,19 +151,16 @@ const handleAssignDriver = async (orderId) => {
         const phoneMatch = order.memberPhone && (order.memberPhone.includes(cleanTerm) || cleanPhone.includes(cleanTerm));
         const isMemberMatch = nameMatch || loginIdMatch || phoneMatch;
 
-        // 3. ITEM 테이블 기반 검색 조건
         const isItemMatch = order.items && order.items.some(item => 
             (item.itemName && item.itemName.toLowerCase().includes(cleanTerm)) ||
             (item.itemCategory && item.itemCategory.toLowerCase().includes(cleanTerm))
         );
 
-        // 💡 셀렉트 박스 선택 값(searchType)에 따른 최종 필터링 분기
         if (searchType === 'member') {
             return isMemberMatch;
         } else if (searchType === 'item') {
             return isItemMatch;
         } else {
-            // 'all' 일 때는 전체 다 매칭
             return orderIdMatch || statusMatch || isMemberMatch || isItemMatch;
         }
     });
@@ -272,11 +243,11 @@ const fetchDeliveries = async () => {
             <hr className="admin-sidebar-divider" />
 
             <AdminSearch 
-                    searchTerm={searchTerm} 
-                    setSearchTerm={setSearchTerm} 
-                    searchType={searchType}
-                    setSearchType={setSearchType}
-                />
+                searchTerm={searchTerm} 
+                setSearchTerm={setSearchTerm} 
+                searchType={searchType}
+                setSearchType={setSearchType}
+            />
 
             <hr className="admin-sidebar-divider" />
 
@@ -286,9 +257,9 @@ const fetchDeliveries = async () => {
                 
                 {/* 4-A. 상품 관리 파트 */}
                     <div className="admin-panel-group">
-                        <div className="admin-panel-title">📦 상품 마스터 관리</div>
-                        <div className="panel-buttons">
-                            <Link to="/item/create" className="full-width-link">
+                        <div className="admin-panel-title">📦 상품 Admin 관리</div>
+                        <div className="admin-panel-buttons">
+                            <Link to="/item/create" className="admin-full-width-link">
                                 <button className="admin-menu-btn type-product">개별 상품 추가</button>
                             </Link>
                             {/* 💡 수정 1: 사이드바 내부의 수정 버튼에 onClick 추가 */}
@@ -301,15 +272,15 @@ const fetchDeliveries = async () => {
                 {/* 4-B. 배송 파트너 파트 */}
                 <div className="admin-panel-group">
                     <div className="admin-panel-title">🚚 배송 파트너 등록</div>
-                    <div className="panel-buttons">
+                    <div className="admin-panel-buttons">
                         {/* 개별 등록 */}
-                        <Link to="/admin/delivery" className="full-width-link">
+                        <Link to="/admin/delivery" className="admin-full-width-link">
                             <button className="admin-menu-btn type-individual">개별 기사 직접 등록</button>
                         </Link>
                         
                         {/* 단체 등록 영역 */}
-                        <div className="sidebar-excel-box">
-                            <div className="excel-micro-label">단체 엑셀 일괄 등록</div>
+                        <div className="admin-sidebar-excel-box">
+                            <div className="admin-excel-micro-label">단체 엑셀 일괄 등록</div>
                             <AddCompany onSuccess={fetchDeliveries} />
                         </div>
                     </div>
@@ -359,7 +330,7 @@ const fetchDeliveries = async () => {
 
         <div className="admin-header-actions">          
             <div className="admin-excel-upload-wrapper">
-                <span className="excel-label">엑셀 등록:</span>
+                <span className="admin-excel-label">엑셀 등록:</span>
                 <AddCompany onSuccess={fetchDeliveries} />
             </div>
             
@@ -369,7 +340,7 @@ const fetchDeliveries = async () => {
         </div>
     </div>
 
-    <div className="driver-table-wrapper">
+    <div className="admin-driver-table-wrapper">
         <table className="admin-table-style">
             <thead>
                 <tr>

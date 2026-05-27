@@ -69,7 +69,7 @@ const AddCompany = ({ onSuccess }) => {
 
     return (
         <div className="admin-excel-uploader-container">
-            <label htmlFor="excel-file-input" className="excel-file-label" style={{ cursor: 'pointer' }}>
+            <label htmlFor="excel-file-input" className="admin-excel-file-label">
                 파일 선택
             </label>
             
@@ -78,18 +78,17 @@ const AddCompany = ({ onSuccess }) => {
                 type="file"
                 accept=".xlsx, .xls, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 onChange={handleFileChange}
-                className="excel-hidden-input"
-                style={{ display: 'none' }} // input이 안 보인다면 레이블 클릭으로 작동하도록 처리
+                className="admin-excel-hidden-input"
             />
 
-            <span className="excel-filename-display" style={{ marginLeft: '8px', marginRight: '8px' }}>
+            <span className="admin-excel-filename-display">
                 {selectedFile ? selectedFile.name : '선택된 파일 없음'}
             </span>
 
             <button
                 onClick={handleExcelUpload}
                 disabled={loading || !selectedFile}
-                className={`excel-upload-submit-btn ${loading ? 'is-loading' : ''}`}
+                className={`admin-excel-upload-submit-btn ${loading ? 'is-loading' : ''}`}
                 style={{ cursor: loading || !selectedFile ? 'not-allowed' : 'pointer' }}
             >
                 {loading ? '등록중...' : '등록하기'}
