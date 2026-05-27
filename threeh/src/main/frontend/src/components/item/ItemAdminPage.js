@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../../css/itemPageCss/itemAdminPage.css";
@@ -473,6 +473,8 @@ const ItemAdminPage = () => {
         setCurrentPage(page);
     };
 
+    //============================================================//
+
     return (
         <div>
             {/*헤더영역 메인에서 가져옴 */}
@@ -489,7 +491,7 @@ const ItemAdminPage = () => {
             />
               {/* 관리자 페이지 제목 */}
             <h1 className="itemAdmin-title">관리자 상품/ 리뷰관리</h1>
-            
+
             {/* 상품 등록하기 버튼과 리뷰 관리 버튼을 같은 레벨에 배치 */}
             {/* 상품 관리 버튼은 따로 노출하지 않음 */}
             <div className="itemAdmin-adminActionArea">
@@ -627,7 +629,10 @@ const ItemAdminPage = () => {
                                             <td>{item.itemId}</td>
                                             <td>{item.itemCategory}</td>
                                             <td className="itemAdmin-tableTextLeft">
+                                                <Link to={`/item/${item.itemId}`}
+                                                className="itemAdmin-nameLink">
                                                 {item.itemName}
+                                                </Link>
                                             </td>
                                             <td>{formatPrice(item.itemPrice)}원</td>
                                             <td>{item.itemStock}</td>
