@@ -15,12 +15,15 @@
   --findId-dark-brown: #2F2A25;
   --findId-dark-beige: #8C7A6B;
   --findId-light-beige: #eee8e0;
+
   --findId-accent-gold: #D4B26F;
   --findId-alert-red: #FF3B30;
   --findId-success-green: #4CAF50;
+  --findId-caramel: #B8783E;
 
   --findId-bg-ivory: #F9F8F6;
   --findId-bg-white: #FFFFFF;
+  --findId-bg-cream: #FFF3DF;
 
   --findId-border-light: #E5E2DC;
   --findId-border-dark: #1A1A1A;
@@ -50,7 +53,7 @@
     display: flex;
     width: 100%;
     max-width: 400px;
-    border-bottom: 1px solid var(--findId-border-light);
+    border-bottom: 1px solid var(--findId-light-beige);
     margin-bottom: 40px;
 }
 
@@ -68,7 +71,7 @@
 .find-id-nav-tabs a.tab-active {
     color: var(--findId-black);
     font-weight: 500;
-    border: 1px solid var(--findId-black);
+    border: 1px solid var(--findId-accent-gold);
     border-bottom: 1px solid var(--findId-bg-white);
     margin-bottom: -1px;
     background-color: var(--findId-bg-white);
@@ -101,14 +104,14 @@
     padding: 14px 0;
     font-size: 14px;
     border: none;
-    border-bottom: 1px solid var(--findId-border-light);
+    border-bottom: 1px solid var(--findId-light-beige);
     background-color: transparent;
     outline: none;
     transition: border-color 0.3s;
 }
 
 .find-id-input-field:focus {
-    border-bottom: 1px solid var(--findId-black);
+    border-bottom: 1px solid var(--findId-accent-gold);
 }
 
 .find-id-input-field::placeholder {
@@ -127,7 +130,7 @@
     font-size: 16px;
     font-weight: 500;
     color: var(--findId-bg-white);
-    background-color: var(--findId-black);
+    background-color: var(--findId-dark-beige);
     border: none;
     cursor: pointer;
     margin-top: 50px;
@@ -182,10 +185,10 @@
     padding: 16px 0;
     font-size: 18px;
     font-weight: 700;
-    color: var(--findId-dark-brown, #2F2A25);
+    color: var(--findId-dark-brown);
     text-align: center;
     border: none;
-    border-bottom: 2px solid var(--findId-black, #000000);
+    border-bottom: 2px solid var(--findId-accent-gold);
     background-color: transparent;
     margin-bottom: 40px;
     outline: none;
@@ -204,14 +207,14 @@
     font-size: 14px;
     font-weight: 500;
     cursor: pointer;
-    border: 1px solid var(--findId-black, #000000);
+    border: 1px solid var(--findId-accent-gold);
     transition: all 0.3s;
 }
 
-/* 로그인 버튼 (블랙) */
+/* 로그인 버튼 */
 .find-id-btn-primary {
-    color: var(--findId-bg-white, #FFFFFF);
-    background-color: var(--findId-black, #000000);
+    color: var(--findId-bg-white);
+    background-color: var(--findId-dark-beige);
 }
 
 .find-id-btn-primary:hover {

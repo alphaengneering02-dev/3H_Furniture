@@ -8,25 +8,28 @@
 ========================================== */
 
 :root {
-  --signup-site-black: #000000;
-  --signup-site-middle-gray: #777;
-  --signup-site-light-gray: #999;
-  --signup-site-charcoal: #2B2D2F;
-  --signup-site-dark-brown: #2F2A25;
-  --signup-site-dark-beige: #8C7A6B;
-  --signup-site-light-beige: #eee8e0;
-  --signup-site-accent-gold: #D4B26F;
-  --signup-site-alert-red: #FF3B30;
-  --signup-site-success-green: #4CAF50;
+    --signup-site-black: #000000;
+    --signup-site-middle-gray: #777;
+    --signup-site-light-gray: #999;
+    --signup-site-charcoal: #2B2D2F;
+    --signup-site-dark-brown: #2F2A25;
+    --signup-site-dark-beige: #8C7A6B;
+    --signup-site-light-beige: #eee8e0;
 
-  --signup-site-bg-ivory: #F9F8F6;
-  --signup-site-bg-white: #FFFFFF;
+    --signup-site-accent-gold: #D4B26F;
+    --signup-site-alert-red: #FF3B30;
+    --signup-site-success-green: #4CAF50;
+    --signup-site-caramel: #B8783E;
 
-  --signup-site-border-light: #E5E2DC;
-  --signup-site-border-dark: #1A1A1A;
+    --signup-site-bg-ivory: #F9F8F6;
+    --signup-site-bg-white: #FFFFFF;
+    --signup-site-bg-cream: #FFF3DF;
 
-  --signup-site-font-sans: 'Noto Sans KR', sans-serif;
-  --signup-site-font-serif: 'Playfair Display', serif;
+    --signup-site-border-light: #E5E2DC;
+    --signup-site-border-dark: #1A1A1A;
+
+    --signup-site-font-sans: 'Noto Sans KR', sans-serif;
+    --signup-site-font-serif: 'Playfair Display', serif;
 }
 
 
@@ -72,14 +75,14 @@
     padding: 14px 0;
     font-size: 14px;
     border: none;
-    border-bottom: 1px solid var(--signup-site-border-light);
+    border-bottom: 1px solid var(--signup-site-light-beige);
     background-color: transparent;
     outline: none;
     transition: border-color 0.3s;
 }
 
 .signup-input-field:focus {
-    border-bottom: 1px solid var(--signup-site-black);
+    border-bottom: 1px solid var(--signup-site-accent-gold);
 }
 
 .signup-input-field::placeholder {
@@ -102,12 +105,12 @@
     display: table;
     width: 100%;
     table-layout: fixed;
-    border-bottom: 1px solid var(--signup-site-border-light);
+    border-bottom: 1px solid var(--signup-site-light-beige);
     transition: border-color 0.3s;
 }
 
 .signup-email-row:focus-within {
-    border-bottom: 1px solid var(--signup-site-black);
+    border-bottom: 1px solid var(--signup-site-accent-gold);
 }
 
 /* 가로 구조 구획을 위한 테이블 셀 레이아웃 적용 */
@@ -173,7 +176,7 @@
     font-size: 15px;
     font-weight: 500;
     cursor: pointer;
-    border: 1px solid var(--signup-site-black);
+    border: 1px solid var(--signup-site-accent-gold);
     transition: all 0.3s;
 }
 
@@ -184,13 +187,13 @@
     background-color: var(--signup-site-bg-white);
 }
 .signup-btn-cancel:hover {
-    background-color: var(--signup-site-light-gray);
+    background-color: var(--signup-site-light-beige);
 }
 
 /* 가입하기 버튼 (블랙) */
 .signup-btn-submit {
     color: var(--signup-site-bg-white);
-    background-color: var(--signup-site-black);
+    background-color: var(--signup-site-dark-beige);
 }
 .signup-btn-submit:hover {
     background-color: var(--signup-site-light-gray);

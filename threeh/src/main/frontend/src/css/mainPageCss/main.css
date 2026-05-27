@@ -211,13 +211,25 @@
 
 /* 로그인, 회원가입, 장바구니, 마이페이지 아이콘 크기 고정 */
 .main-header-topBox .main-header-userMenu li img {
-  width: 40px !important;
-  height: 40px !important;
+  width: 43px;
+  height: 43px;
   object-fit: contain;
   margin-bottom: 10px;
   opacity: 0.78;
   filter: sepia(18%) saturate(90%) hue-rotate(340deg);
   transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.main-header-topBox .main-header-userMenu li img.main-cart-image {
+  width: 70px;
+}
+
+.main-header-topBox .main-header-userMenu li img.main-logout-image {
+  width: 38px;
+}
+
+.main-header-topBox .main-header-userMenu li img.main-login-image {
+  width: 37px;
 }
 
 .main-header-topBox .main-header-userMenu li p {

@@ -8,25 +8,28 @@
 ========================================== */
 
 :root {
-  --changePW-black: #000000;
-  --changePW-middle-gray: #777;
-  --changePW-light-gray: #999;
-  --changePW-charcoal: #2B2D2F;
-  --changePW-dark-brown: #2F2A25;
-  --changePW-dark-beige: #8C7A6B;
-  --changePW-light-beige: #eee8e0;
-  --changePW-accent-gold: #D4B26F;
-  --changePW-alert-red: #FF3B30;
-  --changePW-success-green: #4CAF50;
+    --changePW-black: #000000;
+    --changePW-middle-gray: #777;
+    --changePW-light-gray: #999;
+    --changePW-charcoal: #2B2D2F;
+    --changePW-dark-brown: #2F2A25;
+    --changePW-dark-beige: #8C7A6B;
+    --changePW-light-beige: #eee8e0;
 
-  --changePW-bg-ivory: #F9F8F6;
-  --changePW-bg-white: #FFFFFF;
+    --changePW-accent-gold: #D4B26F;
+    --changePW-alert-red: #FF3B30;
+    --changePW-success-green: #4CAF50;
+    --changePW-caramel: #B8783E;
 
-  --changePW-border-light: #E5E2DC;
-  --changePW-border-dark: #1A1A1A;
+    --changePW-bg-ivory: #F9F8F6;
+    --changePW-bg-white: #FFFFFF;
+    --changePW-bg-cream: #FFF3DF;
 
-  --changePW-font-sans: 'Noto Sans KR', sans-serif;
-  --changePW-font-serif: 'Playfair Display', serif;
+    --changePW-border-light: #E5E2DC;
+    --changePW-border-dark: #1A1A1A;
+
+    --changePW-font-sans: 'Noto Sans KR', sans-serif;
+    --changePW-font-serif: 'Playfair Display', serif;
 }
 
 
@@ -48,7 +51,7 @@
     display: flex;
     width: 100%;
     max-width: 400px;
-    border-bottom: 1px solid var(--changePW-border-light);
+    border-bottom: 1px solid var(--changePW-light-beige);
     margin-bottom: 40px;
 }
 
@@ -66,7 +69,7 @@
 .change-pw-nav-tabs a.tab-active {
     color: var(--changePW-black);
     font-weight: 500;
-    border: 1px solid var(--changePW-black);
+    border: 1px solid var(--changePW-accent-gold);
     border-bottom: 1px solid var(--changePW-bg-white);
     margin-bottom: -1px;
     background-color: var(--changePW-bg-white);
@@ -99,14 +102,14 @@
     padding: 14px 0;
     font-size: 14px;
     border: none;
-    border-bottom: 1px solid var(--changePW-border-light);
+    border-bottom: 1px solid var(--changePW-light-beige);
     background-color: transparent;
     outline: none;
     transition: border-color 0.3s;
 }
 
 .change-pw-input-field:focus {
-    border-bottom: 1px solid var(--changePW-black);
+    border-bottom: 1px solid var(--changePW-accent-gold);
 }
 
 .change-pw-input-field::placeholder {
@@ -117,7 +120,7 @@
 /* ==========================================
    버튼 및 하단 링크
    ========================================== */
-/* 블랙 메인 버튼 */
+/* 메인 버튼 */
 .change-pw-submit-btn {
     width: 100%;
     max-width: 400px;
@@ -125,7 +128,7 @@
     font-size: 16px;
     font-weight: 500;
     color: var(--changePW-bg-white);
-    background-color: var(--changePW-black);
+    background-color: var(--changePW-dark-beige);
     border: none;
     cursor: pointer;
     margin-top: 50px;
@@ -182,7 +185,7 @@
     color: var(--changePW-dark-brown);
     text-align: center;
     border: none;
-    border-bottom: 2px solid var(--changePW-black);
+    border-bottom: 2px solid var(--changePW-accent-gold);
     background-color: transparent;
     margin-bottom: 40px;
     outline: none;
@@ -196,7 +199,7 @@
     font-size: 16px;
     font-weight: 500;
     color: var(--changePW-bg-white);
-    background-color: var(--changePW-black);
+    background-color: var(--changePW-dark-beige);
     border: none;
     cursor: pointer;
     transition: all 0.3s;

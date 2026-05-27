@@ -8,25 +8,28 @@
 ========================================== */
 
 :root {
-  --signup-black: #000000;
-  --signup-middle-gray: #777;
-  --signup-light-gray: #999;
-  --signup-charcoal: #2B2D2F;
-  --signup-dark-brown: #2F2A25;
-  --signup-dark-beige: #8C7A6B;
-  --signup-light-beige: #eee8e0;
-  --signup-accent-gold: #D4B26F;
-  --signup-alert-red: #FF3B30;
-  --signup-success-green: #4CAF50;
+    --signup-black: #000000;
+    --signup-middle-gray: #777;
+    --signup-light-gray: #999;
+    --signup-charcoal: #2B2D2F;
+    --signup-dark-brown: #2F2A25;
+    --signup-dark-beige: #8C7A6B;
+    --signup-light-beige: #eee8e0;
 
-  --signup-bg-ivory: #F9F8F6;
-  --signup-bg-white: #FFFFFF;
+    --signup-accent-gold: #D4B26F;
+    --signup-alert-red: #FF3B30;
+    --signup-success-green: #4CAF50;
+    --signup-caramel: #B8783E;
 
-  --signup-border-light: #E5E2DC;
-  --signup-border-dark: #1A1A1A;
+    --signup-bg-ivory: #F9F8F6;
+    --signup-bg-white: #FFFFFF;
+    --signup-bg-cream: #FFF3DF;
 
-  --signup-font-sans: 'Noto Sans KR', sans-serif;
-  --signup-font-serif: 'Playfair Display', serif;
+    --signup-border-light: #E5E2DC;
+    --signup-border-dark: #1A1A1A;
+
+    --signup-font-sans: 'Noto Sans KR', sans-serif;
+    --signup-font-serif: 'Playfair Display', serif;
 }
 
 
@@ -65,14 +68,14 @@
     align-items: center;
 }
 
-/* 시안의 회색 박스 형태를 세련된 까사미아 시그니처 블랙 스타일로 가공 */
+/* 시안의 회색 박스 형태를 세련된 까사미아 스타일로 가공 */
 .signup-btn-site {
     width: 100%;
     height: 55px;
     font-size: 15px;
     font-weight: 500;
     color: var(--signup-bg-white);
-    background-color: var(--signup-black);
+    background-color: var(--signup-dark-beige);
     border: none;
     cursor: pointer;
     transition: background-color 0.3s, color 0.3s;
@@ -82,7 +85,6 @@
 
 .signup-btn-site:hover {
     background-color: var(--signup-light-gray);
-    color: var(--signup-charcoal);
 }
 
 
