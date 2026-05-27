@@ -15,12 +15,15 @@
   --login-dark-brown: #2F2A25;
   --login-dark-beige: #8C7A6B;
   --login-light-beige: #eee8e0;
+
   --login-accent-gold: #D4B26F;
   --login-alert-red: #FF3B30;
   --login-success-green: #4CAF50;
+   --login-caramel: #B8783E;
 
   --login-bg-ivory: #F9F8F6;
   --login-bg-white: #FFFFFF;
+  --login-bg-cream: #FFF3DF;
 
   --login-border-light: #E5E2DC;
   --login-border-dark: #1A1A1A;
@@ -95,14 +98,14 @@
     padding: 14px 0;
     font-size: 14px;
     border: none;
-    border-bottom: 1px solid var(--login-border-light);
+    border-bottom: 1px solid var(--login-light-beige);
     background-color: transparent;
     outline: none;
     transition: border-color 0.3s;
 }
 
 .login-input-field:focus {
-    border-bottom: 1px solid #000000;
+    border-bottom: 1px solid var(--login-accent-gold);
 }
 
 /* 유틸리티 영역 (아이디/비밀번호 찾기 등) */
@@ -132,12 +135,12 @@
 
 .login-utility-box .finding .divider {
     margin: 0 10px;
-    color: #EAEAEA;
+    color: var(--login-light-beige);
 }
 
 
 /* ==========================================
-   블랙 로그인 버튼
+   로그인 버튼
    ========================================== */
 .login-submit-btn {
     width: 100%; max-width: 400px;
@@ -146,7 +149,7 @@
     font-size: 16px;
     font-weight: 500;
     color: var(--login-bg-white);
-    background-color: var(--login-black);
+    background-color: var(--login-dark-beige);
     border: none;
     cursor: pointer;
     margin-bottom: 65px;

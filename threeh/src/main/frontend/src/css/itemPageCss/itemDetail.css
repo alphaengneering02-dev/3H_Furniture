@@ -3,8 +3,8 @@
    기준: global.css
 
    global.css 기준:
-   - body 배경: #F9F8F6
-   - 컨텐츠 박스: #FFFFFF
+   - body 배경: #FFF8ED
+   - 컨텐츠 박스: #FFFCF7
    - 기본 폰트: Noto Sans KR
    - 포인트 폰트: Playfair Display
 
@@ -23,8 +23,8 @@
     min-height: 100vh;
     margin: 0 auto;
     padding: 40px 20px 80px;
-    background-color: #FFFFFF;
-    color: #2F2A25;
+    background-color: var(--content-bg);
+    color: var(--black-brown);
 }
 
 /* 상품 불러오는 중 문구 */
@@ -33,8 +33,8 @@
     min-height: 300px;
     margin: 0 auto;
     padding: 80px 20px;
-    background-color: #FFFFFF;
-    color: #8A8178;
+    background-color: var(--content-bg);
+    color: #A98C72;
     font-size: 16px;
     text-align: center;
 }
@@ -50,7 +50,7 @@
     font-family: 'Playfair Display', serif;
     font-size: 38px;
     font-weight: 600;
-    color: #2F2A25;
+    color: var(--black-brown);
     letter-spacing: -0.5px;
 }
 
@@ -59,7 +59,7 @@
     margin-bottom: 28px;
     font-size: 30px;
     font-weight: 700;
-    color: #2F2A25;
+    color: var(--black-brown);
     line-height: 1.35;
 }
 
@@ -70,8 +70,8 @@
 /* 상품 상세 페이지 공통 버튼 */
 .itemDetail-button {
     padding: 10px 18px;
-    border: 1px solid #2F2A25;
-    background-color: #2F2A25;
+    border: 1px solid var(--caramel);
+    background-color: var(--caramel);
     color: #FFFFFF;
     font-family: 'Noto Sans KR', sans-serif;
     font-size: 14px;
@@ -82,28 +82,29 @@
 
 /* 버튼 hover */
 .itemDetail-button:hover {
-    background-color: #FFFFFF;
-    color: #2F2A25;
+    background-color: var(--deep-caramel);
+    border-color: var(--deep-caramel);
+    color: #FFFFFF;
 }
 
 /* disabled 버튼 */
 .itemDetail-button:disabled {
-    border-color: #CFC7BD;
-    background-color: #CFC7BD;
+    border-color: var(--warm-beige);
+    background-color: var(--warm-beige);
     color: #FFFFFF;
     cursor: not-allowed;
 }
 
 /* 보조 버튼 */
 .itemDetail-subButton {
-    border: 1px solid #8A6F55;
+    border: 1px solid var(--deep-caramel);
     background-color: #FFFFFF;
-    color: #8A6F55;
+    color: var(--deep-caramel);
 }
 
 /* 보조 버튼 hover */
 .itemDetail-subButton:hover {
-    background-color: #8A6F55;
+    background-color: var(--deep-caramel);
     color: #FFFFFF;
 }
 
@@ -134,7 +135,7 @@
     margin-bottom: 14px;
     font-size: 22px;
     font-weight: 700;
-    color: #2F2A25;
+    color: var(--black-brown);
 }
 
 /* 대표 이미지 */
@@ -142,14 +143,14 @@
     width: 300px;
     height: 300px;
     object-fit: cover;
-    border: 1px solid #EFE8E0;
-    background-color: #F9F8F6;
+    border: 1px solid var(--soft-border);
+    background-color: var(--main-bg);
 }
 
 /* 대표 이미지 없음 문구 */
 .itemDetail-emptyImageText {
     padding: 30px 0;
-    color: #8A8178;
+    color: #A98C72;
     font-size: 15px;
 }
 
@@ -170,15 +171,15 @@
     width: 150px;
     height: 150px;
     object-fit: cover;
-    border: 1px solid #EFE8E0;
-    background-color: #F9F8F6;
+    border: 1px solid var(--soft-border);
+    background-color: var(--main-bg);
 }
 
 /* 구분선 */
 .itemDetail-divider {
     margin: 34px 0;
     border: none;
-    border-top: 1px solid #E5DED6;
+    border-top: 1px solid var(--soft-border);
 }
 
 /* ================================
@@ -195,28 +196,28 @@
     margin-bottom: 8px;
     font-size: 15px;
     line-height: 1.7;
-    color: #4A4038;
+    color: var(--brown);
 }
 
 /* 가격 강조 */
 .itemDetail-price {
     font-size: 16px;
     font-weight: 700;
-    color: #2F2A25;
+    color: var(--black-brown);
 }
 
 /* 판매상태 텍스트 */
 .itemDetail-status {
     font-weight: 700;
-    color: #8A6F55;
+    color: var(--caramel);
 }
 
 /* 구매 불가 안내 문구 */
 .itemDetail-warning {
     margin-top: 12px;
     padding: 12px 14px;
-    border: 1px solid #E5DED6;
-    background-color: #FBFAF8;
+    border: 1px solid var(--soft-border);
+    background-color: var(--cream);
     color: #B94A3A;
     font-size: 14px;
     font-weight: 500;

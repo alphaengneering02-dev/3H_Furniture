@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import '../../css/itemPageCss/itemPage.css';
+import Header from "../main/Header";
+import Footer from "../main/Footer";
 
 //상품목록, 선택상품영역이 모두 코딩되어 있는 곳입니다. 망가지면 큰일나요.
 //관리자 상품관리/리뷰관리는 ItemAdminPage.js로 분리했습니다.
@@ -20,6 +22,15 @@ function Item() {
 
   //상품 상세페이지로 갔다가 아이템 목록으로 돌아오더라도 체킹 유지 및 체킹 목록 유지
   const SELECTED_ITEMS_KEY = "selectedItems";
+
+  //페이징
+  const [currentPage, setCurrentPage] = useState(1);
+
+  //한 페이지에 보여줄 상품 개수
+  const ITEMS_PER_PAGE =8;
+
+  //페이지 번호를 5개씩 보여주기
+  const PAGE_BLOCK_SIZE = 5;
 
   const getLoginUser = () => {
     try {
@@ -99,11 +110,6 @@ function Item() {
     );
   }, [selectedItems]);
 
-  //페이징
-  const [currentPage, setCurrentPage] = useState(1);
-
-  //한 페이지에 보여줄 상품 개수
-  const ITEMS_PER_PAGE =8;
 
   //상품 최종 가격 계산
   //백엔드에서 itemFinalPrice가 오면 그 값을 사용
@@ -647,17 +653,27 @@ function Item() {
   };
 
   //페이징 계산
-  const totalPages = Math.ceil(items.length /ITEMS_PER_PAGE);
-  
-  const startIndex = (currentPage-1)*ITEMS_PER_PAGE;
+  const totalPages = Math.max(1, Math.ceil(items.length / ITEMS_PER_PAGE));
+
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
 
   const pagedItems = items.slice(startIndex, endIndex);
 
-  const handlePgeChange =(page)=>{
-    if(page<1||page>totalPages){
-      return;
-    }
+  // 5개 단위 페이지 블록 계산
+  const currentPageBlock = Math.floor((currentPage - 1) / PAGE_BLOCK_SIZE);
+  const startPage = currentPageBlock * PAGE_BLOCK_SIZE + 1;
+  const endPage = Math.min(startPage + PAGE_BLOCK_SIZE - 1, totalPages);
+
+    const pageNumbers = Array.from(
+      { length: endPage - startPage + 1 },
+      (_, index) => startPage + index
+    );
+
+    const handlePgeChange = (page) => {
+      if (page < 1 || page > totalPages) {
+        return;
+      }
 
     setCurrentPage(page);
     window.scrollTo({top:0,behavior:"smooth"});
@@ -667,34 +683,20 @@ function Item() {
   //JSX부분^__________^===================================================
 
   return (
-    <>
-     <header className="item-temp-header">
-      <div className="item-temp-header-inner">
-        <h2 className="item-temp-logo">임시</h2>
-
-        <nav className="item-temp-nav">
-          <button type="button" onClick={() => navigate("/")}>
-            메인
-          </button>
-
-          {isUser && (
-            <button type="button" onClick={handlGoMyCart}>
-              장바구니
-            </button>
-          )}
-
-          {isAdmin && (
-            <button type="button" onClick={() => navigate("/admin/item")}>
-              관리자
-            </button>
-          )}
-        </nav>
-      </div>
-    </header>
+  <div>
+    {/* 실제 헤더 영역 */}
+    <Header />
 
     <div className="item-page">
       {/*상품 목록 페이지 제목 */}
       <h1 className="item-title">상품 목록</h1>
+
+      {/*등록된 상품 개수 표시 */}
+      <div className="item-count-box">
+        <span className="item-count-text">
+            총 등록 상품: {items.length}개
+        </span>
+      </div>
 
       {/*관리자 로그인 시에만 관리자 상품/리뷰 관리 페이지 이동 버튼 표시 */}
       {isAdmin && (
@@ -727,15 +729,15 @@ function Item() {
                 )}
 
                 <div className="item-image-box">
-                {item.itemImgUrl ? (
-                  <img
-                    className="item-image"
-                    src={`http://localhost:8080${item.itemImgUrl}`}
-                    alt={item.itemName}
-                  />
-                ) : (
-                  <p className="item-no-image">이미지 없음</p>
-                )}
+                  {item.itemImgUrl ? (
+                    <img
+                      className="item-image"
+                      src={`http://localhost:8080${item.itemImgUrl}`}
+                      alt={item.itemName}
+                    />
+                  ) : (
+                    <p className="item-no-image">이미지 없음</p>
+                  )}
                 </div>
 
                 <div className="item-info">
@@ -756,18 +758,20 @@ function Item() {
                     상품 최종가격: {formatPrice(getFinalPrice(item))}원
                   </p>
                   <p className="item-text">상품 재고: {item.itemStock}</p>
-                  <p className="item-text">판매 상태: {getSellStatusInfo(item).text}</p>
+                  <p className="item-text">
+                    판매 상태: {getSellStatusInfo(item).text}
+                  </p>
 
                   {/*판매 상태가 sell이 아니면 구매 또는 장바구니 담기 안됌. */}
-                    <p className="item-text">
+                  <p className="item-text">
+                    {getSellStatusInfo(item).message}
+                  </p>
+
+                  {!selectable && (
+                    <p className="item-warning">
                       {getSellStatusInfo(item).message}
                     </p>
-                    {!selectable &&(
-                      <p className="item-warning">
-                        {getSellStatusInfo(item).message}    
-                      </p>
-                    )}
-                    
+                  )}
 
                   {/*기존은 !isAdmin이였는데 일반 유저면 보이게 바꿈*/}
                   {isUser && (
@@ -811,33 +815,40 @@ function Item() {
         )}
       </div>
 
-        {items.length>ITEMS_PER_PAGE&&(
-          <div className="item-pagination">
-            <button type="button" className="item-page-button" disabled={currentPage===1}
-            onClick={()=> handlePgeChange(currentPage-1)}>
-              이전
+      {items.length > ITEMS_PER_PAGE && (
+        <div className="item-pagination">
+          <button
+            type="button"
+            className="item-page-button"
+            disabled={startPage === 1}
+            onClick={() => handlePgeChange(startPage - 1)}
+          >
+            &lt;
+          </button>
+
+          {pageNumbers.map((page) => (
+            <button
+              key={page}
+              type="button"
+              className={`item-page-button ${
+                currentPage === page ? "item-page-button-active" : ""
+              }`}
+              onClick={() => handlePgeChange(page)}
+            >
+              {page}
             </button>
+          ))}
 
-              {Array.from({length:totalPages},(_,index)=>{
-                const page = index + 1;
-                
-                return(
-                  <button key={page} type="button" className={`item-page-button ${
-                    currentPage === page ? "item-page-button-active":""
-                  }`} onClick={()=>handlePgeChange(page)}>
-                    {page}
-                  </button>
-                );
-                })}
-
-                <button type="button" className="item-page-button" disabled={currentPage === totalPages}
-                onClick={()=>handlePgeChange(currentPage+1)}>
-
-                  다음
-                </button>
-
-          </div>
-        )}
+          <button
+            type="button"
+            className="item-page-button"
+            disabled={endPage === totalPages}
+            onClick={() => handlePgeChange(endPage + 1)}
+          >
+            &gt;
+          </button>
+        </div>
+      )}
 
       {/*기존은 !isAdmin이였는데 일반 유저면 보이게 바꿈*/}
       {isUser && selectedItems.length > 0 && (
@@ -933,11 +944,11 @@ function Item() {
         </div>
       )}
     </div>
-    <footer className="item-temp-footer">
-      <p>Temporary Footer</p>
-    </footer>
-    </>
-  );
+
+    {/* 실제 푸터 영역 */}
+    <Footer />
+  </div>
+);
 }
 
 export default Item;

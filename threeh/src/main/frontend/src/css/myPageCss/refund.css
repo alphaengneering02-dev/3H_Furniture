@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,500;0,600;1,400&display=swap');
 
 /* =========================================================================
-   PROJECT CMYK - 반품/교환 통합 대형 현황판 프리미엄 디자인 시스템
+   PROJECT CMYK - 반품/교환 통합 대형 현황판 프리미엄 디자인 시스템 (색상 보정 완료)
    ========================================================================= */
 
 .refund-container {
@@ -9,7 +9,7 @@
     margin: 0 auto;
     padding: 0 20px 100px 20px;
     font-family: 'Noto Sans KR', sans-serif;
-    color: #111111;
+    color: #444444 !important; /* ⚡ [보정] 투박한 블랙에서 팀 공통 중화된 먹색으로 변경 */
     box-sizing: border-box;
 }
 
@@ -20,46 +20,46 @@
     display: flex;
     gap: 0px; 
     margin-top: 40px;
-    border-bottom: 1px solid #111111;
+    border-bottom: 1px solid #dfd1c0 !important; /* ⚡ [보정] 연화된 에스프레소 브라운선 매칭 */
 }
 
 .refund-tab-btn {
     background-color: #ffffff;
-    border: 1px solid #dddddd;
-    border-bottom: none;
-    color: #666666;
+    border: 1px solid #dfd1c0 !important; /* ⚡ 테두리 선 연화 */
+    border-bottom: none !important;
+    color: #888888 !important; /* 기본 비활성 텍스트 톤 다운 */
     padding: 12px 0px;
-    width: 200px;         /* 2개 탭이 왜소해 보이지 않도록 묵직하게 200px 가로폭 고정 */
+    width: 200px;         /* 200px 가로폭 고정 유지 */
     text-align: center;
     font-size: 14px;
     font-weight: 400;
     cursor: pointer;
-    border-radius: 0px;   /* 완벽 직각 사각 마감 */
+    border-radius: 0px;   /* 완벽 직각 사각 마감 유지 */
     transition: all 0.2s ease;
     position: relative;
-    top: 1px;             /* 탭 아래 직선 테두리 겹침 마감 보정 */
+    top: 1px;             
 }
 
-/* 활성화된 탭: 시그니처 샌드 베이지 채우고 두꺼운 직선으로 정렬 */
+/* 활성화된 탭: 시그니처 샌드 베이지 채우고 깊은 브라운 라인 정렬 */
 .refund-tab-btn.active {
-    background-color: #ede2d5;
-    border: 1px solid #111111;
-    border-bottom: 1px solid #ede2d5;
-    color: #111111;
+    background-color: #ede2d5 !important; /* 시그니처 베이지 고정 */
+    border: 1px solid #5E4431 !important; /* ⚡ 에스프레소 브라운 2px 라인으로 싱크 */
+    border-bottom: 1px solid #ede2d5 !important;
+    color: #5E4431 !important; /* ⚡ 깊은 에스프레소 브라운 강조 */
     font-weight: 700;
     z-index: 2;
 }
 
 .refund-tab-btn:hover:not(.active) {
-    background-color: #fafafa;
-    color: #111111;
+    background-color: #fdfbf7 !important; /* ⚡ 글로벌 공통 소프트 칩 배경색 매칭 */
+    color: #444444 !important;
 }
 
 /* 페이지 대제목 스타일 */
 .refund-title {
     font-size: 16px;
     font-weight: 700;
-    color: #111111;
+    color: #444444 !important; /* 중화된 먹색 */
     margin: 35px 0 20px 0;
     letter-spacing: -0.5px;
 }
@@ -70,16 +70,16 @@
 .refund-table-header {
     display: flex;
     background-color: #ffffff;
-    border-top: 1px solid #111111;   /* 마이페이지 상단 굵은 검은 직선과 싱크 */
-    border-bottom: 1px solid #dddddd;
+    border-top: 1px solid #5E4431 !important;   /* ⚡ 마이페이지 상단 굵은 에스프레소 브라운 축과 칼싱크 */
+    border-bottom: 1px solid #dfd1c0 !important; /* ⚡ 연화된 브라운선으로 변경 */
     padding: 14px 10px;
     font-size: 13px;
     font-weight: 500;
-    color: #666666;
+    color: #888888 !important;
     text-align: center;
 }
 
-/* 컬럼별 가로 비율 정밀 분할 레이아웃 (총합 100% 칼정렬 기하학) */
+/* 컬럼별 가로 비율 정밀 분할 레이아웃 (총합 100% 칼정렬 기하학 - 원본 유지) */
 .refund-th-select, .refund-td-select             { width: 6%;  display: flex; justify-content: center; align-items: center; }
 .refund-th-order-id, .refund-td-order-id         { width: 12%; text-align: center; }
 .refund-th-product-name, .refund-td-product-name { width: 36%; text-align: left; padding-left: 15px; box-sizing: border-box; }
@@ -100,15 +100,15 @@
     display: flex;
     align-items: center;
     padding: 22px 10px;
-    border-bottom: 1px solid #eeeeee; /* 가벼운 구분선 가로줄 */
+    border-bottom: 1px solid #f2ece4 !important; /* ⚡ 옅은 브라운 회색선으로 매칭 무드 연화 */
     background-color: #ffffff;
     font-size: 14px;
-    color: #111111;
+    color: #444444 !important; /* 중화된 먹색 */
     transition: background-color 0.2s ease;
 }
 
 .refund-item-card:hover {
-    background-color: #fcfbfa; /* 호버 시 은은한 오프화이트 베이지 투과 */
+    background-color: #fdfbf7 !important; /* ⚡ 호버 시 글로벌 오프화이트 소프트베이지 투과 */
 }
 
 /* 라디오 버튼 원형 마감 크기 */
@@ -116,11 +116,11 @@
     width: 16px;
     height: 16px;
     cursor: pointer;
-    accent-color: #111111;
+    accent-color: #8C7A6B !important; /* ⚡ 부드러운 피크브라운 액센트 장착 */
 }
 
 .refund-td-order-id {
-    color: #555555;
+    color: #888888 !important;
     font-size: 13px;
 }
 
@@ -133,26 +133,27 @@
 .refund-product-name {
     font-size: 14px;
     font-weight: 500;
+    color: #444444 !important;
 }
 
 .refund-td-price {
-    color: #111111;
+    color: #444444 !important;
 }
 
 .refund-td-count {
-    color: #444444;
+    color: #444444 !important;
 }
 
 /* 장바구니 합산 내역처럼 소계금액 강력 700 고정 */
 .refund-td-subtotal {
     font-weight: 700;
-    color: #111111;
+    color: #5E4431 !important; /* ⚡ 소계 금액은 묵직한 에스프레소 브라운 강조 */
 }
 
 .refund-td-status {
     font-size: 13px;
     font-weight: 500;
-    color: #444444;
+    color: #8C7A6B !important; /* ⚡ 상태값은 피크브라운으로 아이덴티티 부여 */
 }
 
 /* 내역이 비어있을 때 예외 안내판 */
@@ -160,8 +161,8 @@
     text-align: center;
     padding: 80px 0;
     font-size: 14px;
-    color: #888888;
-    border-bottom: 1px solid #eeeeee;
+    color: #dfd1c0 !important;
+    border-bottom: 1px solid #f2ece4 !important;
     margin: 0;
 }
 
@@ -180,13 +181,18 @@
     background: none;
     border: none;
     font-size: 13px;
-    color: #666666;
+    color: #888888 !important;
     cursor: pointer;
     padding: 4px 8px;
+    transition: color 0.2s ease;
+}
+
+.refund-page-arrow-btn:hover:not(:disabled) {
+    color: #8C7A6B !important; /* 화살표 호버 시 피크브라운 */
 }
 
 .refund-page-arrow-btn:disabled {
-    color: #dddddd;
+    color: #ede2d5 !important;
     cursor: default;
 }
 
@@ -199,19 +205,24 @@
     background: none;
     border: none;
     font-size: 13px;
-    color: #888888;
+    color: #dfd1c0 !important; /* 평소 숫자는 연화된 선 색상 */
     cursor: pointer;
     width: 24px;
     height: 24px;
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: color 0.2s ease;
+}
+
+.refund-page-num-btn:hover:not(.active) {
+    color: #8C7A6B !important;
 }
 
 .refund-page-num-btn.active {
-    color: #111111;
+    color: #5E4431 !important; /* ⚡ 활성화 번호 에스프레소 브라운 고정 */
     font-weight: 700;
-    border-bottom: 2px solid #111111; /* 활성화 번호 아랫선 마킹 */
+    border-bottom: 2px solid #5E4431 !important; /* 활성화 번호 아랫선 마킹 일치 */
 }
 
 /* ==========================================
@@ -222,7 +233,7 @@
     justify-content: center;
     gap: 12px;
     margin-top: 50px;
-    border-top: 1px solid #eeeeee;
+    border-top: 1px solid #f2ece4 !important;
     padding-top: 40px;
 }
 
@@ -233,24 +244,27 @@
     font-size: 13px;
     font-weight: 700;
     cursor: pointer;
-    border: 1px solid #111111;
+    border: 1px solid #dfd1c0 !important; /* ⚡ [보정] 연화된 선 베이스 */
     background-color: #ffffff;
-    color: #111111;
-    border-radius: 0px !important; /* 직각 셰이프 강제 고정 */
+    color: #444444 !important;
+    border-radius: 0px !important; /* 직각 셰이프 강제 고정 유지 */
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s ease;
+    transition: all 0.2s ease-in-out;
 }
 
-/* 반품신청 단추 호버: 올블랙 반전 마감 */
+/* 반품신청 단추 호버: 올블랙 대신 묵직한 에스프레소 브라운 반전 마감 */
 .refund-btn-return:hover {
-    background-color: #111111;
-    color: #ffffff;
+    background-color: #5E4431 !important; /* ⚡ 에스프레소 브라운 반전 */
+    color: #ffffff !important;
+    border-color: #5E4431 !important;
 }
 
-/* 교환신청 단추 호버: 까사미아풍 브랜드 샌드 베이지 채우기 반전 */
+/* 교환신청 단추 호버: 까사미아풍 브랜드 피크 브라운 채우기 반전 */
 .refund-btn-exchange:hover {
-    background-color: #ede2d5;
-    color: #111111;
+    background-color: #8C7A6B !important; /* ⚡ 피크 브라운 반전 */
+    color: #ffffff !important;
+    border-color: #8C7A6B !important;
 }
+

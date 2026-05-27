@@ -123,6 +123,7 @@
 
 .main-header-topBox .main-header-logo a {
   display: inline-block;
+  border-radius: 50%;
 }
 
 /* 로고만 크게 적용 */
@@ -131,6 +132,7 @@
   height: 72px !important;
   object-fit: contain;
   display: block;
+  border-radius: 50%;
 }
 
 /* 검색바 영역 */
@@ -138,13 +140,14 @@
   width: 85%;
   max-width: 420px;
   position: relative;
+  top: -20px;
 }
 
 .main-header-topBox .main-header-search .main-header-bar {
   display: flex;
   align-items: center;
   border-bottom: 2px solid var(--main-deep-caramel);
-  padding: 4px 0;
+  padding: 4px 7px;
 }
 
 .main-header-topBox .main-header-search .main-header-bar input {
@@ -211,13 +214,25 @@
 
 /* 로그인, 회원가입, 장바구니, 마이페이지 아이콘 크기 고정 */
 .main-header-topBox .main-header-userMenu li img {
-  width: 40px !important;
-  height: 40px !important;
+  width: 43px;
+  height: 43px;
   object-fit: contain;
   margin-bottom: 10px;
   opacity: 0.78;
   filter: sepia(18%) saturate(90%) hue-rotate(340deg);
   transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.main-header-topBox .main-header-userMenu li img.main-cart-image {
+  width: 70px;
+}
+
+.main-header-topBox .main-header-userMenu li img.main-logout-image {
+  width: 38px;
+}
+
+.main-header-topBox .main-header-userMenu li img.main-login-image {
+  width: 37px;
 }
 
 .main-header-topBox .main-header-userMenu li p {

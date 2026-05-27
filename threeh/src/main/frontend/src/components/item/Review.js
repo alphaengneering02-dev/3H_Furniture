@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import '../../css/reviewPageCss/review.css'; 
 
 const Review = ({ itemId, isAdmin }) => {
@@ -11,7 +13,17 @@ const Review = ({ itemId, isAdmin }) => {
   const [reviewScore, setReviewScore] = useState(5);
   const [reviewText, setReviewText] = useState("");
 
-  const user = JSON.parse(sessionStorage.getItem("user"));
+  const getLoginUser = () => {
+    try {
+      return JSON.parse(sessionStorage.getItem("user"));
+    } catch (error) {
+      console.error("user 파싱 실패", error);
+      sessionStorage.removeItem("user");
+      return null;
+    }
+  };
+
+  const user = getLoginUser();
 
   useEffect(() => {
     if (!itemId) {
@@ -39,6 +51,8 @@ const Review = ({ itemId, isAdmin }) => {
         console.log("리뷰 조회 상태코드:", error.response.status);
         console.log("리뷰 조회 응답:", error.response.data);
       }
+
+      toast.error("리뷰 목록을 불러오지 못했습니다.");
     }
   };
 
@@ -60,33 +74,39 @@ const Review = ({ itemId, isAdmin }) => {
         console.log("리뷰 평점 상태코드:", error.response.status);
         console.log("리뷰 평점 응답:", error.response.data);
       }
+
+      toast.error("리뷰 평점 정보를 불러오지 못했습니다.");
     }
   };
 
   const handleSubmitReview = async () => {
     if (!user) {
-      alert("로그인이 필요합니다.");
-      navigate("/login");
+      toast.error("로그인이 필요합니다.");
+
+      setTimeout(() => {
+        navigate("/login");
+      }, 800);
+
       return;
     }
 
     if (isAdmin) {
-      alert("관리자는 리뷰를 작성할 수 없습니다.");
+      toast.warning("관리자는 리뷰를 작성할 수 없습니다.");
       return;
     }
 
     if (!reviewScore || reviewScore < 1 || reviewScore > 5) {
-      alert("별점은 1점 이상 5점 이하로 선택해주세요.");
+      toast.warning("별점은 1점 이상 5점 이하로 선택해주세요.");
       return;
     }
 
     if (!reviewText.trim()) {
-      alert("리뷰 내용을 입력해주세요.");
+      toast.warning("리뷰 내용을 입력해주세요.");
       return;
     }
 
     if (reviewText.length > 255) {
-      alert("리뷰 내용은 255자를 초과할 수 없습니다.");
+      toast.warning("리뷰 내용은 255자를 초과할 수 없습니다.");
       return;
     }
 
@@ -102,7 +122,7 @@ const Review = ({ itemId, isAdmin }) => {
         }
       );
 
-      alert("리뷰가 등록되었습니다.");
+      toast.success("리뷰가 등록되었습니다.");
 
       setReviewScore(5);
       setReviewText("");
@@ -115,11 +135,27 @@ const Review = ({ itemId, isAdmin }) => {
       if (error.response) {
         console.log("리뷰 등록 상태코드:", error.response.status);
         console.log("리뷰 등록 응답:", error.response.data);
-        alert(error.response.data);
+
+        if (error.response.status === 401 || error.response.status === 403) {
+          toast.error("로그인 세션이 만료되었습니다. 다시 로그인해주세요.");
+          sessionStorage.removeItem("user");
+
+          setTimeout(() => {
+            navigate("/login");
+          }, 1000);
+
+          return;
+        }
+
+        toast.error(
+          error.response?.data?.message ||
+          error.response?.data ||
+          "리뷰 등록 실패"
+        );
         return;
       }
 
-      alert("리뷰 등록 실패");
+      toast.error("리뷰 등록 실패");
     }
   };
 
@@ -138,7 +174,7 @@ const Review = ({ itemId, isAdmin }) => {
         }
       );
 
-      alert("리뷰가 삭제되었습니다.");
+      toast.success("리뷰가 삭제되었습니다.");
 
       getReviews();
       getReviewSummary();
@@ -148,11 +184,27 @@ const Review = ({ itemId, isAdmin }) => {
       if (error.response) {
         console.log("리뷰 삭제 상태코드:", error.response.status);
         console.log("리뷰 삭제 응답:", error.response.data);
-        alert(error.response.data);
+
+        if (error.response.status === 401 || error.response.status === 403) {
+          toast.error("관리자 로그인 세션이 만료되었습니다. 다시 로그인해주세요.");
+          sessionStorage.removeItem("user");
+
+          setTimeout(() => {
+            navigate("/login");
+          }, 1000);
+
+          return;
+        }
+
+        toast.error(
+          error.response?.data?.message ||
+          error.response?.data ||
+          "리뷰 삭제 실패"
+        );
         return;
       }
 
-      alert("리뷰 삭제 실패");
+      toast.error("리뷰 삭제 실패");
     }
   };
 
@@ -172,6 +224,16 @@ const Review = ({ itemId, isAdmin }) => {
         paddingTop: "30px",
       }}
     >
+      <ToastContainer
+        position="top-center"
+        autoClose={1800}
+        hideProgressBar={false}
+        newestOnTop={true}
+        closeOnClick
+        pauseOnHover
+        theme="light"
+      />
+
       <h2>{isAdmin ? "상품 리뷰 관리" : "상품 리뷰"}</h2>
 
       {reviewSummary && (

@@ -224,13 +224,13 @@ const Header = () => {
                                                 <>
                                                     <li>
                                                         <Link to="/cart">
-                                                            <img src={icon_cart} alt="장바구니"/>
+                                                            <img src={icon_cart} alt="장바구니" className='main-cart-image'/>
                                                             <p>장바구니</p>
                                                         </Link>
                                                     </li>
                                                     <li>
                                                         <Link to="/mypage">
-                                                            <img src={icon_mypage} alt="마이페이지"/>
+                                                            <img src={icon_mypage} alt="마이페이지" className='main-mypage-image'/>
                                                             <p>마이페이지</p>
                                                         </Link>
                                                     </li>
@@ -253,7 +253,7 @@ const Header = () => {
                                     <>
                                         <li>
                                             <Link to="/login">
-                                                <img src={icon_login} alt="로그인"/>
+                                                <img src={icon_login} alt="로그인" className='main-login-image'/>
                                                 <p>로그인</p>
                                             </Link>
                                         </li>

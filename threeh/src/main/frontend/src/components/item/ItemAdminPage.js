@@ -1,7 +1,11 @@
 import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "../../css/itemPageCss/itemAdminPage.css";
+import Header from "../main/Header";
+import Footer from "../main/Footer";
 
 const ItemAdminPage = () => {
     const navigate = useNavigate();
@@ -37,6 +41,15 @@ const ItemAdminPage = () => {
     // 재고 정렬
     // 기본순, 재고 적은순, 재고 많은순
     const [stockSort, setStockSort] = useState("");
+
+    //현재 페이지
+    const [currentPage, setCurrentPage] = useState(1);
+
+    //한페이지에 보여줄 상품 개수
+    const ITEMS_PER_PAGE = 10;
+
+    //페이지 번호를 5개씩 보여주기
+    const PAGE_BLOCK_SIZE = 5;
 
     // sessionStorage에서 로그인 유저 정보 가져오기
     const getLoginUser = () => {
@@ -76,8 +89,12 @@ const ItemAdminPage = () => {
         const user = getLoginUser();
 
         if (!user || !isAdminRole(user)) {
-            alert("관리자만 접근할 수 있습니다.");
-            navigate("/");
+            toast.error("관리자만 접근할 수 있습니다.");
+
+            setTimeout(() => {
+                navigate("/");
+            }, 800);
+
             return;
         }
 
@@ -97,15 +114,18 @@ const ItemAdminPage = () => {
             setItems(itemList);
 
             // 추가: 상품 목록을 가져온 뒤, 각 상품별 리뷰 개수도 함께 조회
-            getReviewCounts(itemList);
+            // 상품 개수만큼 /api/reviews/summary/{itemId} API가 반복 호출되어 요청이 많아지므로 자동 조회하지 않음
+            // getReviewCounts(itemList);
         } catch (error) {
             console.error("상품 목록 조회 실패", error);
-            alert("상품 목록을 불러오지 못했습니다.");
+            toast.error("상품 목록을 불러오지 못했습니다.");
         }
     };
 
     // 상품별 리뷰 개수 가져오기
     // 테이블의 리뷰보기 버튼 옆에
+    // 현재는 상품 목록 조회 시 자동 호출하지 않음
+    // 추후 백엔드에서 리뷰 개수 일괄 조회 API를 만들면 이 부분을 교체하는 방식 추천
     const getReviewCounts = async (itemList) => {
         try {
             const countData = {};
@@ -136,11 +156,13 @@ const ItemAdminPage = () => {
             setReviewCounts(countData);
         } catch (error) {
             console.error("리뷰 개수 전체 조회 실패", error);
+            toast.error("리뷰 개수를 불러오지 못했습니다.");
         }
     };
 
     // 특정 상품의 이미지 목록 불러오기
     // 상품 삭제 시 FK 문제 때문에 상품 이미지 먼저 삭제해야 함
+    // 현재 상품 삭제는 백엔드에서 이미지 DB 삭제, 상품 DB 삭제, 물리 파일 삭제까지 처리하므로 사용하지 않음
     const getItemImgs = async (itemId) => {
         const response = await axios.get(
             `http://localhost:8080/api/itemImgs/${itemId}`,
@@ -163,13 +185,14 @@ const ItemAdminPage = () => {
         try {
             //상품이 주문내역에 있던 상품인지 삭제 가능 여부 먼저 확인
             const deletableResponse = await axios.get(
-                `http://localhost:8080/api/admin/item/${itemId}/deletable`,{
+                `http://localhost:8080/api/admin/item/${itemId}/deletable`,
+                {
                     withCredentials: true,
                 }
             );
 
-            if(!deletableResponse.data){
-                alert(
+            if (!deletableResponse.data) {
+                toast.warning(
                     "이미 주문내역이 있는 상품은 삭제할 수 없습니다. 판매상태를 판매중지(STOP)로 변경해주세요."
                 );
                 return;
@@ -177,15 +200,15 @@ const ItemAdminPage = () => {
 
             //상품 삭제 API 하나만 호출
             //이미지 DB 삭제, 상품DB삭제, 물리 파일 삭제는 백엔드에서 처리
-            await axios.delete(`http://localhost:8080/api/admin/item/${itemId}`,{
+            await axios.delete(`http://localhost:8080/api/admin/item/${itemId}`, {
                 withCredentials: true,
             });
 
-            alert("상품이 삭제되었습니다.");
-
+            toast.success("상품이 삭제되었습니다.");
 
             // 삭제 가능한 상품이면, 상품이미지가 상품아이디를 FK하고 있어서, 이미지 먼저 지워야 됌.
-            /*const itemImgs = await getItemImgs(itemId);
+            /*
+            const itemImgs = await getItemImgs(itemId);
 
             // 상품에 연결된 이미지 먼저 삭제
             for (const img of itemImgs) {
@@ -202,8 +225,8 @@ const ItemAdminPage = () => {
                 withCredentials: true,
             });
 
-            alert("상품이 삭제되었습니다.");*/
-
+            alert("상품이 삭제되었습니다.");
+            */
 
             // 삭제 후 상품 목록 다시 불러오기
             getItems();
@@ -222,7 +245,22 @@ const ItemAdminPage = () => {
                 console.log("상품 삭제 응답:", error.response.data);
             }
 
-            alert(error.response?.data || "상품 삭제 실패");
+            if (error.response?.status === 401 || error.response?.status === 403) {
+                toast.error("관리자 로그인 세션이 만료되었습니다. 다시 로그인해주세요.");
+                sessionStorage.removeItem("user");
+
+                setTimeout(() => {
+                    navigate("/login");
+                }, 1000);
+
+                return;
+            }
+
+            toast.error(
+                error.response?.data?.message ||
+                    error.response?.data ||
+                    "상품 삭제 실패"
+            );
         }
     };
 
@@ -261,6 +299,12 @@ const ItemAdminPage = () => {
 
             setReviews(reviewResponse.data || []);
             setReviewSummary(summaryResponse.data);
+
+            // 리뷰보기 클릭 시 해당 상품의 리뷰 수만 갱신
+            setReviewCounts((prevCounts) => ({
+                ...prevCounts,
+                [itemId]: summaryResponse.data?.reviewCount || 0,
+            }));
         } catch (error) {
             console.error("리뷰 조회 실패", error);
 
@@ -269,7 +313,18 @@ const ItemAdminPage = () => {
                 console.log("리뷰 조회 응답:", error.response.data);
             }
 
-            alert("리뷰 목록을 불러오지 못했습니다.");
+            if (error.response?.status === 401 || error.response?.status === 403) {
+                toast.error("관리자 로그인 세션이 만료되었습니다. 다시 로그인해주세요.");
+                sessionStorage.removeItem("user");
+
+                setTimeout(() => {
+                    navigate("/login");
+                }, 1000);
+
+                return;
+            }
+
+            toast.error("리뷰 목록을 불러오지 못했습니다.");
         }
     };
 
@@ -289,7 +344,7 @@ const ItemAdminPage = () => {
                 }
             );
 
-            alert("리뷰가 삭제되었습니다.");
+            toast.success("리뷰가 삭제되었습니다.");
 
             // 현재 선택된 상품이 있으면 해당 상품 리뷰 목록 다시 불러오기
             if (selectedItemId) {
@@ -297,6 +352,7 @@ const ItemAdminPage = () => {
             }
 
             // 추가: 리뷰 삭제 후 상품 목록의 리뷰 개수도 다시 갱신
+            // 상품 개수만큼 리뷰 요약 API가 반복 호출되지 않도록 전체 상품 목록 재조회만 실행
             getItems();
         } catch (error) {
             console.error("관리자 리뷰 삭제 실패", error);
@@ -306,7 +362,22 @@ const ItemAdminPage = () => {
                 console.log("리뷰 삭제 응답:", error.response.data);
             }
 
-            alert(error.response?.data || "리뷰 삭제 실패");
+            if (error.response?.status === 401 || error.response?.status === 403) {
+                toast.error("관리자 로그인 세션이 만료되었습니다. 다시 로그인해주세요.");
+                sessionStorage.removeItem("user");
+
+                setTimeout(() => {
+                    navigate("/login");
+                }, 1000);
+
+                return;
+            }
+
+            toast.error(
+                error.response?.data?.message ||
+                    error.response?.data ||
+                    "리뷰 삭제 실패"
+            );
         }
     };
 
@@ -357,33 +428,78 @@ const ItemAdminPage = () => {
         return result;
     }, [items, categoryFilter, sellStatusFilter, stockSort]);
 
-    return (
-        <div className="itemAdmin-page">
-            {/* 상단 이동 버튼 영역 */}
-            <div className="itemAdmin-topArea">
-                <button
-                    type="button"
-                    className="itemAdmin-button itemAdmin-subButton"
-                    onClick={() => navigate("/")}
-                >
-                    메인으로
-                </button>
+    //필터가 바뀌면 첫 페이지로 이동
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [categoryFilter, sellStatusFilter, stockSort]);
 
-                <button
+    //전체 페이지 수
+    const totalPages = Math.max(
+        1,
+        Math.ceil(filteredItems.length / ITEMS_PER_PAGE)
+    );
+
+    //현재 페이지가 전체 페이지보다 커지면 마지막 페이지로 보정
+    useEffect(() => {
+        if (currentPage > totalPages) {
+            setCurrentPage(totalPages);
+        }
+    }, [currentPage, totalPages]);
+
+    //현재 페이지에 보여줄 상품 목록
+    const pagedItems = useMemo(() => {
+        const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+        const endIndex = startIndex + ITEMS_PER_PAGE;
+
+        return filteredItems.slice(startIndex, endIndex);
+    }, [filteredItems, currentPage]);
+
+    // 5개 단위 페이지 블록 계산
+    const currentPageBlock = Math.floor((currentPage - 1) / PAGE_BLOCK_SIZE);
+    const startPage = currentPageBlock * PAGE_BLOCK_SIZE + 1;
+    const endPage = Math.min(startPage + PAGE_BLOCK_SIZE - 1, totalPages);
+
+    const pageNumbers = Array.from(
+        { length: endPage - startPage + 1 },
+        (_, index) => startPage + index
+    );
+
+    // 페이지 이동
+    const goPage = (page) => {
+        if (page < 1 || page > totalPages) {
+            return;
+        }
+
+        setCurrentPage(page);
+    };
+
+    return (
+        <div>
+            {/*헤더영역 메인에서 가져옴 */}
+            <Header/>
+            <div className="itemAdmin-page">
+            <ToastContainer
+                position="top-center"
+                autoClose={1800}
+                hideProgressBar={false}
+                newestOnTop={true}
+                closeOnClick
+                pauseOnHover
+                theme="light"
+            />
+              {/* 관리자 페이지 제목 */}
+            <h1 className="itemAdmin-title">관리자 상품/ 리뷰관리</h1>
+            
+            {/* 상품 등록하기 버튼과 리뷰 관리 버튼을 같은 레벨에 배치 */}
+            {/* 상품 관리 버튼은 따로 노출하지 않음 */}
+            <div className="itemAdmin-adminActionArea">
+                 <button
                     type="button"
                     className="itemAdmin-button itemAdmin-subButton"
                     onClick={() => navigate("/item")}
                 >
                     상품목록으로
                 </button>
-            </div>
-
-            {/* 관리자 페이지 제목 */}
-            <h1 className="itemAdmin-title">관리자 상품/ 리뷰관리</h1>
-
-            {/* 상품 등록하기 버튼과 리뷰 관리 버튼을 같은 레벨에 배치 */}
-            {/* 상품 관리 버튼은 따로 노출하지 않음 */}
-            <div className="itemAdmin-adminActionArea">
                 <button
                     type="button"
                     className="itemAdmin-button"
@@ -405,7 +521,16 @@ const ItemAdminPage = () => {
             {activeTab === "items" && (
                 <div className="itemAdmin-section">
                     <h2 className="itemAdmin-sectionTitle">상품 관리</h2>
-
+                    {/*등록된 상품 개수 표시 */}
+                    <div className="itemAdmin-countBox">
+                        <span className="itemAdmin-countText">
+                            총 등록 상품: {items.length}개
+                        </span>
+                        <span className="itemAdmin-countText">
+                            현재 조건 상품: {filteredItems.length}개
+                        </span>
+                    </div>
+                    
                     {/* 상품 목록 필터 / 정렬 영역 */}
                     <div className="itemAdmin-filterArea">
                         {/* 카테고리 필터 */}
@@ -491,10 +616,14 @@ const ItemAdminPage = () => {
                                 </thead>
 
                                 <tbody>
-                                    {filteredItems.map((item, index) => (
+                                    {pagedItems.map((item, index) => (
                                         <tr key={item.itemId}>
                                             {/* 필터링된 목록 기준 순번 */}
-                                            <td>{index + 1}</td>
+                                            <td>
+                                                {(currentPage - 1) * ITEMS_PER_PAGE +
+                                                    index +
+                                                    1}
+                                            </td>
                                             <td>{item.itemId}</td>
                                             <td>{item.itemCategory}</td>
                                             <td className="itemAdmin-tableTextLeft">
@@ -518,7 +647,7 @@ const ItemAdminPage = () => {
                                                     </button>
 
                                                     <span className="itemAdmin-reviewCount">
-                                                        {reviewCounts[item.itemId] || 0}개
+                                                        {reviewCounts[item.itemId] ?? "-"}개
                                                     </span>
                                                 </div>
                                             </td>
@@ -550,6 +679,44 @@ const ItemAdminPage = () => {
                                     ))}
                                 </tbody>
                             </table>
+
+                            {/* 페이지네이션 */}
+                            {filteredItems.length > ITEMS_PER_PAGE && (
+                                <div className="itemAdmin-pagination">
+                                    <button
+                                        type="button"
+                                        className="itemAdmin-pageButton"
+                                        onClick={() => goPage(startPage - 1)}
+                                        disabled={startPage === 1}
+                                    >
+                                        &lt;
+                                    </button>
+
+                                    {pageNumbers.map((page) => (
+                                        <button
+                                            key={page}
+                                            type="button"
+                                            className={
+                                                currentPage === page
+                                                    ? "itemAdmin-pageButton itemAdmin-pageButtonActive"
+                                                    : "itemAdmin-pageButton"
+                                            }
+                                            onClick={() => goPage(page)}
+                                        >
+                                            {page}
+                                        </button>
+                                    ))}
+
+                                    <button
+                                        type="button"
+                                        className="itemAdmin-pageButton"
+                                        onClick={() => goPage(endPage + 1)}
+                                        disabled={endPage === totalPages}
+                                    >
+                                        &gt;
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>
@@ -690,6 +857,9 @@ const ItemAdminPage = () => {
                 </div>
             )}
         </div>
+        {/*푸터 영역 */}
+        <Footer/>
+    </div>
     );
 };
 
