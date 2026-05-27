@@ -155,7 +155,6 @@ const Header_searchCondition = ({searchKey, setSearchKey}) => {
                         marks={price_options}
                         valueLabelDisplay="on"
                         disableSwap
-                        style={{marginLeft: '50px', width: '50%'}}
                     />
                 </div>
             </article>

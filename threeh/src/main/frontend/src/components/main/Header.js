@@ -154,7 +154,7 @@ const Header = () => {
                     <div className="main-header-center">
                         <h1 className='main-header-logo'> 
                             <Link to="/">
-                                <img src={logo} alt="logo"/>
+                                <img src={logo} alt="CMYK logo"/>
                             </Link> 
                         </h1>
 
@@ -165,8 +165,7 @@ const Header = () => {
                                     <button type="button" id="do" className="do">
                                         <img 
                                             src={icon_search} alt="검색" 
-                                            onClick={doSearch} 
-                                            style={{width: 20}}
+                                            onClick={doSearch}
                                         />
                                     </button>
                                     <input className='input'
@@ -179,7 +178,7 @@ const Header = () => {
                                     <button type="button" className="hamburger">
                                         <img 
                                             src={icon_hamburger} alt="검색조건 선택창" 
-                                            onClick={toggleSearchCondition} style={{width: 20}}
+                                            onClick={toggleSearchCondition}
                                         />
                                     </button>
                                 </section>
@@ -209,13 +208,13 @@ const Header = () => {
                                                 <>
                                                     <li>
                                                         <Link to="/admin">
-                                                            <img src={icon_dashboard} alt="관리자 대시보드" style={{width: 50}}/>
+                                                            <img src={icon_dashboard} alt="관리자 대시보드"/>
                                                             <p>관리자 대시보드</p>
                                                         </Link>
                                                     </li>
                                                     <li>
                                                         <Link to="/item">
-                                                            <img src={icon_product} alt="관리자 상품관리" style={{width: 50}}/>
+                                                            <img src={icon_product} alt="관리자 상품관리"/>
                                                             <p>관리자 상품관리</p>
                                                         </Link>
                                                     </li>
@@ -225,13 +224,13 @@ const Header = () => {
                                                 <>
                                                     <li>
                                                         <Link to="/cart">
-                                                            <img src={icon_cart} alt="장바구니" style={{width: 50}}/>
+                                                            <img src={icon_cart} alt="장바구니"/>
                                                             <p>장바구니</p>
                                                         </Link>
                                                     </li>
                                                     <li>
                                                         <Link to="/mypage">
-                                                            <img src={icon_mypage} alt="마이페이지" style={{width: 50}}/>
+                                                            <img src={icon_mypage} alt="마이페이지"/>
                                                             <p>마이페이지</p>
                                                         </Link>
                                                     </li>
@@ -243,7 +242,7 @@ const Header = () => {
                                         
                                         <li>
                                             <Link onClick={logout}>
-                                                <img src={icon_logout} alt="로그아웃" style={{width: 50}}/>
+                                                <img src={icon_logout} alt="로그아웃" className='main-logout-image'/>
                                                 <p>로그아웃</p>
                                             </Link>
                                         </li>
@@ -254,13 +253,13 @@ const Header = () => {
                                     <>
                                         <li>
                                             <Link to="/login">
-                                                <img src={icon_login} alt="로그인" style={{width: 50}}/>
+                                                <img src={icon_login} alt="로그인"/>
                                                 <p>로그인</p>
                                             </Link>
                                         </li>
                                         <li>
                                             <Link to="/signup">
-                                                <img src={icon_signup} alt="회원가입" style={{width: 50}}/>
+                                                <img src={icon_signup} alt="회원가입"/>
                                                 <p>회원가입</p>
                                             </Link>
                                         </li>

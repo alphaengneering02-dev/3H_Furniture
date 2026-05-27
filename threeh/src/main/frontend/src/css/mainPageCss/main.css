@@ -1,52 +1,58 @@
 /* ================================
    Main Page CSS
-   기준: global.css
-   - body 배경: #F9F8F6
-   - 컨텐츠 박스: #FFFFFF
-   - 기본 폰트: Noto Sans KR
-   - 포인트 폰트: Playfair Display
+   PROJECT CMYK Warm Caramel Theme
+   기준 컬러:
+   - 전체 배경: 따뜻한 크림 #FFF8ED
+   - 컨텐츠 배경: 밝은 아이보리 #FFFCF7
+   - 포인트: 카라멜 브라운 #B8783E
+   - 텍스트: 블랙브라운 #1F1813
 ================================ */
 
 :root {
-  --main-black: #000000;
-  --main-middle-gray: #777;
-  --main-light-gray: #999;
-  --main-charcoal: #2B2D2F;
-  --main-dark-brown: #2F2A25;
-  --main-dark-beige: #8C7A6B;
-  --main-light-beige: #eee8e0;
-  --main-accent-gold: #D4B26F;
-  --main-alert-red: #FF3B30;
-  --main-success-green: #4CAF50;
+  --main-black: #1F1813;
+  --main-middle-gray: #8A7A6C;
+  --main-light-gray: #B7A797;
+  --main-charcoal: #2B2118;
 
-  --main-bg-ivory: #F9F8F6;
-  --main-bg-white: #FFFFFF;
+  --main-dark-brown: #4A3324;
+  --main-dark-beige: #A98C72;
+  --main-light-beige: #F6E7D5;
 
-  --main-border-light: #E5E2DC;
-  --main-border-dark: #1A1A1A;
+  --main-accent-gold: #D6A85F;
+  --main-caramel: #B8783E;
+  --main-deep-caramel: #8A4F25;
+
+  --main-alert-red: #B94A3A;
+  --main-success-green: #6C8B5F;
+
+  --main-bg-ivory: #FFF8ED;
+  --main-bg-white: #FFFCF7;
+  --main-bg-cream: #FFF3DF;
+
+  --main-border-light: #E8D9C8;
+  --main-border-dark: #8A4F25;
 
   --main-font-sans: 'Noto Sans KR', sans-serif;
   --main-font-serif: 'Playfair Display', serif;
 }
 
 /* 전체 Main 컴포넌트를 감싸는 래퍼 */
-/* 전체 초기화 및 기본 베이스 */
 .main-body-wrapper {
   font-family: var(--main-font-sans);
-  background-color: var(--main-bg-white);
+  background-color: var(--main-bg-ivory);
   color: var(--main-black);
   -webkit-font-smoothing: antialiased;
   letter-spacing: -0.02em;
   padding-bottom: 120px;
 }
 
-
 /* ==========================================
-   메인 헤더 (Header)
-   ========================================== */
+   메인 헤더 Header
+========================================== */
+
 .main-header {
   width: 100%;
-  background-color: var(--main-light-beige);
+  background-color: var(--main-bg-ivory);
   border-bottom: 1px solid var(--main-border-light);
   top: 0;
   z-index: 1000;
@@ -59,46 +65,47 @@
   position: relative;
 }
 
-
 /* ==========================================
-   1. 상단 박스 (Top Box: SNS, 로고, 검색, 유저 메뉴)
-   ========================================== */
+   1. 상단 박스 SNS, 로고, 검색, 유저 메뉴
+========================================== */
+
 .main-header-topBox {
   display: flex;
   align-items: center;
   justify-content: center;
   padding-top: 10px;
   position: relative;
+  background-color: var(--main-bg-ivory);
 }
-
-/* ------------------------------------ */
 
 /* 1-1. 좌측 SNS 영역 */
 .main-header-topBox .main-header-left {
-    flex: 1;
+  flex: 1;
 }
 
 .main-header-topBox .main-header-sns {
   display: flex;
-  justify-content: center;  /*가로 중앙정렬*/
+  justify-content: center;
   gap: 7%;
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
+/* SNS 아이콘 크기 고정 */
 .main-header-topBox .main-header-sns img {
-  width: 30px !important; /* 이미지 크기를 까사미아처럼 작고 시원하게 조정 */
-  height: auto;
-  opacity: 0.7;
-  transition: opacity 0.2s ease;
+  width: 30px !important;
+  height: 30px !important;
+  object-fit: contain;
+  opacity: 0.72;
+  filter: sepia(18%) saturate(85%) hue-rotate(345deg);
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
 .main-header-topBox .main-header-sns img:hover {
   opacity: 1;
+  transform: translateY(-2px);
 }
-
-/* ------------------------------------ */
 
 /* 1-2. 중앙 로고 및 검색창 영역 */
 .main-header-topBox .main-header-center {
@@ -106,30 +113,38 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
+  gap: 18px;
 }
 
 .main-header-topBox .main-header-logo {
   margin: 0;
+  text-align: center;
 }
 
+.main-header-topBox .main-header-logo a {
+  display: inline-block;
+}
+
+/* 로고만 크게 적용 */
 .main-header-topBox .main-header-logo img {
-  height: 50px; /* 까사미아 스타일의 슬림하고 정갈한 로고 높이 */
-  width: auto;
+  width: auto !important;
+  height: 72px !important;
+  object-fit: contain;
+  display: block;
 }
 
-/* 검색바 (Bar) 스타일 디자인 */
+/* 검색바 영역 */
 .main-header-topBox .main-header-search {
-    width: 85%;
-    max-width: 420px;
-    position: relative;
+  width: 85%;
+  max-width: 420px;
+  position: relative;
 }
 
 .main-header-topBox .main-header-search .main-header-bar {
-    display: flex;
-    align-items: center;
-    border-bottom: 2px solid var(--main-black); /* 까사미아 특유의 하단 굵은 라인 강조 */
-    padding: 4px 0;
+  display: flex;
+  align-items: center;
+  border-bottom: 2px solid var(--main-deep-caramel);
+  padding: 4px 0;
 }
 
 .main-header-topBox .main-header-search .main-header-bar input {
@@ -143,8 +158,8 @@
 }
 
 .main-header-topBox .main-header-search .main-header-bar input::placeholder {
-  color: var(--main-light-gray);
-  font-weight: bold;
+  color: var(--main-dark-beige);
+  font-weight: 500;
 }
 
 .main-header-topBox .main-header-search .main-header-bar button {
@@ -157,14 +172,20 @@
   padding: 4px;
 }
 
+/* 검색 아이콘 크기 고정 */
 .main-header-topBox .main-header-search .main-header-bar button img {
   width: 22px !important;
-  opacity: 0.8;
+  height: 22px !important;
+  object-fit: contain;
+  opacity: 0.78;
+  filter: sepia(25%) saturate(90%) hue-rotate(340deg);
 }
 
-/* ------------------------------------ */
+.main-header-topBox .main-header-search .main-header-bar button:hover img {
+  opacity: 1;
+}
 
-/* 1-3. 우측 유저 메뉴 영역 (로그인/회원가입/장바구니) */
+/* 1-3. 우측 유저 메뉴 영역 */
 .main-header-topBox .main-header-right {
   flex: 1;
 }
@@ -175,59 +196,64 @@
   list-style: none;
   padding: 0;
   margin: 0;
-  align-items: flex-end;  /*세로 하단정렬*/
-  justify-content: center;  /*가로 중앙정렬*/
+  align-items: flex-end;
+  justify-content: center;
 }
 
 .main-header-topBox .main-header-userMenu li a {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-end;  /*텍스트, 이미지 하단정렬*/
+  justify-content: flex-end;
   text-decoration: none;
   cursor: pointer;
 }
 
+/* 로그인, 회원가입, 장바구니, 마이페이지 아이콘 크기 고정 */
 .main-header-topBox .main-header-userMenu li img {
-  width: 40px !important; /* 이미지 내 인라인 스타일(50px)을 지우거나 덮어쓰기 위해 고정 */
+  width: 40px !important;
+  height: 40px !important;
+  object-fit: contain;
   margin-bottom: 10px;
-  opacity: 0.8;
+  opacity: 0.78;
+  filter: sepia(18%) saturate(90%) hue-rotate(340deg);
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
 .main-header-topBox .main-header-userMenu li p {
   margin: 0;
   font-size: 13px;
-  color: #666;
+  color: var(--main-dark-brown);
   font-weight: 600;
+  white-space: nowrap;
 }
 
 .main-header-topBox .main-header-userMenu li a:hover img {
   opacity: 1;
+  transform: translateY(-2px);
 }
 
 .main-header-topBox .main-header-userMenu li a:hover p {
-  color: var(--main-black);
+  color: var(--main-caramel);
 }
 
-
-
 /* ==========================================
-   2. 고급 검색 조건 창 (Header_searchCondition)
-   ========================================== */
+   2. 고급 검색 조건 창 Header_searchCondition
+========================================== */
+
 .main-header-topBox .main-header-search .main-header-searchCondition {
   position: absolute;
   top: calc(100% + 12px);
   left: 50%;
   transform: translateX(-50%);
-  width: 500px; /* 검색 조건창을 한눈에 보이도록 넓게 설정 */
+  width: 500px;
   background-color: var(--main-bg-white);
-  border: 1px solid var(--main-border-dark);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--main-border-light);
+  box-shadow: 0 12px 30px rgba(74, 51, 36, 0.12);
   padding: 24px;
   z-index: 500;
 }
 
-/* 검색 조건 상단 타이틀 바 */
 .main-header-topBox .main-header-search .main-header-searchCondition .main-header-searchCondition-title {
   display: flex;
   justify-content: space-between;
@@ -248,16 +274,15 @@
   background: none;
   border: none;
   font-size: 12px;
-  color: #999;
+  color: var(--main-dark-beige);
   text-decoration: underline;
   cursor: pointer;
 }
 
 .main-header-topBox .main-header-search .main-header-searchCondition .deleteAll:hover {
-  color: var(--main-black);
+  color: var(--main-caramel);
 }
 
-/* 카테고리, 색상 개별 아이템 그룹화 */
 .main-header-topBox .main-header-search .main-header-searchCondition .main-header-searchCondition-filters {
   display: flex;
   flex-direction: column;
@@ -277,16 +302,14 @@
   color: var(--main-black);
 }
 
-/* 체크박스 정렬 행 */
 .main-header-topBox .main-header-search .main-header-searchCondition .main-header-searchCondition-filters div > div {
   display: flex;
   flex-wrap: wrap;
   gap: 14px;
 }
 
-/* 체크박스 커스텀 정돈 (정갈한 사각형 스타일) */
 .main-header-topBox .main-header-search .main-header-searchCondition input[type="checkbox"] {
-  accent-color: var(--main-black); /* 체크 시 검은색 채우기 */
+  accent-color: var(--main-caramel);
   width: 15px;
   height: 15px;
   cursor: pointer;
@@ -302,7 +325,6 @@
   vertical-align: middle;
 }
 
-/* 가격대 레이아웃 전용 디자인 */
 .main-header-topBox .main-header-search .main-header-searchCondition h4 {
   margin: 0 0 6px 0;
   font-size: 13px;
@@ -310,26 +332,26 @@
   color: var(--main-black);
 }
 
-/* Material UI Slider 컨테이너 규격 조정 */
 .main-header-topBox .main-header-search .main-header-searchCondition .MuiSlider-root {
-  margin: 25px auto 10px auto !important; /* 중요: 슬라이더 밸류 팝업 공간 확보 */
+  margin: 25px auto 10px auto !important;
   width: 88% !important;
-  color: var(--main-black) !important; /* 슬라이더 바 컬러 매칭 */
+  color: var(--main-caramel) !important;
 }
 
 .main-header-topBox .main-header-search .main-header-searchCondition .MuiSlider-valueLabel {
-  background-color: var(--main-black) !important;
+  background-color: var(--main-deep-caramel) !important;
   font-size: 11px !important;
 }
 
-
-
 /* ==========================================
-   3. 하단 박스 (Bottom Box: 카테고리 GNB)
-   ========================================== */
+   3. 하단 박스 Bottom Box, GNB
+========================================== */
+
 .main-header-bottomBox {
   border-top: 1px solid var(--main-border-light);
+  border-bottom: 1px solid #D9B98F;
   display: flex;
+  background-color: var(--main-light-beige);
 }
 
 .main-header-GNB {
@@ -340,7 +362,7 @@
 
 .main-header-GNB > ul {
   display: flex;
-  gap: 70px; /* 대형 메뉴 간 여백 */
+  gap: 70px;
   list-style: none;
   padding: 0;
   margin: 0;
@@ -354,426 +376,435 @@
 .main-header-GNB > ul > li > a {
   font-size: 16px;
   font-weight: 600;
-  color: var(--main-charcoal);
+  color: var(--main-dark-brown);
   text-decoration: none;
   letter-spacing: -0.01em;
-  padding-bottom: 4px; /* 밑줄 여백 공간 확보 */
+  padding-bottom: 4px;
 }
 
-/* 메인 카테고리 호버 시 텍스트 밑줄 효과 */
 .main-header-GNB > ul > li:hover > a {
-  border-bottom: 2px solid var(--main-charcoal);
+  color: var(--main-caramel);
+  border-bottom: 2px solid var(--main-caramel);
 }
-
 
 /* ==========================================
-   드롭다운 네비게이션 서브메뉴 (sub1)
-   ========================================== */
+   드롭다운 네비게이션 서브메뉴 sub1
+========================================== */
+
 .main-header-GNB .main-header-sub1 {
-  display: none; 
+  display: none;
   position: absolute;
   top: 100%;
-  left: 0; /* 이미지처럼 메인 메뉴 왼쪽에 맞춰 떨어지도록 수정 */
-  box-shadow: 0 10px 30px rgba(0,0,0,0.08); /* 부드러운 그림자 효과 */
+  left: 0;
+  box-shadow: 0 10px 30px rgba(74, 51, 36, 0.12);
   list-style: none;
   margin: 0;
   padding: 0;
   z-index: 10;
-  
-  /* [크기 합산] 자식들의 크기 총합만큼 가로/세로 동적 계산 */
   width: max-content;
   height: max-content;
 }
 
-/* 마우스 호버 시 상위 서브메뉴(sub1) 노출 (Flexbox 구조 활성화) */
 .main-header-GNB > ul > li:hover > .main-header-sub1 {
   display: flex;
   flex-direction: column;
-  background: var(--main-bg-ivory);
+  background: var(--main-bg-white);
 }
 
-/* sub1 내부의 li (sub1 텍스트 버튼과 sub2 박스를 가로로 나란히 배열) */
 .main-header-GNB .main-header-sub1 > li {
   position: relative;
-  display: flex; 
-  align-items: stretch; /* sub1과 sub2의 높이를 동일하게 맞춤 */
+  display: flex;
+  align-items: stretch;
   width: 100%;
 }
 
-/* sub1 직속 a 태그 (침대, 매트리스/토퍼 등) */
 .main-header-GNB .main-header-sub1 > li > a {
   display: block;
-  width: 160px; /* 이미지 비율에 맞춰 너비 확장 */
-  padding: 15px 20px; /* 사방 여백 확보 */
+  width: 160px;
+  padding: 15px 20px;
   font-size: 14px;
   font-weight: 600;
-  color: var(--main-charcoal);
+  color: var(--main-dark-brown);
   text-decoration: none;
-  text-align: left; /* 이미지처럼 좌측 정렬 */
+  text-align: left;
   white-space: nowrap;
-  background: var(--main-light-beige); /* 이미지 특유의 살짝 더 어두운 베이지 배경색 */
+  background: var(--main-light-beige);
   box-sizing: border-box;
 }
 
-/* sub1 항목 호버 시에도 글자 진해짐 및 하단 border 효과 */
 .main-header-GNB .main-header-sub1 > li:hover > a {
   font-weight: 800;
+  background-color: var(--main-bg-cream);
+  color: var(--main-caramel);
 }
 
-/* 글자 바로 밑에만 줄이 생기도록 호버 효과 변경 */
 .main-header-GNB .main-header-sub1 > li > a:hover span {
-  border-bottom: 1.5px solid var(--main-charcoal);
+  border-bottom: 1.5px solid var(--main-caramel);
   font-weight: 700;
 }
 
-
 /* ==========================================
-   sub2 영역 스타일 정돈 및 독립 제어
-   ========================================== */
+   sub2 영역
+========================================== */
+
 .main-header-GNB .main-header-sub2 {
-  display: none; 
-  background: var(--main-bg-ivory); /* 이미지 특유의 밝은 아이보리/화이트 배경색 */
+  display: none;
+  background: var(--main-bg-white);
   list-style: none;
-  margin: 0;   
-  padding: 10px 0; /* 위아래 안쪽 여백 추가 */
+  margin: 0;
+  padding: 10px 0;
   box-sizing: border-box;
-  border-left: 1px solid rgba(0,0,0,0.03); /* 경계 구분을 위한 미세한 선 */
+  border-left: 1px solid var(--main-border-light);
 }
 
-/* 호버 시 sub2를 블록 형태로 노출 */
 .main-header-GNB .main-header-sub1 > li:hover > .main-header-sub2 {
-  display: block; 
+  display: block;
 }
 
 .main-header-GNB .main-header-sub2 li {
-  display: block; 
-  width: 180px; /* 오른쪽 칸(sub2) 너비 설정 */
-  height: auto;  
+  display: block;
+  width: 180px;
+  height: auto;
 }
 
 .main-header-GNB .main-header-sub2 a {
   display: block;
   width: 100%;
-  padding: 10px 25px; /* 왼쪽 여백을 충분히 주어 정렬 */
+  padding: 10px 25px;
   text-decoration: none;
-  box-sizing: border-box; 
-  text-align: left; /* 좌측 정렬 */
+  box-sizing: border-box;
+  text-align: left;
 }
 
-/* sub2 내부의 핵심 글자 디자인 */
 .main-header-GNB .main-header-sub2 span {
-  display: inline-block; /* 너비가 글자 크기만큼만 잡히도록 inline-block 설정 */
-  color: var(--main-charcoal);
+  display: inline-block;
+  color: var(--main-dark-brown);
   font-size: 13px;
   font-weight: 500;
-  padding-bottom: 2px; /* 밑줄이 생길 여백 공간 확보 */
+  padding-bottom: 2px;
 }
 
-/* 글자 바로 밑에만 줄이 생기도록 호버 효과 변경 */
 .main-header-GNB .main-header-sub2 a:hover span {
-  border-bottom: 1.5px solid var(--main-charcoal);
+  color: var(--main-caramel);
+  border-bottom: 1.5px solid var(--main-caramel);
   font-weight: 700;
 }
 
-
-
 /* ==========================================
-   메인 콘텐츠 영역 (Contents)
-   ========================================== */
-/* 전체 감싸는 콘텐트 컨테이너 */
+   메인 콘텐츠 영역 Contents
+========================================== */
+
 .main-container {
   max-width: 1240px;
   margin: 0 auto;
   padding: 0 20px;
+  background-color: transparent;
 }
 
 /* 메인 배너 영역 */
 .main-banner {
-    width: 100%;
+  width: 100%;
 }
 
-/* 부모 영역에서 넘치는 슬라이드 숨기기 */
 .main-banner-mainSlide {
   position: relative;
-  overflow: hidden; 
+  overflow: hidden;
   width: 100%;
-  position: relative;
 }
 
-
-
-
-/*메인 배너 - 이전/다음 버튼*/
+/* 메인 배너 이전/다음 버튼 */
 .main-banner-btn-once {
-    position: absolute;
-    top: 50%; left: 50%; transform: translate(-50%, -50%);
-    display: flex;
-    justify-content: space-between;
-    width: 92%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  justify-content: space-between;
+  width: 92%;
 }
+
 .main-banner-btn-once button {
-    background: none;
-    border: none;
-    cursor: pointer;
+  background: none;
+  border: none;
+  cursor: pointer;
 }
+
 .main-banner-btn-once button img {
-    width: 45px;
+  width: 45px;
+  filter: drop-shadow(0px 2px 5px rgba(74, 51, 36, 0.14));
 }
 
-/*메인 배너 - 인디케이터 버튼*/
+/* 메인 배너 인디케이터 버튼 */
 .main-banner-btn-indicater {
-    position: absolute;
-    bottom: 3%; left: 50%; transform: translate(-50%, -50%);
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    list-style: none;
-    padding: 0;
+  position: absolute;
+  bottom: 3%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  list-style: none;
+  padding: 0;
 }
+
 .main-banner-btn-indicater li {
-    width: 12px;
-    height: 12px;
-    background-color: #ccc;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: background-color 0.3s;
+  width: 12px;
+  height: 12px;
+  background-color: #E1C7A7;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
-/* 현재 보여주는 슬라이드의 버튼 강조 */
+
 .main-banner-btn-indicater li.active {
-    background-color: var(--main-black, #000); /* 현재 활성화된 버튼 색상 */
+  background-color: var(--main-caramel);
 }
-
-
 
 /* ==========================================
-   1. 부모 레이아웃 (상품 리스트 정렬 및 슬라이더 뷰포트)
+   상품 리스트 영역
 ========================================== */
-/* 상품 목록 영역 */
+
 .main-item-section {
   width: 100%;
 }
 
-/* /========================================== */
-
 .main-itemList {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 40px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
 }
 
 .main-itemList h2 {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 24px;
-    text-align: left;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 24px;
+  text-align: left;
+  color: var(--main-black);
 }
 
-
-/* 슬라이더의 넘치는 카드를 숨겨주는 윈도우 역할 창 */
 .main-product-slider-section {
   position: relative;
 }
 
 .main-product-slider-section .main-slider-container {
-    position: relative;
-    width: 100%;
-    overflow: hidden; /* 영역 밖으로 밀려난 5~8번 상품 카드 숨김 */
+  position: relative;
+  width: 100%;
+  overflow: hidden;
 }
 
-/* 8개의 카드가 수평 정렬되는 트랙 공간 */
 .main-product-slider-section .main-items {
-    display: flex;
-    gap: 20px; /* 카드간 고정 간격 */
-    box-sizing: border-box;
-    width: 200%; /* 부모 폭의 200%로 가로 배치 보장 */
+  display: flex;
+  gap: 20px;
+  box-sizing: border-box;
+  width: 200%;
 }
 
-/* 빈 상품 문구 */
 .main-itemList .main-item-empty-text {
-    padding: 60px 0;
-    margin: 0 auto;
-    font-size: 15px;
-    color: #8A8178;
+  padding: 60px 0;
+  margin: 0 auto;
+  font-size: 15px;
+  color: var(--main-dark-beige);
 }
 
-
-/* ==========================================
-   2. 자식 레이아웃 (개별 상품 카드 & 세로 배열 유지)
-========================================== */
+/* 개별 상품 카드 */
 .main-item-card {
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
-/* 이미지 박스 스타일 */
 .main-item-card .main-image-box {
-    position: relative; 
-    width: 100%;
-    aspect-ratio: 1 / 1; 
-    background-color: #e5e5e5; 
-    border-radius: 12px; 
-    overflow: hidden;
-    margin-bottom: 12px; 
-    text-align: center;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background-color: var(--main-bg-cream);
+  border: 1px solid var(--main-border-light);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 12px;
+  text-align: center;
 }
 
 .main-item-card .main-image-box img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; 
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 /* 북마크 버튼 */
 .main-item-card .main-bookmark-button {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    /* background: transparent; */
-    background: transparent;
-    border: none;
-    font-size: 20px;
-    cursor: pointer;
-    color: #333;
-    z-index: 10;
-    transition: transform 0.2s ease, color 0.2s ease;
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: var(--main-dark-brown);
+  z-index: 10;
+  transition: transform 0.2s ease, color 0.2s ease;
 }
 
 .main-item-card .main-bookmark-button:hover {
-    transform: scale(1.1); 
+  transform: scale(1.1);
+  color: var(--main-caramel);
 }
 
 .main-item-card .main-bookmark-active {
-    color: #B94A3A;
+  color: var(--main-alert-red);
 }
 
-
-/* 텍스트 정보 정렬 */
+/* 상품 텍스트 */
 .main-item-card .main-item-name {
-    font-size: 14px;
-    color: #666;
-    margin: 0 0 6px 0;
-    text-align: center;
+  font-size: 14px;
+  color: var(--main-dark-brown);
+  margin: 0 0 6px 0;
+  text-align: center;
 }
 
 .main-item-card .main-item-price {
-    font-size: 16px;
-    font-weight: bold;
-    color: #111;
-    margin: 0;
-    text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+  color: var(--main-black);
+  margin: 0;
+  text-align: center;
 }
 
 /* ==========================================
-   3. 슬라이더 컴포넌트 전용 UI 컨트롤러 버튼 (까사미아 메인 배너 스타일 이식)
+   상품 슬라이더 버튼
 ========================================== */
-/* 화살표 내비게이션 버튼 배치 */
+
 .main-product-slider-section .main-slider-btn-once {
-    position: absolute;
-    top: calc(50% - 25px); /* 이미지 박스 중간 지점에 균형감 있게 배치 */
-    left: 50%; 
-    transform: translate(-50%, -50%);
-    display: flex;
-    justify-content: space-between;
-    width: 102%; /* 화살표 버튼들이 카드 밖 양끝단 쪽에 튀어나와 쾌적하도록 설정 */
-    pointer-events: none; /* 빈 영역 마우스 클릭 방해 해제 */
-    z-index: 20;
+  position: absolute;
+  top: calc(50% - 25px);
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  justify-content: space-between;
+  width: 102%;
+  pointer-events: none;
+  z-index: 20;
 }
 
 .main-product-slider-section .main-slider-btn-once button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    pointer-events: auto; /* 버튼 자체는 클릭 가능 */
-    padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  pointer-events: auto;
+  padding: 0;
 }
 
 .main-product-slider-section .main-slider-btn-once button img {
-    width: 45px;
-    filter: drop-shadow(0px 2px 5px rgba(0,0,0,0.1));
+  width: 45px;
+  filter: sepia(20%) saturate(100%) hue-rotate(340deg)
+          drop-shadow(0px 2px 5px rgba(74, 51, 36, 0.14));
 }
 
-/* 하단 인디케이터 도트 트랙 */
+/* 상품 슬라이더 인디케이터 */
 .main-product-slider-section .main-slider-btn-indicator {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    list-style: none;
-    padding: 0;
-    margin: 30px 0 0 0; /* 슬라이더 하단 여백 형성 */
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  list-style: none;
+  padding: 0;
+  margin: 30px 0 0 0;
 }
 
 .main-product-slider-section .main-slider-btn-indicator li {
-    width: 12px;
-    height: 12px;
-    background-color: #ccc;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+  width: 12px;
+  height: 12px;
+  background-color: #E1C7A7;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-/* 활성화 상태 인디케이터 컬러 융합 */
 .main-product-slider-section .main-slider-btn-indicator li.active {
-    background-color: var(--main-black, #000); 
+  background-color: var(--main-caramel);
 }
-
-
 
 /* ==========================================
-   [까사미아 스타일] 하단 푸터 영역
-   ========================================== */
+   하단 푸터 영역
+========================================== */
+
 .main-mypage-footer {
-    width: 100%;
-    
-    margin-top: 100px;
-    padding: 40px 0 60px 0;
-    background-color: #ffffff;
+  width: 100%;
+  margin-top: 100px;
+  padding: 40px 0 60px 0;
+  background-color: var(--main-bg-white);
+  border-top: 1px solid var(--main-border-light);
 }
 
 .main-footer-content {
-    max-width: 1200px;
-    margin: 0 auto;
-    border-top: 1px solid #111111;
+  max-width: 1200px;
+  margin: 0 auto;
+  border-top: 1px solid var(--main-deep-caramel);
 }
 
 .main-footer-logo {
-    font-size: 16px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    margin: 0 0 15px 0;
-    color: #111111;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin: 0 0 15px 0;
+  color: var(--main-black);
 }
 
 .main-footer-info {
-    font-size: 12px;
-    color: #666666;
-    line-height: 1.6;
-    margin: 0 0 8px 0;
+  font-size: 12px;
+  color: var(--main-dark-beige);
+  line-height: 1.6;
+  margin: 0 0 8px 0;
 }
 
 .main-footer-copy {
-    font-size: 11px;
-    color: #999999;
-    margin: 0;
+  font-size: 11px;
+  color: var(--main-light-gray);
+  margin: 0;
 }
 
+/* ==========================================
+   공통 transition
+========================================== */
 
-
-
+.main-header a,
+.main-header button,
+.main-item-card,
+.main-bookmark-button {
+  transition: color 0.2s ease,
+              background-color 0.2s ease,
+              border-color 0.2s ease,
+              transform 0.2s ease,
+              opacity 0.2s ease;
+}
 
 /* ==========================================
-   반응형 레이아웃 처리 (화면이 줄어들 때)
-   ========================================== */
+   반응형 레이아웃 처리
+========================================== */
+
 @media (max-width: 1200px) {
   .item-grid-container {
-    grid-template-columns: repeat(4, 1fr); /* 화면이 작아지면 4열 */
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 
 @media (max-width: 900px) {
   .item-grid-container {
-    grid-template-columns: repeat(3, 1fr); /* 태블릿 크기는 3열 */
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .main-header-topBox .main-header-logo img {
+    height: 64px !important;
+  }
+
+  .main-header-topBox .main-header-userMenu li img {
+    width: 36px !important;
+    height: 36px !important;
+  }
+
+  .main-header-topBox .main-header-sns img {
+    width: 28px !important;
+    height: 28px !important;
   }
 }
 
@@ -781,11 +812,42 @@
   .main-container {
     padding: 0 15px;
   }
+
   .item-grid-container {
-    grid-template-columns: repeat(2, 1fr); /* 모바일은 2열 */
+    grid-template-columns: repeat(2, 1fr);
     gap: 30px 12px;
   }
+
   .section-title-area .section-title {
     font-size: 20px;
+  }
+
+  .main-header-topBox {
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .main-header-topBox .main-header-left,
+  .main-header-topBox .main-header-center,
+  .main-header-topBox .main-header-right {
+    flex: none;
+    width: 100%;
+  }
+
+  .main-header-topBox .main-header-logo img {
+    height: 58px !important;
+  }
+
+  .main-header-topBox .main-header-search {
+    width: 90%;
+  }
+
+  .main-header-GNB {
+    margin-left: 20px;
+    overflow-x: auto;
+  }
+
+  .main-header-GNB > ul {
+    gap: 35px;
   }
 }

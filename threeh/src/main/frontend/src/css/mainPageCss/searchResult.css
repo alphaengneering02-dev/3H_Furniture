@@ -4,18 +4,23 @@
     margin: 0 auto;
     padding: 60px 20px;
     font-family: 'Noto Sans KR', sans-serif;
+    background-color: #FFF8ED;
+    color: #2B2118;
 }
 
 /* 상단 타이틀 */
 .search-result-header {
     margin-bottom: 25px;
 }
+
 .search-result-header h2 {
     font-size: 20px;
     font-weight: bold;
+    color: #2B2118;
 }
+
 .search-result-highlight {
-    color: #e63740;
+    color: #B8783E;
 }
 
 
@@ -25,6 +30,11 @@
 .search-result-filter-container {
     width: 100%;
     margin-bottom: 40px;
+    background-color: #FFFCF7;
+    border: 1px solid #E8D9C8;
+    border-radius: 18px;
+    padding: 24px 28px;
+    box-shadow: 0 8px 24px rgba(74, 51, 36, 0.06);
 }
 
 /* 헤더: 검색 조건 & 전체 삭제 버튼 */
@@ -32,20 +42,20 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid #e0e0e0;
-    padding-bottom: 10px;
+    border-bottom: 1px solid #E8D9C8;
+    padding-bottom: 12px;
 }
 
 .search-result-filter-main-title {
     font-size: 16px;
     font-weight: bold;
-    color: #333;
+    color: #2B2118;
 }
 
 .search-result-filter-reset-btn {
     background: none;
     border: none;
-    color: #888;
+    color: #A98C72;
     font-size: 14px;
     text-decoration: underline;
     cursor: pointer;
@@ -53,19 +63,18 @@
 }
 
 .search-result-filter-reset-btn:hover {
-    color: #333;
+    color: #B8783E;
 }
 
-/* 필터 그룹 (카테고리, 색상, 가격대 컨테이너) */
+/* 필터 그룹 */
 .search-result-filter-body {
-    padding: 20px 30px;
+    padding: 22px 10px 0 10px;
 }
 
 .search-result-filter-section {
     display: flex;
     gap: 10%;
 }
-
 
 .search-result-filter-group {
     margin-bottom: 15px;
@@ -74,71 +83,104 @@
 .search-result-filter-title {
     font-size: 14px;
     font-weight: bold;
-    color: #000;
-    margin-bottom: 7px;
+    color: #4A3324;
+    margin-bottom: 9px;
 }
 
 /* 체크박스 가로 정렬 */
 .search-result-checkbox-group {
     display: flex;
     flex-wrap: wrap;
-    gap: 24px; /* 체크박스 간의 간격 */
+    gap: 24px;
     align-items: center;
 }
 
 .search-result-checkbox-item {
     display: flex;
     align-items: center;
-    gap: 5px; /* 체크박스와 글자 사이의 간격 */
+    gap: 6px;
 }
 
-/* 체크박스 크기 및 스타일링 */
+/* 체크박스 */
 .search-result-checkbox-item input[type="checkbox"] {
     width: 13px;
     height: 13px;
     margin: 0;
     cursor: pointer;
-    accent-color: #333; /* 체크 시 색상 (최신 브라우저 지원) */
+    accent-color: #B8783E;
 }
 
 .search-result-checkbox-item label {
     font-size: 13px;
-    color: #333;
-    cursor: pointer; /* 글자를 눌러도 체크되도록 포인터 설정 */
+    color: #4A3324;
+    cursor: pointer;
 }
 
-/* 슬라이더 래퍼 (좌우 여백 확보) */
+.search-result-checkbox-item label:hover {
+    color: #B8783E;
+}
+
+/* 슬라이더 래퍼 */
 .search-result-slider-wrapper {
-    padding: 30px 20px 0 20px; /* 툴팁이 잘리지 않도록 상단 여백 추가 */
-    max-width: 700px; /* 이미지처럼 가로 폭을 적당히 제한 */
+    padding: 30px 20px 0 20px;
+    max-width: 700px;
 }
 
-/* MUI Slider 하단 텍스트(markLabel) 폰트 설정 */
+/* MUI Slider 색상 */
+.search-result-slider-wrapper .MuiSlider-root {
+    color: #B8783E !important;
+}
+
+.search-result-slider-wrapper .MuiSlider-thumb {
+    background-color: #B8783E !important;
+    border: 2px solid #FFFCF7 !important;
+    box-shadow: 0 2px 8px rgba(138, 79, 37, 0.25) !important;
+}
+
+.search-result-slider-wrapper .MuiSlider-track {
+    background-color: #B8783E !important;
+    border-color: #B8783E !important;
+}
+
+.search-result-slider-wrapper .MuiSlider-rail {
+    background-color: #E1C7A7 !important;
+    opacity: 1 !important;
+}
+
+.search-result-slider-wrapper .MuiSlider-valueLabel {
+    background-color: #8A4F25 !important;
+    color: #fff !important;
+    font-size: 11px !important;
+}
+
 .search-result-slider-wrapper .MuiSlider-markLabel {
     font-size: 13px;
-    color: #555;
+    color: #8A7A6C;
     margin-top: 5px;
 }
 
 
-/* 리스트 헤더 (총 상품 수 및 정렬) */
+/* 리스트 헤더 */
 .search-result-list-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
     font-size: 14px;
+    color: #4A3324;
 }
+
 .search-result-total-count b {
     font-weight: bold;
+    color: #B8783E;
 }
 
 
-/* 상품 그리드 컨테이너 (5열 배치) */
+/* 상품 그리드 컨테이너 */
 .search-result-grid-container {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 30px 20px;
+    gap: 34px 22px;
 }
 
 /* 개별 상품 카드 */
@@ -147,19 +189,32 @@
     flex-direction: column;
     position: relative;
     cursor: pointer;
+    padding: 10px;
+    border-radius: 16px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
 }
 
-/* 이미지 임시 박스 */
+.search-result-item-card:hover {
+    transform: translateY(-4px);
+    background-color: #FFFCF7;
+    box-shadow: 0 8px 24px rgba(74, 51, 36, 0.08);
+}
+
+/* 이미지 박스 */
 .search-result-item-image {
     width: 100%;
     aspect-ratio: 1 / 1;
-    background-color: #f5f5f5;
+    background-color: #FFF3DF;
+    border: 1px solid #E8D9C8;
+    border-radius: 14px;
     margin-bottom: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #bbb;
+    color: #B7A797;
+    overflow: hidden;
 }
+
 .search-result-item-image img {
     width: 100%;
     height: 100%;
@@ -172,16 +227,18 @@
     flex-direction: column;
     gap: 4px;
 }
+
 .search-result-item-brand {
     font-size: 12px;
-    color: #888;
+    color: #A98C72;
 }
+
 .search-result-item-name {
     font-size: 14px;
     font-weight: 400;
-    color: #333;
+    color: #2B2118;
     margin: 0;
-    line-height: 1.4;
+    line-height: 1.45;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
@@ -195,20 +252,67 @@
     align-items: baseline;
     gap: 6px;
 }
+
 .search-result-discount-rate {
-    color: #e63740;
+    color: #B94A3A;
     font-weight: bold;
     font-size: 16px;
 }
+
 .search-result-final-price {
     font-weight: bold;
     font-size: 16px;
-    color: #000;
+    color: #1F1813;
 }
 
 /* 빈 결과 화면 */
 .search-result-empty-result {
     text-align: center;
     padding: 100px 0;
-    color: #666;
+    color: #8A7A6C;
+    background-color: #FFFCF7;
+    border: 1px solid #E8D9C8;
+    border-radius: 18px;
+}
+
+
+/* 반응형 */
+@media (max-width: 1100px) {
+    .search-result-grid-container {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 900px) {
+    .search-result-filter-section {
+        flex-direction: column;
+        gap: 18px;
+    }
+
+    .search-result-grid-container {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .search-result-page {
+        padding: 40px 15px;
+    }
+
+    .search-result-filter-container {
+        padding: 20px 18px;
+    }
+
+    .search-result-grid-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 28px 12px;
+    }
+
+    .search-result-item-card {
+        padding: 6px;
+    }
+
+    .search-result-header h2 {
+        font-size: 18px;
+    }
 }

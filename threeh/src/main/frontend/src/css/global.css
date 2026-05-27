@@ -1,23 +1,202 @@
 /* 폰트 임포트 */
-
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,500;0,600;1,400&display=swap');
-/* 전체 초기화 및 배경색 설정 */
+
+/* 전체 초기화 */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
+/* 전체 배경 */
 body {
     font-family: 'Noto Sans KR', sans-serif;
-    background-color: #F9F8F6; /* 은은한 아이보리 배경색 */
+    background-color: #FFF8ED; 
+    color: #2B2118;
 }
 
-/* 테스트용 컨테이너 배경 */
+/* 메인 컨테이너 */
 .casamia-container {
     max-width: 1240px;
     margin: 0 auto;
-    background-color: #FFFFFF; /* 흰색 컨텐츠 박스 */
+    background-color: #FFFCF7;
     min-height: 100vh;
     padding: 20px;
+}
+
+/* 전체 링크 기본값 */
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+/* 포인트 컬러 변수 */
+:root {
+    --main-bg: #FFF8ED;
+    --content-bg: #FFFCF7;
+    --cream: #FFF3DF;
+    --warm-beige: #E9D4B8;
+    --caramel: #B8783E;
+    --deep-caramel: #8A4F25;
+    --brown: #4A3324;
+    --black-brown: #1F1813;
+    --soft-border: #E8D9C8;
+    --point-yellow: #F4C96A;
+}
+
+/* 헤더 전체 배경 */
+header {
+    background-color: #FFF8ED;
+    border-bottom: 1px solid #E8D9C8;
+}
+
+/* 헤더 상단 */
+.main-header-topBox {
+    background-color: #FFF8ED;
+}
+
+/* 중앙 로고 */
+.main-header-logo {
+    margin: 0 0 14px 0;
+    text-align: center;
+}
+
+.main-header-logo a {
+    display: inline-block;
+}
+
+.main-header-logo img {
+    width: clamp(130px, 12vw, 175px);
+    height: auto;
+    display: block;
+    object-fit: contain;
+}
+
+/* 검색 영역 */
+.main-header-search {
+    display: flex;
+    justify-content: center;
+}
+
+/* 검색바 */
+.main-header-bar {
+    display: flex;
+    align-items: center;
+    width: 420px;
+    height: 42px;
+    padding: 0 14px;
+    background-color: #FFFCF7;
+    border: 1px solid #E1C7A7;
+    border-radius: 999px;
+    box-shadow: 0 4px 14px rgba(138, 79, 37, 0.08);
+}
+
+/* 검색 input */
+.main-header-bar .input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    padding: 0 10px;
+    color: #2B2118;
+    font-size: 14px;
+}
+
+.main-header-bar .input::placeholder {
+    color: #A98C72;
+}
+
+/* 검색 버튼, 햄버거 버튼 */
+.main-header-bar button {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+}
+
+/* 우측 메뉴 */
+.main-header-userMenu li p {
+    color: #4A3324;
+    font-size: 13px;
+    margin-top: 5px;
+}
+
+.main-header-userMenu li:hover p {
+    color: #B8783E;
+}
+
+/* SNS 아이콘 영역 */
+.main-header-sns li img,
+.main-header-userMenu li img {
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.main-header-sns li:hover img,
+.main-header-userMenu li:hover img {
+    transform: translateY(-2px);
+    opacity: 0.85;
+}
+
+/* 하단 네비게이션 */
+.main-header-bottomBox {
+    background-color: #F6E7D5;
+    border-top: 1px solid #E8D9C8;
+    border-bottom: 1px solid #D9B98F;
+}
+
+/* GNB */
+.main-header-GNB > ul > li > a {
+    color: #3A2A20;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.main-header-GNB > ul > li > a:hover {
+    color: #B8783E;
+}
+
+/* 서브메뉴 */
+.main-header-sub1 {
+    background-color: #FFFCF7;
+    border: 1px solid #E8D9C8;
+    box-shadow: 0 8px 20px rgba(74, 51, 36, 0.08);
+}
+
+.main-header-sub1 li a {
+    color: #4A3324;
+}
+
+.main-header-sub1 li a:hover {
+    color: #B8783E;
+    background-color: #FFF3DF;
+}
+
+/* 메뉴 배경 박스 */
+.main-header-menuBg {
+    background-color: #FFFCF7;
+    border-top: 1px solid #E8D9C8;
+}
+
+/* 버튼 공통으로 쓸 수 있는 포인트 스타일 */
+.main-point-btn {
+    background-color: #B8783E;
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    padding: 10px 18px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.main-point-btn:hover {
+    background-color: #8A4F25;
+    transform: translateY(-1px);
+}
+
+/* 카드나 상품 박스에 쓰기 좋은 색감 */
+.main-card {
+    background-color: #FFFCF7;
+    border: 1px solid #E8D9C8;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(74, 51, 36, 0.06);
 }
