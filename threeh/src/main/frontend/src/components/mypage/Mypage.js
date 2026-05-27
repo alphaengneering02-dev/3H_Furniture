@@ -6,6 +6,7 @@ import DaumPostCode from 'react-daum-postcode';
 /* 💡 폴더명(mypageCss)과 파일명(myPage.css) 대소문자 규격 오차 없이 싱크 적용 */
 import '../../css/myPageCss/myPage.css';
 import { useToast } from '../../hook/useToast';
+import Header from '../main/Header';
 
 const Mypage = () => {
     const navigate = useNavigate();
@@ -321,99 +322,103 @@ const Mypage = () => {
     };
 
     return (
-        <div className="mypage-grid-container">
-            {/* ========================================================= */}
-            {/* [헤더 시작] 까사미아 스타일 상단 브랜드 바 레이아웃               */}
-            {/* ========================================================= */}
-            <header className="mypage-header-box" style={{ display: 'flex', justifyContent: 'space-between', padding: '10px', borderBottom: '1px solid #ccc' }}>
-                <div className="mypage-logo-box" onClick={() => navigate('/')} style={{ cursor: 'pointer', fontWeight: 'bold' }}>PROJECT CMYK</div>
-                <div>
-                    {member ? (
-                        <button className="mypage-action-btn" onClick={handleLogout} style={{ marginRight: '10px' }}>로그아웃</button>
-                    ) : (
-                        <button className="mypage-action-btn" onClick={() => navigate('/login')} style={{ marginRight: '10px' }}>로그인</button>
-                    )}
-                    <button className="mypage-action-btn" onClick={() => navigate('/')}>메인으로</button>
-                </div>
-            </header>
+    <div className="mypage-grid-container">
+        {/* ========================================================= */}
+        {/* 🤎 [통일 규격] 조원분의 실제 검색/GNB 기능이 담긴 글로벌 헤더      */}
+        {/* ========================================================= */}
+        {/* ⚡ [세션 완치]: 조원분 헤더와 인호님의 동적 세션 회원 감지 시스템을 유기적으로 결합 완료 */}
+        <Header />
 
-            {!member ? (
-                <main style={{ textAlign: 'center', padding: '100px 20px' }}>
-                    <h2>로그인이 필요한 service입니다.</h2>
-                </main>
-            ) : (
-                <div style={{ display: 'flex' }}>
-                    <aside className="mypage-sidebar">
-                        <button className="sidebar-btn" onClick={() => navigate('/mypage/schedule')}>추가될기능/구매확정내역</button>
-                        <button className="sidebar-btn" onClick={() => navigate('/cart/return')}>교환 및 반품</button>
-                        <button className="sidebar-btn" onClick={() => navigate('/cart')}>장바구니 목록</button>
+        {/* ⚡ 기존 헤더에 들어있던 member 로그인 상태 검증 로직을 본문 입구로 완벽 복구 */}
+        {!member ? (
+            <main style={{ textAlign: 'center', padding: '100px 20px' }}>
+                <h2>로그인이 필요한 service입니다.</h2>
+            </main>
+        ) : (
+            <div style={{ display: 'flex', marginTop: '20px' }}>
+                {/* 📌 좌측 사이드바 메뉴 */}
+                <aside className="mypage-sidebar">
+                    <button className="sidebar-btn" onClick={() => navigate('/mypage/schedule')}>추가될기능/구매확정내역</button>
+                    <button className="sidebar-btn" onClick={() => navigate('/cart/return')}>교환 및 반품</button>
+                    <button className="sidebar-btn" onClick={() => navigate('/cart')}>장바구니 목록</button>
+                    <div className="sidebar-furniture-banner" onClick={() => navigate('/Item')} style={{ cursor: 'pointer' }} title="전체 가구 컬렉션 보러가기" />
+                </aside>
 
-                        <div className="sidebar-furniture-banner" onClick={() => navigate('/Item')} style={{ cursor: 'pointer' }} title="전체 가구 컬렉션 보러가기" />
-                    </aside>
-
-                    <main className="mypage-main-content" style={{ flex: 1, padding: '20px' }}>
-                        <div className="profile-icon-box">
-                            <div className="profile-avatar-circle">{member.name ? member.name + "님" : "U"}</div>
-                            <button className="mypage-action-btn" style={{ marginRight: '5px' }}
-                                onClick={() => {
-                                    if (showBookmarks) { setShowBookmarks(false); } else { getMyBookmarkedItems(); }
-                                }}>북마크</button>
-                            <button className="mypage-action-btn" onClick={() => navigate(`/member/update/${member.id}`)}>정보 수정</button>
-                        </div>
-
-                        {/* 북마크 리스트를 게시판 형태로 보여주기..오현옥 */}
-                        {showBookmarks && (
-                            <div className="mypage-info-content-box" style={{ marginTop: "20px" }}>
-                                <h3 className="mypage-info-section-title">내 북마크 상품</h3>
-                                <div className="mypage-info-data-block">
-                                    {bookmarkedItems.length === 0 ? (
-                                        <p>북마크한 상품이 없습니다.</p>
-                                    ) : (
-                                        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "14px" }}>
-                                            <thead>
-                                                <tr>
-                                                    <th>번호</th>
-                                                    <th>이미지</th>
-                                                    <th>상품명</th>
-                                                    <th>가격</th>
-                                                    <th>판매상태</th>
-                                                    <th>관리</th>
+                {/* 📄 우측 메인 콘텐츠 피드 구역 */}
+                <main className="mypage-main-content" style={{ flex: 1, padding: '20px' }}>
+                    
+                    {/* 북마크 리스트를 게시판 형태로 보여주기..오현옥 */}
+                    {showBookmarks && (
+                        <div className="mypage-info-content-box" style={{ marginTop: "20px" }}>
+                            <h3 className="mypage-info-section-title">내 북마크 상품</h3>
+                            <div className="mypage-info-data-block">
+                                {bookmarkedItems.length === 0 ? (
+                                    <p>북마크한 상품이 없습니다.</p>
+                                ) : (
+                                    <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "14px" }}>
+                                        <thead>
+                                            <tr>
+                                                <th>번호</th>
+                                                <th>이미지</th>
+                                                <th>상품명</th>
+                                                <th>가격</th>
+                                                <th>판매상태</th>
+                                                <th>관리</th>
                                                 </tr>
-                                            </thead>
-                                            <tbody>
-                                                {bookmarkedItems.map((item, index) => (
-                                                    <tr key={item.itemId}>
-                                                        <td>{index + 1}</td>
-                                                        <td>
-                                                            {item.itemImgUrl ? (
-                                                                <img src={`http://localhost:8080${item.itemImgUrl}`} alt={item.itemName} style={{ width: "60px", height: "60px", objectFit: "cover" }} />
-                                                            ) : (<span>이미지 없음</span>)}
-                                                        </td>
-                                                        <td>
-                                                            <strong>{item.itemName}</strong>
-                                                            <p style={{ margin: "4px 0 0 0", color: "#666", fontSize: "12px" }}>{item.itemCategory || "-"}</p>
-                                                        </td>
-                                                        <td>{Number(item.itemFinalPrice || item.itemPrice || 0).toLocaleString()}원</td>
-                                                        <td>{item.itemSellStatus === "SELL" ? <span>판매중</span> : <span>{item.itemSellStatus || "판매불가"}</span>}</td>
-                                                        <td>
-                                                            <button type="button" onClick={() => navigate(`/item/${item.itemId}`)}>상품 보기</button>
-                                                        </td>
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
-                                    )}
-                                </div>
+                                        </thead>
+                                        <tbody>
+                                            {bookmarkedItems.map((item, index) => (
+                                                <tr key={item.itemId}>
+                                                    <td>{index + 1}</td>
+                                                    <td>
+                                                        {item.itemImgUrl ? (
+                                                            <img src={`http://localhost:8080${item.itemImgUrl}`} alt={item.itemName} style={{ width: "60px", height: "60px", objectFit: "cover" }} />
+                                                        ) : (<span>이미지 없음</span>)}
+                                                    </td>
+                                                    <td>
+                                                        <strong>{item.itemName}</strong>
+                                                        <p style={{ margin: "4px 0 0 0", color: "#666", fontSize: "12px" }}>{item.itemCategory || "-"}</p>
+                                                    </td>
+                                                    <td>{Number(item.itemFinalPrice || item.itemPrice || 0).toLocaleString()}원</td>
+                                                    <td>{item.itemSellStatus === "SELL" ? <span>판매중</span> : <span>{item.itemSellStatus || "판매불가"}</span>}</td>
+                                                    <td>
+                                                        <button type="button" onClick={() => navigate(`/item/${item.itemId}`)}>상품 보기</button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                )}
                             </div>
-                        )}
+                        </div>
+                    )}
+
+
 
                         <div className="mypage-info-content-box">
-                            <h3 className="mypage-info-section-title">회원정보</h3>
-                            <div className="mypage-info-data-block">
-                                <p><strong>아이디:</strong> {member.id}</p>
-                                <p><strong>연락처:</strong> {member.phone}</p>
-                                <p><strong>이메일:</strong> {member.email || "-"}</p>
-                            </div>
+                         {/* ⚡ [완치] '회원정보' 제목 글씨와 버튼들이 가로로 예쁘게 일렬 정렬되도록 display flex 추가 */}
+                            <h3 className="mypage-info-section-title" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+        <span>회원정보</span>
+        
+        {/* 🤎 [긴급 복구] 사라졌던 북마크와 정보수정 버튼 마크업을 타이틀 내부에 확실하게 매립 */}
+        <div className="profile-icon-box" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            <button type="button" className="mypage-action-btn" style={{ padding: '6px 14px', backgroundColor: '#B8783E', color: '#fff', border: 'none', cursor: 'pointer', fontSize: '12px', fontWeight: 'bold', borderRadius: '0px' }} 
+                onClick={() => { if (showBookmarks) { setShowBookmarks(false); } else { getMyBookmarkedItems(); } }}>
+                북마크
+            </button>
+            <button type="button" className="mypage-action-btn" style={{ padding: '6px 14px', backgroundColor: '#B8783E', color: '#fff', border: 'none', cursor: 'pointer', fontSize: '12px', fontWeight: 'bold', borderRadius: '0px' }} 
+                onClick={() => navigate(`/member/update/${member.id}`)}>
+                정보 수정
+            </button>
+        </div>
+    </h3>
+    
+    <div className="mypage-info-data-block">
+        <p><strong>아이디:</strong> {member.id}</p>
+        <p><strong>연락처:</strong> {member.phone}</p>
+        <p><strong>이메일:</strong> {member.email || "-"}</p>
+    </div>
+
 
                             <h3 id="refund-section" className="mypage-info-section-title">
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>

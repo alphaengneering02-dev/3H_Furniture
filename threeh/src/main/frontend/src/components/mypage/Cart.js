@@ -4,6 +4,8 @@ import axios from 'axios';
 import { getUrl } from '../../utils/BackendPath';
 import '../../css/myPageCss/cart.css';
 import { useToast } from '../../hook/useToast';
+import Header from '../main/Header';
+import Footer from "../main/Footer";
 
 const Cart = () => {
     const navigate = useNavigate();
@@ -225,141 +227,130 @@ const Cart = () => {
     };
 
        return (
-        <div className="mypage-grid-container">
-            {/* ========================================================= */}
-            {/* 🤎 [헤더 완벽 싱크] 마이페이지 메인과 100% 동일한 상단 브랜드 바   */}
-            {/* ========================================================= */}
-            <header className="mypage-header-box" style={{ display: 'flex', justifyContent: 'space-between', padding: '10px', borderBottom: '1px solid #ccc' }}>
-                <div className="mypage-logo-box" onClick={() => navigate('/')} style={{ cursor: 'pointer', fontWeight: 'bold' }}>PROJECT CMYK</div>
-                <div>
-                    {member ? (
-                        <button className="btn-header-action" onClick={handleLogout} style={{ marginRight: '10px' }}>로그아웃</button>
-                    ) : (
-                        <button className="btn-header-action" onClick={() => navigate('/login')} style={{ marginRight: '10px' }}>로그인</button>
-                    )}
-                    <button className="btn-header-action" onClick={() => navigate('/mypage')}>마이페이지</button>
-                    <button className="btn-header-action" onClick={() => navigate('/')}>메인으로</button>
-                </div>
-            </header>
+    /* 🚨 조원분 지시 규칙 수혈을 위해 가장 최상단 래퍼 감싸기 */
+    <div className="main-body-wrapper">
+        
+        {/* ========================================================= */}
+        {/* 🤎 [통일 규격] 조원분의 실제 검색/GNB 기능이 담긴 글로벌 헤더      */}
+        {/* ========================================================= */}
+        {/* ⚡ 기존의 하드코딩 <header>...</header> 전체를 지우고 실제 기능 컴포넌트 1줄로 교체 완료 */}
+        <Header />
 
-            {!member ? (
-                <main style={{ textAlign: 'center', padding: '100px 20px' }}>
-                    <h2>로그인이 필요한 service입니다.</h2>
-                </main>
-            ) : (
-                <div style={{ display: 'flex' }}>
-                    {/* 📌 [사이드바 완벽 싱크] 장바구니 목록 active 하이라이트 활성화 상주 */}
-                    <aside className="mypage-sidebar">
-                        <button className="sidebar-btn" onClick={() => navigate('/mypage')}>추가될기능/구매확정내역</button>
-                        <button className="sidebar-btn" onClick={() => navigate('/cart/return')}>교환 및 반품</button>
-                        <button className="sidebar-btn active" style={{ color: '#8C7A6B', fontWeight: 'bold' }} onClick={() => navigate('/cart')}>장바구니 목록</button>
-                    </aside>
+        {!member ? (
+            <main style={{ textAlign: 'center', padding: '100px 20px' }}>
+                <h2>로그인이 필요한 service입니다.</h2>
+            </main>
+        ) : (
+            <div style={{ display: 'flex' }}>
+                {/* 📌 [사이드바 완벽 싱크] 장바구니 목록 active 하이라이트 활성화 상주 */}
+                <aside className="mypage-sidebar">
+                    <button className="sidebar-btn" onClick={() => navigate('/mypage')}>추가될기능/구매확정내역</button>
+                    <button className="sidebar-btn" onClick={() => navigate('/cart/return')}>교환 및 반품</button>
+                    <button className="sidebar-btn active" style={{ color: '#8C7A6B', fontWeight: 'bold' }} onClick={() => navigate('/cart')}>장바구니 목록</button>
+                </aside>
 
-                    {/* 📄 우측 메인 장바구니 제어 컨텐츠 피드 */}
-                    <main className="mypage-main-content" style={{ flex: 1, padding: '20px' }}>
-                        <div className="profile-icon-box">
-                            <div className="profile-avatar-circle">{member.name ? member.name +"님" : "U"}</div>
-                            <button className="mypage-action-btn" onClick={() => navigate('/mypage')}>마이페이지</button>
-                        </div>
+                {/* 📄 우측 메인 장바구니 제어 컨텐츠 피드 */}
+                <main className="mypage-main-content" style={{ flex: 1, padding: '20px' }}>
+                    <div className="profile-icon-box">
+                        <div className="profile-avatar-circle">{member.name ? member.name +"님" : "U"}</div>
+                        <button className="mypage-action-btn" onClick={() => navigate('/mypage')}>마이페이지</button>
+                    </div>
 
-                        {/* 🛒 인호님 오리지널 장바구니 전용 전체 감싸는 상자 박스 */}
-                        <div className="cart-container">
-                            <h1>{member?.name || member?.id || '고객'}님의 장바구니</h1>
-                            
-                            {/* [수정/추가 완료] 상단 전체 선택 바 레이아웃 배치 */}
-                            <div style={{display:'flex',alignItems:'center',padding:'10px 0', borderBottom:'2px solid #ccc', marginBottom:'15px'}}>
-                                <label style={{display:'flex',alignItems:'center',cursor:'pointer', marginRight:'15px'}}>
-                                    <input
-                                        type="checkbox"
-                                        onChange={(e) => handleAllCheck(e.target.checked)}
-                                        checked={selectedIds.length === cartItems.length && cartItems.length > 0}
-                                        style={{ width: '16px', height: '16px', accentColor: '#8C7A6B' }}
-                                    />
-                                    <span style={{marginLeft:'5px'}}>전체 선택 ({selectedIds.length}/{cartItems.length})</span>
-                                </label>
+                    {/* 🛒 인호님 오리지널 장바구니 전용 전체 감싸는 상자 박스 */}
+                    <div className="cart-container">
+                        <h1>{member?.name || member?.id || '고객'}님의 장바구니</h1>
+                        
+                        {/* [수정/추가 완료] 상단 전체 선택 바 레이아웃 배치 */}
+                        <div style={{display:'flex',alignItems:'center',padding:'10px 0', borderBottom:'2px solid #ccc', marginBottom:'15px'}}>
+                            <label style={{display:'flex',alignItems:'center',cursor:'pointer', marginRight:'15px'}}>
+                                <input
+                                    type="checkbox"
+                                    onChange={(e) => handleAllCheck(e.target.checked)}
+                                    checked={selectedIds.length === cartItems.length && cartItems.length > 0}
+                                    style={{ width: '16px', height: '16px', accentColor: '#8C7A6B' }}
+                                />
+                                <span style={{marginLeft:'5px'}}>전체 선택 ({selectedIds.length}/{cartItems.length})</span>
+                            </label>
 
-                                {/* 전체 선택 삭제 버튼 : 선택된 개수가 0이면 클릭 불가 */}  
-                                <button
-                                    onClick={deleteSelectedItems}
-                                    disabled={selectedIds.length === 0}
-                                    style={{
-                                        padding:'5px 10px',
-                                        backgroundColor:selectedIds.length === 0 ? '#eee' : '#ff4d4f',
-                                        color:selectedIds.length === 0 ? '#999' : '#fff',
-                                        borderRadius:'4px',
-                                        border:'none',
-                                        cursor:selectedIds.length === 0 ? 'not-allowed' : 'pointer'
-                                    }}
-                                >
-                                    선택 삭제
-                                </button>
-                            </div>
-
-                            {/* 📦 인호님 오리지널 장바구니 데이터 행 루프 구역 */}
-                            <div className="cart-item-list-group">
-                                {cartItems.length === 0 ? (
-                                    <p style={{ textAlign: 'center', padding: '30px 0', color: '#8c7a6b' }}>장바구니가 비어 있습니다.</p>
-                                ) : (
-                                    cartItems.map(item => {
-                                        const itemId = item.cartItemId || item.cartitemId;
-                                        return (
-                                            <div key={itemId} className="cart-item" style={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #ddd', padding: '15px 0' }}>
-                                                
-                                                <input 
-                                                    type="checkbox" 
-                                                    checked={selectedIds.includes(itemId)}
-                                                    onChange={() => handleCheckElement(itemId)} 
-                                                    style={{ marginRight: '15px', width: '18px', height: '18px', cursor: 'pointer' }}
-                                                />
-
-                                                <img src={getUrl(item.imageUrl)} alt={item.itemName} style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '4px', marginRight: '15px' }} />
-
-                                                <div style={{ flex: 1 }}>
-                                                    <p style={{ margin: '0 0 10px 0' }}><strong>{item.itemName}</strong></p>
-                                                    <div className="quantity-box" style={{ display: 'flex', alignItems: 'center' }}>
-                                                        <button onClick={() => updateCount(itemId, item.count - 1)} style={{ padding: '2px 8px' }}>-</button>
-                                                        <span style={{ margin: '0 15px', fontWeight: 'bold' }}>{item.count}</span>
-                                                        <button onClick={() => updateCount(itemId, item.count + 1)} style={{ padding: '2px 8px' }}>+</button>
-                                                    </div>
-                                                </div>
-
-                                                <div style={{ textAlign: 'right', marginRight: '20px' }}>
-                                                    <p style={{ margin: '0 0 5px 0', color: '#888', fontSize: '13px' }}>개당 {Number(item.orderPrice).toLocaleString()}원</p>
-                                                    <p style={{ margin: '0', fontWeight: 'bold', color: '#333' }}>{(Number(item.orderPrice) * item.count).toLocaleString()}원</p>
-                                                </div>
-
-                                                <button onClick={() => deleteItem(itemId)} style={{ color: 'red', border: 'none', background: 'none', cursor: 'pointer' }}>삭제</button>
-                                            </div>
-                                        );
-                                    })
-                                )}
-                            </div>
-
-                            {/* [실시간 정산 연동 배지 마감] */}
-                            <div className="total-price-box" style={{ marginTop: '30px', borderTop: '2px solid #333', paddingTop: '20px', textAlign: 'right' }}>
-                                <h3>총 결제 예상 금액: <span style={{ color: '#d9534f', fontSize: '24px' }}>{totalOrderPrice.toLocaleString()}</span>원</h3>
-                            </div>
-
-                            <button onClick={handleOrder} style={{ marginTop: '20px', padding: '15px', backgroundColor: '#333', color: '#fff', border: 'none', cursor: 'pointer', width: '100%', fontSize: '16px', fontWeight: 'bold' }}>
-                                {selectedIds.length}개 상품 주문하기
+                            {/* 전체 선택 삭제 버튼 : 선택된 개수가 0이면 클릭 불가 */}  
+                            <button
+                                onClick={deleteSelectedItems}
+                                disabled={selectedIds.length === 0}
+                                style={{
+                                    padding:'5px 10px',
+                                    backgroundColor:selectedIds.length === 0 ? '#eee' : '#ff4d4f',
+                                    color:selectedIds.length === 0 ? '#999' : '#fff',
+                                    borderRadius:'4px',
+                                    border:'none',
+                                    cursor:selectedIds.length === 0 ? 'not-allowed' : 'pointer'
+                                }}
+                            >
+                                선택 삭제
                             </button>
                         </div>
-                    </main>
-                </div>
-            )}
+
+
+                        {/* 📦 인호님 오리지널 장바구니 데이터 행 루프 구역 */}
+                        <div className="cart-item-list-group">
+                            {cartItems.length === 0 ? (
+                                <p style={{ textAlign: 'center', padding: '30px 0', color: '#8c7a6b' }}>장바구니가 비어 있습니다.</p>
+                            ) : (
+                                cartItems.map(item => {
+                                    const itemId = item.cartItemId || item.cartitemId;
+                                    return (
+                                        <div key={itemId} className="cart-item" style={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #ddd', padding: '15px 0' }}>
+                                            
+                                            <input 
+                                                type="checkbox" 
+                                                checked={selectedIds.includes(itemId)}
+                                                onChange={() => handleCheckElement(itemId)} 
+                                                style={{ marginRight: '15px', width: '18px', height: '18px', cursor: 'pointer' }}
+                                            />
+
+                                            <img src={getUrl(item.imageUrl)} alt={item.itemName} style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '4px', marginRight: '15px' }} />
+
+                                            <div style={{ flex: 1 }}>
+                                                <p style={{ margin: '0 0 10px 0' }}><strong>{item.itemName}</strong></p>
+                                                <div className="quantity-box" style={{ display: 'flex', alignItems: 'center' }}>
+                                                    <button onClick={() => updateCount(itemId, item.count - 1)} style={{ padding: '2px 8px' }}>-</button>
+                                                    <span style={{ margin: '0 15px', fontWeight: 'bold' }}>{item.count}</span>
+                                                    <button onClick={() => updateCount(itemId, item.count + 1)} style={{ padding: '2px 8px' }}>+</button>
+                                                </div>
+                                            </div>
+
+                                            <div style={{ textAlign: 'right', marginRight: '20px' }}>
+                                                <p style={{ margin: '0 0 5px 0', color: '#888', fontSize: '13px' }}>개당 {Number(item.orderPrice).toLocaleString()}원</p>
+                                                <p style={{ margin: '0', fontWeight: 'bold', color: '#333' }}>{(Number(item.orderPrice) * item.count).toLocaleString()}원</p>
+                                            </div>
+
+                                            <button onClick={() => deleteItem(itemId)} style={{ color: 'red', border: 'none', background: 'none', cursor: 'pointer' }}>삭제</button>
+                                        </div>
+                                    );
+                                })
+                            )}
+                        </div>
+
+                        {/* [실시간 정산 연동 배지 마감] */}
+                        <div className="total-price-box" style={{ marginTop: '30px', borderTop: '2px solid #333', paddingTop: '20px', textAlign: 'right' }}>
+                            <h3>총 결제 예상 금액: <span style={{ color: '#d9534f', fontSize: '24px' }}>{totalOrderPrice.toLocaleString()}</span>원</h3>
+                        </div>
+
+                        <button onClick={handleOrder} style={{ marginTop: '20px', padding: '15px', backgroundColor: '#333', color: '#fff', border: 'none', cursor: 'pointer', width: '100%', fontSize: '16px', fontWeight: 'bold' }}>
+                            {selectedIds.length}개 상품 주문하기
+                        </button>
+                    </div>
+                </main>
+            </div>
+        )}
 
             {/* ========================================================= */}
-            {/* 🤎 [푸터 완벽 싱크] 하단 기업 정보 및 미니멀 카피라이트 마크업    */}
-            {/* ========================================================= */}
-            <footer className="mypage-footer">
-                <div className="footer-content">
-                    <p className="footer-logo">PROJECT CMYK</p>
-                    <p className="footer-info">주식회사 씨엠와이케이 | 공동 프로젝트 팀 | 경기도 수원시 팔달구</p>
-                    <p className="footer-copy">© 2026 PROJECT CMYK. All Rights Reserved.</p>
-                </div>
-            </footer>
-        </div>
-    );
+        {/* 🤎 [통일 규격] 조원분의 실제 기능이 담긴 글로벌 푸터 컴포넌트   */}
+        {/* ========================================================= */}
+        {/* ⚡ 기존의 긴 하드코딩 footer 구역을 지우고 진짜 컴포넌트 1줄로 교체 완료 */}
+        <Footer />
+
+    </div> /* 🚨 최상단 main-body-wrapper 축을 완전히 닫아주는 최종 대칭 마감 괄호 */
+  );
 };
 
 export default Cart;

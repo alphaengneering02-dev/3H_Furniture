@@ -29,7 +29,7 @@ body {
    ========================================== */
 .mypage-header-box {
     width: 100%;
-    background-color: #ede2d5 !important; /* 시그니처 베이지 */
+    background-color: #FFF8ED !important; /* 시그니처 베이지 */
     border-bottom: 2px solid #5E4431 !important; /* ⚡ [보정] 투박한 검정에서 에스프레소 브라운으로 고급화 */
     padding: 28px calc((100% - 1200px) / 2) !important; /* 본문 1200px 축과 칼대칭 */
     display: flex !important;
@@ -116,7 +116,7 @@ body {
 
 .mypage-sidebar .sidebar-btn:hover {
     color: #ffffff;
-    background-color: #8C7A6B !important; /* 피크브라운 */
+    background-color: #B8783E !important; /* 피크브라운 */
     padding-left: 34px !important; 
 }
 
@@ -138,7 +138,7 @@ body {
 .mypage-sidebar:hover::after {
     transform: translateY(-6px); 
     box-shadow: 0 30px 60px rgba(140, 122, 107, 0.28);
-    border-color: #8C7A6B !important; /* 피크브라운 */
+    border-color: #B8783E !important; /* 피크브라운 */
 }
 
 /* ==========================================
@@ -897,4 +897,54 @@ tbody button:hover {
     transform: translateY(-6px) !important; 
     border-color: #8C7A6B !important; /* 까사미아 브라운선 하이라이트 일치 */
     box-shadow: 0 25px 50px rgba(140, 122, 107, 0.18) !important;
+}
+
+/* =========================================================================
+   🚨 [극약 처방] JSX 구조 무시하고 화면 우측 끝 강제 고정 시스템
+   ========================================================================= */
+
+/* 1️⃣ [완치]: 튕겨나가서 안 보이던 버튼 박스를 회원정보 박스 오른쪽 위로 강제 유도 */
+.profile-icon-box,
+.mypage-profile-icon-box {
+    display: flex !important;
+    position: absolute !important;   /* ⚡ 부모 구조 무시하고 강제 좌표 이동 */
+    right: 40px !important;         /* ⚡ 오른쪽 테두리선 안쪽 밀착 */
+    margin-top: -46px !important;    /* ⚡ 마이너스 마진으로 회원정보 글씨 높이까지 억지로 끌어올림 */
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    gap: 8px !important;
+    z-index: 999 !important;        /* ⚡ 뒤로 숨지 못하게 무조건 최상단 층으로 배치 */
+}
+
+/* 2️⃣ 원형 이름 아바타 글씨는 확실하게 폭파 */
+.profile-icon-box .profile-avatar-circle,
+.mypage-profile-icon-box .profile-avatar-circle {
+    display: none !important;
+}
+
+/* 3️⃣ [북마크], [정보 수정] 버튼을 조원분 카라멜 원색 및 슬림 직각으로 리모델링 */
+.profile-icon-box .mypage-action-btn,
+.mypage-profile-icon-box .mypage-action-btn {
+    background-color: var(--main-caramel) !important; /* 조원분 카라멜 원색 */
+    border: 1px solid var(--main-caramel) !important;
+    color: #FFFFFF !important;
+    padding: 5px 12px !important;   /* 단정하게 미니 다이어트 */
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    border-radius: 0px !important;  /* ⚡ 완벽 직각 마감 */
+    cursor: pointer !important;
+    white-space: nowrap !important; /* 글씨 찌그러짐 차단 */
+    transition: all 0.2s ease-in-out !important;
+}
+
+.profile-icon-box .mypage-action-btn:hover,
+.mypage-profile-icon-box .mypage-action-btn:hover {
+    background-color: var(--main-deep-caramel) !important; /* 딥 카라멜 반전 */
+    border-color: var(--main-deep-caramel) !important;
+}
+
+/* 전체 회원정보 콘텐츠 상자를 기준 좌표 축으로 선언 */
+.info-content-box {
+    position: relative !important;
 }

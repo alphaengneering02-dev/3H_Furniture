@@ -1,6 +1,13 @@
 /* 폰트 임포트 */
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,500;0,600;1,400&display=swap');
 
+/* =========================================================================
+   🏢 PROJECT CMYK - 장바구니 중앙 집중형 프리미엄 가이드
+   ========================================================================= */
+
+/* 1. 최상단 폰트 임포트 */
+@import url('https://googleapis.com');
+
 /* 전체 초기화 */
 * {
     margin: 0;
@@ -19,169 +26,203 @@ body {
 :root {
     --main-bg: #FFFFFF;
     --content-bg: #FFFFFF;
-    --cream: #fdfbf7;             /* 선택 바 및 소프트 칩 배경색 */
-    --warm-beige: #ede2d5;        /* 시그니처 굵은 베이지 탑 선 */
-    --caramel: #8C7A6B;           /* 부드러운 피크브라운 (메인 포인트) */
-    --deep-caramel: #5E4431;      /* 깊은 에스프레소 브라운 (호버/강조) */
-    --brown: #444444;             /* 기본 텍스트 중화 톤 */
+    --cream: #fdfbf7;             
+    --warm-beige: #ede2d5;        
+    --caramel: #8C7A6B;           
+    --deep-caramel: #5E4431;      
+    --brown: #444444;             
     --black-brown: #252525;
-    --soft-border: #dfd1c0;        /* 에스프레소 연화 테두리 선 */
+    --soft-border: #dfd1c0;        
     --point-yellow: #ede2d5;
 }
 
 /* =========================================================================
-   ▶ mypagecart 전용 레이아웃 및 컨텐츠 박스 클러스터
+   ▶ [인호님 요청 반영] 장바구니 상자 중앙 배치 및 크기 슬림화 시스템
    ========================================================================= */
 
-/* 1. 마이페이지/장바구니 메인 뷰포트 컨테이너 축 */
-.mypagecart-container {
-    max-width: 1200px !important; 
-    margin: 40px auto !important;
-    padding: 35px 30px 100px 30px !important;
-    background-color: var(--main-bg) !important;
-    min-height: 100vh;
+/* ⚡ 시선을 분산시키던 중간 프로필 아이콘 박스 완전 삭제 */
+.profile-icon-box {
+    display: none !important;
+}
+
+/* ⚡ 1️⃣ [핵심 수정] 무식하게 넓던 장바구니 상자를 중앙에 아담한 크기로 고정하고 띄우기 */
+.cart-container {
+    width: 100% !important;
+    max-width: 800px !important;    /* 🚨 기존 1200px 축에서 800px 축으로 슬림하게 크기 대폭 축소 */
+    margin: 40px auto !important;   /* 🚨 마진 auto를 주어 화면 정확히 정중앙에 배치 */
+    background-color: var(--content-bg) !important; 
+    border: 1px solid var(--soft-border) !important; 
+    border-top: 6px solid var(--warm-beige) !important; /* 시그니처 베이지 탑 선 */
+    padding: 40px 35px !important;
+    box-shadow: 0px 15px 40px rgba(140, 122, 107, 0.06) !important; /* 그림자 입체감 강화 */
     box-sizing: border-box;
 }
 
-/* 2. 회원정보 / 장바구니 메인 데이터 통합 블록 */
-.mypagecart-data-block,
-.mypagecart-info-box {
-    display: flex !important;
-    flex-direction: column !important;
-    padding: 30px 25px !important;
-    background-color: var(--main-bg) !important;
-    
-    /* ⚡ [변수 매칭] 에스프레소 테두리 및 굵은 베이지 탑 라인 입체화 */
-    border: 2px solid var(--deep-caramel) !important; 
-    border-top: 6px solid var(--warm-beige) !important; 
-    box-shadow: 8px 8px 0px var(--warm-beige) !important; 
-    
-    border-radius: 0px !important; /* 직각 사수 */
-    margin-bottom: 25px !important;
-    box-sizing: border-box;
-    transition: all 0.3s ease-in-out !important;
+/* ⚡ 2️⃣ 장바구니 타이틀 완벽한 중앙 정렬 */
+.cart-container h1 {
+    text-align: center !important;
+    font-size: 24px !important; 
+    font-weight: 700 !important;
+    color: var(--brown) !important;
+    margin: 10px 0 30px 0 !important; 
+    letter-spacing: -0.5px !important;
 }
 
-.mypagecart-data-block:hover,
-.mypagecart-info-box:hover {
-    transform: translate(-2px, -2px) !important;
-    box-shadow: 10px 10px 0px var(--soft-border) !important; /* 호버 시 음영 연화선 매칭 */
+/* ⚡ 3️⃣ 80px 인라인 스타일을 깨부수고 단정하게 고정한 이미지 규격 */
+.cart-container .cart-item img {
+    width: 76px !important;
+    min-width: 76px !important;
+    height: 76px !important;
+    min-height: 76px !important;
+    object-fit: cover !important; 
+    border-radius: 0px !important; /* 완벽 직각 */
+    border: 1px solid var(--soft-border) !important;
 }
 
-/* 3. 구매내역 슬라이더 및 가구 목록 트랙 외곽 프레임 */
-.mypagecart-slider-wrapper {
+/* ⚡ 4️⃣ 촘촘하고 부드럽게 여백을 깎아낸 상품 행(Row) */
+.cart-item {
     display: flex !important;
     align-items: center !important;
-    padding: 25px 15px !important;
-    background-color: var(--main-bg) !important;
-    
-    border: 2px solid var(--deep-caramel) !important;
-    box-shadow: 8px 8px 0px var(--warm-beige) !important;
-    
-    border-radius: 0px !important;
-    margin-bottom: 25px !important;
-    box-sizing: border-box;
-    transition: all 0.3s ease-in-out !important;
+    border-bottom: 1px solid var(--cream) !important;
+    padding: 16px 10px !important; /* 🚨 지나치게 좁지 않도록 16px로 최적화 */
+    transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1) !important;
 }
 
-/* 4. 낱개 사각 상품 쇼룸 카드 및 카트 아이템 행 */
-.mypagecart-square-card,
-.mypagecart-item-row {
-    background-color: var(--main-bg) !important;
-    
-    /* ⚡ [변수 매칭] 연화 브라운 실선 및 미니 탑 포인트 선 */
-    border: 1px solid var(--soft-border) !important; 
-    border-top: 4px solid var(--warm-beige) !important; 
-    
-    border-radius: 0px !important;
-    padding: 16px 14px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+.cart-item:hover {
+    background-color: var(--cream) !important;
+    padding-left: 15px !important;
 }
 
-.mypagecart-square-card:hover,
-.mypagecart-item-row:hover {
-    transform: translateY(-5px) !important;
-    border-color: var(--caramel) !important; /* 호버 시 피크브라운 변경 */
-    box-shadow: 0 12px 24px rgba(140, 122, 107, 0.12) !important;
-}
-
-/* =========================================================================
-   ▶ mypagecart 전용 텍스트 가독성 및 정렬 가이드
-   ========================================================================= */
-
-/* 타이틀 글자색 제어 */
-.mypagecart-container h1,
-.mypagecart-container h2,
-.mypagecart-title {
-    font-size: 18px !important;
-    font-weight: 700 !important;
-    color: var(--brown) !important; /* 중화된 먹색 */
-    letter-spacing: -0.5px;
-}
-
-/* 데이터 본문 텍스트 밸런싱 */
-.mypagecart-data-block p,
-.mypagecart-info-box p {
-    font-size: 14px !important;
+/* 수량 버튼 조작 킷 사각 직각화 */
+.quantity-box button {
+    border: 1px solid var(--soft-border) !important;
+    background-color: #FFFFFF !important;
     color: var(--brown) !important;
-    line-height: 1.6;
-}
-
-/* 데이터 항목 라벨 명도 최적화 */
-.mypagecart-data-block p strong,
-.mypagecart-info-box p strong {
-    font-weight: 700;
-    color: var(--deep-caramel) !important; /* 에스프레소 브라운 강조 */
-    margin-right: 15px;
-}
-
-/* =========================================================================
-   ▶ mypagecart 전용 명품 라운지 버튼 스타일셋
-   ========================================================================= */
-
-/* ① 미니멀 컴팩트 액션 버튼 (수량 변경, 로그아웃, 토글 단추 등) */
-.mypagecart-sub-btn,
-.mypagecart-quantity-btn {
-    background-color: transparent !important;
-    border: 1px solid var(--soft-border) !important; 
-    color: var(--brown) !important;            
-    padding: 6px 14px !important;
-    font-size: 12px !important;
-    font-weight: 700 !important;
+    border-radius: 0px !important; 
+    padding: 2px 9px !important;
     cursor: pointer !important;
-    border-radius: 0px !important; /* 무조건 직각 */
-    transition: all 0.25s ease-in-out !important;
+    transition: all 0.2s ease-in-out !important;
 }
 
-.mypagecart-sub-btn:hover,
-.mypagecart-quantity-btn:hover {
-    background-color: var(--caramel) !important; /* 피크브라운 반전 */
+.quantity-box button:hover {
+    background-color: var(--caramel) !important; 
     border-color: var(--caramel) !important;
     color: #FFFFFF !important;
 }
 
-/* ② 시그니처 대형 메인 버튼 (주문하기, 정보수정 완료 등 최종 제출 단추) */
-.mypagecart-main-btn,
-.mypagecart-submit-btn {
-    background-color: var(--caramel) !important; /* 피크브라운 */
-    border: 1px solid var(--caramel) !important;
-    color: #FFFFFF !important;
+/* =========================================================================
+   ▶ mypagecart 및 기본 레이아웃 안전 규격 (사이드바 대칭 축)
+   ========================================================================= */
+
+.mypagecart-flex-wrapper {
+    display: flex !important;
     width: 100% !important;
-    height: 50px !important;
+    max-width: 1200px !important; /* 전체 가로축 기준선 */
+    margin: 0 auto !important;
+}
+
+.mypage-main-content {
+    flex: 1 !important;
+    min-width: 0 !important;
+}
+
+/* 상단 전체 선택 바 */
+.cart-select-action-bar {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    background-color: var(--cream) !important;
+    border: 1px solid var(--soft-border) !important;
+    border-top: 4px solid var(--warm-beige) !important;
+    padding: 14px 20px !important;
+    margin-bottom: 25px !important;
+}
+
+.cart-select-action-bar label {
+    display: inline-flex !important;
+    align-items: center !important;
     font-size: 14px !important;
     font-weight: 700 !important;
-    border-radius: 0px !important; /* 무조건 직각 */
+    color: var(--brown) !important;
+}
+
+.cart-select-action-bar label input[type="checkbox"] {
+    width: 17px;
+    height: 17px;
+    margin-right: 8px;
+    accent-color: var(--caramel);
+}
+
+.cart-delete-btn {
+    background-color: transparent !important;
+    border: 1px solid var(--soft-border) !important;
+    color: var(--caramel) !important;
+    padding: 6px 14px !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    border-radius: 0px !important; 
+    cursor: pointer !important;
+    transition: all 0.2s ease-in-out !important;
+}
+
+.cart-delete-btn:hover:not(.disabled) {
+    background-color: var(--caramel) !important;
+    color: #FFFFFF !important;
+    border-color: var(--caramel) !important;
+}
+
+.cart-delete-btn.disabled {
+    background-color: #E2DDD5 !important;
+    border-color: #E2DDD5 !important;
+    color: #A39E95 !important;
+    cursor: not-allowed !important;
+}
+
+/* 하단 총 결제 정산 내역 */
+.cart-total-price-box {
+    border-top: 1px solid var(--soft-border) !important;
+    padding-top: 25px !important;
+    margin-top: 45px !important;
+    text-align: right !important;
+}
+
+.cart-total-price-box h3 {
+    font-size: 15px !important;
+    font-weight: 500 !important;
+    color: var(--brown) !important;
+}
+
+.cart-total-price-box h3 span {
+    color: var(--deep-caramel) !important;
+    font-size: 24px !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.5px;
+    margin: 0 6px !important;
+    background-color: var(--warm-beige) !important; 
+    padding: 4px 16px !important;
+    border: 1px solid var(--soft-border) !important;
+    box-shadow: 0px 4px 10px rgba(140, 122, 107, 0.05) !important;
+}
+
+/* 대형 주문 제출 버튼 */
+.cart-order-submit-btn {
+    background-color: var(--caramel) !important;
+    border: 1px solid var(--caramel) !important;
+    color: #ffffff !important;
+    width: 100% !important;
+    height: 52px !important;
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    border-radius: 0px !important; 
     cursor: pointer !important;
     box-shadow: 0px 8px 20px rgba(140, 122, 107, 0.15) !important;
     transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1) !important;
+    margin-top: 25px !important;
+    letter-spacing: 0.5px;
 }
 
-.mypagecart-main-btn:hover,
-.mypagecart-submit-btn:hover {
-    background-color: var(--deep-caramel) !important; /* 에스프레소 브라운 */
+.cart-order-submit-btn:hover:not(:disabled) {
+    background-color: var(--deep-caramel) !important;
     border-color: var(--deep-caramel) !important;
     transform: translateY(-2px) !important;
     box-shadow: 0px 12px 28px rgba(94, 68, 49, 0.25) !important;

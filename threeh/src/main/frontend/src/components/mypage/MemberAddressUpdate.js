@@ -3,6 +3,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import '../../css/myPageCss/memberAddressUpdate.css';
 import { useToast } from '../../hook/useToast';
+import Header from '../main/Header';
+import Footer from "../main/Footer";
 
 const MemberAddressUpdate = () => {
     const navigate = useNavigate();
@@ -103,71 +105,58 @@ const MemberAddressUpdate = () => {
     }; // 👈 꼬여있던 handleSubmit 마감 괄호를 정확한 위치로 복구 완료
 
         return (
-        <div className="mypage-grid-container">
-            {/* ========================================================= */}
-            {/* [헤더 시작] 마이페이지와 동일한 상단 브랜드 바 레이아웃            */}
-            {/* ========================================================= */}
-            <header className="mypage-header-box" style={{ display: 'flex', justifyContent: 'space-between', padding: '10px', borderBottom: '1px solid #ccc' }}>
-                {/* 🚀 [로고 텍스트 변경]: 팀 공식 브랜드 로고 이름인 THREE H로 일치화 */}
-                <div className="mypage-logo-box" onClick={() => navigate('/')} style={{ cursor: 'pointer', fontWeight: 'bold' }}>THREE H</div>
-                <div>
-                    <button className="btn-header-action" onClick={() => navigate('/mypage')}>마이페이지</button>
-                    <button className="btn-header-action" onClick={() => navigate('/')}>메인으로</button>
-                </div>
-            </header>
+    <div className="mypage-grid-container">
+        {/* ========================================================= */}
+        {/* 🤎 [통일 규격] 조원분의 실제 검색/GNB 기능이 담긴 글로벌 헤더      */}
+        {/* ========================================================= */}
+        {/* ⚡ 장바구니 방식 그대로! 수동 header 지우고 진짜 컴포넌트 1줄 장착 */}
+        <Header />
 
-            {/* 🖥️ 정보수정 룸 단독형 명품 레이아웃 뷰포트 배치 */}
-            <div className="update-form-viewport">
-                <div className="update-form-card">
-                    <h2>회원 정보 수정</h2>
-                    
-                    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                        <div className="form-group-row">
-                            <label style={{ display: 'block', marginBottom: '5px' }}><strong>아이디</strong></label>
-                            {/* 💡 [오타 교정]: fromData -> formData 변수명 오타 유의 (혹시 상단 스태이트명이 fromData면 기존 변수 유지 필요) */}
-                            <input type="text" name="id" value={fromData.id} disabled className="disabled-input" style={{ width: '100%', padding: '8px' }} />
-                        </div>
-                        <div className="form-group-row">
-                            <label style={{ display: 'block', marginBottom: '5px' }}><strong>이름</strong></label>
-                            <input type="text" name="name" value={fromData.name} onChange={handleChange} style={{ width: '100%', padding: '8px' }} required />
-                        </div>
-                        <div className="form-group-row">
-                            <label style={{ display: 'block', marginBottom: '5px' }}><strong>연락처</strong></label>
-                            <input type="text" name="phone" value={fromData.phone} onChange={handleChange} style={{ width: '100%', padding: '8px' }} required />
-                        </div>
-                        <div className="form-group-row">
-                            <label style={{ display: 'block', marginBottom: '5px' }}><strong>이메일</strong></label>
-                            <input type="email" name="email" value={fromData.email} onChange={handleChange} style={{ width: '100%', padding: '8px' }} required />
-                        </div>
-                        <div className="form-group-row">
-                            <label style={{ display: 'block', marginBottom: '5px' }}><strong>새 비밀번호</strong></label>
-                            <input type="password" name="password1" value={fromData.password1} onChange={handleChange} style={{ width: '100%', padding: '8px' }} required />
-                        </div>
-                        <div className="form-group-row">
-                            <label style={{ display: 'block', marginBottom: '5px' }}><strong>비밀번호 확인</strong></label>
-                            <input type="password" name="password2" value={fromData.password2} onChange={handleChange} style={{ width: '100%', padding: '8px' }} required />
-                        </div>
-                        <div className="form-action-row" style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
-                            <button type="submit" className="mypage-action-btn" style={{ flex: 1, padding: '10px', color: '#fff', border: 'none', cursor: 'pointer', fontWeight: 'bold' }}>수정 완료</button>
-                            <button type="button" className="btn-header-action" onClick={() => navigate('/mypage')} style={{ flex: 1, padding: '10px', cursor: 'pointer' }}>취소</button>
-                        </div>
-                    </form>
-                </div>
+        {/* 🖥️ 정보수정 룸 단독형 명품 레이아웃 뷰포트 배치 */}
+        <div className="update-form-viewport">
+            <div className="update-form-card">
+                <h2>회원 정보 수정</h2>
+                
+                <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                    <div className="form-group-row">
+                        <label style={{ display: 'block', marginBottom: '5px' }}><strong>아이디</strong></label>
+                        <input type="text" name="id" value={fromData.id} disabled className="disabled-input" style={{ width: '100%', padding: '8px' }} />
+                    </div>
+                    <div className="form-group-row">
+                        <label style={{ display: 'block', marginBottom: '5px' }}><strong>이름</strong></label>
+                        <input type="text" name="name" value={fromData.name} onChange={handleChange} style={{ width: '100%', padding: '8px' }} required />
+                    </div>
+                    <div className="form-group-row">
+                        <label style={{ display: 'block', marginBottom: '5px' }}><strong>연락처</strong></label>
+                        <input type="text" name="phone" value={fromData.phone} onChange={handleChange} style={{ width: '100%', padding: '8px' }} required />
+                    </div>
+                    <div className="form-group-row">
+                        <label style={{ display: 'block', marginBottom: '5px' }}><strong>이메일</strong></label>
+                        <input type="email" name="email" value={fromData.email} onChange={handleChange} style={{ width: '100%', padding: '8px' }} required />
+                    </div>
+                    <div className="form-group-row">
+                        <label style={{ display: 'block', marginBottom: '5px' }}><strong>새 비밀번호</strong></label>
+                        <input type="password" name="password1" value={fromData.password1} onChange={handleChange} style={{ width: '100%', padding: '8px' }} required />
+                    </div>
+                    <div className="form-group-row">
+                        <label style={{ display: 'block', marginBottom: '5px' }}><strong>비밀번호 확인</strong></label>
+                        <input type="password" name="password2" value={fromData.password2} onChange={handleChange} style={{ width: '100%', padding: '8px' }} required />
+                    </div>
+                    <div className="form-action-row" style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+                        <button type="submit" className="mypage-action-btn" style={{ flex: 1, padding: '10px', color: '#fff', border: 'none', cursor: 'pointer', fontWeight: 'bold' }}>수정 완료</button>
+                        <button type="button" className="btn-header-action" onClick={() => navigate('/mypage')} style={{ flex: 1, padding: '10px', cursor: 'pointer' }}>취소</button>
+                    </div>
+                </form>
             </div>
-
-            {/* ========================================================= */}
-            {/* [푸터 시작] 하단 기업 정보 및 미니멀 카피라이트 마크업          */}
-            {/* ========================================================= */}
-            <footer className="mypage-footer">
-                <div className="footer-content">
-                    {/* 🚀 [로고 및 기업 정보 변경]: 팀 브랜드 네임 THREE H 로 하단 카피라이터까지 동기화 마감 */}
-                    <p className="footer-logo">THREE H</p>
-                    <p className="footer-info">주식회사 쓰리 에이치 | 공동 프로젝트 팀 | 경기도 수원시 팔달구</p>
-                    <p className="footer-copy">© 2026 THREE H. All Rights Reserved.</p>
-                </div>
-            </footer>
         </div>
-    );
-}
+
+        {/* ========================================================= */}
+        {/* 🤎 [통일 규격] 조원분의 실제 기능이 담긴 글로벌 푸터 컴포넌트   */}
+        {/* ========================================================= */}
+        {/* ⚡ 장바구니 방식 그대로! 수동 footer 지우고 진짜 컴포넌트 1줄 장착 */}
+        <Footer />
+    </div>
+  );
+};
 
 export default MemberAddressUpdate;

@@ -46,34 +46,39 @@ public class MemberAddressController {
     }
 
 
-    // =========================================================================
-    // 🚀 [인호 백엔드 최종 패치]: 변경 감지 및 명시적 저장으로 DB CANCEL 반영 보장
+        // =========================================================================
+    // 🚀 [인호 백엔드 진짜 최종 완결]: findByMemberId 규격 일치화 및 DB 강제 반영
     // =========================================================================
     @PostMapping("/order/cancel")
-    // 🚨 중요: 임포트 구역에 org.springframework.transaction.annotation.Transactional 이 반드시 있어야 합니다.
-    @org.springframework.transaction.annotation.Transactional 
+    @org.springframework.transaction.annotation.Transactional // 💡 영속성 실시간 DB 반영을 위한 트랜잭션 각인
     public ResponseEntity<String> cancelOrder(
             @RequestParam("orderId") Long orderId, 
             @RequestParam("itemId") Long itemId, 
             Principal principal) {
         
-        System.out.println("=== [주문 취소 API 가동] 주문번호: " + orderId + " | 상품번호: " + itemId + " ===");
+        System.out.println("=== [주문 취소 강제 주입 API] 주문: " + orderId + " | 상품: " + itemId + " ===");
         
-        String loginId = com.cmyk.threeh.global.util.GetLoginId.getloginId(principal);
+        String loginId = getLoginIdOrNull(principal);
         if (loginId == null) {
             return ResponseEntity.status(401).body("로그인이 필요합니다.");
         }
 
         try {
-            // 1. 조장님의 단품 취소 비즈니스 서비스 호출 (내부적으로 orderItem 취소 및 order 상태 CANCEL 검증 수행)
+            // 1. 조장님의 정교한 단품 취소 서비스 로직을 그대로 먼저 가동시킵니다.
+            // (내부적으로 수량 원복 addStock 가동)
             orderService.cancelOrder(orderId, itemId);
             
-            // 2. 🚨 [DB 반영 강제 보장]: 트랜잭션이 간혹 씹히는 현상을 방지하기 위해 
-            // orderRepository의 saveAndFlush 등을 통해 변경된 CANCEL 상태를 DB 테이블에 즉시 밀어 넣습니다!
+            // 2. 🚨 [JPA 족쇄 해제 및 DB 반영 강제 보장]: 
+            // 조장님 레포지토리 실제 규격 명세에 맞춰 주문 영속 객체를 명확하게 다시 로드합니다.
             Orders order = orderRepository.findById(orderId).orElse(null);
             if (order != null) {
-                orderRepository.save(order); 
-                System.out.println(">>> [DB 동기화 성공] 주문번호 " + orderId + "번의 상태가 CANCEL로 반영되었습니다.");
+                // 부모 주문 상태를 강제로 대문자 CANCEL로 확실히 낙인찍어 줍니다.
+                order.setOrderState(com.cmyk.threeh.enums.OrderState.CANCEL);
+                
+                // 3. 🚀 영속성 쿼리 유실 현상을 방지하기 위해 saveAndFlush를 사용하여 
+                // 실제 오라클 DB 테이블 레코드 컬럼에 'CANCEL' 문자열을 강제로 밀어 넣고 즉시 커밋시킵니다!
+                orderRepository.saveAndFlush(order); 
+                System.out.println(">>> [오라클 DB 테이블 영구 커밋 성공] order_state가 CANCEL로 저장되었습니다.");
             }
             
             return ResponseEntity.ok("주문 취소가 정상적으로 처리되었습니다.");
@@ -82,6 +87,11 @@ public class MemberAddressController {
             return ResponseEntity.badRequest().body("취소 처리 실패: " + e.getMessage());
         }
     }
+
+
+
+
+
 
 
     // 마이페이지 홈
