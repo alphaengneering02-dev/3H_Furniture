@@ -3,11 +3,14 @@ import FindId_result from './FindId_result';
 import { Link, Route, Switch } from "react-router-dom";
 import axios from 'axios';
 import Header from '../main/Header';
+import { useToast } from '../../hook/useToast';
 
 //FindId 전용 CSS 임포트
 import '../../css/memberPageCss/findId.css';
 
 const FindId = () => {
+
+    const { success, error: err, warn, info } = useToast();
 
     const [form, setForm] = useState({
         name: "", phoneORemail: ""
@@ -36,7 +39,7 @@ const FindId = () => {
 
         //모든 필드의 null 검사
         if(name=="" || phoneORemail=="") {
-            alert("모든 항목을 입력해주세요!")
+            warn("모든 항목을 입력해주세요!")
             return
         }
 
@@ -60,10 +63,10 @@ const FindId = () => {
                 const errorData = error.response.data
                 const errorMessage =error.response.data.message || Object.values(errorData)[0] || "알 수 없는 오류가 발생했습니다."
 
-                alert("[아이디 찾기 실패]\n" + errorMessage)
+                err("[아이디 찾기 실패]\n" + errorMessage)
                 console.log("[아이디 찾기 실패]\n" + errorMessage)
             } else {
-                alert("[아이디 찾기 실패]\n" + "서버와 연결할 수 없습니다.")
+                err("[아이디 찾기 실패]\n" + "서버와 연결할 수 없습니다.")
                 console.log("[아이디 찾기 실패]\n" + "서버와 연결할 수 없습니다.")
             }
         }

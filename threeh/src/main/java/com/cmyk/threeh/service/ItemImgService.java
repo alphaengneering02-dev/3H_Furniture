@@ -243,34 +243,33 @@ public class ItemImgService {
 
         //이미지 존재 확인
         validateImgIs(itemImg,admin);
-    
-         //물리적 이미지 파일 삭제
-        String itemImgUrl = itemImg.getItemImgUrl();
 
+        //DB 이미지 데이터만 삭제
+        //물리적 파일은 상품 삭제가 완전히 성공한 뒤 삭제하는 구조로 분리해야 안전함
+        itemImgRepository.delete(itemImg);
+
+    }
+
+    //물리적 이미지 파일 삭제
+    public void deletePhysicalFile(String itemImgUrl){
         String normalizedUploadUrl = uploadUrl.endsWith("/")
         ?uploadUrl
-        :uploadUrl + "/";
+        :uploadUrl+"/";
 
-        if(itemImgUrl != null && itemImgUrl.startsWith(normalizedUploadUrl)){
-            String savedFileName = itemImgUrl.replace(normalizedUploadUrl, "");
+        if(itemImgUrl !=null && itemImgUrl.startsWith(normalizedUploadUrl)){
+            String savedFileName = itemImgUrl.replace(normalizedUploadUrl,"");
 
-            File deleteFile = new File(uploadPath + savedFileName);
-
+            File deleteFile = new File(uploadPath+savedFileName);
+            
             if(deleteFile.exists()){
                 boolean deleted = deleteFile.delete();
 
                 if(!deleted){
-                    System.out.println("물리적 이미지 파일 삭제 실패: " + deleteFile.getAbsolutePath());
+                    System.out.println("물리적 이미지 파일 삭제 실패:"+deleteFile.getAbsolutePath());
                 }
             }
         }
-
-        //DB 이미지 데이터 삭제
-        itemImgRepository.delete(itemImg);
-
-
     }
-
 
     //대표 이미지 조회(썸네일 표시)
 

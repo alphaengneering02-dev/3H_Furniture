@@ -2,8 +2,14 @@ import React, { useEffect, useState } from 'react';
 import Main_itemList_item from './Main_itemList_item';
 import icon_prev from '../../assets/icon_prev.png';
 import icon_next from '../../assets/icon_next.png';
+import { useToast } from '../../hook/useToast';
+import { Navigate } from 'react-router-dom';
+import axios from 'axios';
 
 const Main_itemList = ({ totalItemList }) => {
+
+    const { success, error: err, warn, info } = useToast();
+
 
     //로그인한 유저 정보 가져오기
     const getLoginUser = () => {
@@ -152,6 +158,7 @@ const Main_itemList = ({ totalItemList }) => {
         setCurrentIndex(index + VISIBLE_COUNT); 
     };
 
+
     // 아이템 컨테이너 넓이 및 비율 계산 (복제본이 포함된 displayList 기준)
     const containerWidth = displayList.length > 0 ? `${(displayList.length / VISIBLE_COUNT) * 100}%` : '100%';
     const slidePercentage = displayList.length > 0 ? (100 / displayList.length) : 0;
@@ -160,6 +167,120 @@ const Main_itemList = ({ totalItemList }) => {
     let activeIndicator = currentIndex - VISIBLE_COUNT;
     if (activeIndicator < 0) activeIndicator += itemList.length;
     if (activeIndicator >= itemList.length) activeIndicator -= itemList.length;
+
+
+    //==========================북마크 기능==========================
+    //컴포넌트가 처음 실행될 때 북마크 목록 조회
+    useEffect(() => {
+        getMyBookmarks();
+    }, [])
+
+    //북마크 토글 함수 추가
+    const isBookmarked = (itemId) => {  //북마크 여부 확인 함수
+        return bookmarkedItems.includes(itemId);
+    };
+    const [bookmarkedItems, setBookmarkedItems] = useState([]);  //북마크 상태 저장([201,223,230])
+
+    const handleToggleBookmark = async (itemId) => {
+        const loginUser = getLoginUser();
+
+        if (!loginUser) {
+        err("로그인이 필요합니다.");
+        Navigate("/login");
+        return;
+        }
+
+        if (!isUserRole(loginUser)) {
+        err("일반 회원만 북마크를 이용할 수 있습니다.");
+        return;
+        }
+
+        if (!loginUser.memberId) {
+        err("회원 정보가 올바르지 않습니다.");
+        console.log("로그인 유저:", loginUser);
+        return;
+        }
+
+        try {
+        const payload = {
+            memberId: loginUser.memberId,
+            itemId: itemId,
+            type: "ITEM",
+        };
+
+        const response = await axios.post(
+            "http://localhost:8080/api/bookmarks/toggle",
+            payload,
+            {
+            withCredentials: true,
+            }
+        );
+
+        console.log("북마크 응답:", response.data);
+
+        if (response.data.bookmarked) {
+            //북마크 추가
+            setBookmarkedItems((prev) => {
+            if (prev.includes(itemId)) {
+                return prev;
+            }
+            return [...prev, itemId];
+            });
+        } else {
+            //북마크 삭제
+            setBookmarkedItems((prev) =>
+            prev.filter((id) => id !== itemId)
+            );
+        }
+        } catch (error) {
+        console.error("북마크 처리 실패", error);
+
+        if (error.response) {
+            console.log("상태코드:", error.response.status);
+            console.log("응답메시지:", error.response.data);
+        }
+
+        err("북마크 처리 실패");
+        }
+    };
+
+
+    //북마크 가져오기
+    const getMyBookmarks = async () => {
+        const loginUser = getLoginUser();
+
+        if (!loginUser || !isUserRole(loginUser)) {
+            return;
+        }
+
+        const memberId = loginUser.memberId;
+
+        if (!memberId) {
+            console.log("memberId가 없습니다:", loginUser);
+            return;
+        }
+
+        try {
+            const response = await axios.get(
+            `http://localhost:8080/api/bookmarks/member/${memberId}`,
+            {
+                withCredentials: true,
+            }
+            );
+
+            console.log("내 북마크 목록:", response.data);
+
+            const bookmarkedItems = response.data.map(
+                (bookmark) => bookmark.itemId
+            );
+
+            setBookmarkedItems(bookmarkedItems);
+        } catch (error) {
+            console.error("북마크 목록 조회 실패", error);
+        }
+    };
+    //===============================================================
+
 
     return (
         <section className="main-itemList main-product-slider-section">
@@ -185,7 +306,7 @@ const Main_itemList = ({ totalItemList }) => {
                                         key={`${item.itemId}-${idx}`} 
                                         style={{ width: `${100 / displayList.length}%`, flexShrink: 0 }}
                                     >
-                                        <Main_itemList_item item={item} getLoginUser={getLoginUser} isUserRole={isUserRole} isUser={isUser}/>
+                                        <Main_itemList_item item={item} getLoginUser={getLoginUser} isUserRole={isUserRole} isUser={isUser} handleToggleBookmark={handleToggleBookmark} isBookmarked={isBookmarked}/>
                                     </div>
                                 ))}
                             </article>

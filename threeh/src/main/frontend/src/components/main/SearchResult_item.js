@@ -1,40 +1,29 @@
 import React from 'react';
 
 const SearchResult_item = ({item}) => {
+
+    // 할인율 계산 및 최종 가격
+    const finalPrice = item.itemPrice - item.itemDiscountPrice;
+    const discountRate = item.itemPrice > 0 ? Math.round((item.itemDiscountPrice / item.itemPrice) * 100) : 0;
+
+
     return (
-        <div>
-            <table>
-                <thead>
-                    <tr>
-                        <td>상품번호</td>
-                        <td>카테고리</td>
-                        <td>상품명</td>
-                        <td>설명</td>
-                        <td>판매여부</td>
-                        <td>색상</td>
-                        <td>원가격</td>
-                        <td>할인가격</td>
-                        <td>총가격</td>
-                        <td>화폐</td>
-                        <td>재고</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td style={{width: 100}}>{item.itemId}</td>
-                        <td style={{width: 100}}>{item.itemCategory}</td>
-                        <td style={{width: 250}}>{item.itemName}</td>
-                        <td style={{width: 300}}>{item.itemDetail}</td>
-                        <td style={{width: 70}}>{item.itemSellStatus}</td>
-                        <td style={{width: 70}}>{item.itemColor}</td>
-                        <td style={{width: 70}}>{item.itemPrice}</td>
-                        <td style={{width: 70}}>{item.itemDiscountPrice}</td>
-                        <td style={{width: 70}}>{item.itemPrice-item.itemDiscountPrice}</td>
-                        <td style={{width: 70}}>{item.itemPriceCurrency}</td>
-                        <td style={{width: 70}}>{item.itemStock}</td>
-                    </tr>
-                </tbody>
-            </table>
+        <div className="search-result-item-card">
+            {/* 상품 이미지 영역 */}
+            <div className="search-result-item-image">
+                <img className="search-result-image" src={item.itemImgUrl} alt={item.itemName}/>
+            </div>
+            
+            {/* 상품 정보 영역 */}
+            <div className="search-result-item-info">
+                <span className="search-result-item-brand">{item.itemCategory}</span> {/* 카테고리를 브랜드/분류처럼 사용 */}
+                <h3 className="search-result-item-name">{item.itemName}</h3>
+                
+                <div className="search-result-item-price-wrap">
+                    {discountRate > 0 && <span className="search-result-discount-rate">{discountRate}%</span>}
+                    <span className="search-result-final-price">{finalPrice.toLocaleString()}{item.itemPriceCurrency || '원'}</span>
+                </div>
+            </div>
         </div>
     );
 };

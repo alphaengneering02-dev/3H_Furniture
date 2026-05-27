@@ -4,6 +4,9 @@ import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import SearchResult_item from './SearchResult_item';
 import SearchResult_filter from './SearchResult_filter';
+import '../../css/mainPageCss/searchResult.css';
+import Header from './Header';
+import Footer from './Footer';
 
 const SearchResult = () => {
     
@@ -64,47 +67,75 @@ const SearchResult = () => {
     })  //객체
 
 
+    // 필터링된 결과 배열을 미리 계산 (상품 개수 표시를 위해)
+    const filteredItems = searchResult
+    // 1. 카테고리 필터링 (선택 안했으면 통과, 선택했으면 포함된 것만 유지)
+    .filter(item => 
+        myFilter.category.length===0 || myFilter.category.includes(item.itemCategory)
+    )
+    // 2. 색상 필터링 (선택 안했으면 통과, 선택했으면 포함된 것만 유지)
+    .filter(item => 
+        myFilter.color.length === 0 || myFilter.color.includes(item.itemColor)
+    )
+    // 3. 가격 필터링 (최소값 이상이자 최대값 이하인 상품만 보이기)
+    .filter(item => {
+        const totalPrice = item.itemPrice - item.itemDiscountPrice
+        const min = myFilter.price[0] * 10000
+        const max = myFilter.price[1] * 10000
+
+        return totalPrice>=min && totalPrice<=max
+    })
+
+    const searchValue = searchParams.get("searchValue") || "전체";
+
+
 
     return (
         <div>
-            검색결과 페이지
+            <div className='main-header'>
+                <Header/>
+            </div>
 
-            상품 필터
-            <SearchResult_filter myFilter={myFilter} setMyFilter={setMyFilter}/>
+
+            {/* 상단 검색어 타이틀 */}
+            <div className="search-result-page">
+                <div className="search-result-header">
+                    <h2><span className="search-result-highlight">'{searchValue}'</span> 에 대한 검색결과</h2>
+                </div>
+
+                {/* 필터 영역 */}
+                <div>
+                    <SearchResult_filter myFilter={myFilter} setMyFilter={setMyFilter}/>
+                </div>
+
+                {/* 총 상품 개수 및 정렬 */}
+                <div className="search-result-list-header">
+                    <span className="search-result-total-count"><b>{filteredItems.length.toLocaleString()}</b> 개 상품</span>
+                </div>
 
 
-            {/* 검색 결과 */}
-            {
-                searchResult && searchResult.length>0
-                ? (
-                    searchResult
-
-                    // 1. 카테고리 필터링 (선택 안했으면 통과, 선택했으면 포함된 것만 유지)
-                    .filter(item => 
-                        myFilter.category.length===0 || myFilter.category.includes(item.itemCategory)
+                {/* 검색 결과 그리드 */}
+                {
+                    filteredItems.length > 0 
+                    ? (
+                        <div className="search-result-grid-container">
+                            {filteredItems.map(item =>
+                                <SearchResult_item key={item.itemId} item={item}/>
+                            )}
+                        </div>
+                    ) 
+                    : (
+                        <div className="search-result-empty-result">
+                            <p>검색결과가 없습니다.</p>
+                        </div>
                     )
-                    // 2. 색상 필터링 (선택 안했으면 통과, 선택했으면 포함된 것만 유지)
-                    .filter(item => 
-                        myFilter.color.length === 0 || myFilter.color.includes(item.itemColor)
-                    )
-                    // 3. 가격 필터링 (최소값 이상이자 최대값 이하인 상품만 보이기)
-                    .filter(item => {
-                        const totalPrice = item.itemPrice - item.itemDiscountPrice
-                        const min = myFilter.price[0] * 10000
-                        const max = myFilter.price[1] * 10000
+                }
+            </div>
 
-                        return totalPrice>=min && totalPrice<=max
-                    })
 
-                    // 3. 필터링 결과 출력
-                    .map(item =>
-                        <SearchResult_item key={item.itemId} item={item}/>
-                    )
-                )
-                : (
-                    <p>검색에 실패하거나, 검색결과가 없습니다.</p>
-                )
-            }
+            <div className="main-mypage-footer">
+                <Footer/>
+            </div>
         </div>
     );
 };
