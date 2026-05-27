@@ -5,6 +5,8 @@ import icon_hamburger from '../../assets/icon_hamburger.png';
 import icon_facebook from '../../assets/icon_facebook.png';
 import icon_instagram from '../../assets/icon_instagram.png';
 import icon_kakao from '../../assets/icon_kakao.png';
+import icon_dashboard from '../../assets/icon_dashboard.png';
+import icon_product from '../../assets/icon_product.png';
 import icon_mypage from '../../assets/icon_mypage.png';
 import icon_cart from '../../assets/icon_cart.png';
 import icon_logout from '../../assets/icon_logout.png';
@@ -207,13 +209,13 @@ const Header = () => {
                                                 <>
                                                     <li>
                                                         <Link to="/admin">
-                                                            <img src={icon_mypage} alt="관리자 대시보드" style={{width: 50}}/>
+                                                            <img src={icon_dashboard} alt="관리자 대시보드" style={{width: 50}}/>
                                                             <p>관리자 대시보드</p>
                                                         </Link>
                                                     </li>
                                                     <li>
                                                         <Link to="/item">
-                                                            <img src={icon_mypage} alt="관리자 상품관리" style={{width: 50}}/>
+                                                            <img src={icon_product} alt="관리자 상품관리" style={{width: 50}}/>
                                                             <p>관리자 상품관리</p>
                                                         </Link>
                                                     </li>
