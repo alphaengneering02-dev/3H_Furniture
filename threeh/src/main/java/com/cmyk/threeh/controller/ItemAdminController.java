@@ -1,5 +1,7 @@
 package com.cmyk.threeh.controller;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.cmyk.threeh.dto.ItemRequestDTO;
 import com.cmyk.threeh.dto.ItemResponseDTO;
 import com.cmyk.threeh.dto.ItemUpdateRequestDTO;
+import com.cmyk.threeh.service.ItemImgService;
 import com.cmyk.threeh.service.ItemService;
 
 import lombok.RequiredArgsConstructor;
@@ -26,6 +29,7 @@ import lombok.RequiredArgsConstructor;
 public class ItemAdminController {
 
     private final ItemService itemService;
+    private final ItemImgService itemImgService;
 
     //상품 등록
     @PostMapping()
@@ -48,13 +52,30 @@ public class ItemAdminController {
         return itemService.updateItem(itemId,adLoginId,dto);
     }
 
-    //상품 삭제
+    //상품 삭제(기존 코딩)
 
-      @DeleteMapping("/{itemId}")
-    public void deleteItem(@PathVariable Long itemId, Authentication authentication){
+    //@DeleteMapping("/{itemId}")
+    //public void deleteItem(@PathVariable Long itemId, Authentication authentication){
 
-      String adLoginId= authentication.getName();
-      itemService.deleteItem(itemId,adLoginId);
+      //String adLoginId= authentication.getName();
+      //itemService.deleteItem(itemId,adLoginId);
+    //}
+
+    //상품 삭제 추가
+    @DeleteMapping("/{itemId}")
+    public ResponseEntity<String> deleteItem(
+        @PathVariable Long itemId,
+        Authentication authentication
+    ){
+      String adLoginId = authentication.getName();
+
+      List<String> itemImgUrls = itemService.deleteItem(itemId, adLoginId);
+
+        for(String itemImgUrl : itemImgUrls){
+          itemImgService.deletePhysicalFile(itemImgUrl);
+        }
+
+        return ResponseEntity.ok("상품이 삭제되었습니다.");
     }
 
       @GetMapping("/{itemId}/deletable")
