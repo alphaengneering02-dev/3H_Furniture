@@ -140,13 +140,14 @@
   width: 85%;
   max-width: 420px;
   position: relative;
+  top: -20px;
 }
 
 .main-header-topBox .main-header-search .main-header-bar {
   display: flex;
   align-items: center;
   border-bottom: 2px solid var(--main-deep-caramel);
-  padding: 4px 0;
+  padding: 4px 7px;
 }
 
 .main-header-topBox .main-header-search .main-header-bar input {

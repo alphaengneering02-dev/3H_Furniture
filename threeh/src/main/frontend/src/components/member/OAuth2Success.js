@@ -3,6 +3,10 @@ import React, { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import { useToast } from '../../hook/useToast';
+import { LinearProgress } from '@mui/material';
+
+//OAuth2Success 전용 CSS 임포트
+import '../../css/memberPageCss/oauth2Success.css';
 
 const OAuth2Success = () => {
 
@@ -87,9 +91,22 @@ const OAuth2Success = () => {
 
 
     return (
-        <div>
-            <h2>소셜 로그인 처리 중입니다...</h2>
-            <p>잠시만 기다려주세요.</p>
+        <div className="oauth2-success-body-wrapper">
+            <div className="oauth2-success-content">
+                <div className="oauth2-success-progress-bar-wrapper">
+                    <LinearProgress 
+                        aria-label="Loading…" 
+                        sx={{
+                            backgroundColor: '#e6dfd9',
+                            '& .MuiLinearProgress-bar': {
+                                backgroundColor: '#8a7664'
+                            }
+                        }}
+                    />
+                </div>
+                <h2 className="oauth2-success-title">소셜 로그인 처리 중입니다...</h2>
+                <p className="oauth2-success-desc">잠시만 기다려주세요.</p>
+            </div>
         </div>
     );
 };
