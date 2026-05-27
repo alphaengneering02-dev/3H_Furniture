@@ -123,6 +123,7 @@
 
 .main-header-topBox .main-header-logo a {
   display: inline-block;
+  border-radius: 50%;
 }
 
 /* 로고만 크게 적용 */
@@ -131,6 +132,7 @@
   height: 72px !important;
   object-fit: contain;
   display: block;
+  border-radius: 50%;
 }
 
 /* 검색바 영역 */
