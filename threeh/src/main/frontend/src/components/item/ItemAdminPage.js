@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../../css/itemPageCss/itemAdminPage.css";
+import Header from "../main/Header";
+import Footer from "../main/Footer";
 
 const ItemAdminPage = () => {
     const navigate = useNavigate();
@@ -472,7 +474,10 @@ const ItemAdminPage = () => {
     };
 
     return (
-        <div className="itemAdmin-page">
+        <div>
+            {/*헤더영역 메인에서 가져옴 */}
+            <Header/>
+            <div className="itemAdmin-page">
             <ToastContainer
                 position="top-center"
                 autoClose={1800}
@@ -482,32 +487,19 @@ const ItemAdminPage = () => {
                 pauseOnHover
                 theme="light"
             />
-
-            {/* 상단 이동 버튼 영역 */}
-            <div className="itemAdmin-topArea">
-                <button
-                    type="button"
-                    className="itemAdmin-button itemAdmin-subButton"
-                    onClick={() => navigate("/")}
-                >
-                    메인으로
-                </button>
-
-                <button
+              {/* 관리자 페이지 제목 */}
+            <h1 className="itemAdmin-title">관리자 상품/ 리뷰관리</h1>
+            
+            {/* 상품 등록하기 버튼과 리뷰 관리 버튼을 같은 레벨에 배치 */}
+            {/* 상품 관리 버튼은 따로 노출하지 않음 */}
+            <div className="itemAdmin-adminActionArea">
+                 <button
                     type="button"
                     className="itemAdmin-button itemAdmin-subButton"
                     onClick={() => navigate("/item")}
                 >
                     상품목록으로
                 </button>
-            </div>
-
-            {/* 관리자 페이지 제목 */}
-            <h1 className="itemAdmin-title">관리자 상품/ 리뷰관리</h1>
-
-            {/* 상품 등록하기 버튼과 리뷰 관리 버튼을 같은 레벨에 배치 */}
-            {/* 상품 관리 버튼은 따로 노출하지 않음 */}
-            <div className="itemAdmin-adminActionArea">
                 <button
                     type="button"
                     className="itemAdmin-button"
@@ -865,6 +857,9 @@ const ItemAdminPage = () => {
                 </div>
             )}
         </div>
+        {/*푸터 영역 */}
+        <Footer/>
+    </div>
     );
 };
 

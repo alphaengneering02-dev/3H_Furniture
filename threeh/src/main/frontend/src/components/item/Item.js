@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import '../../css/itemPageCss/itemPage.css';
+import Header from "../main/Header";
+import Footer from "../main/Footer";
 
 //상품목록, 선택상품영역이 모두 코딩되어 있는 곳입니다. 망가지면 큰일나요.
 //관리자 상품관리/리뷰관리는 ItemAdminPage.js로 분리했습니다.
@@ -681,30 +683,9 @@ function Item() {
   //JSX부분^__________^===================================================
 
   return (
-    <div>
-     <header className="item-temp-header">
-      <div className="item-temp-header-inner">
-        <h2 className="item-temp-logo">임시</h2>
-
-        <nav className="item-temp-nav">
-          <button type="button" onClick={() => navigate("/")}>
-            메인
-          </button>
-
-          {isUser && (
-            <button type="button" onClick={handlGoMyCart}>
-              장바구니
-            </button>
-          )}
-
-          {isAdmin && (
-            <button type="button" onClick={() => navigate("/admin/item")}>
-              관리자
-            </button>
-          )}
-        </nav>
-      </div>
-    </header>
+  <div>
+    {/* 실제 헤더 영역 */}
+    <Header />
 
     <div className="item-page">
       {/*상품 목록 페이지 제목 */}
@@ -748,15 +729,15 @@ function Item() {
                 )}
 
                 <div className="item-image-box">
-                {item.itemImgUrl ? (
-                  <img
-                    className="item-image"
-                    src={`http://localhost:8080${item.itemImgUrl}`}
-                    alt={item.itemName}
-                  />
-                ) : (
-                  <p className="item-no-image">이미지 없음</p>
-                )}
+                  {item.itemImgUrl ? (
+                    <img
+                      className="item-image"
+                      src={`http://localhost:8080${item.itemImgUrl}`}
+                      alt={item.itemName}
+                    />
+                  ) : (
+                    <p className="item-no-image">이미지 없음</p>
+                  )}
                 </div>
 
                 <div className="item-info">
@@ -777,18 +758,20 @@ function Item() {
                     상품 최종가격: {formatPrice(getFinalPrice(item))}원
                   </p>
                   <p className="item-text">상품 재고: {item.itemStock}</p>
-                  <p className="item-text">판매 상태: {getSellStatusInfo(item).text}</p>
+                  <p className="item-text">
+                    판매 상태: {getSellStatusInfo(item).text}
+                  </p>
 
                   {/*판매 상태가 sell이 아니면 구매 또는 장바구니 담기 안됌. */}
-                    <p className="item-text">
+                  <p className="item-text">
+                    {getSellStatusInfo(item).message}
+                  </p>
+
+                  {!selectable && (
+                    <p className="item-warning">
                       {getSellStatusInfo(item).message}
                     </p>
-                    {!selectable &&(
-                      <p className="item-warning">
-                        {getSellStatusInfo(item).message}    
-                      </p>
-                    )}
-                    
+                  )}
 
                   {/*기존은 !isAdmin이였는데 일반 유저면 보이게 바꿈*/}
                   {isUser && (
@@ -832,18 +815,18 @@ function Item() {
         )}
       </div>
 
-        {items.length>ITEMS_PER_PAGE&&(
-          <div className="item-pagination">
-            <button
-              type="button"
-              className="item-page-button"
-              disabled={startPage === 1}
-              onClick={() => handlePgeChange(startPage - 1)}
-            >
-              &lt;
-            </button>
+      {items.length > ITEMS_PER_PAGE && (
+        <div className="item-pagination">
+          <button
+            type="button"
+            className="item-page-button"
+            disabled={startPage === 1}
+            onClick={() => handlePgeChange(startPage - 1)}
+          >
+            &lt;
+          </button>
 
-            {pageNumbers.map((page) => (
+          {pageNumbers.map((page) => (
             <button
               key={page}
               type="button"
@@ -864,9 +847,8 @@ function Item() {
           >
             &gt;
           </button>
-
-          </div>
-        )}
+        </div>
+      )}
 
       {/*기존은 !isAdmin이였는데 일반 유저면 보이게 바꿈*/}
       {isUser && selectedItems.length > 0 && (
@@ -962,11 +944,11 @@ function Item() {
         </div>
       )}
     </div>
-    <footer className="item-temp-footer">
-      <p>Temporary Footer</p>
-    </footer>
-    </div>
-  );
+
+    {/* 실제 푸터 영역 */}
+    <Footer />
+  </div>
+);
 }
 
 export default Item;
