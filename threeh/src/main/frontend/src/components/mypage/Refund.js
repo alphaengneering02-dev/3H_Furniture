@@ -225,14 +225,22 @@ const RefundPage = () => {
                                 <div className="refund-th-status">주문현황</div>
                             </div>
 
-                            {/* 가로 격자 테이블 바디 아이템 카드 리스트 */}
-                            <div className="refund-item-list">
+                            {/* ========================================================= */}
+                            {/* 📋 가로 격자 테이블 바디 아이템 카드 리스트 구역               */}
+                            {/* ========================================================= */}
+                                                        <div className="refund-item-list">
                                 {currentOrders && currentOrders.length > 0 ? (
                                     currentOrders.map((order) => {
                                         const orderIdStr = order.orderId || order.id;
                                         const isProcessing = order.orderState === 'EXCHANGEorREFUND' || order.orderState === 'REFUND' || order.deliveryStatus === 'PICKUP';
                                         const isChecked = selectedOrder && (selectedOrder.orderId || selectedOrder.id) === orderIdStr;
-                                        const itemSubtotal = Number(order.orderPrice || order.itemPrice || 0) * Number(order.count || 0);
+
+                                        // 🚀 [위치 교정 완료]: 변수 선언과 데이터 연산은 return 태그 바깥인 이 자리에 위치해야 문법이 터지지 않습니다.
+                                        const firstItem = order.orderItems && order.orderItems.length > 0 ? order.orderItems[0] : null;
+                                        const targetItemName = firstItem && firstItem.item ? (firstItem.item.itemName || "등록된 가구 명칭 없음") : "상품 정보 없음";
+                                        const targetPrice = firstItem ? (firstItem.orderPrice || 0) : 0; 
+                                        const targetCount = firstItem ? (firstItem.count || 0) : 0;
+                                        const itemSubtotal = Number(targetPrice) * Number(targetCount);
 
                                         return (
                                             <div key={orderIdStr} className="refund-item-card">
@@ -242,8 +250,8 @@ const RefundPage = () => {
                                                         type="radio" 
                                                         name="refund-select-item"
                                                         checked={!!isChecked}
-                                                        /* 💡 배송 출발한 건은 자동으로 선택이 잠겨서 실수를 사전에 원천 차단합니다 */
-                                                        disabled={activeTab !== 1 || isProcessing || order.orderState === 'CANCEL' || order.deliveryStatus === 'SHIPPING' || order.deliveryStatus === 'COMPLETED'}
+                                                        /* 💡 배송 준비중(READY)이거나 배송중/완료, 구매확정인 건은 단순 취소 실수를 방지하기 위해 잠금 */
+                                                        disabled={activeTab !== 1 || isProcessing || order.orderState === 'CANCEL' || order.orderState === 'READY' || order.orderState === 'PURCHASED' || order.deliveryStatus === 'SHIPPING' || order.deliveryStatus === 'COMPLETED'}
                                                         onChange={() => setSelectedOrder(order)}
                                                     />
                                                 </div>
@@ -253,7 +261,7 @@ const RefundPage = () => {
 
                                                 {/* 3. 상품명 및 수거 가이드 텍스트 셀 */}
                                                 <div className="refund-td-product-name">
-                                                    <span className="refund-product-name"><strong>{order.itemName || order.productName}</strong></span>
+                                                    <span className="refund-product-name"><strong>{targetItemName}</strong></span>
                                                     {isProcessing && (
                                                         <p style={{ margin: '5px 0 0 0', fontSize: '13px', color: '#801a24', fontWeight: 'bold' }}>
                                                             [현재 접수 완료되어 {order.orderState === 'REFUND' ? '반품 처리' : order.deliveryStatus === 'PICKUP' ? '수거 중' : '검수 중'}입니다]
@@ -261,16 +269,16 @@ const RefundPage = () => {
                                                     )}
                                                 </div>
 
-                                                {/* 4. 판매단가 셀 */}
-                                                <div className="refund-td-price">{Number(order.orderPrice || order.itemPrice || 0).toLocaleString()}원</div>
+                                                {/* 4. 판매단가 셀 (진짜 가격 100% 매핑 완료) */}
+                                                <div className="refund-td-price">{Number(targetPrice).toLocaleString()}원</div>
                                                 
-                                                {/* 5. 수량 셀 */}
-                                                <div className="refund-td-count">{order.count || 0}개</div>
+                                                {/* 5. 수량 셀 (진짜 개수 100% 매핑 완료) */}
+                                                <div className="refund-td-count">{targetCount}개</div>
                                                 
                                                 {/* 6. 소계금액 셀 */}
                                                 <div className="refund-td-subtotal">{itemSubtotal.toLocaleString()}원</div>
                                                 
-                                                {/* 7. 주문현황 및 [배송전 취소가능] 시인성 가이드 배지 셀 */}
+                                                {/* 7. 주문현황 및 시인성 배지 가이드 클러스터 */}
                                                 <div className="refund-td-status" style={{ display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'center' }}>
                                                     {order.orderState === 'CANCEL' ? (
                                                         <span style={{ color: '#a82525', fontWeight: 'bold' }}>주문취소완료</span>
@@ -278,20 +286,27 @@ const RefundPage = () => {
                                                         <span style={{ color: '#555555', fontWeight: 'bold' }}>반품처리완료</span>
                                                     ) : isProcessing ? (
                                                         <span style={{ color: '#801a24' }}>교환 접수</span>
+                                                    ) : order.orderState === 'PURCHASED' ? (
+                                                        <div>
+                                                            <span style={{ color: '#8C7A6B', fontWeight: 'bold', display: 'block', marginBottom: '2px' }}>✓ 구매확정</span>
+                                                            <span style={{ display: 'inline-block', padding: '2px 6px', fontSize: '11px', backgroundColor: '#f1f3f4', color: '#5f6368', fontWeight: '700', borderRadius: '4px' }}>
+                                                                취소/반품 불가
+                                                            </span>
+                                                        </div>
+                                                    ) : order.orderState === 'READY' || order.deliveryStatus === 'SHIPPING' ? (
+                                                        <div>
+                                                            <span style={{ color: '#1a73e8', fontWeight: 'bold', display: 'block', marginBottom: '2px' }}>
+                                                                {order.deliveryStatus === 'SHIPPING' ? "🚚 배송중" : "📦 준비중"}
+                                                            </span>
+                                                            <span style={{ display: 'inline-block', padding: '2px 6px', fontSize: '11px', backgroundColor: '#fce8e6', color: '#c5221f', fontWeight: '700', borderRadius: '4px' }}>
+                                                                배송중 취소불가
+                                                            </span>
+                                                        </div>
                                                     ) : activeTab === 1 && order.deliveryStatus === 'WAITING' && order.orderState === 'ORDER' ? (
-                                                        /* 🟢 배송 출발 전 상태 가이드 */
                                                         <div>
                                                             <span style={{ color: '#111111', display: 'block', marginBottom: '2px' }}>신청 가능</span>
                                                             <span style={{ display: 'inline-block', padding: '2px 6px', fontSize: '11px', backgroundColor: '#e6f4ea', color: '#137333', fontWeight: '700', borderRadius: '4px' }}>
                                                                 배송전 취소가능
-                                                            </span>
-                                                        </div>
-                                                    ) : activeTab === 1 && (order.deliveryStatus === 'SHIPPING' || order.deliveryStatus === 'COMPLETED') ? (
-                                                        /* 배송 출발 후 상태 가이드 */
-                                                        <div>
-                                                            <span style={{ color: '#111111', display: 'block', marginBottom: '2px' }}>신청 가능</span>
-                                                            <span style={{ display: 'inline-block', padding: '2px 6px', fontSize: '11px', backgroundColor: '#fce8e6', color: '#c5221f', fontWeight: '700', borderRadius: '4px' }}>
-                                                                배송중 취소불가
                                                             </span>
                                                         </div>
                                                     ) : (

@@ -7,6 +7,7 @@ import AllOrderboard from './AllOrderboard';
 import Orderboard from './Orderboard';
 import AdminMemoDay from './AdminMemoDay';
 import Ranking from './Ranking';
+import AdminSearch from './AdminSearch';
 import '../../css/adminCss/AdminDashboard.css';
 
 const AdminDashboard = () => {
@@ -18,6 +19,10 @@ const AdminDashboard = () => {
 
     const [orders, setOrders] = useState([]);
     const [items, setItems] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [searchType, setSearchType] = useState('all');
+
+    const [matchedMemberIds, setMatchedMemberIds] = useState([]);
 
     // 상품 번호를 입력받아 검증 후 상세 페이지로 이동하는 함수
 const handleEditItemDetail = () => {
@@ -81,6 +86,39 @@ const handleEditItemDetail = () => {
     }));
 };
 
+//검색
+
+const handleSearch = async () => {
+        const cleanTerm = searchTerm.toLowerCase().trim();
+        if (!cleanTerm) {
+            setMatchedMemberIds([]);
+            return;
+        }
+
+        const newMatchedIds = [];
+        // 전화번호나 상세 ID 조회가 필요한 경우를 위해 비동기 체크
+        if (searchType === 'all' || searchType === 'member') {
+            for (const order of orders) {
+                if (order.memberId && !newMatchedIds.includes(order.memberId)) {
+                    try {
+                        const memberRes = await axios.get(`/api/member/seq/${order.memberId}`);
+                        const memberData = memberRes.data;
+
+                        const loginIdMatch = memberData.id && memberData.id.toLowerCase().includes(cleanTerm);
+                        const cleanPhone = memberData.phone ? memberData.phone.replace(/-/g, '') : '';
+                        const phoneMatch = memberData.phone && (memberData.phone.includes(cleanTerm) || cleanPhone.includes(cleanTerm));
+
+                        if (loginIdMatch || phoneMatch) {
+                            newMatchedIds.push(order.memberId);
+                        }
+                    } catch (err) {
+                        console.error(`회원 ID ${order.memberId} 상세조회 실패:`, err);
+                    }
+                }
+            }
+        }
+        setMatchedMemberIds(newMatchedIds);
+    };
 
 const handleAssignDriver = async (orderId) => {
     const deliveryIdRaw = selectedDrivers[orderId];
@@ -123,6 +161,38 @@ const handleAssignDriver = async (orderId) => {
         alert(`배정 실패: ${error.response?.data || "서버 오류"}`);
     }
 };
+
+    const cleanTerm = searchTerm.toLowerCase().trim();
+    const filteredOrders = orders.filter(order => {
+        if (!cleanTerm) return true;
+
+        // 1. ORDERS 테이블 관련 기본 조건
+        const orderIdMatch = String(order.orderId).includes(cleanTerm);
+        const statusMatch = order.status && order.status.toLowerCase().includes(cleanTerm);
+
+        // 2. MEMBER 테이블 기반 검색 조건
+        const nameMatch = order.memberName && order.memberName.toLowerCase().includes(cleanTerm);
+        const loginIdMatch = order.memberLoginId && order.memberLoginId.toLowerCase().includes(cleanTerm);
+        const cleanPhone = order.memberPhone ? order.memberPhone.replace(/-/g, '') : '';
+        const phoneMatch = order.memberPhone && (order.memberPhone.includes(cleanTerm) || cleanPhone.includes(cleanTerm));
+        const isMemberMatch = nameMatch || loginIdMatch || phoneMatch;
+
+        // 3. ITEM 테이블 기반 검색 조건
+        const isItemMatch = order.items && order.items.some(item => 
+            (item.itemName && item.itemName.toLowerCase().includes(cleanTerm)) ||
+            (item.itemCategory && item.itemCategory.toLowerCase().includes(cleanTerm))
+        );
+
+        // 💡 셀렉트 박스 선택 값(searchType)에 따른 최종 필터링 분기
+        if (searchType === 'member') {
+            return isMemberMatch;
+        } else if (searchType === 'item') {
+            return isItemMatch;
+        } else {
+            // 'all' 일 때는 전체 다 매칭
+            return orderIdMatch || statusMatch || isMemberMatch || isItemMatch;
+        }
+    });
 
     const renderItemName = (items) => {
         if (items.length === 0) return '';
@@ -201,6 +271,15 @@ const fetchDeliveries = async () => {
              {/* 내부 구분선 */}
             <hr className="admin-sidebar-divider" />
 
+            <AdminSearch 
+                    searchTerm={searchTerm} 
+                    setSearchTerm={setSearchTerm} 
+                    searchType={searchType}
+                    setSearchType={setSearchType}
+                />
+
+            <hr className="admin-sidebar-divider" />
+
            
             {/* 4. 원스톱 관리 매니저 패널 (사이드바 내부 하단 배치 성공) */}
             <div className="admin-control-panel">
@@ -258,7 +337,7 @@ const fetchDeliveries = async () => {
                 </div>
 
                 <AllOrderboard 
-                    orders={orders}
+                    orders={filteredOrders}
                     items={items}
                     handleDriverSelect={handleDriverSelect}
                     handleAssignDriver={handleAssignDriver}
@@ -269,10 +348,10 @@ const fetchDeliveries = async () => {
     
     <div className="admin-content-title-bar">
         {/* h3 태그와 버튼이 가로로 배치되도록 구성 */}
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div className="admin-content-title-bar-flex">
             <h3>배송 파트너</h3>         
-            <Link to="/admin/driver" style={{ marginLeft: '12px' }}>
-                <button className="admin-add-driver-btn" style={{ padding: '4px 10px', fontSize: '14px' }}>
+            <Link to="/admin/driver">
+                <button className="admin-move-page-btn">
                     기사 페이지 이동
                 </button>
             </Link>
@@ -343,7 +422,7 @@ const fetchDeliveries = async () => {
 </div>
 
                     <Orderboard 
-        orders={orders} 
+        orders={filteredOrders} 
         items={items} 
         selectedDrivers={selectedDrivers}
         handleDriverSelect={handleDriverSelect}

@@ -8,7 +8,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.cmyk.threeh.domain.Admins;
 import com.cmyk.threeh.domain.Item;
+import com.cmyk.threeh.domain.ItemImg;
 import com.cmyk.threeh.repository.AdminsRepository;
+import com.cmyk.threeh.repository.BookmarksRepository;
+import com.cmyk.threeh.repository.ItemImgRepository;
 import com.cmyk.threeh.repository.ItemRepository;
 import com.cmyk.threeh.repository.OrderItemRepository;
 import com.cmyk.threeh.dto.ItemRequestDTO;
@@ -26,6 +29,10 @@ public class ItemService {
     private final ItemRepository itemRepository;
     private final AdminsRepository adminsRepository;
     private final OrderItemRepository orderItemRepository;
+    private final BookmarksRepository bookmarksRepository;
+    private final ItemImgRepository itemImgRepository;
+    private final ItemImgService itemImgService;
+
     //상품등록(관리자 검증 필요->관리자(admin)만 가능)
 
     public ItemResponseDTO createItems(ItemRequestDTO dto, String adLoginId){
@@ -112,8 +119,9 @@ public class ItemService {
             return !orderItemRepository.existsByItem_ItemId(itemId);
     }
 
+
     @Transactional
-    public void deleteItem(Long itemId, String adLoginId){
+    public List<String> deleteItem(Long itemId, String adLoginId){
 
         Admins admin = adminsRepository.findByAdLoginId(adLoginId)
             .orElseThrow(()-> new CustomException(ErrorCode.NO_PERMISSION));
@@ -128,8 +136,26 @@ public class ItemService {
          //주문내역이 있는 상품은 삭제 불가
         if(orderItemRepository.existsByItem_ItemId(itemId)){
         throw new IllegalStateException("이미 주문내역이 있는 상품은 삭제할 수 없습니다. 판매중지로 변경해주세요.");
-    }
+        }
+
+        //물리적 이미지 파일 삭제를 위해 이미지url 먼저 저장
+        List<String> itemImgUrls = itemImgRepository.findByItem_ItemId(itemId)
+            .stream()
+            .map(ItemImg::getItemImgUrl)
+            .collect(Collectors.toList());
+
+            //상품을 북마크한 데이터 먼저 삭제
+            bookmarksRepository.deleteByItem_ItemId(itemId);
+
+            //이미지 DB 데이터 먼저 삭제
+            itemImgRepository.deleteByItem_ItemId(itemId);
+
+            //상품 삭제
             itemRepository.delete(item);
+
+            //컨틀롤러에서 트랜젝션 성공 후 물리적 이미지 파일 삭제
+            return itemImgUrls;
+            
     }
 
     //관리자 조회 + 검증 추가
