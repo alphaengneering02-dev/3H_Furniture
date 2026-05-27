@@ -1,6 +1,8 @@
 import React, { useEffect,useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "../../css/itemPageCss/itemCreate.css";
 
 //상품 등록
@@ -23,16 +25,24 @@ const ItemCreate = () => {
 
         //로그인이 안되었을 때
         if(!user){
-            alert("로그인이 필요합니다.");
-            navigate("/login");
+            toast.error("로그인이 필요합니다.");
+
+            setTimeout(() => {
+                navigate("/login");
+            }, 800);
+
             return;
         }
 
         //로그인한 계정이 관리자 계정이 아닌 일반 유저일 때.
 
         if(!isAdmin){
-            alert("관리자 계정만 접근이 가능한 페이지입니다.");
-            navigate("/");
+            toast.error("관리자 계정만 접근이 가능한 페이지입니다.");
+
+            setTimeout(() => {
+                navigate("/");
+            }, 800);
+
             return;
         }
     },[navigate]);
@@ -59,7 +69,7 @@ const ItemCreate = () => {
         const{name,value} = e.target;
         
      if(name === "itemDetail"&& value.length >255){
-        alert("상품 설명은 255자 이내로 입력해주세요.");
+        toast.warning("상품 설명은 255자 이내로 입력해주세요.");
         return;
      }   
         setItem({
@@ -106,26 +116,34 @@ const ItemCreate = () => {
             );
 
         if(!user){
-            alert("로그인이 필요합니다.");
-            navigate("/login");
+            toast.error("로그인이 필요합니다.");
+
+            setTimeout(() => {
+                navigate("/login");
+            }, 800);
+
             return;
         }
 
         if(!isAdmin){
-            alert("관리자만 상품을 등록할 수 있습니다.");
-            navigate("/");
+            toast.error("관리자만 상품을 등록할 수 있습니다.");
+
+            setTimeout(() => {
+                navigate("/");
+            }, 800);
+
             return;
         }
 
         console.log("로그인한 사용자:",user);
     
         if(!mainImgFile){
-            alert("대표 이미지를 선택해주세요.");
+            toast.warning("대표 이미지를 선택해주세요.");
             return;
         }
 
         if(Number(item.itemDiscountPrice || 0)>Number(item.itemPrice)){
-            alert("할인 가격은 원가보다 클 수 없습니다.");
+            toast.warning("할인 가격은 원가보다 클 수 없습니다.");
             return;
         }
 
@@ -158,8 +176,11 @@ const ItemCreate = () => {
                 await uploadImage(createdItemId,file,"N");
             }
 
-            alert("상품 등록 완료");
-            navigate("/item");
+            toast.success("상품 등록 완료");
+
+            setTimeout(() => {
+                navigate("/item");
+            }, 900);
 
         } catch(error){
             console.error(error);
@@ -167,7 +188,23 @@ const ItemCreate = () => {
             if(error.response){
                 console.log(error.response.data);
             }
-            alert("상품등록 실패");
+
+            if(error.response?.status === 401 || error.response?.status === 403){
+                toast.error("관리자 로그인 세션이 만료되었습니다. 다시 로그인해주세요.");
+                sessionStorage.removeItem("user");
+
+                setTimeout(() => {
+                    navigate("/login");
+                }, 1000);
+
+                return;
+            }
+
+            toast.error(
+                error.response?.data?.message ||
+                error.response?.data ||
+                "상품등록 실패"
+            );
         }
     };
 
@@ -176,6 +213,16 @@ const ItemCreate = () => {
 
     return (
         <div className="itemCreate-page">
+            <ToastContainer
+                position="top-center"
+                autoClose={1800}
+                hideProgressBar={false}
+                newestOnTop={true}
+                closeOnClick
+                pauseOnHover
+                theme="light"
+            />
+
             <h2 className="itemCreate-title">상품 등록</h2>
 
             <form className="itemCreate-form" onSubmit={handleItemSubmit}>
@@ -269,7 +316,7 @@ const ItemCreate = () => {
                         const totalFiles = subImgFiles.length + selectedSubFiles.length;
 
                         if(totalFiles>10){
-                            alert("서브 이미지는 최대 10장까지 등록할 수 있습니다.");
+                            toast.warning("서브 이미지는 최대 10장까지 등록할 수 있습니다.");
                         e.target.value ="";
                         return;
                         }

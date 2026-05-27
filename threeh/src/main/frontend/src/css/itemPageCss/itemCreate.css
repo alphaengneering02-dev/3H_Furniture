@@ -3,8 +3,8 @@
    기준: global.css
 
    global.css 기준:
-   - body 배경: #F9F8F6
-   - 컨텐츠 박스: #FFFFFF
+   - body 배경: #FFF8ED
+   - 컨텐츠 박스: #FFFCF7
    - 기본 폰트: Noto Sans KR
    - 포인트 폰트: Playfair Display
 
@@ -18,8 +18,8 @@
     min-height: 100vh;
     margin: 0 auto;
     padding: 40px 20px 80px;
-    background-color: #FFFFFF;
-    color: #2F2A25;
+    background-color: var(--content-bg);
+    color: var(--black-brown);
 }
 
 /* 페이지 제목 */
@@ -28,7 +28,7 @@
     font-family: 'Playfair Display', serif;
     font-size: 38px;
     font-weight: 600;
-    color: #2F2A25;
+    color: var(--black-brown);
     letter-spacing: -0.5px;
 }
 
@@ -50,16 +50,16 @@
 .itemCreate-label {
     font-size: 14px;
     font-weight: 700;
-    color: #2F2A25;
+    color: var(--black-brown);
 }
 
 /* input 공통 */
 .itemCreate-input {
     width: 100%;
     padding: 11px 12px;
-    border: 1px solid #CFC7BD;
+    border: 1px solid #E1C7A7;
     background-color: #FFFFFF;
-    color: #2F2A25;
+    color: var(--black-brown);
     font-family: 'Noto Sans KR', sans-serif;
     font-size: 14px;
 }
@@ -68,9 +68,9 @@
 .itemCreate-select {
     width: 100%;
     padding: 11px 12px;
-    border: 1px solid #CFC7BD;
+    border: 1px solid #E1C7A7;
     background-color: #FFFFFF;
-    color: #2F2A25;
+    color: var(--black-brown);
     font-family: 'Noto Sans KR', sans-serif;
     font-size: 14px;
     cursor: pointer;
@@ -81,9 +81,9 @@
     width: 100%;
     min-height: 120px;
     padding: 11px 12px;
-    border: 1px solid #CFC7BD;
+    border: 1px solid #E1C7A7;
     background-color: #FFFFFF;
-    color: #2F2A25;
+    color: var(--black-brown);
     font-family: 'Noto Sans KR', sans-serif;
     font-size: 14px;
     line-height: 1.6;
@@ -95,14 +95,15 @@
 .itemCreate-select:focus,
 .itemCreate-textarea:focus {
     outline: none;
-    border-color: #2F2A25;
+    border-color: var(--caramel);
+    box-shadow: 0 0 0 3px rgba(184, 120, 62, 0.12);
 }
 
 /* 상품 설명 글자 수 */
 .itemCreate-count {
     margin-top: 4px;
     font-size: 13px;
-    color: #8A8178;
+    color: #A98C72;
     text-align: right;
 }
 
@@ -110,7 +111,7 @@
 .itemCreate-divider {
     margin: 34px 0;
     border: none;
-    border-top: 1px solid #E5DED6;
+    border-top: 1px solid var(--soft-border);
 }
 
 /* 이미지 섹션 제목 */
@@ -118,16 +119,16 @@
     margin-bottom: 20px;
     font-size: 22px;
     font-weight: 700;
-    color: #2F2A25;
+    color: var(--black-brown);
 }
 
 /* 파일 input */
 .itemCreate-fileInput {
     width: 100%;
     padding: 10px;
-    border: 1px solid #CFC7BD;
-    background-color: #FBFAF8;
-    color: #4A4038;
+    border: 1px solid #E1C7A7;
+    background-color: var(--cream);
+    color: var(--brown);
     font-family: 'Noto Sans KR', sans-serif;
     font-size: 14px;
 }
@@ -136,7 +137,7 @@
 .itemCreate-fileCount {
     margin-top: 8px;
     font-size: 13px;
-    color: #8A8178;
+    color: #A98C72;
 }
 
 /* 선택된 서브 이미지 목록 */
@@ -153,9 +154,9 @@
     gap: 12px;
     padding: 10px 12px;
     margin-bottom: 8px;
-    border: 1px solid #E5DED6;
-    background-color: #FBFAF8;
-    color: #4A4038;
+    border: 1px solid var(--soft-border);
+    background-color: var(--cream);
+    color: var(--brown);
     font-size: 14px;
 }
 
@@ -176,8 +177,8 @@
 /* 공통 버튼 */
 .itemCreate-button {
     padding: 11px 20px;
-    border: 1px solid #2F2A25;
-    background-color: #2F2A25;
+    border: 1px solid var(--caramel);
+    background-color: var(--caramel);
     color: #FFFFFF;
     font-family: 'Noto Sans KR', sans-serif;
     font-size: 14px;
@@ -187,8 +188,9 @@
 }
 
 .itemCreate-button:hover {
-    background-color: #FFFFFF;
-    color: #2F2A25;
+    background-color: var(--deep-caramel);
+    border-color: var(--deep-caramel);
+    color: #FFFFFF;
 }
 
 /* 삭제 버튼 */

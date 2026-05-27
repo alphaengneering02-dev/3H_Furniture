@@ -3,8 +3,8 @@
    기준: global.css
 
    global.css 기준:
-   - body 배경: #F9F8F6
-   - 컨텐츠 박스: #FFFFFF
+   - body 배경: #FFF8ED
+   - 컨텐츠 박스: #FFFCF7
    - 기본 폰트: Noto Sans KR
    - 포인트 폰트: Playfair Display
 
@@ -18,8 +18,8 @@
     min-height: 100vh;
     margin: 0 auto;
     padding: 40px 20px 80px;
-    background-color: #FFFFFF;
-    color: #2F2A25;
+    background-color: var(--content-bg);
+    color: var(--black-brown);
 }
 
 /* 페이지 제목 */
@@ -28,7 +28,7 @@
     font-family: 'Playfair Display', serif;
     font-size: 38px;
     font-weight: 600;
-    color: #2F2A25;
+    color: var(--black-brown);
     letter-spacing: -0.5px;
 }
 
@@ -50,16 +50,16 @@
 .itemUpdate-label {
     font-size: 14px;
     font-weight: 700;
-    color: #2F2A25;
+    color: var(--black-brown);
 }
 
 /* input 공통 */
 .itemUpdate-input {
     width: 100%;
     padding: 11px 12px;
-    border: 1px solid #CFC7BD;
+    border: 1px solid #E1C7A7;
     background-color: #FFFFFF;
-    color: #2F2A25;
+    color: var(--black-brown);
     font-family: 'Noto Sans KR', sans-serif;
     font-size: 14px;
 }
@@ -68,9 +68,9 @@
 .itemUpdate-select {
     width: 100%;
     padding: 11px 12px;
-    border: 1px solid #CFC7BD;
+    border: 1px solid #E1C7A7;
     background-color: #FFFFFF;
-    color: #2F2A25;
+    color: var(--black-brown);
     font-family: 'Noto Sans KR', sans-serif;
     font-size: 14px;
     cursor: pointer;
@@ -81,9 +81,9 @@
     width: 100%;
     min-height: 120px;
     padding: 11px 12px;
-    border: 1px solid #CFC7BD;
+    border: 1px solid #E1C7A7;
     background-color: #FFFFFF;
-    color: #2F2A25;
+    color: var(--black-brown);
     font-family: 'Noto Sans KR', sans-serif;
     font-size: 14px;
     line-height: 1.6;
@@ -95,14 +95,15 @@
 .itemUpdate-select:focus,
 .itemUpdate-textarea:focus {
     outline: none;
-    border-color: #2F2A25;
+    border-color: var(--caramel);
+    box-shadow: 0 0 0 3px rgba(184, 120, 62, 0.12);
 }
 
 /* 상품 설명 글자 수 */
 .itemUpdate-count {
     margin-top: 4px;
     font-size: 13px;
-    color: #8A8178;
+    color: #A98C72;
     text-align: right;
 }
 
@@ -110,7 +111,7 @@
 .itemUpdate-divider {
     margin: 34px 0;
     border: none;
-    border-top: 1px solid #E5DED6;
+    border-top: 1px solid var(--soft-border);
 }
 
 /* 섹션 제목 */
@@ -118,7 +119,7 @@
     margin-bottom: 20px;
     font-size: 22px;
     font-weight: 700;
-    color: #2F2A25;
+    color: var(--black-brown);
 }
 
 /* ================================
@@ -139,8 +140,8 @@
     align-items: center;
     gap: 16px;
     padding: 14px;
-    border: 1px solid #E5DED6;
-    background-color: #FBFAF8;
+    border: 1px solid var(--soft-border);
+    background-color: var(--cream);
 }
 
 /* 기존 이미지 */
@@ -148,8 +149,8 @@
     width: 120px;
     height: 120px;
     object-fit: cover;
-    border: 1px solid #EFE8E0;
-    background-color: #F9F8F6;
+    border: 1px solid var(--soft-border);
+    background-color: var(--main-bg);
 }
 
 /* 이미지 정보 */
@@ -164,9 +165,9 @@
     display: inline-block;
     width: fit-content;
     padding: 5px 9px;
-    border: 1px solid #8A6F55;
+    border: 1px solid var(--caramel);
     background-color: #FFFFFF;
-    color: #8A6F55;
+    color: var(--caramel);
     font-size: 13px;
     font-weight: 700;
 }
@@ -177,7 +178,7 @@
     align-items: center;
     gap: 6px;
     font-size: 14px;
-    color: #4A4038;
+    color: var(--brown);
     cursor: pointer;
 }
 
@@ -185,7 +186,7 @@
 .itemUpdate-checkbox {
     width: 16px;
     height: 16px;
-    accent-color: #2F2A25;
+    accent-color: var(--caramel);
 }
 
 /* ================================
@@ -196,9 +197,9 @@
 .itemUpdate-fileInput {
     width: 100%;
     padding: 10px;
-    border: 1px solid #CFC7BD;
-    background-color: #FBFAF8;
-    color: #4A4038;
+    border: 1px solid #E1C7A7;
+    background-color: var(--cream);
+    color: var(--brown);
     font-family: 'Noto Sans KR', sans-serif;
     font-size: 14px;
 }
@@ -207,7 +208,7 @@
 .itemUpdate-fileCount {
     margin-top: 8px;
     font-size: 13px;
-    color: #8A8178;
+    color: #A98C72;
 }
 
 /* 새 서브 이미지 목록 */
@@ -224,9 +225,9 @@
     gap: 12px;
     padding: 10px 12px;
     margin-bottom: 8px;
-    border: 1px solid #E5DED6;
-    background-color: #FBFAF8;
-    color: #4A4038;
+    border: 1px solid var(--soft-border);
+    background-color: var(--cream);
+    color: var(--brown);
     font-size: 14px;
 }
 
@@ -251,8 +252,8 @@
 /* 공통 버튼 */
 .itemUpdate-button {
     padding: 11px 20px;
-    border: 1px solid #2F2A25;
-    background-color: #2F2A25;
+    border: 1px solid var(--caramel);
+    background-color: var(--caramel);
     color: #FFFFFF;
     font-family: 'Noto Sans KR', sans-serif;
     font-size: 14px;
@@ -262,19 +263,20 @@
 }
 
 .itemUpdate-button:hover {
-    background-color: #FFFFFF;
-    color: #2F2A25;
+    background-color: var(--deep-caramel);
+    border-color: var(--deep-caramel);
+    color: #FFFFFF;
 }
 
 /* 보조 버튼 */
 .itemUpdate-subButton {
-    border: 1px solid #8A6F55;
+    border: 1px solid var(--deep-caramel);
     background-color: #FFFFFF;
-    color: #8A6F55;
+    color: var(--deep-caramel);
 }
 
 .itemUpdate-subButton:hover {
-    background-color: #8A6F55;
+    background-color: var(--deep-caramel);
     color: #FFFFFF;
 }
 

@@ -3,8 +3,8 @@
    기준: global.css
 
    global.css 기준:
-   - body 배경: #F9F8F6
-   - 컨텐츠 박스: #FFFFFF
+   - body 배경: #FFF8ED
+   - 컨텐츠 박스: #FFFCF7
    - 기본 폰트: Noto Sans KR
    - 포인트 폰트: Playfair Display
 
@@ -23,8 +23,8 @@
     min-height: 100vh;
     margin: 0 auto;
     padding: 40px 20px 80px;
-    background-color: #FFFFFF;
-    color: #2F2A25;
+    background-color: var(--content-bg);
+    color: var(--black-brown);
 }
 
 /* 상단의 메인으로 / 상품목록으로 버튼을 감싸는 영역 */
@@ -41,7 +41,7 @@
     font-family: 'Playfair Display', serif;
     font-size: 38px;
     font-weight: 600;
-    color: #2F2A25;
+    color: var(--black-brown);
     letter-spacing: -0.5px;
 }
 
@@ -53,7 +53,7 @@
     gap: 10px;
     margin-bottom: 34px;
     padding-bottom: 20px;
-    border-bottom: 1px solid #E5DED6;
+    border-bottom: 1px solid var(--soft-border);
 }
 
 /* ================================
@@ -63,8 +63,8 @@
 /* 모든 일반 버튼의 기본 스타일 */
 .itemAdmin-button {
     padding: 10px 18px;
-    border: 1px solid #2F2A25;
-    background-color: #2F2A25;
+    border: 1px solid var(--caramel);
+    background-color: var(--caramel);
     color: #FFFFFF;
     font-family: 'Noto Sans KR', sans-serif;
     font-size: 14px;
@@ -75,14 +75,15 @@
 
 /* 일반 버튼 hover */
 .itemAdmin-button:hover {
-    background-color: #FFFFFF;
-    color: #2F2A25;
+    background-color: var(--deep-caramel);
+    border-color: var(--deep-caramel);
+    color: #FFFFFF;
 }
 
 /* 비활성화 버튼 */
 .itemAdmin-button:disabled {
-    border-color: #CFC7BD;
-    background-color: #CFC7BD;
+    border-color: var(--warm-beige);
+    background-color: var(--warm-beige);
     color: #FFFFFF;
     cursor: not-allowed;
 }
@@ -90,14 +91,14 @@
 /* 보조 버튼
    예: 메인으로, 상품목록으로, 리뷰 관리, 필터 초기화 */
 .itemAdmin-subButton {
-    border: 1px solid #8A6F55;
+    border: 1px solid var(--deep-caramel);
     background-color: #FFFFFF;
-    color: #8A6F55;
+    color: var(--deep-caramel);
 }
 
 /* 보조 버튼 hover */
 .itemAdmin-subButton:hover {
-    background-color: #8A6F55;
+    background-color: var(--deep-caramel);
     color: #FFFFFF;
 }
 
@@ -117,8 +118,8 @@
 
 /* 현재 선택된 탭 버튼 표시용 */
 .itemAdmin-activeButton {
-    border-color: #8A6F55;
-    background-color: #8A6F55;
+    border-color: var(--deep-caramel);
+    background-color: var(--deep-caramel);
     color: #FFFFFF;
 }
 
@@ -137,7 +138,7 @@
     margin-bottom: 20px;
     font-size: 26px;
     font-weight: 700;
-    color: #2F2A25;
+    color: var(--black-brown);
 }
 
 /* 상품 등록하기 버튼만 따로 감쌀 때 사용하는 영역 */
@@ -150,7 +151,7 @@
 .itemAdmin-emptyText {
     padding: 40px 0;
     text-align: center;
-    color: #8A8178;
+    color: #A98C72;
     font-size: 15px;
 }
 
@@ -161,7 +162,7 @@
     gap: 10px;
     margin-bottom: 34px;
     padding-bottom: 20px;
-    border-bottom: 1px solid #E5DED6;
+    border-bottom: 1px solid var(--soft-border);
 }
 
 /* 카테고리, 판매상태, 재고 정렬 필터 전체 영역 */
@@ -172,8 +173,8 @@
     gap: 14px;
     margin-bottom: 24px;
     padding: 18px 20px;
-    border: 1px solid #E5DED6;
-    background-color: #FBFAF8;
+    border: 1px solid var(--soft-border);
+    background-color: var(--cream);
 }
 
 /* 필터 하나를 감싸는 박스
@@ -198,7 +199,7 @@
 .itemAdmin-reviewCount {
     font-size: 13px;
     font-weight: 700;
-    color: #8A6F55;
+    color: var(--caramel);
 }
 
 /* 태블릿 이하에서 관리자 액션 영역과 필터 영역을 세로 정렬 */
@@ -229,14 +230,14 @@
     width: 100%;
     border-collapse: collapse;
     background-color: #FFFFFF;
-    border: 1px solid #E5DED6;
+    border: 1px solid var(--soft-border);
 }
 
 /* 테이블 셀 공통 */
 .itemAdmin-table th,
 .itemAdmin-table td {
     padding: 13px 12px;
-    border: 1px solid #E5DED6;
+    border: 1px solid var(--soft-border);
     text-align: center;
     font-size: 14px;
     vertical-align: middle;
@@ -244,19 +245,19 @@
 
 /* 테이블 헤더 */
 .itemAdmin-table th {
-    background-color: #F3EFEA;
-    color: #2F2A25;
+    background-color: #F6E7D5;
+    color: var(--black-brown);
     font-weight: 700;
 }
 
 /* 테이블 본문 셀 */
 .itemAdmin-table td {
-    color: #4A4038;
+    color: var(--brown);
 }
 
 /* 테이블 행 hover 시 배경 */
 .itemAdmin-table tr:hover td {
-    background-color: #FBFAF8;
+    background-color: var(--cream);
 }
 
 /* 상품명처럼 왼쪽 정렬이 필요한 긴 텍스트 */
@@ -284,8 +285,8 @@
    예: 리뷰보기, 수정 */
 .itemAdmin-tableButton {
     padding: 7px 12px;
-    border: 1px solid #2F2A25;
-    background-color: #2F2A25;
+    border: 1px solid var(--caramel);
+    background-color: var(--caramel);
     color: #FFFFFF;
     font-family: 'Noto Sans KR', sans-serif;
     font-size: 13px;
@@ -296,21 +297,22 @@
 
 /* 테이블 내부 버튼 hover */
 .itemAdmin-tableButton:hover {
-    background-color: #FFFFFF;
-    color: #2F2A25;
+    background-color: var(--deep-caramel);
+    border-color: var(--deep-caramel);
+    color: #FFFFFF;
 }
 
 /* 테이블 안 보조 버튼
    예: 리뷰보기 */
 .itemAdmin-tableSubButton {
-    border-color: #8A6F55;
+    border-color: var(--deep-caramel);
     background-color: #FFFFFF;
-    color: #8A6F55;
+    color: var(--deep-caramel);
 }
 
 /* 테이블 안 보조 버튼 hover */
 .itemAdmin-tableSubButton:hover {
-    background-color: #8A6F55;
+    background-color: var(--deep-caramel);
     color: #FFFFFF;
 }
 
@@ -339,8 +341,8 @@
     gap: 10px;
     margin-bottom: 26px;
     padding: 18px 20px;
-    border: 1px solid #E5DED6;
-    background-color: #FBFAF8;
+    border: 1px solid var(--soft-border);
+    background-color: var(--cream);
 }
 
 /* label 공통 스타일
@@ -348,7 +350,7 @@
 .itemAdmin-label {
     font-size: 14px;
     font-weight: 700;
-    color: #2F2A25;
+    color: var(--black-brown);
 }
 
 /* select 공통 스타일
@@ -356,9 +358,9 @@
 .itemAdmin-select {
     min-width: 280px;
     padding: 9px 10px;
-    border: 1px solid #CFC7BD;
+    border: 1px solid #E1C7A7;
     background-color: #FFFFFF;
-    color: #2F2A25;
+    color: var(--black-brown);
     font-family: 'Noto Sans KR', sans-serif;
     font-size: 14px;
     cursor: pointer;
@@ -367,14 +369,14 @@
 /* select 클릭/포커스 시 테두리 강조 */
 .itemAdmin-select:focus {
     outline: none;
-    border-color: #2F2A25;
+    border-color: var(--caramel);
 }
 
 /* 리뷰 평균 평점 / 리뷰 수를 보여주는 요약 박스 */
 .itemAdmin-summaryBox {
     margin-bottom: 24px;
     padding: 18px 20px;
-    border: 1px solid #E5DED6;
+    border: 1px solid var(--soft-border);
     background-color: #FFFFFF;
 }
 
@@ -382,7 +384,7 @@
 .itemAdmin-summaryText {
     margin-bottom: 6px;
     font-size: 15px;
-    color: #4A4038;
+    color: var(--brown);
 }
 
 /* 마지막 요약 문장에는 아래 여백 제거 */
@@ -393,13 +395,13 @@
 /* 리뷰 요약에서 숫자 강조 */
 .itemAdmin-summaryStrong {
     font-weight: 700;
-    color: #2F2A25;
+    color: var(--black-brown);
 }
 
 /* 리뷰 별점 표시
    예: ★★★★☆ */
 .itemAdmin-stars {
-    color: #D9A441;
+    color: var(--point-yellow);
     font-size: 15px;
     letter-spacing: 1px;
     white-space: nowrap;
