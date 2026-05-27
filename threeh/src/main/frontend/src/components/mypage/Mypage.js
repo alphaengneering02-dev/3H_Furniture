@@ -129,31 +129,31 @@ const Mypage = () => {
     };
 
 
-    // 주문 취소
-    const handleCancelOrder = (orderId) => {
-        if (!window.confirm(`주문번호 ${orderId}번 주문을 취소하시겠습니까?`)) {
-            return;
-        }
+    // // 주문 취소
+    // const handleCancelOrder = (orderId) => {
+    //     if (!window.confirm(`주문번호 ${orderId}번 주문을 취소하시겠습니까?`)) {
+    //         return;
+    //     }
 
-        const params = new URLSearchParams();
-        params.append('orderId', orderId);
+    //     const params = new URLSearchParams();
+    //     params.append('orderId', orderId);
 
-        // 백엔드의 구매취소 API 엔드포인트 호출
-        axios.post('http://localhost:8080/Member/order/cancel', params, { withCredentials: true })
-            .then(res => {
-                alert(res.data || "주문이 정상적으로 취소되었습니다.");
+    //     // 백엔드의 구매취소 API 엔드포인트 호출
+    //     axios.post('http://localhost:8080/Member/order/cancel', params, { withCredentials: true })
+    //         .then(res => {
+    //             alert(res.data || "주문이 정상적으로 취소되었습니다.");
                 
-                // 상태값만 'CANCEL'로 변경하면 뱃지와 카드가 알아서 실시간으로 지워짐
-                setOrders(prevOrders => 
-                    prevOrders.map(order => 
-                        order.orderId === orderId ? { ...order, orderState: 'CANCEL' } : order
-                    )
-                );
-            })
-            .catch(err => {
-                alert(err.response?.data || "주문 취소 중 오류가 발생했습니다.");
-            });
-    };
+    //             // 상태값만 'CANCEL'로 변경하면 뱃지와 카드가 알아서 실시간으로 지워짐
+    //             setOrders(prevOrders => 
+    //                 prevOrders.map(order => 
+    //                     order.orderId === orderId ? { ...order, orderState: 'CANCEL' } : order
+    //                 )
+    //             );
+    //         })
+    //         .catch(err => {
+    //             alert(err.response?.data || "주문 취소 중 오류가 발생했습니다.");
+    //         });
+    // };
 
 
     const handleRefund = (orderId, itemId) => {
