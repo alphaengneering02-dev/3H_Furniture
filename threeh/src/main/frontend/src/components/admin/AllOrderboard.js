@@ -115,8 +115,8 @@ const AllOrderboard = ({
                 </select>
             </div>
             <div className="admin-action-button-group">
-                <button onClick={handleBulkReady}>선택 상품 준비 완료 처리 ({selectedOrderIds.length}건)</button>
-                <button onClick={handleAutoAssign}>선택 상품 자동 배정 ({selectedOrderIds.length}건)</button>
+                <button onClick={handleBulkReady}>선택 주문 준비 완료 처리 ({selectedOrderIds.length}건)</button>
+                <button onClick={handleAutoAssign}>선택 주문 자동 배정 ({selectedOrderIds.length}건)</button>
             </div>
             <div className="admin-table-scroll">
                 <table className="admin-table-style">

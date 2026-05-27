@@ -1042,3 +1042,143 @@
     color: #2B6CB0;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
+
+/* ==========================================
+   AdminSearch 컴포넌트 전용 스타일 (admin- 접두사 통합)
+   ========================================== */
+.admin-sidebar-search-box {
+    padding: 0 15px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* 1층, 2층, 3층 사이의 넉넉한 간격 */
+}
+
+/* 1층: 셀렉트 박스 (가로 100% 가득 채움) */
+.admin-search-select-block {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: #fff;
+    outline: none;
+    cursor: pointer;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+}
+
+.admin-search-select-block:focus {
+    border-color: #4e73df;
+}
+
+/* 2층: 입력창 감싸는 relative 박스 */
+.admin-search-input-block-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+/* 2층: 입력 폼 */
+.admin-search-input-block {
+    width: 100%;
+    padding: 10px 35px 10px 12px; /* 우측 x 버튼 자리 확보 */
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.admin-search-input-block:focus {
+    border-color: #4e73df;
+}
+
+/* 입력창 내부 우측 ✕ 버튼 */
+.admin-search-clear-btn-block {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #bbb;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 0;
+}
+
+.admin-search-clear-btn-block:hover {
+    color: #666;
+}
+
+/* 3층: 아래를 든든하게 받쳐주는 큰 검색 버튼 */
+.admin-search-submit-btn-block {
+    width: 100%;
+    padding: 10px 0;
+    background-color: #4e73df;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+    box-sizing: border-box;
+    transition: background-color 0.2s;
+}
+
+.admin-search-submit-btn-block:hover {
+    background-color: #2e59d9;
+}
+
+/* 검색 진행 중일 때 */
+.admin-search-submit-btn-block.admin-is-searching {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ==========================================
+   AdminDashboard 내 인라인 스타일 제거용 보완 CSS
+   ========================================== */
+
+/* 대시보드 메인 타이틀 */
+.admin-main-content h1 {
+    font-size: 28px;
+    color: #333;
+    margin-bottom: 20px;
+    font-weight: 700;
+}
+
+/* 배송 파트너 타이틀 정렬 바 */
+.admin-content-title-bar-flex {
+    display: flex;
+    align-items: center;
+}
+
+/* 배송 파트너 글자 옆 '기사 페이지 이동' 버튼 (기존 인라인 제거용) */
+.admin-move-page-btn {
+    margin-left: 12px;
+    padding: 4px 10px;
+    font-size: 14px;
+    background-color: #f8f9fc;
+    border: 1px solid #d1d3e2;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.admin-move-page-btn:hover {
+    background-color: #eaecf4;
+}
+
+/* 테이블 기사 대기상태 컬러 피드백 */
+.admin-status-waiting {
+    color: #4e73df;
+    font-weight: bold;
+}
+
+.admin-status-default {
+    color: #333;
+    font-weight: bold;
+}
