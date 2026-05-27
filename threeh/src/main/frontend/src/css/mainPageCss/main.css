@@ -129,7 +129,7 @@
 /* 로고만 크게 적용 */
 .main-header-topBox .main-header-logo img {
   width: auto !important;
-  height: 72px !important;
+  height: 75px !important;
   object-fit: contain;
   display: block;
   border-radius: 50%;
