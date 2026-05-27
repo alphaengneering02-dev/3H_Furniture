@@ -296,9 +296,15 @@ const fetchDeliveries = async () => {
 
                 <h1>Admin Dashboard</h1>
 
-                <Ranking />
+{orders && orders.length > 0 && items && items.length > 0 ? (
+    <Ranking orders={orders} items={items} />
+) : (
+    <div className="admin-ranking-card-box" style={{ padding: '20px', textAlign: 'center', backgroundColor: '#fff', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+        📊 실시간 대시보드 랭킹 데이터를 집계하고 있습니다...
+    </div>
+)}
 
-                <div className="admin-button-group">
+<div className="admin-button-group">
                     <Link to="/item/create">
                     <button>상품 추가</button>
                     </Link>
