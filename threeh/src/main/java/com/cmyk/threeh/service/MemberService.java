@@ -4,6 +4,7 @@ import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.management.RuntimeErrorException;
 import javax.servlet.http.HttpSession;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cmyk.threeh.domain.Member;
+import com.cmyk.threeh.dto.ItemResponseDTO;
 import com.cmyk.threeh.dto.MemberDTO;
 import com.cmyk.threeh.dto.SessionMember;
 import com.cmyk.threeh.enums.MemberRole;
@@ -82,6 +84,7 @@ public class MemberService {
 	
 	
 	//회원정보 가져오기
+	//회원 1명
 	public Member getUser(String id) {
 		
 		Optional<Member> op = memberRepository.findById(id);
@@ -92,6 +95,14 @@ public class MemberService {
 
 		return op.get();
 		
+	}
+
+
+	//회원리스트
+	@Transactional(readOnly = true)
+	public List<Member> getUserList() {
+		List<Member> list = memberRepository.findAll();
+		return list;
 	}
 
 
