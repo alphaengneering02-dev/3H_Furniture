@@ -1,0 +1,87 @@
+/* ================================
+   oauth2-success Page CSS
+   PROJECT CMYK Warm Caramel Theme
+   기준 컬러:
+   - 전체 배경: 따뜻한 크림 #FFF8ED
+   - 컨텐츠 배경: 밝은 아이보리 #FFFCF7
+   - 포인트: 카라멜 브라운 #B8783E
+   - 텍스트: 블랙브라운 #1F1813
+================================ */
+
+:root {
+  --oauth2-success-black: #1F1813;
+  --oauth2-success-middle-gray: #8A7A6C;
+  --oauth2-success-light-gray: #B7A797;
+  --oauth2-success-charcoal: #2B2118;
+
+  --oauth2-success-dark-brown: #4A3324;
+  --oauth2-success-dark-beige: #A98C72;
+  --oauth2-success-light-beige: #F6E7D5;
+
+  --oauth2-success-accent-gold: #D6A85F;
+  --oauth2-success-caramel: #B8783E;
+  --oauth2-success-deep-caramel: #8A4F25;
+
+  --oauth2-success-alert-red: #B94A3A;
+  --oauth2-success-success-green: #6C8B5F;
+
+  --oauth2-success-bg-ivory: #FFF8ED;
+  --oauth2-success-bg-white: #FFFCF7;
+  --oauth2-success-bg-cream: #FFF3DF;
+
+  --oauth2-success-border-light: #E8D9C8;
+  --oauth2-success-border-dark: #8A4F25;
+
+  --oauth2-success-font-sans: 'Noto Sans KR', sans-serif;
+  --oauth2-success-font-serif: 'Playfair Display', serif;
+}
+
+/* 전체 oauth2-success 컴포넌트를 감싸는 래퍼 */
+.oauth2-success-body-wrapper {
+    /* 화면 전체를 덮고 정중앙에 배치하기 위해 fixed 속성 사용 */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    
+    /* 내부 콘텐츠(로딩바, 텍스트)를 수평/수직 정중앙 정렬 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    
+    background-color: var(--oauth2-success-dark-beige);
+    font-family: 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+    z-index: 9999; /* 헤더나 푸터 등 다른 요소보다 무조건 위에 보이도록 설정 */
+}
+
+
+.oauth2-success-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    width: 100%;
+    max-width: 400px; /* 로딩바와 텍스트의 전체적인 최대 너비 제한 */
+}
+
+.oauth2-success-progress-bar-wrapper {
+    width: 100%;
+    margin-bottom: 30px;
+}
+
+.oauth2-success-title {
+    font-size: 22px;
+    font-weight: 600;
+    color: #4a3b32; /* 다크 브라운/그레이 톤 */
+    margin-bottom: 12px;
+    margin-top: 0;
+}
+
+.oauth2-success-desc {
+    font-size: 14px;
+    color: var(--oauth2-success-bg-white);
+    margin: 0;
+}
