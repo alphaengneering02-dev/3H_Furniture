@@ -40,6 +40,15 @@ const ItemAdminPage = () => {
     // 기본순, 재고 적은순, 재고 많은순
     const [stockSort, setStockSort] = useState("");
 
+    //현재 페이지
+    const [currentPage, setCurrentPage] = useState(1);
+
+    //한페이지에 보여줄 상품 개수
+    const ITEMS_PER_PAGE = 10;
+
+    //페이지 번호를 5개씩 보여주기
+    const PAGE_BLOCK_SIZE = 5;
+
     // sessionStorage에서 로그인 유저 정보 가져오기
     const getLoginUser = () => {
         try {
@@ -417,6 +426,51 @@ const ItemAdminPage = () => {
         return result;
     }, [items, categoryFilter, sellStatusFilter, stockSort]);
 
+    //필터가 바뀌면 첫 페이지로 이동
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [categoryFilter, sellStatusFilter, stockSort]);
+
+    //전체 페이지 수
+    const totalPages = Math.max(
+        1,
+        Math.ceil(filteredItems.length / ITEMS_PER_PAGE)
+    );
+
+    //현재 페이지가 전체 페이지보다 커지면 마지막 페이지로 보정
+    useEffect(() => {
+        if (currentPage > totalPages) {
+            setCurrentPage(totalPages);
+        }
+    }, [currentPage, totalPages]);
+
+    //현재 페이지에 보여줄 상품 목록
+    const pagedItems = useMemo(() => {
+        const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+        const endIndex = startIndex + ITEMS_PER_PAGE;
+
+        return filteredItems.slice(startIndex, endIndex);
+    }, [filteredItems, currentPage]);
+
+    // 5개 단위 페이지 블록 계산
+    const currentPageBlock = Math.floor((currentPage - 1) / PAGE_BLOCK_SIZE);
+    const startPage = currentPageBlock * PAGE_BLOCK_SIZE + 1;
+    const endPage = Math.min(startPage + PAGE_BLOCK_SIZE - 1, totalPages);
+
+    const pageNumbers = Array.from(
+        { length: endPage - startPage + 1 },
+        (_, index) => startPage + index
+    );
+
+    // 페이지 이동
+    const goPage = (page) => {
+        if (page < 1 || page > totalPages) {
+            return;
+        }
+
+        setCurrentPage(page);
+    };
+
     return (
         <div className="itemAdmin-page">
             <ToastContainer
@@ -475,7 +529,16 @@ const ItemAdminPage = () => {
             {activeTab === "items" && (
                 <div className="itemAdmin-section">
                     <h2 className="itemAdmin-sectionTitle">상품 관리</h2>
-
+                    {/*등록된 상품 개수 표시 */}
+                    <div className="itemAdmin-countBox">
+                        <span className="itemAdmin-countText">
+                            총 등록 상품: {items.length}개
+                        </span>
+                        <span className="itemAdmin-countText">
+                            현재 조건 상품: {filteredItems.length}개
+                        </span>
+                    </div>
+                    
                     {/* 상품 목록 필터 / 정렬 영역 */}
                     <div className="itemAdmin-filterArea">
                         {/* 카테고리 필터 */}
@@ -561,10 +624,14 @@ const ItemAdminPage = () => {
                                 </thead>
 
                                 <tbody>
-                                    {filteredItems.map((item, index) => (
+                                    {pagedItems.map((item, index) => (
                                         <tr key={item.itemId}>
                                             {/* 필터링된 목록 기준 순번 */}
-                                            <td>{index + 1}</td>
+                                            <td>
+                                                {(currentPage - 1) * ITEMS_PER_PAGE +
+                                                    index +
+                                                    1}
+                                            </td>
                                             <td>{item.itemId}</td>
                                             <td>{item.itemCategory}</td>
                                             <td className="itemAdmin-tableTextLeft">
@@ -620,6 +687,44 @@ const ItemAdminPage = () => {
                                     ))}
                                 </tbody>
                             </table>
+
+                            {/* 페이지네이션 */}
+                            {filteredItems.length > ITEMS_PER_PAGE && (
+                                <div className="itemAdmin-pagination">
+                                    <button
+                                        type="button"
+                                        className="itemAdmin-pageButton"
+                                        onClick={() => goPage(startPage - 1)}
+                                        disabled={startPage === 1}
+                                    >
+                                        &lt;
+                                    </button>
+
+                                    {pageNumbers.map((page) => (
+                                        <button
+                                            key={page}
+                                            type="button"
+                                            className={
+                                                currentPage === page
+                                                    ? "itemAdmin-pageButton itemAdmin-pageButtonActive"
+                                                    : "itemAdmin-pageButton"
+                                            }
+                                            onClick={() => goPage(page)}
+                                        >
+                                            {page}
+                                        </button>
+                                    ))}
+
+                                    <button
+                                        type="button"
+                                        className="itemAdmin-pageButton"
+                                        onClick={() => goPage(endPage + 1)}
+                                        disabled={endPage === totalPages}
+                                    >
+                                        &gt;
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>

@@ -407,6 +407,53 @@
     white-space: nowrap;
 }
 
+/*페이지*/
+.itemAdmin-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    margin-top: 20px;
+}
+
+.itemAdmin-pageButton {
+    min-width: 34px;
+    height: 34px;
+    padding: 0 10px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.itemAdmin-pageButton:hover:not(:disabled) {
+    background-color: #f0f0f0;
+}
+
+.itemAdmin-pageButton:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.itemAdmin-pageButtonActive {
+    background-color: #333;
+    color: #fff;
+    border-color: #333;
+}
+
+/*아이템 개수 세기*/
+.itemAdmin-countBox {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    margin: 10px 0 18px;
+    font-size: 15px;
+}
+
+.itemAdmin-countText {
+    font-weight: 600;
+    color: #333;
+}
 /* ================================
    반응형
 ================================ */
@@ -480,36 +527,5 @@
         padding: 16px;
     }
 
-    .itemAdmin-pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 6px;
-    margin-top: 20px;
-}
 
-.itemAdmin-pageButton {
-    min-width: 34px;
-    height: 34px;
-    padding: 0 10px;
-    border: 1px solid #ccc;
-    background-color: #fff;
-    cursor: pointer;
-    border-radius: 4px;
-}
-
-.itemAdmin-pageButton:hover:not(:disabled) {
-    background-color: #f0f0f0;
-}
-
-.itemAdmin-pageButton:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-}
-
-.itemAdmin-pageButtonActive {
-    background-color: #333;
-    color: #fff;
-    border-color: #333;
-}
 }
