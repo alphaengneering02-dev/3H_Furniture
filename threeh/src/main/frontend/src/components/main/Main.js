@@ -4,6 +4,7 @@ import Main_mainBanner from './Main_mainBanner';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import Item from '../item/Item';
+import Ranking from '../admin/Ranking';
 
 //Main 전용 CSS 임포트
 import '../../css/mainPageCss/main.css';
@@ -62,6 +63,8 @@ const Main = () => {
                     <div className="main-item-section">
                         <Main_itemList totalItemList={totalItemList}/>  {/* 상품 목록(카드 형식) */}
                     </div>
+
+                    <Ranking/>
                 </div>
             </div>
 
