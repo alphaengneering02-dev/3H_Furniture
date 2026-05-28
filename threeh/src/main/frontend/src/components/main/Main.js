@@ -11,15 +11,18 @@ import '../../css/mainPageCss/main.css';
 import Footer from './Footer';
 import Main_itemList from './Main_itemList';
 import MainCategory from './MainCategory';
+import MainBestSection from './MainBestSection';
 
 const Main = () => {
 
     //전체 상품리스트 객체
     const [totalItemList, setTotalItemList] = useState([])
+    const [bestItems, setBestItems] = useState([]);
 
     useEffect(() => {
         getItemList()
     }, [])
+
 
 
     //DB에서 전체 상품리스트를 가져오는 함수
@@ -44,6 +47,39 @@ const Main = () => {
         }
     };
 
+    const getBestItemsList = async () => {
+        try {
+            const res = await axios.get('/admin/orders');
+            const orders = res.data;
+
+            const statsMap = {};
+            orders.forEach(order => {
+                const orderItems = order.orderItems || order.orderitems || order.items || [];
+                if(!Array.isArray(orderItems)) return;
+
+                orderItems.forEach(item => {
+                    const name = item.itemName;
+                    if(!name) return;
+                    if(statsMap[name]){
+                        statsMap[name] = {name, sales: 0, image: item.itemImage || null};
+                    }
+                    statsMap[name].sales += Number(item.count || 1);
+                });
+            });
+
+            const top3 = Object.values(statsMap)
+                .sort((a, b) => b.sales - a.sales)
+                .slice(0,3)
+                .map((item, idx) => ({rank: idx+1, ...item}));
+
+            setBestItems(top3);
+
+
+        } catch (error) {
+            console.error("베스트 상품 조회 실패", error);
+        }
+    }
+
 
     return (
         <div>
@@ -65,8 +101,14 @@ const Main = () => {
                         <MainCategory/>
                     </div>
 
+                  
+
                     <div className="main-item-section">
                         <Main_itemList totalItemList={totalItemList}/>  {/* 상품 목록(카드 형식) */}
+                    </div>
+
+                    <div>
+                        <MainBestSection bestItems={bestItems}/>
                     </div>
 
                     <Ranking/>
