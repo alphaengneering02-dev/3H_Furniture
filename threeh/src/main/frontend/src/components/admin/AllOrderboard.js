@@ -181,43 +181,67 @@ const AllOrderboard = ({
 
     return (
        <div className="admin-content-box">
-            <div className="admin-content-title-bar">
-                <h3>주문 목록 (전체 접수 건) - 현재 화면 노출: {filteredByBuyerOrders.length}건</h3>
+            <div className="admin-order-header">
 
-                {/* 📋 주문자 전용 검색 UI 영역 */}
-                <div className="admin-buyer-search-wrapper">
-                    <label htmlFor="buyerInput">👤 주문자 검색:</label>
-                    <div className="admin-buyer-search-input-container">
-                        <input
-                            id="buyerInput"
-                            type="text"
-                            placeholder="주문자 이름을 입력하세요..."
-                            value={buyerSearchTerm}
-                            onChange={(e) => { setBuyerSearchTerm(e.target.value); setPage1(1); }}
-                        />
-                        {buyerSearchTerm && (
-                            <button 
-                                className="admin-buyer-clear-btn"
-                                onClick={() => { setBuyerSearchTerm(''); setPage1(1); }}
-                            >
-                                ✕
-                            </button>
-                        )}
-                    </div>
-                </div>
+    <div className="admin-order-top-row">
+        <h3>
+            주문 목록 (전체 접수 건) - 현재 화면 노출: {filteredByBuyerOrders.length}건
+        </h3>
 
-                <select value={perPage1} onChange={(e) => { setPerPage1(Number(e.target.value)); setPage1(1); }}>
-                    <option value={5}>5개씩 보기</option>
-                    <option value={10}>10개씩 보기</option>
-                    <option value={15}>15개씩 보기</option>
-                </select>
+        <div className="admin-buyer-search-wrapper">
+            <label htmlFor="buyerInput">👤 주문자 검색:</label>
+
+            <div className="admin-buyer-search-input-container">
+                <input
+                    id="buyerInput"
+                    type="text"
+                    placeholder="주문자 이름을 입력하세요..."
+                    value={buyerSearchTerm}
+                    onChange={(e) => {
+                        setBuyerSearchTerm(e.target.value);
+                        setPage1(1);
+                    }}
+                />
+
+                {buyerSearchTerm && (
+                    <button
+                        className="admin-buyer-clear-btn"
+                        onClick={() => {
+                            setBuyerSearchTerm('');
+                            setPage1(1);
+                        }}
+                    >
+                        ✕
+                    </button>
+                )}
             </div>
-            
-            <div className="admin-action-button-group">
+        </div>
+    </div>
+
+    <div className="admin-order-bottom-row">
+
+         <div className="admin-action-button-group">
                 <button onClick={handleBulkReady}>선택 주문 준비 완료 처리 ({selectedOrderIds.length}건)</button>
                 <button onClick={handleManualAssign} className="admin-btn-manual">선택 주문 선택 배정 ({selectedOrderIds.length}건)</button>
                 <button onClick={handleRoundRobinAssign} className="admin-btn-auto">선택 주문 자동 배정 ({selectedOrderIds.length}건)</button>
             </div>
+
+        <select
+            value={perPage1}
+            onChange={(e) => {
+                setPerPage1(Number(e.target.value));
+                setPage1(1);
+            }}
+        >
+            <option value={5}>5개씩 보기</option>
+            <option value={10}>10개씩 보기</option>
+            <option value={15}>15개씩 보기</option>
+        </select>
+
+    </div>
+</div>
+            
+           
 
             <div className="admin-table-scroll">
                 <table className="admin-table-style">
@@ -266,7 +290,7 @@ const AllOrderboard = ({
                 <TablePagination totalItems={filteredByBuyerOrders.length} itemsPerPage={perPage1} currentPage={page1} setCurrentPage={setPage1} />
             </div>
 
-            {/* 💡 [수정완료] 모달 내부 태그들에 박혀있던 인라인 스타일(style={{...}})을 싹 다 제거했습니다. */}
+
             {isModalOpen && (
                 <div className="admin-custom-modal-overlay">
                     <div className="admin-custom-modal-content">

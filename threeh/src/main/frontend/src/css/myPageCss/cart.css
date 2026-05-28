@@ -5,8 +5,6 @@
    🏢 PROJECT CMYK - 장바구니 중앙 집중형 프리미엄 가이드
    ========================================================================= */
 
-/* 1. 최상단 폰트 임포트 */
-@import url('https://googleapis.com');
 
 /* 전체 초기화 */
 * {
@@ -227,3 +225,5 @@ body {
     transform: translateY(-2px) !important;
     box-shadow: 0px 12px 28px rgba(94, 68, 49, 0.25) !important;
 }
+
+

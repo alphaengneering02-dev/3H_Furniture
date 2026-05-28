@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import '../../css/adminCss/AdminDashboard.css';
+import '../../css/adminCss/AdminRanking.css';
 
 const SAMPLE_ORDERS = [];
 const SAMPLE_DRIVERS = [];
@@ -224,7 +224,6 @@ const Ranking = ({ orders = [], items = [] }) => {
                             <th>순위</th>
                             <th>기사명</th>
                             <th>완료 건수</th>
-                            <th>총 배송 매출</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -233,7 +232,6 @@ const Ranking = ({ orders = [], items = [] }) => {
                                 <td className="admin-rank-display admin-driver-number">{index + 1}</td>
                                 <td className="admin-text-bold">{driver.name} 기사님</td>
                                 <td className="admin-text-count-blue">{driver.count}건</td>
-                                <td className="admin-text-bold">{driver.sales.toLocaleString()}원</td>
                             </tr>
                         ))}
                         {driverRanking.length === 0 && (

@@ -807,41 +807,106 @@
 /* ==========================================
    하단 푸터 영역
 ========================================== */
-
 .main-mypage-footer {
   width: 100%;
   margin-top: 100px;
-  padding: 40px 0 60px 0;
+}
+
+/* 1. 푸터 상단 */
+.main-footer-content-top, .main-footer-content-bottom {
+  width: 100%; display: flex; justify-content: space-between;
+  padding: 30px;
   background-color: var(--main-bg-white);
   border-top: 1px solid var(--main-border-light);
 }
-
-.main-footer-content {
-  max-width: 1200px;
-  margin: 0 auto;
-  border-top: 1px solid var(--main-deep-caramel);
+.main-footer-content-left {
+  width: 20%;
+}
+.main-footer-content-center {
+  width: 50%;
+}
+.main-footer-content-right {
+  width: 30%;
 }
 
 .main-footer-logo {
-  font-size: 16px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  margin: 0 0 15px 0;
-  color: var(--main-black);
+  
+}
+.main-footer-logo img {
+  width: 100px; object-fit: cover;
 }
 
-.main-footer-info {
+.main-footer-menu {
+  display: flex;
+  gap: 130px;
+}
+.main-footer-menu .menus {
   font-size: 12px;
-  color: var(--main-dark-beige);
-  line-height: 1.6;
-  margin: 0 0 8px 0;
+  list-style: none;
 }
-
-.main-footer-copy {
-  font-size: 11px;
-  color: var(--main-light-gray);
+.main-footer-menu .menus li {
+  margin-bottom: 10px;
+}
+.main-footer-menu .menus li:first-child {
+  font-size: 13px;
+  font-weight: bold;
+}
+.main-footer-menu .menus li:last-child {
   margin: 0;
 }
+
+.main-footer-cs {
+}
+.main-footer-cs .csmenus {
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  margin-bottom: 7px;
+}
+.main-footer-cs .csmenus:last-child {
+  align-items: flex-start;
+}
+.main-footer-cs .csmenus p {
+  margin-right: 10px;
+}
+.main-footer-cs .csmenus button {
+  background: var(--main-bg-white); padding: 3px 12px; border: 1px solid var(--main-dark-beige);
+  font-size: 12px; font-weight: bold; color: var(--main-deep-caramel);
+}
+.main-footer-cs .csmenus .csmenu3-info {
+  display: flex;
+  flex-direction: column;
+}
+.main-footer-cs .csmenus .csmenu3-info span:first-child {
+  font-weight: bold;
+}
+.main-footer-cs .csmenus .csmenu3-info span button {
+  border: none;
+  padding: 0;
+  margin-left: 4px;
+}
+.main-footer-cs .csmenus .csmenu3-info span button img {
+  width: 12px;
+}
+
+
+/* 2. 푸터 하단 */
+.main-footer-info {
+  font-size: 12px;
+  list-style: none;
+}
+.main-footer-info li {
+  margin-bottom: 10px;
+}
+
+.main-footer-sns {
+  display: flex; gap: 15px;
+  list-style: none;
+}
+.main-footer-sns img {
+  width: 30px;
+}
+
 
 /* ==========================================
    공통 transition

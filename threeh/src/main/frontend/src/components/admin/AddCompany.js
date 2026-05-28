@@ -71,9 +71,9 @@ const AddCompany = ({ onSuccess }) => {
 
     return (
        <div className="admin-excel-uploader-container">
-        {/* 1층: 파일 선택 버튼과 파일 이름 표시 영역 */}
         <div className="admin-excel-top-row">
-            <label htmlFor="excel-file-input" className="admin-excel-file-label">
+            <label htmlFor="excel-file-input"
+             className="admin-excel-file-label">
                 파일 선택
             </label>
             
@@ -90,7 +90,6 @@ const AddCompany = ({ onSuccess }) => {
             </span>
         </div>
 
-        {/* 2층: 최종 등록하기 버튼 (밑으로 이동) */}
         <button
             onClick={handleExcelUpload}
             disabled={loading || !selectedFile}

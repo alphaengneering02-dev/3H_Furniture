@@ -9,7 +9,7 @@
     margin: 0 auto;
     padding: 0 20px 100px 20px;
     font-family: 'Noto Sans KR', sans-serif;
-    color: #444444 !important; /* ⚡ [보정] 투박한 블랙에서 팀 공통 중화된 먹색으로 변경 */
+    color: var(--caramel) !important; /* ⚡ [보정] 투박한 블랙에서 팀 공통 중화된 먹색으로 변경 */
     box-sizing: border-box;
 }
 
@@ -266,5 +266,318 @@
     background-color: #8C7A6B !important; /* ⚡ 피크 브라운 반전 */
     color: #ffffff !important;
     border-color: #8C7A6B !important;
+}
+
+/* ========================================================
+   [최종 종결] 질문자님 리펀드 클래스명 경로 정밀 저격 - 상단 여백 수혈
+   ======================================================== */
+
+/* 💡 [진짜 리펀드 타격] 천장에 칼같이 붙어있던 교환/반품 컨테이너와 탭바 전체를 아래로 40px 정갈하게 내립니다 */
+.refund-container,
+.refund-tabs-bar {
+    margin-top: 40px !important;
+    margin-bottom: 60px !important;
+    box-sizing: border-box !important;
+}
+
+/* 👈 좌측 사이드바 메뉴 축도 천장에서 똑같이 40px 밀어내어 가로 평행 라인 수평 일치화 */
+.mypage-sidebar {
+    margin-top: 40px !important;
+    box-sizing: border-box !important;
+}
+
+/* 우측 본문 박스의 내부 패딩 간섭을 완벽히 리셋하여 탭바가 삐져나가지 않게 제어 */
+.mypage-main-content {
+    padding-top: 0 !important;
+}
+
+/* ========================================================
+   [최종 마감] 프로필 박스(이름/버튼) 완전 제거 및 상단 정렬 복구
+   ======================================================== */
+
+/* 💡 [정밀 저격] 레이아웃을 파괴하던 김인호11님 이름과 마이페이지 버튼 전체를 화면에서 삭제 */
+.mypage-profile-icon-box,
+.mypage-profile-avatar-circle,
+.mypage-main-content > .mypage-profile-icon-box {
+    display: none !important; /* 브라우저 렌더링에서 완벽히 증발 처리 */
+}
+
+/* 폼 우측 메인 랩퍼 박스의 플렉스 정렬 축 지지대 보정 */
+.mypage-main-content {
+    flex: 1 !important;
+    min-width: 0 !important;
+    padding-left: 20px !important;  /* 좌측 사이드바 메뉴와의 아늑한 쇼룸 여백 사수 */
+    padding-right: 0 !important;
+    padding-top: 0 !important;
+    box-sizing: border-box !important;
+}
+
+/* 방해물이 사라진 자리에 리펀드 탭바와 컨테이너가 깔끔하게 우측 끝선에 달라붙도록 연동 */
+.refund-container {
+    width: 100% !important;
+    max-width: 1200px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+}
+
+.refund-tabs-bar {
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+/* ========================================================
+   [최종 수술] 테이블 가로축 라인 동기화 및 하단 3대 버튼 카라멜 중앙 정렬
+   ======================================================== */
+
+/* 1. 💡 [테이블 터짐 완치] 오른쪽 화면 밖으로 삐져나가던 테이블 전체 너비를 탭바 크기와 칼매칭 */
+.refund-container,
+.refund-table-header,
+.refund-item-list,
+.refund-item-card {
+    width: 100% !important;
+    max-width: 960px !important; /* ⚡ 마이페이지 가로폭 표준 한계선인 960px로 강력 바인딩 잠금 */
+    box-sizing: border-box !important;
+}
+
+/* 탭바 역시 960px 라인에 완벽하게 일치화 */
+.refund-tabs-bar {
+    width: 100% !important;
+    max-width: 960px !important;
+    box-sizing: border-box !important;
+}
+
+/* 2. 💡 [버튼 묶음 중앙 정렬] 우측 구석에 처박혀 있던 버튼 트랙 전체를 테이블 정중앙으로 워프 */
+.refund-action-submit-zone {
+    display: flex !important;
+    justify-content: center !important; /* ⚡ 3개 단추를 화면 한가운데 황금 비율 축으로 중앙 배치 */
+    align-items: center !important;
+    gap: 12px !important;             /* 버튼 간 정갈한 공백 간격 */
+    width: 100% !important;
+    max-width: 960px !important;
+    margin: 40px auto 0 auto !important;
+    padding-top: 30px !important;
+    border-top: 1px dashed var(--soft-border) !important; /* 상단 구분용 은은한 절취선 */
+    box-sizing: border-box !important;
+}
+
+/* 3. 🛠️ 개별 버튼 크기 정상화 및 시그니처 카라멜 컬러 감성 수혈 */
+.refund-action-submit-zone .refund-btn {
+    width: 160px !important;        /* 💡 글씨가 2줄로 찌그러지지 않도록 160px 가로폭 고정 잠금 */
+    height: 44px !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 0px !important;  /* 조원분의 시크한 모던 직각 모서리 가이드 절대 수호 */
+    box-sizing: border-box !important;
+    transition: all 0.2s ease-in-out !important;
+}
+
+/* ① [주문취소 (배송전)] 버튼 - 평소 비활성화 상태거나 활성화 시 와인 레드 보존 */
+.refund-action-submit-zone .refund-btn-cancel {
+    background-color: transparent !important;
+    border: 1px solid #a82525 !important;
+    color: #a82525 !important;
+}
+
+/* ② [교환 신청] 버튼 - 은은한 은빛 밀크티 베이지에서 텍스트만 딥 카라멜 포인트 */
+.refund-action-submit-zone .refund-btn-exchange {
+    background-color: var(--main-bg) !important; /* #FFF8ED */
+    border: 1px solid var(--soft-border) !important; /* #E8D9C8 */
+    color: var(--deep-caramel) !important; /* #8A4F25 */
+}
+.refund-action-submit-zone .refund-btn-exchange:hover:not(:disabled) {
+    background-color: var(--cream) !important;
+    border-color: var(--caramel) !important;
+}
+
+/* ③ [반품 신청] 버튼 - ⚡ [핵심 수혈] 주인공급 버튼에 프로젝트 공용 시그니처 꽉 찬 카라멜 단추 장착 */
+.refund-action-submit-zone .refund-btn-return {
+    background-color: var(--caramel) !important; /* 팀 공용 카라멜 장착 (#B8783E) */
+    border: 1px solid var(--caramel) !important;
+    color: #FFFFFF !important; /* 쨍한 순백색 반전 */
+    box-shadow: 0 4px 12px rgba(184, 120, 62, 0.12) !important;
+}
+.refund-action-submit-zone .refund-btn-return:hover:not(:disabled) {
+    background-color: var(--deep-caramel) !important; /* 호버 시 깊은 브라운 브랜딩 모션 (#8A4F25) */
+    border-color: var(--deep-caramel) !important;
+}
+
+/* 🔒 라디오 버튼 미체크 상태 시 투박한 그레이 잠금 스펙 통일 */
+.refund-action-submit-zone .refund-btn:disabled {
+    background-color: #F5F4F0 !important;
+    border: 1px solid #E2DDD5 !important;
+    color: #C3BEB4 !important;
+    cursor: not-allowed !important;
+    box-shadow: none !important;
+}
+
+/* =========================================================================
+   [최종 완결] 인라인 방해 무력화 - 탭바 카라멜 수혈 및 격자 960px 완벽 매칭
+   ========================================================================= */
+
+/* ① 💡 [인라인 스타일 무력화] 조원분이 박아둔 width: 100% 족쇄를 풀고 탭바와 함께 960px 축으로 강제 고정 */
+div.refund-container,
+.mypage-main-content div.refund-container {
+    width: 960px !important;       /* ⚡ 터져나가던 테이블 그릇을 960px로 완벽 잠금 */
+    max-width: 960px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    box-sizing: border-box !important;
+}
+
+/* 2대 대형 탭바 전체 축도 960px 라인에 칼같이 일치화 */
+.refund-tabs-bar,
+.mypage-main-content .refund-tabs-bar {
+    display: flex !important;
+    gap: 0px !important; 
+    margin-top: 40px !important;
+    width: 960px !important;
+    max-width: 960px !important;
+    border-bottom: 1px solid var(--soft-border) !important; /* 밀크티 연화선 매칭 */
+    box-sizing: border-box !important;
+}
+
+/* ② 💡 [탭바 카라멜 강제 주입] 기존 꼬여있던 우선순위를 완전히 파괴하고 카사미아 시그니처 카라멜 무드 수혈 */
+.refund-tabs-bar button.refund-tab-btn,
+.refund-tab-btn {
+    background-color: #ffffff !important;
+    border: 1px solid var(--soft-border) !important; 
+    border-bottom: none !important;
+    color: #888888 !important; 
+    padding: 12px 0px !important;
+    width: 200px !important;         /* 질문자님의 황금 자산인 200px 가로폭 철저 보존 */
+    text-align: center !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+    border-radius: 0px !important;   /* 모던 직각 사각 마감 사수 */
+    transition: all 0.2s ease !important;
+    position: relative !important;
+    top: 1px !important;             
+}
+
+/* 🔥 [액티브 저격 마침표] activeTab === true 일 때 켜지는 샌드 베이지 채우기와 브라운 강조 테두리 강제 활성화 */
+.refund-tabs-bar button.refund-tab-btn.active,
+.refund-tab-btn.active {
+    background-color: var(--soft-border) !important; /* 💡 팀 공용 밀크티 베이지 샌드 톤 채우기 완료 (#E8D9C8) */
+    border: 1px solid var(--brown) !important;       /* 💡 포근한 에스프레소 브라운 축 결합 (#4A3324) */
+    border-bottom: 1px solid var(--soft-border) !important;
+    color: var(--brown) !important;                  /* 깊은 브라운 글씨 강조 고정 */
+    font-weight: 700 !important;
+    z-index: 5 !important;
+}
+
+.refund-tab-btn:hover:not(.active) {
+    background-color: var(--main-bg) !important; /* 호버 시 글로벌 오프화이트 소프트베이지 투과 */
+    color: var(--black-brown) !important;
+}
+
+/* ③ 격자 테이블 헤더와 내부 상품 카드 행(Row) 가로축 라인도 960px에 자석 밀착 */
+.refund-table-header,
+.refund-item-list,
+.refund-item-card {
+    width: 960px !important;
+    max-width: 960px !important;
+    box-sizing: border-box !important;
+}
+
+
+/* ========================================================
+   [최종 마감] 게시판 제목 간섭 차단 - 활성화 탭 상자 배경 카라멜 주입
+   ======================================================== */
+
+/* 💡 [진짜 저격] 게시판 부제목 글씨는 원래의 단정한 먹색(#444)으로 철저히 원상 복구 */
+.refund-title,
+.mypage-main-content .refund-title {
+    color: #444444 !important; 
+    font-weight: 700 !important;
+}
+
+/* 🔥 [치트키] 꼬여있던 우선순위를 완전히 파괴하고 활성화된 '탭 상자 배경'에 카라멜색 가득 채우기 */
+.refund-tabs-bar button.refund-tab-btn.active,
+.refund-tabs-bar .active,
+button.refund-tab-btn.active,
+.refund-tab-btn.active {
+    /* 1. 칙칙하게 버티던 회색 배경을 지우고 꽉 찬 시그니처 카라멜 배경 강제 수혈 */
+    background: var(--caramel) !important;
+    background-color: var(--caramel) !important; /* 프로젝트 공용 카라멜 (#B8783E) */
+    border: 1px solid var(--caramel) !important;
+    border-bottom: 1px solid var(--caramel) !important;
+    
+    /* 2. 어두운 카라멜 배경 위에서 글씨가 선명하게 보일 수 있도록 쨍한 화이트로 반전 */
+    color: #FFFFFF !important; 
+    font-weight: 700 !important;
+    z-index: 10 !important;
+}
+
+/* 👈 활성화되지 않은 평소의 일반 탭 단추는 원래 기획하셨던 깔끔한 흰색 바탕 유지 */
+.refund-tabs-bar button.refund-tab-btn,
+.refund-tab-btn {
+    background-color: #FFFFFF !important;
+    border: 1px solid var(--soft-border) !important;
+    border-bottom: none !important;
+    color: var(--brown) !important;
+    font-weight: 500 !important;
+}
+
+/* ③ 격자 테이블 상자가 오른쪽 밖으로 터져나가 깨지던 폭 960px 수평 라인 마감 일치화 */
+div.refund-container,
+.refund-tabs-bar,
+.refund-table-header,
+.refund-item-card {
+    width: 100% !important;
+    max-width: 960px !important;
+    box-sizing: border-box !important;
+}
+
+/* ========================================================
+   [최종 종결] 질문자님 JSX 본문 경로 정밀 저격 - 좌측 여백 수혈
+   ======================================================== */
+
+/* 💡 [진짜 리펀드 우측 본문 저격] 왼쪽 메뉴선에 쩍 붙어있던 메인 콘텐츠 상자 자체를 오른쪽으로 25px 이동 */
+main.mypage-main-content,
+.mypage-main-content,
+.order-page-wrapper main,
+.mypage-content-flex-wrapper main {
+    /* ⚡ 왼쪽 사이드바 테두리와의 답답한 밀착을 완벽 차단하는 황금 여백 주입 */
+    padding-left: 25px !important; 
+    margin-left: 0 !important;
+    
+    /* 960px 황금 비율 가로축이 깨지거나 오른쪽 화면 밖으로 터지지 않도록 방어 축 바인딩 */
+    box-sizing: border-box !important;
+}
+
+/* 리펀드 대형 7단 테이블 컨테이너 내부 여백 간섭 차단 */
+.refund-container {
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+    box-sizing: border-box !important;
+}
+
+/* ========================================================
+   [최종 마감] 주문취소 버튼 텍스트 #B8783E 카라멜 색상 직격 고정
+   ======================================================= */
+
+/* 💡 [정밀 저격] 주문취소 버튼의 평소 테두리와 글씨 색상을 순도 100% 카라멜로 전면 리브랜딩 */
+.refund-action-submit-zone .refund-btn-cancel,
+.refund-action-submit-zone .refund-btn:first-of-type {
+    /* 기존 와인 레드를 완벽히 해제하고 카라멜 염료 강제 수혈 */
+    border: 1px solid #B8783E !important;
+    color: #B8783E !important; /* ⚡ 폰트 색상 카라멜 고정 완료 */
+    background-color: #FFFFFF !important;
+}
+
+/* 주문취소 버튼 마우스 올렸을 때(Hover) 은은한 웜 베이지 살구빛 피드백 */
+.refund-action-submit-zone .refund-btn-cancel:hover:not(:disabled),
+.refund-action-submit-zone .refund-btn:first-of-type:hover:not(:disabled) {
+    background-color: var(--main-bg) !important; /* #FFF8ED 소프트 베이지 */
+    color: var(--deep-caramel) !important;       /* 호버 시 조금 더 짙은 카라멜로 선명화 */
+    border-color: var(--caramel) !important;
 }
 

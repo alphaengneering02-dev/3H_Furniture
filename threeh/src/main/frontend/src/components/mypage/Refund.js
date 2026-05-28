@@ -4,6 +4,9 @@ import axios from 'axios';
 import '../../css/myPageCss/refund.css';
 import { useToast } from '../../hook/useToast';
 import { ToastContainer, toast } from "react-toastify";
+import Header from '../main/Header';
+import Footer from "../main/Footer";
+
 
 
 const RefundPage = () => {
@@ -182,36 +185,31 @@ const RefundPage = () => {
     const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
 
         return (
-        <div className="mypage-grid-container">
-            {/* ========================================================= */}
-            {/* [1구역 시작] 마이페이지 공통 헤더 바 (로고 THREE H 세팅)      */}
-            {/* ========================================================= */}
-            <header className="mypage-header-box" style={{ display: 'flex', justifyContent: 'space-between', padding: '10px', borderBottom: '1px solid #ccc' }}>
+            <div className="order-page-global-root">
+            
+            {/* 1. 상단 공용 헤더 영역 */}
+            <div className='main-header'>
+                <Header/>
+            </div> {/* [종료] main-header */}
                 
-             
-            {/* <div className='main-header'>
-              <Header/>
-            </div>  */}
-
-        <ToastContainer
-            position="top-center"
-            autoClose={1800}
-            hideProgressBar={false}
-            newestOnTop={true}
-            closeOnClick
-            pauseOnHover
-            theme="light"
-        />
-                <div className="mypage-logo-box" onClick={() => navigate('/')} style={{ cursor: 'pointer', fontWeight: 'bold' }}>THREE H</div>
-                <div>
+                <ToastContainer
+                    position="top-center"
+                    autoClose={1800}
+                    hideProgressBar={false}
+                    newestOnTop={true}
+                    closeOnClick
+                    pauseOnHover
+                    theme="light"
+                />
+                
+                {/* <div>
                     {member ? (
                         <button className="btn-header-action" onClick={handleLogout} style={{ marginRight: '10px' }}>로그아웃</button>
                     ) : (
                         <button className="btn-header-action" onClick={() => navigate('/login')} style={{ marginRight: '10px' }}>로그인</button>
                     )}
                     <button className="btn-header-action" onClick={() => navigate('/')}>메인으로</button>
-                </div>
-            </header>
+                </div> */}
 
             {!member ? (
                 <main style={{ textAlign: 'center', padding: '100px 20px' }}>
@@ -221,7 +219,7 @@ const RefundPage = () => {
                 <div style={{ display: 'flex' }}>
                     {/* 좌측 마이페이지 공통 대형 사이드바 메뉴 축 고정 */}
                     <aside className="mypage-sidebar">
-                        <button className="sidebar-btn" onClick={() => navigate('/mypage')}>추가될기능/구매확정내역</button>
+                        <button className="sidebar-btn" onClick={() => navigate('/mypage')}>구매확정내역</button>
                         <button className="sidebar-btn" style={{ color: '#8C7A6B', fontWeight: 'bold' }} onClick={() => navigate('/cart/return')}>교환 및 반품</button>
                         <button className="sidebar-btn" onClick={() => navigate('/cart')}>장바구니 목록</button>
                     </aside>
@@ -260,7 +258,7 @@ const RefundPage = () => {
                                 <div className="refund-th-status">주문현황</div>
                             </div>
 
-                                                       {/* ========================================================= */}
+                            {/* ========================================================= */}
                             {/* 📋 가로 격자 테이블 바디 아이템 카드 리스트 구역               */}
                             {/* ========================================================= */}
                             <div className="refund-item-list">
@@ -357,10 +355,6 @@ const RefundPage = () => {
                             </div>
 
 
-
-
-
-
                             {/* ========================================================= */}
                             {/* [3구역 시작] 하단 페이징 바 및 원스톱 버튼 제어 Zone         */}
                             {/* ========================================================= */}
@@ -414,17 +408,12 @@ const RefundPage = () => {
                 </div>
             )}
 
-            {/* ========================================================= */}
-            {/* [푸터 시작] THREE H 브랜드 공통 하단 푸터 영역 마감               */}
-            {/* ========================================================= */}
-            <footer className="mypage-footer">
-                <div className="footer-content">
-                    <p className="footer-logo">THREE H</p>
-                    <p className="footer-info">주식회사 쓰리 에이치 | 공동 프로젝트 팀 | 경기도 수원시 팔달구</p>
-                    <p className="footer-copy">© 2026 THREE H. All Rights Reserved.</p>
-                </div>
-            </footer>
-        </div>
+            {/* 💡 [에러 완치 핵심] 아침 규격 공용 Footer를 삼항연산자 바깥, 최상위 루트 래퍼의 바로 안쪽 정위치에 안전 안착시킵니다. */}
+            <div className="main-mypage-footer">
+                <Footer/>
+            </div> 
+
+        </div> // 가장 최상단 루트인 <div className="order-page-global-root"> 를 정밀하게 밀봉 폐쇄하는 진짜 마지막 단 하나의 태그
     );
 };
 

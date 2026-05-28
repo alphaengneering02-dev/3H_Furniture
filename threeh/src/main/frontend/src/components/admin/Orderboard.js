@@ -179,9 +179,12 @@ const Orderboard = ({
     return (
 
         <div>
-            {/* [배송 미배정] */}
+           
             <div className="admin-content-box">
+                <div className="admin-order-headerM">
                 <h3>배송 미배정[O.S=READY,D.S=NULL인 ordersDB]</h3>
+               </div>
+               <div className="admin-table-scroll">
                 <table className="admin-table-style">
                     <thead><tr><th>번호</th><th>상품</th><th>수량</th><th>주소</th><th>기사 배정 및 상태</th><th>주문일</th></tr></thead>
                     <tbody>
@@ -216,10 +219,15 @@ const Orderboard = ({
                     </tbody>
                 </table>
             </div>
-
+            </div>
+            
+            
             {/* [배송 배정 완료 목록] */}
             <div className="admin-content-box">
+            <div className="admin-table-scroll">           
+                <div className="admin-order-headerM">
                 <h3>배송 배정 완료 목록[O.S=READY,D.S=WAITING인 ordersDB]</h3>
+                </div>
                 <table className="admin-table-style">
                     <thead><tr><th>번호</th><th>상품</th><th>판매 금액</th><th>배정된 기사</th><th>상태</th><th>주문일</th></tr></thead>
                     <tbody>
@@ -237,10 +245,14 @@ const Orderboard = ({
                     </tbody>
                 </table>
             </div>
+            </div>
 
             {/* [배송 진행 중 목록] */}
             <div className="admin-content-box">
+            <div className="admin-table-scroll">           
+                <div className="admin-order-headerM">
                 <h3>🚚 배송 진행 중 목록[O.S=READY,D.S=SHIPPING인 ordersDB]</h3>
+                </div>
                 <table className="admin-table-style">
                     <thead><tr><th>번호</th><th>상품</th><th>수량</th><th>주소</th><th>배정 기사</th><th>상태</th><th>주문일</th></tr></thead>
                     <tbody>
@@ -258,17 +270,20 @@ const Orderboard = ({
                     </tbody>
                 </table>
             </div>
+            </div>
 
             {/* 💡 대량 주문*/}
             <div className="admin-content-box">
-                <div className="admin-action-row">
+                <div className="admin-order-header">
+                <div className="admin-order-top-row">
                     <div>
                         <h4>📦 대량 주문 조회</h4>
                         <p>
                             현재 대상 건수: <strong>{specialOrders.length}건</strong>
                         </p>
-                    </div>
-                    <div className="admin-btn-right">
+                        </div>
+                        <div className="admin-action-button-group admin-order-bottom-row">
+                    
                         <button
                             className="admin-move-page-btn"
                             onClick={() => setShowSpecialList(!showSpecialList)} >
@@ -279,6 +294,7 @@ const Orderboard = ({
                             onClick={downloadCSV}>
                                 Excel(CSV) 다운로드
                         </button>
+                    </div>
                     </div>
                 </div>
 
@@ -317,19 +333,21 @@ const Orderboard = ({
             </div>
 
             {/* [최종 배송 완료 목록] */}
-             {/* [최종 배송 완료 목록] */}
             <div className="admin-content-box">
-                <div className="admin-action-row">
+            <div className="admin-order-header">
+    <div className="admin-order-top-row">
                 <h3>✅ 최종 배송 완료 목록[O.S=PURCHASED,D.S=COMPLETED인 ordersDB]</h3>
                 
-                 <div className="admin-btn-right">
+                 <div className="admin-action-button-group">
                     <button
                         className="admin-move-page-btn"
                         onClick={downloadCompletedOrdersExcel}
                     >엑셀 다운로드</button>
                 </div>
                 </div>
-                
+                </div>
+
+                <div className="admin-table-scroll">
                 <table className="admin-table-style">
                     <thead><tr>
                 <th>번호</th>
@@ -375,13 +393,14 @@ const Orderboard = ({
         </div>
     )}
 </div>
+</div>
 
             {/* [반품/교환 픽업 신청 목록] */}
             <div className="admin-content-box">
-                <div className="admin-action-row">
-                <h3>🔄 반품/교환 픽업 신청 목록[O.S=EXCHANGEorREFUND/CANCEL,D.S=COMPLETED/PICKUP인 ordersDB]</h3>
+                <div className="admin-order-top-row">
+                <h3>🔄 반품/교환 픽업 신청 목록[O.S=EXCHANGEorREFUND/CANCEL,D.S=COMPLETED/PICKUP인 ordersDB]</h3></div>
 
-                <div className="admin-btn-right">
+                <div className="admin-action-button-group">
                     <button 
                     className="admin-move-page-btn"
                     onClick={() => setPickupFilter('ALL')}>전체</button>
@@ -391,7 +410,7 @@ const Orderboard = ({
                     <button 
                     className="admin-move-page-btn"
                     onClick={() => setPickupFilter('CANCEL')}>취소</button>
-                </div>
+              
                 </div>
 
                 {selectedPickupIds.length > 0 && (
@@ -399,7 +418,7 @@ const Orderboard = ({
                         선택된 반품/교환 건: {selectedPickupIds.length}건
                     </div>
                 )}
-
+                <div className="admin-table-scroll">
                 <table className="admin-table-style">
                     <thead>
                         <tr>
@@ -452,6 +471,7 @@ const Orderboard = ({
                         }) : <tr><td colSpan="8">현재 반품/교환 회수 대상 주문이 없습니다.</td></tr>}
                     </tbody>
                 </table>
+                </div>
             </div>        
         </div>
     );

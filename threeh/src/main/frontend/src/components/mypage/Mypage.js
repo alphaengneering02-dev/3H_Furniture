@@ -6,8 +6,10 @@ import DaumPostCode from 'react-daum-postcode';
 /* 💡 폴더명(mypageCss)과 파일명(myPage.css) 대소문자 규격 오차 없이 싱크 적용 */
 import '../../css/myPageCss/myPage.css';
 import { useToast } from '../../hook/useToast';
-import Header from '../main/Header';
 import { ToastContainer, toast } from "react-toastify";
+import Header from '../main/Header';
+import Footer from "../main/Footer";
+
 
 const Mypage = () => {
     const navigate = useNavigate();
@@ -55,7 +57,7 @@ const Mypage = () => {
         const targetMember = memberData || member;
 
         if (!targetMember || !targetMember.memberId) {
-            alert("회원 정보를 찾을 수 없습니다.");
+            error("회원 정보를 찾을 수 없습니다.");
             return;
         }
         try {
@@ -85,7 +87,7 @@ const Mypage = () => {
                 console.log("북마크 조회 상태코드:", error.response.status);
                 console.log("북마크 조회 응답:", error.response.data);
             }
-            alert("북마크 목록을 불러오지 못했습니다.");
+            error("북마크 목록을 불러오지 못했습니다.");
         }
     };
 
@@ -148,12 +150,12 @@ const Mypage = () => {
             const params = new URLSearchParams();
             params.append('orderId', orderId);
             const response = await axios.post("http://localhost:8080/Member/purchase/confirm", params, { withCredentials: true });
-            alert(response.data || "구매가 확정되었습니다.");
+            success(response.data || "구매가 확정되었습니다.");
             setOrders((prevOrders) => prevOrders.map((order) => (order.orderId || order.id) === orderId ? { ...order, orderState: "PURCHASED" } : order));
         } catch (err) {
             console.error("구매 확정 오류:", err);
-            if (err.response) { alert(err.response.data); return; }
-            alert("구매 확정 처리 중 오류가 발생했습니다.");
+            if (err.response) { error(err.response.data); return; }
+            error("구매 확정 처리 중 오류가 발생했습니다.");
         }
     };
 
@@ -192,7 +194,7 @@ const Mypage = () => {
 
             axios.post('http://localhost:8080/Member/refund/process',params, {withCredentials:true})
                 .then(res => {
-                    alert(res.data);
+                    success(res.data);
 
                     setOrders(prevOrders => prevOrders.filter(order => order.orderId !== orderId));
 
@@ -201,7 +203,7 @@ const Mypage = () => {
                     }
                 })
                 .catch(err => {
-                    alert(err.response?.data || "처리 중 오류 발생");
+                    error(err.response?.data || "처리 중 오류 발생");
                 })
         }
     }
@@ -210,7 +212,7 @@ const Mypage = () => {
         if (window.confirm("로그아웃 하시겠습니까?")) {
             sessionStorage.removeItem('user');
             setMember(null);
-            alert("로그아웃 되었습니다");
+            info("로그아웃 되었습니다");
             navigate('/');
         }
     }
@@ -242,7 +244,7 @@ const Mypage = () => {
     // [인호님 파트 신규 매감 기능]: 임시 주소에 상세주소를 결합하여 주소록 보관함에 최종 등록하는 함수
     const handleSaveNewAddress = (targetId) => {
         if (!tempDetail.trim()) {
-            alert("상세 주소를 입력해 주세요.");
+            info("상세 주소를 입력해 주세요.");
             return;
         }
 
@@ -260,7 +262,7 @@ const Mypage = () => {
         localStorage.setItem(`addresses_${member.id}`, JSON.stringify(updatedAddresses));
         setAddresses(updatedAddresses);
         setTempDetail(""); // 입력 폼 초기화
-        alert("새 배송지가 주소록에 추가되었습니다.");
+        info("새 배송지가 주소록에 추가되었습니다.");
     };
 
     /* [회원 전용 상태 스위칭] 서버에 보내지 않고 화면상에서 즉시 배지를 변경한 후 보관함 갱신 */
@@ -276,7 +278,7 @@ const Mypage = () => {
         });
         localStorage.setItem(`addresses_${member.id}`, JSON.stringify(updatedAddresses));
         setAddresses(updatedAddresses);
-        alert("기본 배송지가 변경되었습니다.");
+        success("기본 배송지가 변경되었습니다.");
     };
 
     /* [회원 전용 삭제 연동] 보관함에서 삭제 처리 기능 연동 */
@@ -292,8 +294,8 @@ const Mypage = () => {
     const handleDelete = () => {
         if (window.confirm("정말로 탈퇴하시겠습니까?")) {
             axios.post('http://localhost:8080/Member/delete', {}, { withCredentials: true })
-                .then((res) => { alert("탈퇴가 완료되었습니다."); sessionStorage.removeItem('user'); navigate('/'); })
-                .catch(err => { console.error("탈퇴 오류:", err); alert("탈퇴 실패: " + (err.response?.data || "서버 오류가 발생했습니다.")); });
+                .then((res) => { success("탈퇴가 완료되었습니다."); sessionStorage.removeItem('user'); navigate('/'); })
+                .catch(err => { console.error("탈퇴 오류:", err); error("탈퇴 실패: " + (err.response?.data || "서버 오류가 발생했습니다.")); });
         }
     };
 
@@ -322,16 +324,16 @@ const Mypage = () => {
     const handleUpdateReview = async (reviewId) => {
         try {
             await axios.put(`http://localhost:8080/api/reviews/${reviewId}`, { reviewScore: editReviewScore, reviewText: editReviewText }, { withCredentials: true });
-            alert("리뷰가 수정되었습니다."); setEditReviewId(null); getMyReviews();
-        } catch (error) { alert("리뷰 수정 실패"); }
+            success("리뷰가 수정되었습니다."); setEditReviewId(null); getMyReviews();
+        } catch (error) { error("리뷰 수정 실패"); }
     };
 
     const handleDeleteReview = async (reviewId) => {
         if (!window.confirm("리뷰를 삭제하시겠습니까?")) return;
         try {
             await axios.delete(`http://localhost:8080/api/reviews/${reviewId}`, { withCredentials: true });
-            alert("리뷰가 삭제되었습니다."); getMyReviews();
-        } catch (error) { alert("리뷰 삭제 실패"); }
+            success("리뷰가 삭제되었습니다."); getMyReviews();
+        } catch (error) { error("리뷰 삭제 실패"); }
     }
 
     /* [슬라이더 핸들러] 왼쪽 화살표 클릭 제어 */
@@ -372,7 +374,7 @@ const Mypage = () => {
              <div style={{ display: 'flex', marginTop: '20px' }}> 
                 {/* 📌 좌측 사이드바 메뉴 */}
                  <aside className="mypage-sidebar">
-                   <button className="sidebar-btn" onClick={() => navigate('/mypage/schedule')}>추가될기능/구매확정내역</button>
+                   <button className="sidebar-btn" onClick={() => navigate('/mypage/schedule')}>구매확정내역</button>
                     <button className="sidebar-btn" onClick={() => navigate('/cart/return')}>교환 및 반품</button>
                     <button className="sidebar-btn" onClick={() => navigate('/cart')}>장바구니 목록</button>
                     <div className="sidebar-furniture-banner" onClick={() => navigate('/Item')} style={{ cursor: 'pointer' }} title="전체 가구 컬렉션 보러가기" />
