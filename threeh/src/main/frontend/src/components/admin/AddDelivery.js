@@ -119,27 +119,17 @@ const AddDelivery = () => {
 
 
     return (
-
-        <div className="delivery-page">
-
+<div className="delivery-page">
+            <ToastContainer position="top-right" autoClose={3000} />
+            
             <div className="delivery-container">
+                <h1 className="delivery-title">배송 기사 등록</h1>
 
-                <h1 className="delivery-title">
-                    배송 기사 등록
-                </h1>
-
-                <form
-                    onSubmit={handleSubmit}
-                    className="delivery-form"
-                >
-
-                    {/* 업체명 */}
+                <form onSubmit={handleSubmit} className="delivery-form">
+                    
+                    {/* 기본 정보 파트 */}
                     <div className="form-card">
-
-                        <label className="form-label">
-                            업체명
-                        </label>
-
+                        <label className="form-label">업체명</label>
                         <input
                             type="text"
                             name="companyName"
@@ -149,16 +139,10 @@ const AddDelivery = () => {
                             placeholder="업체명을 입력하세요"
                             required
                         />
-
                     </div>
 
-                    {/* 기사명 */}
                     <div className="form-card">
-
-                        <label className="form-label">
-                            기사 성함
-                        </label>
-
+                        <label className="form-label">기사 성함</label>
                         <input
                             type="text"
                             name="deliveryName"
@@ -168,18 +152,11 @@ const AddDelivery = () => {
                             placeholder="기사 성함 입력"
                             required
                         />
-
                     </div>
 
-                    {/* 전화번호 */}
                     <div className="form-card">
-
-                        <label className="form-label">
-                            전화번호
-                        </label>
-
+                        <label className="form-label">전화번호</label>
                         <div className="phone-group">
-
                             <select
                                 name="phonePrefix"
                                 value={formData.phonePrefix}
@@ -187,25 +164,11 @@ const AddDelivery = () => {
                                 className="phone-select"
                                 required
                             >
-
-                                <option value="010">
-                                    010
-                                </option>
-
-                                <option value="011">
-                                    011
-                                </option>
-
-                                <option value="070">
-                                    070
-                                </option>
-
+                                <option value="010">010</option>
+                                <option value="011">011</option>
+                                <option value="070">070</option>
                             </select>
-
-                            <span className="phone-dash">
-                                -
-                            </span>
-
+                            <span className="phone-dash">-</span>
                             <input
                                 type="text"
                                 name="phoneMiddle"
@@ -215,11 +178,7 @@ const AddDelivery = () => {
                                 className="phone-input"
                                 required
                             />
-
-                            <span className="phone-dash">
-                                -
-                            </span>
-
+                            <span className="phone-dash">-</span>
                             <input
                                 type="text"
                                 name="phoneLast"
@@ -229,134 +188,108 @@ const AddDelivery = () => {
                                 className="phone-input"
                                 required
                             />
-
                         </div>
-
                     </div>
 
-                    {/* 차량번호 */}
                     <div className="form-card">
-
-                        <label className="form-label">
-                            차량 번호
-                        </label>
-
+                        <label className="form-label">차량 번호</label>
                         <input
                             type="text"
                             name="deliveryCarNo"
                             value={formData.deliveryCarNo}
                             onChange={handleChange}
                             className="form-input"
-                            placeholder="12가1234"
+                            placeholder="예: 12가1234"
                             required
                         />
-
                     </div>
 
-                    {/* 사업자 정보 */}
-                    <div className="business-section">
+                    {/* 섹션 구분 타이틀 */}
+                    <div className="business-section">사업자 정보</div>
 
-                        사업자 정보
-
-                    </div>
-
-                    {/* 사업자번호 */}
-<div className="form-card">
-    <label className="form-label">사업자 번호</label>
-    <div className="phone-group"> 
-        <input
-            type="text"
-            name="businessNo1"
-            value={formData.businessNo1}
-            onChange={handleChange}
-            maxLength={3}
-            placeholder="3자리"
-            className="phone-input"
-            required
-        />
-        <span className="phone-dash">-</span>
-        <input
-            type="text"
-            name="businessNo2"
-            value={formData.businessNo2}
-            onChange={handleChange}
-            maxLength={2}
-            placeholder="2자리"
-            className="phone-input"
-            required
-        />
-        <span className="phone-dash">-</span>
-        <input
-            type="text"
-            name="businessNo3"
-            value={formData.businessNo3}
-            onChange={handleChange}
-            maxLength={5}
-            placeholder="5자리"
-            className="phone-input"
-            required
-        />
-    </div>
-</div>
-
-            <div className="form-card">
-                    <label className="form-label">업체 전화번호</label>
-                    <input 
-                        type="text" 
-                        name="businessPhone" 
-                        value={formData.businessPhone}
-                        onChange={handleChange} 
-                        className="form-input"
-                        placeholder="예: 02-123-4567"
-                        required 
-                    />
-                </div>
-            
-            <div className="form-card">
-                    <label className="form-label">사업자 주소</label>
-                    <input 
-                        type="text" 
-                        name="businessAddr" 
-                        value={formData.businessAddr}
-                        onChange={handleChange} 
-                        className="form-input"
-                        placeholder="사업장 전체 주소를 입력하세요"
-                        required 
-                    />
-                </div>
-
-
-
-                    {/* 사업주 이름 */}
+                    {/* 사업자 정보 파트 */}
                     <div className="form-card">
+                        <label className="form-label">사업자 번호</label>
+                        <div className="phone-group"> 
+                            <input
+                                type="text"
+                                name="businessNo1"
+                                value={formData.businessNo1}
+                                onChange={handleChange}
+                                maxLength={3}
+                                placeholder="3자리"
+                                className="phone-input"
+                                required
+                            />
+                            <span className="phone-dash">-</span>
+                            <input
+                                type="text"
+                                name="businessNo2"
+                                value={formData.businessNo2}
+                                onChange={handleChange}
+                                maxLength={2}
+                                placeholder="2자리"
+                                className="phone-input"
+                                required
+                            />
+                            <span className="phone-dash">-</span>
+                            <input
+                                type="text"
+                                name="businessNo3"
+                                value={formData.businessNo3}
+                                onChange={handleChange}
+                                maxLength={5}
+                                placeholder="5자리"
+                                className="phone-input"
+                                required
+                            />
+                        </div>
+                    </div>
 
-                        <label className="form-label">
-                            사업주 이름
-                        </label>
+                    <div className="form-card">
+                        <label className="form-label">업체 전화번호</label>
+                        <input 
+                            type="text" 
+                            name="businessPhone" 
+                            value={formData.businessPhone}
+                            onChange={handleChange} 
+                            className="form-input"
+                            placeholder="예: 02-123-4567"
+                            required 
+                        />
+                    </div>
+                
+                    <div className="form-card">
+                        <label className="form-label">사업자 주소</label>
+                        <input 
+                            type="text" 
+                            name="businessAddr" 
+                            value={formData.businessAddr}
+                            onChange={handleChange} 
+                            className="form-input"
+                            placeholder="사업장 전체 주소를 입력하세요"
+                            required 
+                        />
+                    </div>
 
+                    <div className="form-card">
+                        <label className="form-label">사업주 이름</label>
                         <input
                             type="text"
                             name="businessName"
                             value={formData.businessName}
                             onChange={handleChange}
                             className="form-input"
+                            placeholder="사업자등록증상 대표자명"
                             required
                         />
-
                     </div>
 
-                    {/* 버튼 */}
-                    <button
-                        type="submit"
-                        className="submit-btn"
-                    >
+                    <button type="submit" className="submit-btn">
                         등록하기
                     </button>
-
                 </form>
-
             </div>
-
         </div>
     );
 };

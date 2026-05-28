@@ -861,9 +861,9 @@ function Item() {
                     /5({reviewSummaryMap[item.itemId]?.reviewCount||0})
                   </p>
 
-                  <p className="item-text">카테고리: {item.itemCategory}</p>
-                  <p className="item-text">상품 설명: {item.itemDetail}</p>
-                  <p className="item-text">상품 색상: {item.itemColor}</p>
+                  {/*<p className="item-text">카테고리: {item.itemCategory}</p>*/}
+                  {/*<p className="item-text">상품 설명: {item.itemDetail}</p>*/}
+                  {/*<p className="item-text">상품 색상: {item.itemColor}</p>*/}
                   <p className="item-text">
                     상품 가격: {formatPrice(item.itemPrice)}원
                   </p>
@@ -880,7 +880,7 @@ function Item() {
 
                   {/*판매 상태가 sell이 아니면 구매 또는 장바구니 담기 안됌. */}
                   <p className="item-text">
-                    {getSellStatusInfo(item).message}
+                    {/*{getSellStatusInfo(item).message}*/}
                   </p>
 
                   {!selectable && (
