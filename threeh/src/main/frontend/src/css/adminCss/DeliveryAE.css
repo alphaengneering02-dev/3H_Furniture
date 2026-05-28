@@ -94,11 +94,12 @@
 
 /* 국번 셀렉트 박스 */
 .phone-select {
-    width: 30%;
+    width: 32%; /* 30%에서 약간 늘림 */
+    min-width: 80px; /* 텍스트가 찌그러지지 않도록 최소 너비 보장 */
     height: 44px;
     border: 1px solid var(--admin-soft-border);
     border-radius: 8px;
-    padding: 0 10px;
+    padding: 0 25px 0 10px; /* 우측 화살표 공간 확보를 위해 패딩 수정 */
     font-size: 14px;
     color: var(--admin-brown);
     background-color: #fff;
@@ -114,6 +115,7 @@
 /* 분할 입력창 */
 .phone-input {
     flex: 1;
+    width: 0;
     height: 44px;
     border: 1px solid var(--admin-soft-border);
     border-radius: 8px;
