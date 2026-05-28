@@ -17,8 +17,16 @@ const Main = () => {
     const [totalItemList, setTotalItemList] = useState([]);
     const [bestItems, setBestItems] = useState([]);
 
+    //랭킹에 넘길 주문 목록_오현옥
+    const [orders, setOrders] = useState([]);
+    //랭킹에 넘길 배송기사 목록_오현옥
+    const [drivers,setDrivers] = useState([]);
+
     useEffect(() => {
         getItemList();
+        
+        //메인 랭킹용 데이터 조회
+        getRankingData();
     }, []);
 
 
@@ -50,6 +58,36 @@ const Main = () => {
 
         } catch (error) {
             console.error("[전체 상품리스트 조회 실패]\n", error);
+        }
+    };
+
+    //메인 랭킹 데이터 가져오기_오현옥
+    const getRankingData = async()=>{
+        try{
+            //주문 목록 가져오기
+            const orderRes = await axios.get(
+                `http://localhost:8080/admin/orders`,
+                {
+                    withCredentials: true,
+                }
+            );
+
+            setOrders(orderRes.data||[]);
+
+            //배송기사 목록 가져오기
+            //배송기사api 주소에 맞게 가져와.
+            const driverRes = await axios.get(
+                'http://localhost:8080/admin/list',
+                {
+                    withCredentials:true,
+                }
+            );
+            setDrivers(driverRes.data||[]);
+
+            console.log("메인 랭킹 주문 데이터:",orderRes.data);
+            console.log("메인 랭킹 기사 데이터:",driverRes.data);
+        }catch(error){
+            console.error("메인 랭킹 데이터 조회 실패",error);
         }
     };
 
@@ -221,7 +259,8 @@ const Main = () => {
                         <MainBestSection bestItems={bestItems} />
                     </div>
 
-                    <Ranking />
+                    {/*이게 랭킹.._ */}
+                    <Ranking orders={orders} items={drivers} />
                 </div>
             </div>
 
