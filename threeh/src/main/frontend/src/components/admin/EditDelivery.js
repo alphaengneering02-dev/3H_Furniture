@@ -23,16 +23,6 @@ const EditDelivery = () => {
         phoneLast: ''
     });
 
-    // 1. 기존 데이터 불러오기 및 임시 로그인 세팅
-    useEffect(() => {
-        // [임시 로그인] localStorage 세팅
-        if (!localStorage.getItem('memberId')) {
-            localStorage.setItem('memberId', '1'); 
-            localStorage.setItem('role', 'ADMIN');
-        }
-
-        const savedMemberId = localStorage.getItem('memberId');
-
         //로그인 완성시 admin1로 넣는거 완성하기
         const fetchDeliveryDetail = async () => {
             if (!deliveryId) return;
@@ -44,7 +34,7 @@ const EditDelivery = () => {
 
                 setFormData({
                     // 중요: 서버 데이터보다 localStorage의 ID를 우선순위로 두어 null 방지
-                    adminId: savedMemberId || data.admin?.adminId || '',
+                    adminId: data.admin?.adminId || '',
                     companyName: data.companyName || '',
                     deliveryName: data.deliveryName || '',
                     businessNo: data.businessNo || '',
@@ -62,8 +52,6 @@ const EditDelivery = () => {
             }
         };
 
-        fetchDeliveryDetail();
-    }, [deliveryId]);
 
     // 입력값 변경 핸들러
     const handleChange = (e) => {
@@ -81,7 +69,7 @@ const EditDelivery = () => {
         const fullDeliveryPhone = `${formData.phonePrefix}-${formData.phoneMiddle}-${formData.phoneLast}`;
         
         const updateData = {
-            adminId: formData.adminId, // 전송 시 adminId 포함
+            adminId: formData.adminId,
             companyName: formData.companyName,
             deliveryName: formData.deliveryName,
             businessNo: formData.businessNo,

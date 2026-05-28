@@ -317,16 +317,18 @@ const handleResetToWaiting = async () => {
     };
 
     // 1️⃣ 로그인 전 화면 (비로그인 상태)
+    // 1️⃣ 비로그인 상태 화면
     if (!isLoggedIn) {
         return (
             <div className="driver-body-wrapper">
+                <ToastContainer position="top-right" autoClose={2000} />
                 <div className="driver-login-section"> 
                     <h2 className="driver-login-title">기사 로그인</h2>
                     <input className="driver-login-input"
                         type="text"
                         inputMode="numeric"
                         maxLength={11}
-                        placeholder="전화번호(010 0000 0000)"
+                        placeholder="전화번호(01000000000)"
                         value={loginInfo.phone}
                         onChange={e => {
                             const onlyNums = e.target.value.replace(/[^0-9]/g, '');
@@ -338,45 +340,46 @@ const handleResetToWaiting = async () => {
                         type="text"
                         inputMode="numeric"
                         maxLength={4}
-                        placeholder="차량번호 (4자리)"
+                        placeholder="차량번호 뒤 4자리"
                         value={loginInfo.carSuffix}
                         onChange={e => {
                             const onlyNums = e.target.value.replace(/[^0-9]/g, '');
                             setLoginInfo({ ...loginInfo, carSuffix: onlyNums });
                         }} 
                     />
-                    {/* 버튼들을 가로로 나란히 배치하기 위한 wrapper */}
-                    <div style={{ display: 'flex', gap: '10px', width: '100%', marginTop: '10px' }}>
-                        <button className="driver-btn driver-btn-primary" style={{ flex: 1 }} onClick={handleLogin}>
-                            로그인
+                    <div className="driver-login-btn-row">
+                    <button className="driver-btn driver-btn-primary driver-login-submit" onClick={handleLogin}>
+                        로그인
+                    </button>
+                    <Link to="/admin" className="driver-link-flex">
+                        <button className="driver-btn driver-btn-gray driver-login-admin">
+                            관리자 메인 페이지
                         </button>
-                        <Link to="/admin" style={{ flex: 1 }}>
-                            <button className="driver-btn" style={{ width: '100%', backgroundColor: '#6c757d', color: '#fff' }}>
-                                관리자 메인
-                            </button>
-                        </Link>
-                    </div>
+                    </Link>
+                </div>
                 </div>
             </div> 
         );
     }
 
-    // 2️⃣ 로그인 후 화면
+    // 2️⃣ 로그인 완료 후 화면
     return (
         <div className="driver-body-wrapper">
+            <ToastContainer position="top-right" autoClose={2000} />
+            
             {/* 기사 상단 헤더 정보 바 */}
             <div className="driver-top-info-bar">
                 <div className="driver-top-info-list">
                     <p className="driver-info-text">
                         배송 파트너: <strong>{driver.deliveryName}</strong> 기사님 ({driver.deliveryCarNo})
                     </p>
-                    <div style={{ display: 'flex', gap: '8px' }}>
+                    <div className="driver-top-btn-group">
                         <Link to="/admin">
-                            <button className="driver-btn" style={{ padding: '6px 16px', fontSize: '12px', backgroundColor: '#6c757d', color: '#fff' }}>
+                            <button className="driver-btn driver-btn-gray-sm">
                                 관리자 메인
                             </button>
                         </Link>
-                        <button className="driver-btn" style={{ padding: '6px 16px', fontSize: '12px' }} onClick={handleLogout}>
+                        <button className="driver-btn driver-btn-sm" onClick={handleLogout}>
                             로그아웃
                         </button>
                     </div>
@@ -447,14 +450,14 @@ const handleResetToWaiting = async () => {
                 {acceptedOrders.length === 0 ? (
                     <p className="driver-empty-msg">수락 후 상차 대기 중인 주문이 없습니다.</p>
                 ) : (
-                    <div style={{ marginBottom: '20px' }}>
+                    <div className="driver-accepted-wrapper">
                         {acceptedOrders.map(order => (
                             <div key={order.orderId} className="driver-list-row">
-                                <span className="driver-order-id" style={{ fontSize: '14px' }}>주문번호: {order.orderId}</span>
-                                <span className="driver-order-addr" style={{ margin: 0, minHeight: 'auto' }}>{order.deliveryAddr}</span>
+                                <span className="driver-row-id">주문번호: {order.orderId}</span>
+                                <span className="driver-row-addr">{order.deliveryAddr}</span>
                             </div>
                         ))}
-                        <div style={{ marginTop: '20px' }}>
+                        <div className="driver-action-area">
                             <button className="driver-btn-primary" onClick={handleStartDelivery}>
                                 🚚 선택 목록 일괄 배송 출발 (상차 완료 확인)
                             </button>
@@ -482,19 +485,21 @@ const handleResetToWaiting = async () => {
                                             />
                                             <span className="driver-order-id">NO. {order.orderId}</span>
                                         </div>
-                                        <p className="driver-order-addr">{order.deliveryAddr}</p>
+                                        <div className="driver-card-body">
+                                            <p className="driver-order-addr-only">{order.deliveryAddr}</p>
+                                        </div>
                                     </div>
                                 );
                             })}
                         </div>
-                        <button className="driver-btn-primary" style={{ backgroundColor: '#1A1A1A' }} onClick={handlecomplete}>
+                        <button className="driver-btn-primary driver-btn-dark-complete" onClick={handlecomplete}>
                             ✅ 선택 주문 배송 완료 처리
                         </button>
                     </>
                 )}
 
                 {/* 4. 회수 목록 섹션 */}
-                <h2 className="driver-headline" style={{ marginTop: '40px' }}>🔄 회수 (교환 및 반품 수거 목록)</h2>
+                <h2 className="driver-headline driver-headline-pickup">🔄 회수 (교환 및 반품 수거 목록)</h2>
                 {pickupOrders.length === 0 ? (
                     <p className="driver-empty-msg">현재 예정된 교환/반품 회수 건이 없습니다.</p>
                 ) : (
@@ -504,15 +509,15 @@ const handleResetToWaiting = async () => {
                                 const isChecked = pickupCheckeds.includes(order.orderId);
                                 return (
                                     <div key={order.orderId} className={`driver-order-card ${isChecked ? 'checked' : ''}`}>
-                                        <div className="driver-card-header" style={{ backgroundColor: '#fff3cd' }}>
+                                        <div className="driver-card-header driver-header-pickup">
                                             <input
                                                 type="checkbox"
                                                 className="driver-checkbox"
                                                 checked={isChecked}
                                                 onChange={() => togglePickupSelect(order.orderId)}
                                             />
-                                            <span className="driver-order-id" style={{ color: '#856404' }}>NO. {order.orderId}</span>
-                                            <span className="driver-badge" style={{ backgroundColor: '#dc3545', color: '#fff' }}>
+                                            <span className="driver-order-id driver-id-pickup">NO. {order.orderId}</span>
+                                            <span className="driver-badge driver-badge-pickup">
                                                 {order.orderState === 'EXCHANGEorREFUND' ? '교환회수' : '반품회수'}
                                             </span>
                                         </div>
@@ -534,7 +539,7 @@ const handleResetToWaiting = async () => {
                 {/* 다음 배송 받기 대기 전환 상태 구역 */}
                 {shippingOrders.length === 0 && acceptedOrders.length === 0 && (
                     <div className="driver-reset-box">
-                        <p>💡 완료되지 않은 진행 중 배송 임무가 없습니다. 다음 업무를 인계받으시겠습니까?</p>
+                        <p className="driver-reset-text">💡 완료되지 않은 진행 중 배송 임무가 없습니다. 다음 업무를 인계받으시겠습니까?</p>
                         <button className="driver-btn-success" onClick={handleResetToWaiting}>
                             🔄 다음 배송 받기 (대기 상태 전환)
                         </button>

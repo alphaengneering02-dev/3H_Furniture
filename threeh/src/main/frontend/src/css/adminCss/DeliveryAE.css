@@ -1,200 +1,182 @@
 /* ==========================================
-   📦 1. 페이지 전체 레이아웃 및 컨테이너
+   배송 기사 개별 등록 페이지 전용 스타일
    ========================================== */
+
+/* 전체 배경 및 정렬 레이아웃 */
 .delivery-page {
     display: flex;
     justify-content: center;
-    align-items: center;
-    padding: 40px 20px;
-    background-color: #F8FAFC;
+    align-items: flex-start;
     min-height: 100vh;
+    background-color: #fcf9f5; /* 대시보드와 어우러지는 아주 연한 크림베이지 */
+    padding: 40px 20px;
+    box-sizing: border-box;
 }
 
+/* 폼을 감싸는 카드 컨테이너 */
 .delivery-container {
     width: 100%;
-    max-width: 600px;
-    background-color: #FFFFFF;
-    border: 1px solid #E2E8F0;
-    border-radius: 12px;
-    padding: 32px;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+    max-width: 540px; /* 너무 퍼지지 않게 중앙 집중형 폭 설정 */
+    background: #ffffff;
+    padding: 35px 40px;
+    border-radius: 14px;
+    box-shadow: 0 4px 16px rgba(74, 51, 36, 0.05); /* 은은한 브라운톤 음영 */
+    box-sizing: border-box;
 }
 
-/* 🏷️ 타이틀 스타일 */
+/* 페이지 메인 타이틀 */
 .delivery-title {
-    font-size: 24px;
-    font-weight: 700;
-    color: #1A202C;
-    margin-bottom: 24px;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--admin-brown);
+    margin-top: 0;
+    margin-bottom: 28px;
     text-align: center;
     letter-spacing: -0.5px;
 }
 
-
-/* ==========================================
-   📋 2. 폼 요소 및 입력 창 (Inputs)
-   ========================================== */
+/* 폼 내부 줄 박스 정렬 */
 .delivery-form {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 18px; /* 입력 폼 간의 간격 균등 분배 */
 }
 
+/* 입력 그룹 개별 카드 스타일 */
 .form-card {
     display: flex;
     flex-direction: column;
     gap: 8px;
+    width: 100%;
 }
 
+/* 라벨 스타일 */
 .form-label {
     font-size: 14px;
-    font-weight: 600;
-    color: #4A5568;
+    font-weight: 700;
+    color: var(--admin-brown);
+    padding-left: 2px;
 }
 
-/* 표준 공통 입력 창 */
+/* 기본 일반 텍스트 입력창 */
 .form-input {
     width: 100%;
-    padding: 10px 14px;
+    height: 44px;
+    border: 1px solid var(--admin-soft-border);
+    border-radius: 8px; /* 공통 8px 코너 반경 매칭 */
+    padding: 0 14px;
     font-size: 14px;
-    border: 1px solid #CBD5E0;
-    border-radius: 6px;
-    color: #2D3748;
-    background-color: #FFFFFF;
+    color: var(--admin-black-brown);
+    background-color: #fff;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
     box-sizing: border-box;
-    transition: all 0.2s ease;
 }
 
 .form-input::placeholder {
-    color: #A0AEC0;
+    color: #b0a096;
+    font-size: 13.5px;
 }
 
 .form-input:focus {
-    outline: none;
-    border-color: #3182CE;
-    box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.15);
+    border-color: var(--admin-caramel);
+    box-shadow: 0 0 0 3px rgba(198, 138, 97, 0.12); /* 카라멜 하이라이트 링 */
 }
 
-
-/* ==========================================
-   📞 3. 특수 입력 형태 (전화번호, 사업자번호 그룹)
-   ========================================== */
+/* 📞 전화번호 & 사업자번호 삼분할 그룹 */
 .phone-group {
     display: flex;
     align-items: center;
     gap: 8px;
     width: 100%;
+    box-sizing: border-box;
 }
 
+/* 국번 셀렉트 박스 */
 .phone-select {
-    padding: 10px;
+    width: 30%;
+    height: 44px;
+    border: 1px solid var(--admin-soft-border);
+    border-radius: 8px;
+    padding: 0 10px;
     font-size: 14px;
-    border: 1px solid #CBD5E0;
-    border-radius: 6px;
-    color: #2D3748;
-    background-color: #FFFFFF;
+    color: var(--admin-brown);
+    background-color: #fff;
+    outline: none;
     cursor: pointer;
-    min-width: 80px;
+    box-sizing: border-box;
 }
 
+.phone-select:focus {
+    border-color: var(--admin-caramel);
+}
+
+/* 분할 입력창 */
 .phone-input {
     flex: 1;
-    padding: 10px 12px;
+    height: 44px;
+    border: 1px solid var(--admin-soft-border);
+    border-radius: 8px;
+    padding: 0 10px;
     font-size: 14px;
-    border: 1px solid #CBD5E0;
-    border-radius: 6px;
-    color: #2D3748;
     text-align: center;
-    min-width: 60px;
-}
-
-.phone-input:focus, .phone-select:focus {
+    color: var(--admin-black-brown);
     outline: none;
-    border-color: #3182CE;
+    transition: border-color 0.2s ease;
+    box-sizing: border-box;
 }
 
+.phone-input::placeholder {
+    color: #ccc;
+    font-size: 13px;
+}
+
+.phone-input:focus {
+    border-color: var(--admin-caramel);
+}
+
+/* 하이픈 기호 */
 .phone-dash {
-    color: #718096;
-    font-weight: bold;
-}
-
-
-/* ==========================================
-   🛑 4. 읽기 전용 (Readonly) 및 섹션 구분 타이틀
-   ========================================== */
-.readonly-section {
-    opacity: 0.85;
-}
-
-.readonly-box {
-    background-color: #EDF2F7 !important;
-    color: #4A5568 !important;
-    border-color: #E2E8F0 !important;
-    cursor: not-allowed;
+    color: var(--admin-soft-border);
     font-weight: 600;
+    font-size: 14px;
 }
 
-/* 중간 섹션 경계선 및 타이틀 (Add용 배너 / Edit용 h3 공통) */
-.business-section, 
-.business-section-title {
-    margin-top: 16px;
-    padding-top: 16px;
-    border-top: 2px dashed #E2E8F0;
-    font-size: 16px;
-    font-weight: 700;
-    color: #2B6CB0;
-    letter-spacing: -0.3px;
-}
-
-
-/* ==========================================
-   🔘 5. 하단 버튼 컨트롤 그룹
-   ========================================== */
-.button-group {
-    display: flex;
-    gap: 12px;
-    margin-top: 12px;
-}
-
-/* [등록하기], [수정완료] 메인 버튼 */
-.submit-btn {
-    flex: 2;
-    padding: 12px;
+/* 🏢 사업자 정보 중간 브레이크 섹션 타이틀 */
+.business-section {
     font-size: 15px;
-    font-weight: 600;
-    background-color: #3182CE;
-    color: #FFFFFF;
+    font-weight: 800;
+    color: var(--admin-deep-caramel);
+    background-color: var(--admin-cream);
+    padding: 10px 16px;
+    border-radius: 8px;
+    margin-top: 14px;
+    margin-bottom: 4px;
+    border-left: 4px solid var(--admin-caramel); /* 왼쪽에 포인트 바 부여 */
+}
+
+/* 🚀 최종 등록하기 제출 버튼 */
+.submit-btn {
+    width: 100%;
+    height: 48px;
     border: none;
-    border-radius: 6px;
+    background: var(--admin-caramel);
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 700;
+    border-radius: 8px; /* 모서리 8px 통일 */
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    margin-top: 20px;
+    transition: background 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+    box-shadow: 0 3px 6px rgba(198, 138, 97, 0.15);
 }
 
 .submit-btn:hover {
-    background-color: #2B6CB0;
+    background: var(--admin-deep-caramel);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(138, 86, 54, 0.2);
 }
 
-/* [취소] 서브 버튼 */
-.cancel-btn {
-    flex: 1;
-    padding: 12px;
-    font-size: 15px;
-    font-weight: 600;
-    background-color: #FFFFFF;
-    color: #4A5568;
-    border: 1px solid #CBD5E0;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.cancel-btn:hover {
-    background-color: #EDF2F7;
-    color: #2D3748;
-}
-
-/* 등록 페이지 단독 등록 버튼 호환성 대응 */
-form > .submit-btn {
-    width: 100%;
-    margin-top: 12px;
+.submit-btn:active {
+    transform: translateY(0);
 }
