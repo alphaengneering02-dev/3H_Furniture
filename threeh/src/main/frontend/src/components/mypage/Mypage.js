@@ -609,7 +609,7 @@ const Mypage = () => {
                                                     </div>
                                                 </div>
                                             ) : (
-                                                <div style={{ display: "flex", gap: "6px" }}>
+                                                <div style={{ display: "flex", gap: "8px", width: "100%", justifyContent: "flex-end", alignItems: "center", marginTop: "15px", boxSizing: "border-box" }} className="mypage-review-btn-row">
                                                     <button className="mypage-action-btn" onClick={() => handleEditReviewStart(review)}>수정하기</button>
                                                     <button className="mypage-action-btn" onClick={() => handleDeleteReview(review.reviewId)} style={{ color: "red" }}>삭제</button>
                                                 </div>
@@ -623,7 +623,7 @@ const Mypage = () => {
 
                             {/* 탈퇴 기능 최하단 배치 */}
                             <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '60px' }}>
-                                <span onClick={handleDelete} style={{ fontSize: '12px', color: '#999', cursor: 'pointer', textDecoration: 'underline' }}>회원 탈퇴하기</span>
+                                <span onClick={handleDelete} style={{ fontSize: '17px', color: '#ff4d4f', cursor: 'pointer', textDecoration: 'underline' }}>회원 탈퇴하기</span>
                             </div>
                         </div>
                     </main>

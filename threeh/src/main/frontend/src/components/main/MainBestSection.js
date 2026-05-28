@@ -3,12 +3,13 @@ import { getUrl } from '../../utils/BackendPath';
 //import '../../css/mainPageCss/mainBestSection.css';
 
 function MainBestSection({ bestItems }) {
-    const medals = ['🥇', '🥈', '🥉'];
+    
+    console.log(bestItems);
 
     return (
         <div className="best-section">
             <div className="best-section-header">
-                <h2 className="best-section-title">이번 달 베스트 상품</h2>
+                <h2 className="best-section-title">베스트 상품</h2>
                 <p className="best-section-sub">가장 많이 선택받은 인기 상품을 만나보세요</p>
             </div>
 
@@ -18,7 +19,7 @@ function MainBestSection({ bestItems }) {
                 ) : (
                     bestItems.map((item) => (
                         <div className="best-card" key={item.rank}>
-                            <div className="best-medal">{medals[item.rank - 1]}</div>
+                            <div className="best-medal">{item.rank}</div>
                             <div className="best-img-box">
                                 {item.image
                                     ? <img src={getUrl(item.image)} alt={item.name} className="best-img"/>
