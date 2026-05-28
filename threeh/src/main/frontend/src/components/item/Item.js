@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import '../../css/itemPageCss/itemPage.css';
 import IconButton from "@mui/material/IconButton";
@@ -37,6 +37,11 @@ function Item() {
   //판매상태 필터
   const [sellStatusFilter,setSellStatusFilter] = useState("");
 
+  //메인페이지랑 연결되는 필터링
+  const [searchParams, setSearchParams] = useSearchParams();
+  const categoryParam = searchParams.get("category") || "";
+  const [categoryFilter,setCategoryFilter] = useState(categoryParam);
+
   //페이징
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -46,6 +51,7 @@ function Item() {
   //페이지 번호를 5개씩 보여주기
   const PAGE_BLOCK_SIZE = 5;
 
+  //로그인 유저 롤
   const getLoginUser = () => {
     try {
       //sesstionStroage에 저장된 로그인 사용자 정보 가져오기
@@ -126,6 +132,12 @@ function Item() {
   }, [selectedItems]);
 
 
+  //메인에서 사용할 카테고리 필터 함수
+  useEffect(()=>{
+    setCategoryFilter(categoryParam);
+    setCurrentPage(1);
+  },[categoryParam]);
+
   //상품 최종 가격 계산
   //백엔드에서 itemFinalPrice가 오면 그 값을 사용
   //없으면 원가-할인금액으로 계산
@@ -141,6 +153,7 @@ function Item() {
   const formatPrice = (price) => {
     return Number(price || 0).toLocaleString();
   };
+
 
   //상품 선택 가능 여부 확인
   //재고가 없거나 판매 상태가 SELL이 아니면 선택 불가
@@ -195,6 +208,7 @@ function Item() {
     }
  };
 
+ //선택할 수 있는 아이템
  const canSellectItem = (item,showAlert =false)=>{
     const sellStatusInfo = getSellStatusInfo(item);
 
@@ -224,6 +238,7 @@ function Item() {
     }
   };
 
+  //상품 평점
   const getAllReviewSummaries = async()=>{
     try{
       const response = await axios.get(
@@ -682,14 +697,19 @@ function Item() {
     sessionStorage.removeItem(SELECTED_ITEMS_KEY);
   };
 
-    //상품 목록 정렬 / 필터 처리
+  //상품 목록 정렬 / 필터 처리/카테고리도 필터_메인과 연결
   const sortedItems = [...items]
     .filter((item) => {
-      if (!sellStatusFilter) {
-        return true;
-      }
 
-      return item.itemSellStatus === sellStatusFilter;
+      //메인페이지에서 /item?category로 넘어온 경우
+      if(categoryFilter && item.itemCategory !== categoryFilter){
+        return false;
+      }
+      //판매상태 필터
+      if(sellStatusFilter && item.itemSellStatus !== sellStatusFilter){
+        return false;
+      }
+      return true;
     })
     .sort((a, b) => {
       const aFinalPrice = getFinalPrice(a);
@@ -766,6 +786,11 @@ function Item() {
     <div className="item-page">
       {/*상품 목록 페이지 제목 */}
       <h1 className="item-title">상품 목록</h1>
+      {categoryFilter&& (
+        <p className="item-current-category">
+          현재 카테고리: <strong>{categoryFilter}</strong>
+        </p>
+      )}
 
       {/*등록된 상품 개수 표시 */}
       <div className="item-count-box">
