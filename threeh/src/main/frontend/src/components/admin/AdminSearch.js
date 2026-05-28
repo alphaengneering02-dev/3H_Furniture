@@ -75,7 +75,6 @@ const AdminSearch = ({
                 type="button"
                 onClick={handleSearchSubmit}
                 className="admin-search-submit-btn-block"
-                style={{ cursor: 'pointer' }}
             >
                 검색하기
             </button>

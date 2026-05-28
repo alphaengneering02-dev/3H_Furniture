@@ -282,7 +282,7 @@ const fetchDeliveries = async () => {
                     <div className="admin-panel-buttons">
                         {/* 개별 등록 */}
                         <Link to="/admin/delivery" className="admin-full-width-del">
-                            <button className="admin-menu-btn type-individual">개별 기사 직접 등록</button>
+                            <button className="admin-add-driver-btn type-individual">개별 기사 직접 등록</button>
                         </Link>
                         
                         {/* 단체 등록 영역 */}
@@ -306,7 +306,7 @@ const fetchDeliveries = async () => {
 {orders && orders.length > 0 && items && items.length > 0 ? (
     <Ranking orders={orders} items={items} />
 ) : (
-    <div className="admin-ranking-card-box" style={{ padding: '20px', textAlign: 'center', backgroundColor: '#fff', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+    <div className="admin-ranking-card-box">
         📊 실시간 대시보드 랭킹 데이터를 집계하고 있습니다...
     </div>
 )}
@@ -329,23 +329,23 @@ const fetchDeliveries = async () => {
                 />
 
 <div className="admin-content-box">
-    
-    <div className="admin-content-title-bar">
-        {/* h3 태그와 버튼이 가로로 배치되도록 구성 */}
-        <div className="admin-content-title-bar-flex">
-            <h3>배송 파트너</h3>         
+
+    <div className="admin-content-title-bar admin-driver-header">
+
+        <div className="admin-driver-left">
+            <h3>배송 파트너</h3>
             <Link to="/admin/driver">
                 <button className="admin-move-page-btn">
-                    기사 페이지 이동
+                    배송 페이지 이동
                 </button>
             </Link>
         </div>
 
-        <div className="admin-header-actions">          
-           
-            
+        <div className="admin-driver-right">
             <Link to="/admin/delivery">
-                <button className="admin-add-driver-btn">기사 추가</button>
+                <button className="admin-add-driver-btn">
+                    배송 파트너 추가
+                </button>
             </Link>
         </div>
     </div>
@@ -376,20 +376,20 @@ const fetchDeliveries = async () => {
                             <td>{item.deliveryName}</td>
                             <td>{item.deliveryPhone}</td>
                             <td>
-                                <b style={{ color: item.status === 'WAITING' ? 'blue' : 'black' }}>
+                               <b className={`driver-status-text ${item.status === 'WAITING' ? 'status-waiting' : ''}`}>
                                     {item.status}
                                 </b>
                             </td>
                             <td>
                                 <button 
-                                    onClick={() => handleEditDelivery(item.deliveryId)}
-                                    style={{ marginRight: '5px', padding: '2px 8px', cursor: 'pointer' }}
+                                onClick={() => handleEditDelivery(item.deliveryId)}
+                                className="admin-table-action-btn btn-edit"
                                 >
                                     수정
                                 </button>
                                 <button 
-                                    onClick={() => handleDeleteDelivery(item.deliveryId)}
-                                    style={{ padding: '2px 8px', color: 'red', cursor: 'pointer' }}
+                                onClick={() => handleDeleteDelivery(item.deliveryId)}
+                                className="admin-table-action-btn btn-delete"
                                 >
                                     삭제
                                 </button>
