@@ -86,6 +86,13 @@ public class ReviewController {
         return ResponseEntity.ok(reviews);
     }
 
+
+    //리뷰평점순 나열
+    @GetMapping("/summary/all")
+    public ResponseEntity<Map<Long,ReviewSummaryDTO>> getAllReviewSummaries(){
+        return ResponseEntity.ok(reviewService.getAllReviewSummaries());
+    }
+
     // 특정 상품의 평균 별점 / 리뷰 개수 조회
     // Item.js, ItemDetail.js에서 사용
     @GetMapping("/summary/{itemId}")

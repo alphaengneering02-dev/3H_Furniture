@@ -85,7 +85,7 @@ function OrderItemInfo( { orderData, orderType, zipCode, address, deliveryDate, 
                 
                 if(!user){
                     navigate("/login");
-                    return;
+                    return null;
                 }
 
                  const orderItems = isActuallyCart

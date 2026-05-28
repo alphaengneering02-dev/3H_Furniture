@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.cmyk.threeh.domain.Review;
+import com.cmyk.threeh.dto.ReviewSummaryDTO;
 
 public interface ReviewRepository extends JpaRepository<Review,Long> {
 
@@ -29,4 +30,13 @@ public interface ReviewRepository extends JpaRepository<Review,Long> {
     // 상품별 리뷰 개수 조회
     @Query("SELECT COUNT(r) FROM Review r WHERE r.item.itemId = :itemId")
     Long getReviewCountByItemId(@Param("itemId") Long itemId);
+
+    //리뷰 평점 조회
+    @Query("select new com.cmyk.threeh.dto.ReviewSummaryDTO(" +
+       "r.item.itemId, " +
+       "coalesce(avg(r.reviewScore), 0), " +
+       "count(r)) " +
+       "from Review r " +
+       "group by r.item.itemId")
+    List<ReviewSummaryDTO> getAllReviewSummaries();
 }
