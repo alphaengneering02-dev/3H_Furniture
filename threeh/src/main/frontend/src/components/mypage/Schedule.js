@@ -3,6 +3,8 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '../../hook/useToast';
 import { ToastContainer, toast } from "react-toastify";
+import Header from '../main/Header';
+import Footer from "../main/Footer";
 
 const Schedule = () => {
     const [orders, setOrders] = useState([]);
@@ -46,46 +48,83 @@ const Schedule = () => {
 
      console.log(orders)
 
-    return (
-        <div className="schedule-container" style={{ padding: '20px' }}>
-            <h2 className='mypage-schedule-title'>구매 확정된 내역</h2>
-            <div className='mypage-schedule-lis'>
-                {orders
-                    // [조장님 지시] 확정된(PURCHASED) 주문만 필터링하여 보여줌
-                    .filter(order => order.orderState === 'PURCHASED')
-                    .map(order => (
-                    
-                        <div key={order.orderId} className='mypage-schedule-card'>
-                            <div className='mypage-schedule-header'>
-                                <p className='mypage-schedule-order-id'>주문번호: {order.orderId}</p>
-                                <p>상태: <strong>{order.orderState}</strong></p>
-                            </div>
-                            <div className='mypage-schedule-card-body'>
-                                <div className='schedule-row'>
-                                    <p className='mypage-schedule-label'>상품명 </p>
-                                    <span className='mypage-schedule-value'>{order.orderItems[0].itemName}</span>
-                                </div>
-                            
-                            
-                                <div className='schedule-row'>
-                                    <p className='mypage-schedule-label'>수량 </p>
-                                    <span className='mypage-schedule-value'>{order.orderItems[0].count}개</span>
-                                </div>
-                                <div className='schedule-row'>
-                                    <p className='mypage-schedule-label'>가격</p>
-                                    <span className='mypage-schedul-price'>{order.orderItems[0].orderPrice}원</span>
-                                </div>
-                                
-                                <p style={{ color: 'green' }}>구매가 확정된 상품입니다.</p>
-                            </div>
-                        </div>
-                    ))
-                }
-                    {orders.filter(o => o.orderState === 'PURCHASED').length === 0 && (
-                    <p className="mypage-schedule-empty">구매 확정된 내역이 없습니다.</p>
-                )}
+        return (
+        // [아침 규격 통일] 페이지 전체 최상위 루트 가동
+        <div className="order-page-global-root">
+            
+            {/* 1. 상단 공용 헤더 영역 */}
+            <div className='main-header'>
+                <Header/>
             </div>
-        </div>
+
+            {/* 토스트 알림 컨테이너 시스템 안전 상주 */}
+            <ToastContainer
+                position="top-center"
+                autoClose={1800}
+                hideProgressBar={false}
+                newestOnTop={true}
+                closeOnClick
+                pauseOnHover
+                theme="light"
+            />
+
+            {/* 2. 중앙 컨텐츠 메인 랩퍼 (가로폭 960px 한계선 잠금) */}
+            <div className="schedule-container" style={{ padding: '40px 20px 80px 20px', maxWidth: '960px', margin: '0 auto', boxSizing: 'border-box' }}>
+                
+                {/* 섹션 대제목 */}
+                <h2 className='mypage-schedule-title' style={{ fontSize: '20px', fontWeight: '700', color: 'var(--black-brown)', marginBottom: '25px', letterSpacing: '-0.5px' }}>
+                    구매 확정된 내역
+                </h2>
+                
+                {/* 💡 [구조 개혁 핵심] 상자들을 세로로 쌓지 않고, 가로(row) 방향으로 나란히 정렬시키는 가로 흐름 플렉스 트랙 가동 */}
+                <div className='mypage-schedule-lis' style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: '20px', width: '100%', boxSizing: 'border-box' }}>
+                    {orders
+                        // [조장님 지시] 확정된(PURCHASED) 주문만 필터링하여 보여줌
+                        .filter(order => order.orderState === 'PURCHASED')
+                        .map(order => (
+                        
+                            /* 💡 [너비 고정] 상자가 화면 전체를 먹지 않고 가로로 나란히 붙을 수 있도록 딱 이쁜 290px 너비로 컴팩트하게 축소 조정 */
+                            <div key={order.orderId} className='mypage-schedule-card' style={{ margin: '0', width: '290px', minWidth: '290px', backgroundColor: 'var(--content-bg)', border: '1px solid var(--soft-border)', borderRadius: '12px', padding: '20px', boxSizing: 'border-box', boxShadow: '0 4px 12px rgba(74, 51, 36, 0.02)' }}>
+                                <div className='mypage-schedule-header' style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--soft-border)', paddingBottom: '10px', marginBottom: '15px' }}>
+                                    <p className='mypage-schedule-order-id' style={{ margin: '0', fontWeight: '700', color: 'var(--brown)', fontFamily: "'Playfair Display', serif" }}>주문번호: {order.orderId}</p>
+                                    <p style={{ margin: '0', fontSize: '13px' }}>상태: <strong style={{ color: 'var(--caramel)' }}>{order.orderState}</strong></p>
+                                </div>
+                                <div className='mypage-schedule-card-body' style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                    <div className='schedule-row' style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                        <p className='mypage-schedule-label' style={{ margin: '0', color: '#888888', fontSize: '13px' }}>상품명</p>
+                                        <span className='mypage-schedule-value' style={{ fontWeight: '700', color: 'var(--black-brown)', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', maxWidth: '160px' }}>{order.orderItems[0].itemName}</span>
+                                    </div>
+                                
+                                    <div className='schedule-row' style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                        <p className='mypage-schedule-label' style={{ margin: '0', color: '#888888', fontSize: '13px' }}>수량</p>
+                                        <span className='mypage-schedule-value' style={{ color: 'var(--black-brown)' }}>{order.orderItems[0].count}개</span>
+                                    </div>
+                                    <div className='schedule-row' style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
+                                        <p className='mypage-schedule-label' style={{ margin: '0', color: '#888888', fontSize: '13px' }}>가격</p>
+                                        <span className='mypage-schedul-price' style={{ fontWeight: '700', color: 'var(--caramel)' }}>{order.orderItems[0].orderPrice.toLocaleString()}원</span>
+                                    </div>
+                                    
+                                    <p style={{ color: '#B8783E', fontWeight: '700', margin: '8px 0 0 0', fontSize: '13px', textAlign: 'right' }}>✓ 구매가 확정된 상품입니다.</p>
+                                </div>
+                            </div>
+                        ))
+                    }
+                </div>
+
+                {/* 데이터 예외 처리 구역 */}
+                {orders.filter(o => o.orderState === 'PURCHASED').length === 0 && (
+                    <div style={{ padding: '80px 0', textAlign: 'center', backgroundColor: 'var(--content-bg)', border: '1px solid var(--soft-border)', borderRadius: '12px', width: '100%' }}>
+                        <p className="mypage-schedule-empty" style={{ margin: '0', color: '#999', fontSize: '14px' }}>구매 확정된 내역이 없습니다.</p>
+                    </div>
+                )}
+            </div> {/* [종료] schedule-container */}
+
+            {/* 3. 하단 공용 푸터 영역 */}
+            <div className="main-mypage-footer">
+                <Footer/>
+            </div>
+
+        </div> // [종료] order-page-global-root
     );
 };
 

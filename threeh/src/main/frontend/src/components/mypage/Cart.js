@@ -22,7 +22,7 @@ const Cart = () => {
         if (window.confirm("로그아웃 하시겠습니까?")) {
             sessionStorage.removeItem('user');
             setMember(null);
-            alert("로그아웃 되었습니다");
+            info("로그아웃 되었습니다");
             navigate('/');
         }
     };
@@ -41,7 +41,7 @@ const Cart = () => {
                 console.error("유저 오브젝트 내에 로그인 id 속성이 없습니다");
                 sessionStorage.removeItem('user');
                 setMember(null);
-                alert("로그인 정보가 올바르지 않습니다. 다시 로그인해주세요");
+                warn("로그인 정보가 올바르지 않습니다. 다시 로그인해주세요");
                 navigate('/login');
                 return;
             }
@@ -67,20 +67,20 @@ const Cart = () => {
                     if (err.response && err.response.status === 401) {
                         // sessionStorage.removeItem('user');
                         // setMember(null);
-                        alert("세션이 만료되었습니다. 다시 로그인해주세요.");
+                        warn("세션이 만료되었습니다. 다시 로그인해주세요.");
                         navigate('/login'); // 로그인 유도 추가
                     } else {
                         // console.log("네트워크 장애로 인한 세션 강제 보존 및 테스트 데이터 바인딩");
                         // setCartItems([
                         //     { cartItemId: 1, itemName: "테스트용 소파", count: 1, orderPrice: 50000 }
                         // ]);
-                         alert("시스템 오류");
+                         error("시스템 오류");
                     }
                 });
                 
         } else {
             setMember(null);
-            alert("로그인이 필요한 서비스입니다.");
+            info("로그인이 필요한 서비스입니다.");
             navigate('/login');
         }
     }, [navigate]);
@@ -115,17 +115,17 @@ const Cart = () => {
         if (window.confirm(`${selectedIds.length}개의 상품을 정말 삭제하시겠습니까?`)) {
              try {
                 await axios.post(`/api/Member/cart/delete/${cartItemId}`, {}, {withCredentials:true})
-                alert("삭제되었습니다");
+                info("삭제되었습니다");
                 setCartItems(cartItems.filter(item => (item.cartItemId || item.cartItemId) !== cartItemId));
              }catch (err) {
-                alert("삭제 처리 실패");
+                warn("삭제 처리 실패");
              }    
         }
     };
 
     //선택 삭제 기능(전체 체크박스 혹은 선택된 아이템 삭제용)
     const deleteSelectedItems = async () => {
-        if(selectedIds.length === 0) return alert("삭제할 상품을 선택해주세요");
+        if(selectedIds.length === 0) return info("삭제할 상품을 선택해주세요");
 
         if(window.confirm(`${selectedIds.length}개의 상품을 삭제하시겠습니까?`)) {
             try {
@@ -134,13 +134,13 @@ const Cart = () => {
                         axios.post(`/api/Member/cart/delete/${id}`,{},{withCredentials:true})
                     )
                 )
-                alert("선택한 상품이 삭제되었습니다");
+                info("선택한 상품이 삭제되었습니다");
                 setCartItems(prev => prev.filter(item =>
                     !selectedIds.includes(item.cartItemId || item.cartItemId)
                 ));
                 setSelectedIds([]); //체크박스 초기화
             }catch (err) {
-                alert("일부 상품 삭제에 실패했습니다.");
+                warn("일부 상품 삭제에 실패했습니다.");
             }
         }
     }
@@ -193,7 +193,7 @@ const Cart = () => {
     // 주문하기 (조장님 미션 경로 이동 및 state 복사 토스)
     const handleOrder = () => {
          // 수정/추가  장바구니 전체 수량이 아니라, '현재 체크박스가 켜진 선택 상품'이 존재하는지 유효성 검증
-        if (selectedIds.length === 0) return alert("주문할 상품을 선택해주세요.");
+        if (selectedIds.length === 0) return info("주문할 상품을 선택해주세요.");
         
         //선택한 물픔이 주문으로 넘어가게끔 수정
         const targetItems = cartItems.filter(item => 
@@ -223,21 +223,19 @@ const Cart = () => {
         })
         .catch(err => {
             console.error("주문 토스 처리 실패:",err);
-            alert("주문 페이지 이동 중 오류가 발생했습니다")
+            warn("주문 페이지 이동 중 오류가 발생했습니다")
         })
     };
 
        return (
     /* 🚨 조원분 지시 규칙 수혈을 위해 가장 최상단 래퍼 감싸기 */
-    <div className="main-body-wrapper">
-        
-        {/* ========================================================= */}
-        {/* 🤎 [통일 규격] 조원분의 실제 검색/GNB 기능이 담긴 글로벌 헤더      */}
-        {/* ========================================================= */}
-        {/* ⚡ 기존의 하드코딩 <header>...</header> 전체를 지우고 실제 기능 컴포넌트 1줄로 교체 완료 */}
-        <Header />
+    <div className="order-page-global-root">
+            {/* ========================================================= */}
+            {/* [1구역 완성] 장바구니 방식 그대로! 공용 Header 컴포넌트 1줄 장착 */}
+            {/* ========================================================= */}
+            <Header />
 
-        <ToastContainer
+            <ToastContainer
                 position="top-center"
                 autoClose={1800}
                 hideProgressBar={false}
@@ -255,7 +253,7 @@ const Cart = () => {
             <div style={{ display: 'flex' }}>
                 {/* 📌 [사이드바 완벽 싱크] 장바구니 목록 active 하이라이트 활성화 상주 */}
                 <aside className="mypage-sidebar">
-                    <button className="sidebar-btn" onClick={() => navigate('/mypage')}>추가될기능/구매확정내역</button>
+                    <button className="sidebar-btn" onClick={() => navigate('/mypage')}>구매확정내역</button>
                     <button className="sidebar-btn" onClick={() => navigate('/cart/return')}>교환 및 반품</button>
                     <button className="sidebar-btn active" style={{ color: '#8C7A6B', fontWeight: 'bold' }} onClick={() => navigate('/cart')}>장바구니 목록</button>
                 </aside>
@@ -355,10 +353,9 @@ const Cart = () => {
         )}
 
             {/* ========================================================= */}
-        {/* 🤎 [통일 규격] 조원분의 실제 기능이 담긴 글로벌 푸터 컴포넌트   */}
-        {/* ========================================================= */}
-        {/* ⚡ 기존의 긴 하드코딩 footer 구역을 지우고 진짜 컴포넌트 1줄로 교체 완료 */}
-        <Footer />
+            {/* [푸터 완성] 장바구니 방식 그대로! 진짜 공용 Footer 컴포넌트 1줄 장착 */}
+            {/* ========================================================= */}
+            <Footer />
 
     </div> /* 🚨 최상단 main-body-wrapper 축을 완전히 닫아주는 최종 대칭 마감 괄호 */
   );
