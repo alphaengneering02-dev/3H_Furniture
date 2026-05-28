@@ -26,7 +26,9 @@ function Order(props) {
 
     const user = sessionStorage.getItem("user");
     const userId = user ? JSON.parse(user) : null;
-    const saveAddress = JSON.parse(localStorage.getItem(`addresses_${userId.id}`)) || [];
+    const saveAddress = userId
+    ? (JSON.parse(localStorage.getItem(`addresses_${userId.id}`)) || [])
+    : [];
     const defaultAddress = saveAddress.find(addr => addr.addressName === "기본 배송지");
 
     // console.log("유저 정보", user);
@@ -41,30 +43,23 @@ function Order(props) {
     const { success, error: toastError, warn, info } = useToast();
   
 
-    if(!user) {
-        warn("잘못된 접근이거나 세션이 만료되었습니다.");
-        navigate('/login');
-    }
+   
 
     console.log(location);
 
     const { orderItems, fromCart } = location.state || {};
 
     console.log("주문 아이템 정보", orderItems);
+    // if(!userId) {
+    //         warn("잘못된 접근이거나 세션이 만료되었습니다.");
+    //         navigate('/login');
+    //         return;
+    // }
 
     useEffect(() => {
 
-            // if (defaultAddress) {
-            //     setZipcode(defaultAddress.zipCode || '');
-            //     setAddress(defaultAddress.address || '');
-            //     setDetailedAddress(defaultAddress.detail || '');
-            // }
 
         if(fromCart && orderItems){
-
-            
-
-            
 
             if (!orderItems) {
                 console.log("주문할 아이템 ID가 존재하지 않습니다.");
@@ -136,6 +131,7 @@ function Order(props) {
         }
     }, [itemId, location.state]);
 
+    //if (!userId) return;
     console.log("보낼 상품 정보:", orderData);
 
     
