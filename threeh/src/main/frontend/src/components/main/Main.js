@@ -1,11 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from './Header';
 import Main_mainBanner from './Main_mainBanner';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
-import Item from '../item/Item';
 import Ranking from '../admin/Ranking';
-import imgPath from '../../utils/BackendPath';
 
 //Main 전용 CSS 임포트
 import '../../css/mainPageCss/main.css';
@@ -19,10 +16,6 @@ const Main = () => {
     //전체 상품리스트 객체
     const [totalItemList, setTotalItemList] = useState([])
     const [bestItems, setBestItems] = useState([]);
-
-    //코딩 추가_ 오현옥
-    const [selectedCategory, setSelectedCategory] = useState("");
-    const itemSectionRef = useRef(null);
 
     useEffect(() => {
         getItemList();
@@ -103,14 +96,12 @@ const Main = () => {
         }
     }
 
-
     return (
         <div>
             {/* Header 영역 */}
             <div className="main-header">
                 <Header/>
             </div>
-
 
             <div className="main-body-wrapper">
                 {/* Contents 영역 */}
@@ -122,12 +113,11 @@ const Main = () => {
 
                     <div>
                         <MainCategory/>
-                    </div>
-
-                  
-
+                    </div>                
+                    
                     <div className="main-item-section">
-                        <Main_itemList totalItemList={totalItemList}/>  {/* 상품 목록(카드 형식) */}
+                        <Main_itemList totalItemList={totalItemList}/>{/* 상품 목록(카드 형식) */}
+
                     </div>
 
                     <div>

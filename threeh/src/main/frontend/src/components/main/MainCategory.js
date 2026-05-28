@@ -21,13 +21,13 @@ function MainCategory(props) {
     //슬라이드가 자동으로 넘어가는 함수
     useEffect(() => {
         setInterval(handleNext, 6000)
-    }, [])
+    }, []);
 
     const handleNext = () => {
         setCurrentIndex(prexIndex => 
             prexIndex===slides.length-1 ? 0 : prexIndex+1
-        )
-    }
+        );
+    };
 
 
 
@@ -38,13 +38,13 @@ function MainCategory(props) {
             {/* 크기 조정은 css로  */}
             <div className='main-category-imgsection-contents'>
                 <div className='main-category-imgsection-box'>
-                    <Link className='livingroom'>
+                    <Link className='livingroom' to="/item?category=거실">
                         <h3>거실</h3>
                         <p>미드센츄리 모던디자인 거실가구</p>
                     </Link>
-                    <Link className='bedroom'>
+                    <Link className='bedroom'to="/item?category=침실">
                         <h3>침실</h3>
-                        <p>미드센츄리 모던디자인 거실가구</p>
+                        <p>미드센츄리 모던디자인 침실가구</p>
                     </Link>
                 </div>
 
@@ -96,13 +96,13 @@ function MainCategory(props) {
                 </div>
                 
                 <div className='main-category-imgsection-box'>
-                    <Link className='kitchen'>
+                    <Link className='kitchen' to="/item?category=주방">
                         <h3>주방</h3>
-                        <p>미드센츄리 모던디자인 거실가구</p>
+                        <p>미드센츄리 모던디자인 주방가구</p>
                     </Link>
-                    <Link className='toilet'>
+                    <Link className='toilet' to="/item?category=욕실">
                         <h3>욕실</h3>
-                        <p>미드센츄리 모던디자인 거실가구</p>
+                        <p>미드센츄리 모던디자인 욕실가구</p>
                     </Link>
                 </div>
             </div>
