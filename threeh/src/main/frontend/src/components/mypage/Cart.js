@@ -6,6 +6,7 @@ import '../../css/myPageCss/cart.css';
 import { useToast } from '../../hook/useToast';
 import Header from '../main/Header';
 import Footer from "../main/Footer";
+import { ToastContainer, toast } from "react-toastify";
 
 const Cart = () => {
     const navigate = useNavigate();
@@ -235,6 +236,16 @@ const Cart = () => {
         {/* ========================================================= */}
         {/* ⚡ 기존의 하드코딩 <header>...</header> 전체를 지우고 실제 기능 컴포넌트 1줄로 교체 완료 */}
         <Header />
+
+        <ToastContainer
+                position="top-center"
+                autoClose={1800}
+                hideProgressBar={false}
+                newestOnTop={true}
+                closeOnClick
+                pauseOnHover
+                theme="light"
+            />
 
         {!member ? (
             <main style={{ textAlign: 'center', padding: '100px 20px' }}>

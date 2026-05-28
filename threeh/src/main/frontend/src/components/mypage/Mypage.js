@@ -7,6 +7,7 @@ import DaumPostCode from 'react-daum-postcode';
 import '../../css/myPageCss/myPage.css';
 import { useToast } from '../../hook/useToast';
 import Header from '../main/Header';
+import { ToastContainer, toast } from "react-toastify";
 
 const Mypage = () => {
     const navigate = useNavigate();
@@ -328,6 +329,16 @@ const Mypage = () => {
         {/* ========================================================= */}
         {/* ⚡ [세션 완치]: 조원분 헤더와 인호님의 동적 세션 회원 감지 시스템을 유기적으로 결합 완료 */}
         <Header />
+
+    <ToastContainer
+      position="top-center"
+      autoClose={1800}
+      hideProgressBar={false}
+      newestOnTop={true}
+      closeOnClick
+      pauseOnHover
+      theme="light"
+    />
 
         {/* ⚡ 기존 헤더에 들어있던 member 로그인 상태 검증 로직을 본문 입구로 완벽 복구 */}
         {!member ? (
