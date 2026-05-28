@@ -365,14 +365,14 @@ const Mypage = () => {
 
         {/* ⚡ 기존 헤더에 들어있던 member 로그인 상태 검증 로직을 본문 입구로 완벽 복구 */}
         {!member ? (
-            <main style={{ textAlign: 'center', padding: '100px 20px' }}>
-                <h2>로그인이 필요한 service입니다.</h2>
-            </main>
-        ) : (
-            <div style={{ display: 'flex', marginTop: '20px' }}>
+             <main style={{ textAlign: 'center', padding: '100px 20px' }}>
+        /        <h2>로그인이 필요한 service입니다.</h2>
+             </main>
+         ) : ( 
+             <div style={{ display: 'flex', marginTop: '20px' }}> 
                 {/* 📌 좌측 사이드바 메뉴 */}
-                <aside className="mypage-sidebar">
-                    <button className="sidebar-btn" onClick={() => navigate('/mypage/schedule')}>추가될기능/구매확정내역</button>
+                 <aside className="mypage-sidebar">
+                   <button className="sidebar-btn" onClick={() => navigate('/mypage/schedule')}>추가될기능/구매확정내역</button>
                     <button className="sidebar-btn" onClick={() => navigate('/cart/return')}>교환 및 반품</button>
                     <button className="sidebar-btn" onClick={() => navigate('/cart')}>장바구니 목록</button>
                     <div className="sidebar-furniture-banner" onClick={() => navigate('/Item')} style={{ cursor: 'pointer' }} title="전체 가구 컬렉션 보러가기" />
@@ -643,5 +643,6 @@ const Mypage = () => {
         </div>
     );
 };
+
 
 export default Mypage;

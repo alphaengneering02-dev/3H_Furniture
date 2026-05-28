@@ -353,66 +353,87 @@ body {
    6. [신규 오버라이딩] 기존 마크업 전용 명품 라운지 버튼 스타일 클러스터
    ========================================================================= */
 
-/* ① 미니멀 헤더 액션 라인 버튼 (로그아웃, 메인으로, 정보수정, 상품보기) */
+/* ① 미니멀 헤더 액션 라인 버튼 및 테이블 내 '상품보기' 버튼 규격 고정 */
 .mypage-header-box button,
 .mypage-profile-icon-box button:last-of-type,
-tbody button {
-    background-color: transparent !important;
-    border: 1px solid #dfd1c0 !important; /* ⚡ [보정] 강한 검정선에서 에스프레소 연화 선으로 교체 */
-    color: #444444 !important;            /* ⚡ [보정] 눈이 피로한 블랙에서 중화된 먹색으로 변경 */
+tbody button,
+.order-page-wrapper table button {
+    background-color: var(--caramel) !important;  /* ⚡ [리브랜딩] 기본 카라멜 적용 */
+    border: 1px solid var(--caramel) !important;
+    color: #FFFFFF !important;                     /* 글자색 화이트 반전 */
     padding: 8px 18px !important;
     font-size: 12px !important;
     font-weight: 700 !important;
     letter-spacing: 0.5px !important;
     cursor: pointer !important;
-    border-radius: 0px !important; /* 모던 직각 마감 유지 */
+    border-radius: 0px !important;                 /* 모던 직각 마감 완벽 유지 */
+    width: auto !important;                        /* 💡 가로폭이 100%로 터지는 버그 전면 차단 */
+    height: auto !important;                       /* 높이 깨짐 방지 */
     transition: all 0.25s ease-in-out !important;
 }
 
 .mypage-header-box button:hover,
 .mypage-profile-icon-box button:last-of-type:hover,
-tbody button:hover {
-    background-color: #8C7A6B !important; /* ⚡ [보정] 올블랙 반전 대신 고급스러운 피크브라운 채우기 */
+tbody button:hover,
+.order-page-wrapper table button:hover {
+    background-color: var(--deep-caramel) !important; /* 호버 시 딥 카라멜 */
+    border-color: var(--deep-caramel) !important;
     color: #FFFFFF !important;
-    border-color: #8C7A6B !important;
 }
 
-/* ② 시그니처 딥 브라운 메인 버튼 (북마크 토글, 배송지 검색, 수정완료 등 공통) */
-.mypage-action-btn {
-    background-color: #8C7A6B !important; /* 까사미아풍 피크브라운 색상 유지 */
-    border: 1px solid #8C7A6B !important;
+/* ② 시그니처 카라멜 메인 버튼 및 '정보수정' 전용 단독 저격 */
+/* 💡 [저격 교정] 무차별 전체 button 선택자를 지우고, 정보수정 폼 내부에 들어있는 버튼만 정밀 타격 */
+.mypage-action-btn,
+.mypage-info-data-block button,
+form button,
+.order-page-wrapper > div button {
+    background-color: var(--caramel) !important; 
+    border: 1px solid var(--caramel) !important;
     color: #FFFFFF !important;
     padding: 9px 20px !important;
     font-size: 13px !important;
     font-weight: 700 !important;
-    border-radius: 0px !important; /* 직각 유지 */
+    
+    /* 💡 [크기 긴급 복구] 가로 너비가 무작정 100%로 터지지 않도록 기존 캡처본의 알맞은 고정 크기로 잠금 */
+    width: 100% !important;                       
+    max-width: 750px !important;                  /* ⚡ 회원정보 입력창 가로폭 끝선과 자석처럼 정확히 일치 */
+    height: 44px !important;                      /* 투박하지 않은 슬림하고 정갈한 세로 높이 */
+    
+    border-radius: 0px !important;                /* 직각 유지 */
     cursor: pointer !important;
+    margin: 0 auto !important;                    /* 카드 중앙에 정렬 */
+    display: block !important;
     transition: all 0.2s ease-in-out !important;
-    box-shadow: 0 3px 6px rgba(140, 122, 107, 0.12);
+    box-shadow: 0 3px 6px rgba(184, 120, 62, 0.12); 
 }
 
-.mypage-action-btn:hover {
-    background-color: #5E4431 !important; /* 딥 에스프레소 초콜릿 색상 유지 */
-    border-color: #5E4431 !important;
-    box-shadow: 0 6px 15px rgba(94, 68, 49, 0.25);
+.mypage-action-btn:hover,
+.mypage-info-data-block button:hover,
+form button:hover,
+.order-page-wrapper > div button:hover {
+    background-color: var(--deep-caramel) !important; 
+    border-color: var(--deep-caramel) !important;
+    box-shadow: 0 6px 15px rgba(138, 79, 37, 0.25);
 }
 
-.mypage-action-btn:disabled {
-    background-color: #E2DDD5 !important;
-    border-color: #E2DDD5 !important;
+.mypage-action-btn:disabled,
+button:disabled {
+    background-color: var(--soft-border) !important; 
+    border-color: var(--soft-border) !important;
     color: #A39E95 !important;
     cursor: not-allowed !important;
 }
 
-/* =========================================================================
-   [레이아웃 최종 마감] JSX 수정 없이 버튼 박스를 제목 아래로 배치하는 정렬 시스템
-   ========================================================================= */
-
-/* 메인 대시보드 박스를 세로 배치 구조로 선언 */
-.mypage-main-content .info-content-box {
-    display: flex !important;
-    flex-direction: column !important;
+/* ========================================================
+   [추가 보정] 맨 하단 '전체보기 ▼' 버튼 규격 원상 복구 및 격리
+   ======================================================== */
+.main-body-wrapper button[id*="all"], 
+button:last-of-type,
+.main-body-wrapper > div > button {
+    width: auto !important;
+    max-width: none !important;
 }
+
 
 /* -------------------------------------------------------------------------
    [배송지 추가 헤더 내부 순서 뒤집기] - 순서 제어 기능 원본 100% 보존
