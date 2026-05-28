@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import Item from '../item/Item';
 import Ranking from '../admin/Ranking';
+import imgPath from '../../utils/BackendPath';
 
 //Main 전용 CSS 임포트
 import '../../css/mainPageCss/main.css';
@@ -21,6 +22,7 @@ const Main = () => {
 
     useEffect(() => {
         getItemList()
+        getBestItemsList()
     }, [])
 
 
@@ -51,6 +53,8 @@ const Main = () => {
         try {
             const res = await axios.get('/admin/orders');
             const orders = res.data;
+            const itemRes = await axios.get('imgPath/api/item');
+            const allItems = itemRes.data;
 
             const statsMap = {};
             orders.forEach(order => {
@@ -60,12 +64,16 @@ const Main = () => {
                 orderItems.forEach(item => {
                     const name = item.itemName;
                     if(!name) return;
-                    if(statsMap[name]){
-                        statsMap[name] = {name, sales: 0, image: item.itemImage || null};
+                    if(!statsMap[name]){
+                        const matched = allItems.find(i => i.itemName?.trim() === name?.trim());
+                        statsMap[name] = {name, sales: 0, image: matched?.itemImgUrl || null};
                     }
                     statsMap[name].sales += Number(item.count || 1);
                 });
             });
+
+            console.log("상품 샘플:", allItems[0]);
+            console.log("포세린 찾기:", allItems.find(i => i.itemName === "포세린 세라믹 디럭스 식탁"));
 
             const top3 = Object.values(statsMap)
                 .sort((a, b) => b.sales - a.sales)
