@@ -68,7 +68,9 @@ const AddCompany = ({ onSuccess }) => {
     };
 
     return (
-        <div className="admin-excel-uploader-container">
+       <div className="admin-excel-uploader-container">
+        {/* 1층: 파일 선택 버튼과 파일 이름 표시 영역 */}
+        <div className="admin-excel-top-row">
             <label htmlFor="excel-file-input" className="admin-excel-file-label">
                 파일 선택
             </label>
@@ -84,17 +86,17 @@ const AddCompany = ({ onSuccess }) => {
             <span className="admin-excel-filename-display">
                 {selectedFile ? selectedFile.name : '선택된 파일 없음'}
             </span>
-
-            <button
-                onClick={handleExcelUpload}
-                disabled={loading || !selectedFile}
-                className={`admin-excel-upload-submit-btn ${loading ? 'is-loading' : ''}`}
-                style={{ cursor: loading || !selectedFile ? 'not-allowed' : 'pointer' }}
-            >
-                {loading ? '등록중...' : '등록하기'}
-            </button>
         </div>
-    );
+
+        {/* 2층: 최종 등록하기 버튼 (밑으로 이동) */}
+        <button
+            onClick={handleExcelUpload}
+            disabled={loading || !selectedFile}
+            className={`admin-excel-upload-submit-btn ${loading ? 'is-loading' : ''}`}>
+            {loading ? '등록중...' : '등록하기'}
+        </button>
+    </div>
+);
 };
 
 export default AddCompany;

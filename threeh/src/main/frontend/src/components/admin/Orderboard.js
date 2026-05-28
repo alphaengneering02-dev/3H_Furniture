@@ -267,12 +267,15 @@ const Orderboard = ({
                         </p>
                     </div>
                     <div>
-                        <button 
+                        <button
+                            className="admin-excel-btn complete"
                             onClick={() => setShowSpecialList(!showSpecialList)} >
                             {showSpecialList ? "목록 닫기" : "상세 목록 보기"}
                         </button>
-                        <button onClick={downloadCSV}>
-                            Excel(CSV) 다운로드
+                        <button
+                            className="admin-excel-btn complete"
+                            onClick={downloadCSV}>
+                                Excel(CSV) 다운로드
                         </button>
                     </div>
                 </div>
@@ -316,10 +319,12 @@ const Orderboard = ({
             <div className="admin-content-box">
                 <div>
                     {/* 💡 엑셀 다운로드 버튼 */}
-                    <button 
+                    <button
+                        className="admin-excel-btn complete" 
                         onClick={downloadCompletedOrdersExcel}
                     >
-                        📊 엑셀 다운로드
+                        <span className="excel-icon">📊</span>
+                        엑셀 다운로드
                     </button>
                 </div>
                 <h3>✅ 최종 배송 완료 목록[O.S=PURCHASED,D.S=COMPLETED인 ordersDB]</h3>
@@ -374,9 +379,15 @@ const Orderboard = ({
                 <h3>🔄 반품/교환 픽업 신청 목록[O.S=EXCHANGEorREFUND/CANCEL,D.S=COMPLETED/PICKUP인 ordersDB]</h3>
 
                 <div className="admin-tab-filter-group">
-                    <button onClick={() => setPickupFilter('ALL')}>전체</button>
-                    <button onClick={() => setPickupFilter('EXCHANGEorREFUND')}>교환/반품</button>
-                    <button onClick={() => setPickupFilter('CANCEL')}>취소</button>
+                    <button 
+                    className="admin-excel-btn complete"
+                    onClick={() => setPickupFilter('ALL')}>전체</button>
+                    <button 
+                    className="admin-excel-btn complete"
+                    onClick={() => setPickupFilter('EXCHANGEorREFUND')}>교환/반품</button>
+                    <button 
+                    className="admin-excel-btn complete"
+                    onClick={() => setPickupFilter('CANCEL')}>취소</button>
                 </div>
 
                 {selectedPickupIds.length > 0 && (
