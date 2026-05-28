@@ -872,7 +872,6 @@
 .main-footer-cs .csmenus button {
   background: var(--main-bg-white); padding: 3px 12px; border: 1px solid var(--main-dark-beige);
   font-size: 12px; font-weight: bold; color: var(--main-deep-caramel);
-  cursor: pointer;
 }
 .main-footer-cs .csmenus .csmenu3-info {
   display: flex;
