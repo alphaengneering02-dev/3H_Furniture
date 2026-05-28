@@ -43,6 +43,8 @@
     padding: 40px 20px;
     background: var(--signup-bg-white);
     font-family: var(--signup-font-sans);
+    width: 400px;
+    margin: 0 auto;
 }
 
 
@@ -62,7 +64,6 @@
    ========================================== */
 .signup-method-box {
     width: 100%;
-    max-width: 400px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -81,6 +82,7 @@
     transition: background-color 0.3s, color 0.3s;
     letter-spacing: -0.3px;
     margin-bottom: 40px;
+    align-self: stretch;
 }
 
 .signup-btn-site:hover {
