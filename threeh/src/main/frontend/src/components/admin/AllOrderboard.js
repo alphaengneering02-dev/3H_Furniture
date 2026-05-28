@@ -218,7 +218,6 @@ const AllOrderboard = ({
         </div>
     </div>
 
-    {/* 2줄: 버튼 + select */}
     <div className="admin-order-bottom-row">
 
          <div className="admin-action-button-group">

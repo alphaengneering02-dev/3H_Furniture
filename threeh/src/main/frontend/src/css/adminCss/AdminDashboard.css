@@ -77,8 +77,7 @@
    COMMON CARD STYLE
 ========================= */
 
-.admin-content-box,
-.admin-ranking-card-box {
+.admin-content-box {
     background: #FFFCF7;
 
     border: 1px solid #E8D9C8;
@@ -521,24 +520,6 @@
 .admin-excel-upload-submit-btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
-}
-/*랭킹*/
-.admin-ranking-table {
-    width: 100%;
-    table-layout: fixed;
-}
-
-.admin-ranking-table th,
-.admin-ranking-table td {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.admin-ranking-card-box {
-    width: 100%;
-    overflow: hidden;
-    box-sizing: border-box;
 }
 
 /* 올어드민*/
