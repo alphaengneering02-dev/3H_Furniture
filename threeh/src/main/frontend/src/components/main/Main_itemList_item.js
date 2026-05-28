@@ -1,12 +1,20 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { getUrl } from '../../utils/BackendPath';
 
-const Main_itemList_item = ({item, getLoginUser, isUserRole, isUser, handleToggleBookmark, isBookmarked}) => {
+const Main_itemList_item = ({
+    item,
+    getLoginUser,
+    isUserRole,
+    isUser,
+    handleToggleBookmark,
+    isBookmarked
+}) => {
 
     //이미지 상태 객체
     const [itemImgs, setItemImgs] = useState({});
-    
+
     //상품 최종 가격 계산
     //백엔드에서 itemFinalPrice가 오면 그 값을 사용
     //없으면 원가-할인금액으로 계산
@@ -23,18 +31,39 @@ const Main_itemList_item = ({item, getLoginUser, isUserRole, isUser, handleToggl
         return Number(price || 0).toLocaleString();
     };
 
+    //상품 이미지 주소 처리
+    const getItemImageUrl = () => {
+        if (!item.itemImgUrl) {
+            return "";
+        }
 
+        return getUrl(item.itemImgUrl);
+    };
 
     return (
         <div className="main-item-card">
             <div className="main-image-box">
                 {/* 상품 이미지 */}
-                <img src={item.itemImgUrl} alt={item.itemName} />
+                {item.itemImgUrl ? (
+                    <Link to={`/item/${item.itemId}`}>
+                        <img
+                            src={getItemImageUrl()}
+                            alt={item.itemName}
+                        />
+                    </Link>
+                ) : (
+                    <p className="main-item-empty-text">이미지 없음</p>
+                )}
+
                 {/* 북마크 버튼 */}
                 {isUser && (
                     <button
                         type="button"
-                        onClick={() => handleToggleBookmark(item.itemId)}
+                        onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleToggleBookmark(item.itemId);
+                        }}
                         className={`main-bookmark-button ${
                             isBookmarked(item.itemId) ? "main-bookmark-active" : ""
                         }`}
@@ -42,10 +71,21 @@ const Main_itemList_item = ({item, getLoginUser, isUserRole, isUser, handleToggl
                         {isBookmarked(item.itemId) ? "♥" : "♡"}
                     </button>
                 )}
-
             </div>
-            <p className="main-item-name">{item.itemName || "상품명"}</p>
-            <h4 className="main-item-price">{formatPrice(getFinalPrice(item))}원</h4>
+
+            {/* 상품명 클릭 시 상품 상세페이지로 이동 */}
+            <Link
+                className="main-item-name-link"
+                to={`/item/${item.itemId}`}
+            >
+                <p className="main-item-name">
+                    {item.itemName || "상품명"}
+                </p>
+            </Link>
+
+            <h4 className="main-item-price">
+                {formatPrice(getFinalPrice(item))}원
+            </h4>
         </div>
     );
 };
