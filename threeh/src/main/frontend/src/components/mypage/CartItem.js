@@ -13,9 +13,9 @@ const CartItem = ({itemId, count}) => {
 
         axios.post('http://localhost:8080/cartItem/add',params, {withCredentials:true})
         .then(res => {
-            alert("장바구니에 상품이 담겼습니다!")
+            success("장바구니에 상품이 담겼습니다!")
         })
-        .catch(err => alert("담기 실패"));
+        .catch(err => error("담기 실패"));
     };
 
         return (

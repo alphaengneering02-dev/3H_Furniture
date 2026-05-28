@@ -4,11 +4,14 @@ import icon_prev from '../../assets/icon_prev.png';
 import icon_next from '../../assets/icon_next.png';
 import { useToast } from '../../hook/useToast';
 import { Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const Main_itemList = ({ totalItemList }) => {
 
     const { success, error: err, warn, info } = useToast();
+    //오현옥 추가
+    const navigate= useNavigate();
 
 
     //로그인한 유저 정보 가져오기

@@ -1,79 +1,129 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,500;0,600;1,400&display=swap');
 
-
 /* =========================================================================
-   🏢 PROJECT CMYK - 회원정보 수정 전용 단독형 프리미엄 폼 가이드 (백화 버그 완치본)
+   🏢 PROJECT CMYK - 네이버 회원가입 룩앤필 프리미엄 폼 가이드 (진짜 클래스명 완치본)
    ========================================================================= */
 
-/* 1. 단독형 수정 카드 폼을 화면 정중앙에 배치하기 위한 전체 구역 설정 */
-.mypageupdate-form-viewport {
+/* 1. 🖥️ 질문자님 리턴문 실제 이름 매칭: 단독형 수정 폼 전체를 화면 한가운데 정렬 */
+.update-form-viewport {
     width: 100% !important;
-    max-width: 1200px !important; /* 마이페이지 고정 축과 싱크 매칭 */
-    margin: 40px auto !important;
-    padding: 20px !important;
+    margin: 60px auto !important; /* 위아래 여백을 주어 네이버처럼 시원하게 공간 배치 */
+    padding: 0 20px !important;
     display: flex !important;
     justify-content: center !important;
     align-items: center !important;
     box-sizing: border-box;
 }
 
-/* 2. 메인 양식 서류 카드 스타일 디자인 (장바구니 패밀리룩 이식) */
-.mypageupdate-form-card {
+/* 2. 💡 [네이버 공식] 정갈하고 컴팩트한 독채형 흰색 메인 서류 상자 디자인 */
+.update-form-card {
     width: 100% !important;
-    max-width: 500px !important; /* 원본 크기 500px 유지 */
+    max-width: 460px !important; /* 💡 네이버 로그인/회원가입 폼 표준 규격 폭 적용 */
     background-color: #FFFFFF !important;
-    padding: 40px 35px !important;
+    padding: 50px 40px !important; /* 내부 패딩을 넓혀서 답답함을 완전히 해제 */
     
-    /* ⚡ 테두리 브라운 선 연화 및 상단 굵은 베이지 포인트선 장착 */
+    /* 연한 브라운 테두리선 및 부드러운 곡률 마감 */
     border: 1px solid #dfd1c0 !important;
-    border-top: 6px solid #ede2d5 !important; /* 상단 굵은 베이지 선 */
+    border-radius: 12px !important; /* 딱딱한 직각을 버리고 세련된 라운딩 카드 적용 */
     
-    box-shadow: 0px 15px 35px rgba(140, 122, 107, 0.05) !important;
+    box-shadow: 0px 10px 30px rgba(140, 122, 107, 0.03) !important;
     box-sizing: border-box;
 }
 
-/* 상단 타이틀 폰트 조율 */
-.mypageupdate-form-card h2 {
-    font-size: 18px !important;
+/* 상단 타이틀 폰트 조율 (네이버 가독성 패치) */
+.update-form-card h2 {
+    font-size: 24px !important; /* 글씨 크기를 키워 시원시원하게 변경 */
     font-weight: 700 !important;
-    color: #444444 !important; /* 팀 공통 중화된 먹색 적용 */
+    color: #444444 !important; /* 팀 공통 중화된 먹색 */
     text-align: center;
-    margin-bottom: 30px !important;
+    margin-bottom: 35px !important; /* 하단 입력창들과의 간격 확대 */
     letter-spacing: -0.5px;
 }
 
-/* 입력 폼 내부 각각의 Row 가이드 라인 */
-.mypageupdate-form-group-row {
+/* 3. 네이버 공식 위아래 적층형 Row 가이드 라인 */
+.form-group-row {
     width: 100% !important;
-    margin-bottom: 12px !important; /* 칸끼리 겹치지 않게 마진 여백 추가 */
+    margin-bottom: 20px !important; /* 💡 입력 칸끼리 겹치지 않게 시원시원한 숨구멍 배정 */
 }
 
-/* 인풋 입력창 프리미엄 미니멀 스타일 커스텀 */
-.mypageupdate-form-group-row input {
-    width: 100% !important;
-    height: 40px !important;
-    padding: 0 10px !important;
+/* 💡 [레이블 폰트 보정] 레이블 글씨 두께를 조절하여 인풋창과 깔끔하게 분리 */
+.form-group-row label strong {
     font-size: 14px !important;
-    color: #444444 !important; /* ⚡ [보정] 투박한 블랙(#111111)에서 팀 공통 중화된 먹색으로 밸런싱 */
+    font-weight: 600 !important;
+    color: #5E4431 !important; /* 아늑한 다크 브라운 */
+    display: inline-block;
+    margin-bottom: 8px !important; /* 텍스트와 하단 인풋창 사이에 여백 부여 */
+}
+
+/* 4. ⚡ 네이버 회원가입 전용 '뚱뚱하고 편안한' 인풋 입력창 커스텀 */
+.form-group-row input {
+    width: 100% !important;
+    height: 46px !important; /* 💡 [네이버 공식 높이] 40px에서 46px의 시원한 높이로 확장 */
+    padding: 0 16px !important; /* 좌우 패딩을 넓혀 글씨 짤림 차단 */
+    font-size: 14px !important;
+    color: #444444 !important; 
     background-color: #FFFFFF !important;
     border: 1px solid #dfd1c0 !important; /* 연한 브라운 테두리선 */
-    border-radius: 0px !important; /* 직각 셰이프 마감 유지 */
+    border-radius: 6px !important; /* 💡 투박한 직각 마감을 버리고 세련된 라운딩 창 적용 */
     box-sizing: border-box !important;
-    transition: all 0.25s ease-in-out;
+    transition: all 0.2s ease-in-out;
 }
 
-/* 인풋 입력창에 마우스를 클릭했을 때(Focus) 하이라이트 효과 */
-.mypageupdate-form-group-row input:focus {
+/* 인풋 입력창에 마우스를 클릭했을 때(Focus) 하이라이트 아우라 효과 */
+.form-group-row input:focus {
     outline: none !important;
-    border-color: #8C7A6B !important; /* 까사미아 브라운선(피크브라운) 변경 */
-    background-color: #fdfbf7 !important; /* 은은한 조명 무드 투과 */
+    border-color: #8C7A6B !important; /* 기존 피크브라운 선색 유지 */
+    background-color: #fdfbf7 !important; /* 은은한 크림 무드 유지 */
+    box-shadow: 0 0 0 3px rgba(140, 122, 107, 0.1) !important; /* 부드러운 포커스 아우라 추가 */
 }
 
-/* 수정 불가능한 아이디 창 전용 락(Lock) 스타일 */
-.mypageupdate-form-group-row .disabled-input {
-    background-color: #F5F4F0 !important;
-    color: #888888 !important;
+/* 5. 수정 불가능한 아이디 창 전용 락(Lock) 스타일 */
+.form-group-row input.disabled-input,
+.form-group-row input[disabled] {
+    background-color: #F8F7F4 !important; /* 은은한 웜 그레이 베이지 */
+    color: #A39E95 !important;
     border: 1px solid #E2DDD5 !important;
-    border-radius: 0px !important;
+    border-radius: 6px !important; /* 자식 둥글기 일치 */
     cursor: not-allowed !important;
 }
+
+/* ========================================================
+   [최종 보정] 하단 수정완료 / 취소 버튼 네이버 세련미 매칭
+   ======================================================== */
+.form-action-row {
+    display: flex !important;
+    gap: 12px !important;
+    margin-top: 35px !important;
+}
+
+/* [수정 완료] 메인 버튼 */
+.form-action-row button.mypage-action-btn {
+    background-color: #8C7A6B !important; /* 기존 피크브라운 색상 무드 수호 */
+    border: 1px solid #8C7A6B !important;
+    height: 48px !important; /* 버튼 높이를 시원하게 확장 */
+    border-radius: 6px !important; /* 입력창과 일치하는 둥글기 */
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    transition: all 0.2s ease;
+}
+.form-action-row button.mypage-action-btn:hover {
+    background-color: #5E4431 !important; /* 호버 시 딥 브라운 변환 */
+    border-color: #5E4431 !important;
+}
+
+/* [취소] 보조 버튼 */
+.form-action-row button.btn-header-action {
+    background-color: #FFFFFF !important;
+    border: 1px solid #dfd1c0 !important;
+    color: #8C7A6B !important;
+    height: 48px !important;
+    border-radius: 6px !important;
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    transition: all 0.2s ease;
+}
+.form-action-row button.btn-header-action:hover {
+    background-color: #FDFBF7 !important;
+    border-color: #8C7A6B !important;
+}
+

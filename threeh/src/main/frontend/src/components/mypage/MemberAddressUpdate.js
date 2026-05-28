@@ -26,7 +26,7 @@ const MemberAddressUpdate = () => {
     // [최초 로드] 조원의 수정 폼 전용 GET API 호출하여 데이터 수신
     useEffect(() => {
         if (!id) {
-            alert("잘못된 접근입니다");
+            warn("잘못된 접근입니다");
             navigate('/mypage');
             return;
         }
@@ -47,7 +47,7 @@ const MemberAddressUpdate = () => {
             })
             .catch(err => {
                 console.error("기존 회원정보 로드 실패:", err);
-                alert("회원 정보를 불러오는 데 실패했습니다.");
+                warn("회원 정보를 불러오는 데 실패했습니다.");
             });
     }, [id, navigate]);
 
@@ -65,7 +65,7 @@ const MemberAddressUpdate = () => {
         e.preventDefault();
 
         if (fromData.password1 !== fromData.password2) {
-            return alert("비밀번호가 일치하지 않습니다.");
+            return warn("비밀번호가 일치하지 않습니다.");
         }
 
         const signupUpdateForm = {
@@ -85,7 +85,7 @@ const MemberAddressUpdate = () => {
             withCredentials: true
         })
         .then(res => {
-            alert("회원 정보 수정이 안전하게 완료되었습니다!");
+            success("회원 정보 수정이 안전하게 완료되었습니다!");
             
             const currentUser = JSON.parse(sessionStorage.getItem('user')) || {};
             const updatedUser = {
@@ -101,7 +101,7 @@ const MemberAddressUpdate = () => {
         })
         .catch(err => {
             console.error("회원 수정 최종 에러 상세:", err.response);
-            alert("정보 수정 처리 중 서버 오류가 발생했습니다.");
+            warn("정보 수정 처리 중 서버 오류가 발생했습니다.");
         });
     };
 
