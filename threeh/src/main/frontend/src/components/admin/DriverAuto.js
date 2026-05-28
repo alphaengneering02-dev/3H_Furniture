@@ -1,4 +1,6 @@
 import React from 'react';
+import { ToastContainer, toast } from "react-toastify"; 
+import "react-toastify/dist/ReactToastify.css";
 
 export const useDriverAuto = ({
     orders,
@@ -11,7 +13,7 @@ export const useDriverAuto = ({
     
     const handleAutoAssign = () => {
         if (selectedOrderIds.length === 0) {
-            alert('자동 배정할 주문을 선택해주세요.');
+            toast.error('자동 배정할 주문을 선택해주세요.');
             return;
         }
 
@@ -101,7 +103,7 @@ export const useDriverAuto = ({
             console.log(`최종 결과 - 성공: ${assignedCount}건 / 실패: ${failCount}건`);
 
             // 4. 결과 리포트 알림
-            alert(`자동 배정 프로세스 완료!\n- 배정 성공: ${assignedCount}건\n- 배정 실패(지역 불일치 또는 5건 초과 기사 풀 부족): ${failCount}건`);
+            toast.error(`자동 배정 프로세스 완료!\n- 배정 성공: ${assignedCount}건\n- 배정 실패(지역 불일치 또는 5건 초과 기사 풀 부족): ${failCount}건`);
             setSelectedOrderIds([]); 
         }
     };

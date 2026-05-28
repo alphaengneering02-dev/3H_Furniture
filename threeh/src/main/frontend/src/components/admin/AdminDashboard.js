@@ -8,6 +8,8 @@ import Orderboard from './Orderboard';
 import AdminMemoDay from './AdminMemoDay';
 import Ranking from './Ranking';
 import AdminSearch from './AdminSearch';
+import { ToastContainer, toast } from "react-toastify"; 
+import "react-toastify/dist/ReactToastify.css";
 import '../../css/adminCss/AdminDashboard.css';
 
 const AdminDashboard = () => {
@@ -42,12 +44,12 @@ const handleEditItemDetail = () => {
 
         try {
             await axios.delete(`/admin/delivery-companies/${deliveryId}`);
-            alert("삭제되었습니다.");
+            toast.error("삭제되었습니다.");
             // 리스트 새로고침
             fetchDeliveries(); 
         } catch (error) {
             console.error("삭제 실패:", error);
-            alert("삭제 중 오류가 발생했습니다.");
+            toast.error("삭제 중 오류가 발생했습니다.");
         }
     };
 
@@ -66,7 +68,7 @@ const handleEditItemDetail = () => {
         // 2. 만료 시간 체크 (선택 사항이지만 안전함)
         const now = new Date().getTime();
         if (userObj.expiry && now > userObj.expiry) {
-            alert("세션이 만료되었습니다. 다시 로그인해주세요.");
+            toast.error("세션이 만료되었습니다. 다시 로그인해주세요.");
             sessionStorage.removeItem("user");
             navigate("/login");
             return;
@@ -101,7 +103,7 @@ const handleAssignDriver = async (orderId) => {
     console.log(`[기사배정 시도] 주문ID: ${orderId} ➡️ 선택된 기사 ID: ${deliveryIdRaw}`);
 
     if (!deliveryIdRaw) {
-        alert("기사를 선택해주세요.");
+        toast.error("기사를 선택해주세요.");
         return;
     }
 
@@ -128,11 +130,11 @@ const handleAssignDriver = async (orderId) => {
         );
 
         setSelectedDrivers(prev => ({ ...prev, [orderId]: "" }));
-        alert("기사 배정 완료");
+        toast.error("기사 배정 완료");
 
     } catch (error) {
         console.error("배정 실패 상세:", error.response?.data); // 서버가 보낸 구체적 에러 확인
-        alert(`배정 실패: ${error.response?.data || "서버 오류"}`);
+        toast.error(`배정 실패: ${error.response?.data || "서버 오류"}`);
     }
 };
 
@@ -194,15 +196,15 @@ const handleStatusChange = async (orderId, nextState) => {
         
         // 2. 상태별 알림 메시지 분기 (EXCHANGEorREFUND 상태 추가)
         if (nextState === 'CANCEL') {
-            alert("주문 취소 및 기사 배정 해제가 완료되었습니다.");
+            toast.error("주문 취소 및 기사 배정 해제가 완료되었습니다.");
         } else if (nextState === 'READY') {
-            alert("상품 준비 완료 상태로 변경되었습니다.");
+            toast.error("상품 준비 완료 상태로 변경되었습니다.");
         } else if (nextState === 'EXCHANGEorREFUND') {
-            alert("교환 요청으로 변경되었습니다. 기사 수거(PICKUP) 상태가 적용됩니다.");
+            toast.error("교환 요청으로 변경되었습니다. 기사 수거(PICKUP) 상태가 적용됩니다.");
         } else if (nextState === 'PURCHASED') {
-            alert("구매 확정 처리가 완료되었습니다.");
+            toast.error("구매 확정 처리가 완료되었습니다.");
         } else {
-            alert(`주문 상태가 [${nextState}]로 변경되었습니다.`);
+            toast.error(`주문 상태가 [${nextState}]로 변경되었습니다.`);
         }
 
         // 3. 목록 새로고침
@@ -213,7 +215,7 @@ const handleStatusChange = async (orderId, nextState) => {
     } catch (error) {
         console.error("❌ 상태 변경 실패 상세 정보 ---");
         console.error(error.response?.data || error.message);
-        alert(`상태 변경 중 오류가 발생했습니다: ${error.response?.data || "서버 오류"}`);
+        toast.error(`상태 변경 중 오류가 발생했습니다: ${error.response?.data || "서버 오류"}`);
         
         if (typeof fetchOrders === 'function') {
             fetchOrders();

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from "react-toastify"; 
+import "react-toastify/dist/ReactToastify.css";
 import '../../css/adminCss/DeliveryAE.css';
 
 const EditDelivery = () => {
@@ -56,7 +58,7 @@ const EditDelivery = () => {
                 });
             } catch (err) {
                 console.error("데이터 로드 에러:", err);
-                alert("정보를 불러오는데 실패했습니다.");
+                toast.error("정보를 불러오는데 실패했습니다.");
             }
         };
 
@@ -93,12 +95,12 @@ const EditDelivery = () => {
         try {
             const response = await axios.put(`/admin/delivery/${deliveryId}`, updateData);
             if (response.status === 200) {
-                alert("✅ 정보 수정이 완료되었습니다!");
+                toast.error("✅ 정보 수정이 완료되었습니다!");
                 navigate('/admin'); 
             }
         } catch (error) {
             console.error("수정 에러:", error);
-            alert(`❌ 수정 실패: ${error.response?.data?.message || "서버 통신 에러"}`);
+            toast.error(`❌ 수정 실패: ${error.response?.data?.message || "서버 통신 에러"}`);
         }
     };
 

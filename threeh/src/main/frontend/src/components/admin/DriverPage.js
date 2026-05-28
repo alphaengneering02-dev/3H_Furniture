@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom'; // 👈 Link 컴포넌트 임포트 확인!
+import { Link } from 'react-router-dom';
+import { ToastContainer, toast } from "react-toastify"; 
+import "react-toastify/dist/ReactToastify.css";
 import '../../css/adminCss/driverPage.css';
 
 const DriverPage = () => {
@@ -114,7 +116,7 @@ const handleLogin = async () => {
 
     } catch (err) {
         console.error(err);
-        alert("로그인 실패");
+        toast.error("로그인 실패");
     }
 };
 
@@ -134,7 +136,7 @@ const handleLogin = async () => {
         setPickupOrders([]);
         setPickupCheckeds([]);
 
-        alert("로그아웃 되었습니다.");
+        toast.error("로그아웃 되었습니다.");
     };
 
     // 신규 배정 체크박스 토글
@@ -178,7 +180,7 @@ const handleLogin = async () => {
             setSelectedOrders([]);
 
         } catch (err) {
-            alert("수락 실패");
+            toast.error("수락 실패");
         }
     };
 
@@ -196,10 +198,10 @@ const handleLogin = async () => {
 
             fetchDriverOrders(driver.deliveryId);
             setSelectedOrders([]);
-            alert("선택한 주문을 거절했습니다. (어드민 미배정으로 복구)");
+            toast.error("선택한 주문을 거절했습니다. (어드민 미배정으로 복구)");
 
         } catch (err) {
-            alert("거절 실패");
+            toast.error("거절 실패");
         }
     };
 
@@ -226,7 +228,7 @@ const handleLogin = async () => {
             )
         );
 
-        alert("배송 출발 처리가 완료되었습니다!");
+        toast.error("배송 출발 처리가 완료되었습니다!");
 
         if (driver && driver.deliveryId) {
             await fetchDriverOrders(driver.deliveryId);
@@ -236,7 +238,7 @@ const handleLogin = async () => {
 
     } catch (err) {
         console.error("배송 출발 처리 중 에러 발생:", err);
-        alert("배송 출발 처리 중 오류가 발생했습니다.");
+        toast.error("배송 출발 처리 중 오류가 발생했습니다.");
     }
 };
 
@@ -252,21 +254,21 @@ const handleResetToWaiting = async () => {
         setPickupOrders([]);
         setPickupCheckeds([]);
         
-        alert("대기 상태로 전환되었습니다. 새로운 배정을 받을 수 있습니다!");
+        toast.error("대기 상태로 전환되었습니다. 새로운 배정을 받을 수 있습니다!");
         
         if (typeof fetchDriverOrders === 'function') {
             fetchDriverOrders(driver.deliveryId);
         }
     } catch (err) {
         console.error(err);
-        alert("대기 전환 실패: 서버 에러가 발생했습니다.");
+        toast.error("대기 전환 실패: 서버 에러가 발생했습니다.");
     }
 };
 
     // 선택 배송 완료 
     const handlecomplete = async () => {
         if (shippingCheckeds.length === 0) {
-            alert("완료 처리할 주문을 선택해 주세요.");
+            toast.error("완료 처리할 주문을 선택해 주세요.");
             return;
         }
 
@@ -282,16 +284,16 @@ const handleResetToWaiting = async () => {
             );
         
             setShippingCheckeds([]);
-            alert("선택하신 주문의 배송 완료 처리가 되었습니다.");
+            toast.error("선택하신 주문의 배송 완료 처리가 되었습니다.");
 
         } catch (err) {
-            alert("배송 완료 처리 실패");
+            toast.error("배송 완료 처리 실패");
         }
     };
 
     const handlePickupComplete = async () => {
         if (pickupCheckeds.length === 0) {
-            alert("회수 완료 처리할 주문을 선택해 주세요.");
+            toast.error("회수 완료 처리할 주문을 선택해 주세요.");
             return;
         }
 
@@ -307,10 +309,10 @@ const handleResetToWaiting = async () => {
             );
 
             setPickupCheckeds([]);
-            alert("선택하신 주문의 회수(물건 수거) 완료 처리가 되었습니다.");
+            toast.error("선택하신 주문의 회수(물건 수거) 완료 처리가 되었습니다.");
 
         } catch (err) {
-            alert("회수 완료 처리 실패");
+            toast.error("회수 완료 처리 실패");
         }
     };
 
