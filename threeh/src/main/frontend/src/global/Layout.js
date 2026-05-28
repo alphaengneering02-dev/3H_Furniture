@@ -23,8 +23,8 @@ function Layout(props) {
             </div> */}
 
             <ToastContainer
-                position='top-right'
-                autoClose={2000}
+                position='top-center'
+                autoClose={1800}
                 hideProgress={false}
                 newestOnTop={false}
                 closeOnClick

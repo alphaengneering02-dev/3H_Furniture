@@ -44,20 +44,47 @@ const Schedule = () => {
             .catch(err => alert('반품 실패: ' + err.message));
     };
 
+     console.log(orders)
+
     return (
         <div className="schedule-container" style={{ padding: '20px' }}>
-            <h2>구매 확정된 내역</h2>
-            {orders
-                // [조장님 지시] 확정된(PURCHASED) 주문만 필터링하여 보여줌
-                .filter(order => order.orderState === 'PURCHASED')
-                .map(order => (
-                    <div key={order.orderId} style={{ border: '1px solid #ddd', padding: '15px', marginBottom: '10px' }}>
-                        <p>주문번호: {order.orderId}</p>
-                        <p>상태: <strong>{order.orderState}</strong></p>
-                        <p style={{ color: 'green' }}>구매가 확정된 상품입니다.</p>
-                    </div>
-                ))
-            }
+            <h2 className='mypage-schedule-title'>구매 확정된 내역</h2>
+            <div className='mypage-schedule-lis'>
+                {orders
+                    // [조장님 지시] 확정된(PURCHASED) 주문만 필터링하여 보여줌
+                    .filter(order => order.orderState === 'PURCHASED')
+                    .map(order => (
+                    
+                        <div key={order.orderId} className='mypage-schedule-card'>
+                            <div className='mypage-schedule-header'>
+                                <p className='mypage-schedule-order-id'>주문번호: {order.orderId}</p>
+                                <p>상태: <strong>{order.orderState}</strong></p>
+                            </div>
+                            <div className='mypage-schedule-card-body'>
+                                <div className='schedule-row'>
+                                    <p className='mypage-schedule-label'>상품명 </p>
+                                    <span className='mypage-schedule-value'>{order.orderItems[0].itemName}</span>
+                                </div>
+                            
+                            
+                                <div className='schedule-row'>
+                                    <p className='mypage-schedule-label'>수량 </p>
+                                    <span className='mypage-schedule-value'>{order.orderItems[0].count}개</span>
+                                </div>
+                                <div className='schedule-row'>
+                                    <p className='mypage-schedule-label'>가격</p>
+                                    <span className='mypage-schedul-price'>{order.orderItems[0].orderPrice}원</span>
+                                </div>
+                                
+                                <p style={{ color: 'green' }}>구매가 확정된 상품입니다.</p>
+                            </div>
+                        </div>
+                    ))
+                }
+                    {orders.filter(o => o.orderState === 'PURCHASED').length === 0 && (
+                    <p className="mypage-schedule-empty">구매 확정된 내역이 없습니다.</p>
+                )}
+            </div>
         </div>
     );
 };
