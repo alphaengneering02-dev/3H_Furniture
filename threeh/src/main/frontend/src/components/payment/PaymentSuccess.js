@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import PaymentFail from './PaymentFail';
-import { LinearProgress, Box, Typography } from '@mui/material';
+import { LinearProgress, Box, Typography, CircularProgress } from '@mui/material';
 import '../../css/paymentCss/payment.css';
 
 function PaymentSuccess() {
@@ -116,7 +116,7 @@ function PaymentSuccess() {
         return (
             <Box sx={{ width: '100%' }}>
                 <Typography mb={1}>결제 처리 중...</Typography>
-                <LinearProgress />
+                <CircularProgress />
             </Box>
         );
     }
