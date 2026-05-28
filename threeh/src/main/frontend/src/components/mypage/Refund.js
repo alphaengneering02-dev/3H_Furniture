@@ -219,7 +219,7 @@ const RefundPage = () => {
                 <div style={{ display: 'flex' }}>
                     {/* 좌측 마이페이지 공통 대형 사이드바 메뉴 축 고정 */}
                     <aside className="mypage-sidebar">
-                        <button className="sidebar-btn" onClick={() => navigate('/mypage')}>구매확정내역</button>
+                        <button className="sidebar-btn" onClick={() => navigate('/mypage/schedule')}>구매확정내역</button>
                         <button className="sidebar-btn" style={{ color: '#8C7A6B', fontWeight: 'bold' }} onClick={() => navigate('/cart/return')}>교환 및 반품</button>
                         <button className="sidebar-btn" onClick={() => navigate('/cart')}>장바구니 목록</button>
                     </aside>

@@ -29,22 +29,22 @@ const Footer = () => {
                     <div className="main-footer-content-center main-footer-menu">
                         <ul className='menus menu1'>
                             <li>ABOUT</li>
-                            <li> <Link to="#">회사소개</Link> </li>
-                            <li> <Link to="#">매장안내</Link> </li>
-                            <li> <Link to="#">인재채용</Link> </li>
+                            <li> 회사소개 </li>
+                            <li> 매장안내 </li>
+                            <li> 인재채용 </li>
                         </ul>
 
                         <ul className='menus menu2'>
                             <li>SUPPORT</li>
-                            <li> <Link to="#">고객지원</Link> </li>
-                            <li> <Link to="#">서비스센터</Link> </li>
+                            <li> 고객지원 </li>
+                            <li> 서비스센터 </li>
                         </ul>
 
                         <ul className='menus menu3'>
                             <li>INFO</li>
-                            <li> <Link to="#">이용약관</Link> </li>
-                            <li className='strong'> <Link to="#">개인정보 처리방침</Link> </li>
-                            <li> <Link to="#">윤리신고센터</Link> </li>
+                            <li> 이용약관 </li>
+                            <li className='strong'> 개인정보 처리방침 </li>
+                            <li> 윤리신고센터 </li>
                         </ul>
                     </div>
 

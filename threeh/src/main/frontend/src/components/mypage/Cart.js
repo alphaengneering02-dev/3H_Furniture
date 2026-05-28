@@ -253,7 +253,7 @@ const Cart = () => {
             <div style={{ display: 'flex' }}>
                 {/* 📌 [사이드바 완벽 싱크] 장바구니 목록 active 하이라이트 활성화 상주 */}
                 <aside className="mypage-sidebar">
-                    <button className="sidebar-btn" onClick={() => navigate('/mypage')}>구매확정내역</button>
+                    <button className="sidebar-btn" onClick={() => navigate('/mypage/schedule')}>구매확정내역</button>
                     <button className="sidebar-btn" onClick={() => navigate('/cart/return')}>교환 및 반품</button>
                     <button className="sidebar-btn active" style={{ color: '#8C7A6B', fontWeight: 'bold' }} onClick={() => navigate('/cart')}>장바구니 목록</button>
                 </aside>
