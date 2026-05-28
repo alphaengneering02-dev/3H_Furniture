@@ -20,8 +20,10 @@ function OrderItemInfo( { orderData, orderType, zipCode, address, deliveryDate, 
    
        const hadlePayment = async () => {
            
-
+        
            if(isLoadingRef.current) return; 
+
+          
 
            if(!orderType) {
                 warn("배송 및 설치 방법을 선택하세요");

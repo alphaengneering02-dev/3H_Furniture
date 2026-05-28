@@ -365,14 +365,14 @@ const Mypage = () => {
 
         {/* ⚡ 기존 헤더에 들어있던 member 로그인 상태 검증 로직을 본문 입구로 완벽 복구 */}
         {!member ? (
-            <main style={{ textAlign: 'center', padding: '100px 20px' }}>
-                <h2>로그인이 필요한 service입니다.</h2>
-            </main>
-        ) : (
-            <div style={{ display: 'flex', marginTop: '20px' }}>
+             <main style={{ textAlign: 'center', padding: '100px 20px' }}>
+        /        <h2>로그인이 필요한 service입니다.</h2>
+             </main>
+         ) : ( 
+             <div style={{ display: 'flex', marginTop: '20px' }}> 
                 {/* 📌 좌측 사이드바 메뉴 */}
-                <aside className="mypage-sidebar">
-                    <button className="sidebar-btn" onClick={() => navigate('/mypage/schedule')}>추가될기능/구매확정내역</button>
+                 <aside className="mypage-sidebar">
+                   <button className="sidebar-btn" onClick={() => navigate('/mypage/schedule')}>추가될기능/구매확정내역</button>
                     <button className="sidebar-btn" onClick={() => navigate('/cart/return')}>교환 및 반품</button>
                     <button className="sidebar-btn" onClick={() => navigate('/cart')}>장바구니 목록</button>
                     <div className="sidebar-furniture-banner" onClick={() => navigate('/Item')} style={{ cursor: 'pointer' }} title="전체 가구 컬렉션 보러가기" />
@@ -609,7 +609,7 @@ const Mypage = () => {
                                                     </div>
                                                 </div>
                                             ) : (
-                                                <div style={{ display: "flex", gap: "6px" }}>
+                                                <div style={{ display: "flex", gap: "8px", width: "100%", justifyContent: "flex-end", alignItems: "center", marginTop: "15px", boxSizing: "border-box" }} className="mypage-review-btn-row">
                                                     <button className="mypage-action-btn" onClick={() => handleEditReviewStart(review)}>수정하기</button>
                                                     <button className="mypage-action-btn" onClick={() => handleDeleteReview(review.reviewId)} style={{ color: "red" }}>삭제</button>
                                                 </div>
@@ -623,7 +623,7 @@ const Mypage = () => {
 
                             {/* 탈퇴 기능 최하단 배치 */}
                             <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '60px' }}>
-                                <span onClick={handleDelete} style={{ fontSize: '12px', color: '#999', cursor: 'pointer', textDecoration: 'underline' }}>회원 탈퇴하기</span>
+                                <span onClick={handleDelete} style={{ fontSize: '17px', color: '#ff4d4f', cursor: 'pointer', textDecoration: 'underline' }}>회원 탈퇴하기</span>
                             </div>
                         </div>
                     </main>
@@ -643,5 +643,6 @@ const Mypage = () => {
         </div>
     );
 };
+
 
 export default Mypage;

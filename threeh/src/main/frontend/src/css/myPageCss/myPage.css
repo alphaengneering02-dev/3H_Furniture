@@ -353,66 +353,87 @@ body {
    6. [신규 오버라이딩] 기존 마크업 전용 명품 라운지 버튼 스타일 클러스터
    ========================================================================= */
 
-/* ① 미니멀 헤더 액션 라인 버튼 (로그아웃, 메인으로, 정보수정, 상품보기) */
+/* ① 미니멀 헤더 액션 라인 버튼 및 테이블 내 '상품보기' 버튼 규격 고정 */
 .mypage-header-box button,
 .mypage-profile-icon-box button:last-of-type,
-tbody button {
-    background-color: transparent !important;
-    border: 1px solid #dfd1c0 !important; /* ⚡ [보정] 강한 검정선에서 에스프레소 연화 선으로 교체 */
-    color: #444444 !important;            /* ⚡ [보정] 눈이 피로한 블랙에서 중화된 먹색으로 변경 */
+tbody button,
+.order-page-wrapper table button {
+    background-color: var(--caramel) !important;  /* ⚡ [리브랜딩] 기본 카라멜 적용 */
+    border: 1px solid var(--caramel) !important;
+    color: #FFFFFF !important;                     /* 글자색 화이트 반전 */
     padding: 8px 18px !important;
     font-size: 12px !important;
     font-weight: 700 !important;
     letter-spacing: 0.5px !important;
     cursor: pointer !important;
-    border-radius: 0px !important; /* 모던 직각 마감 유지 */
+    border-radius: 0px !important;                 /* 모던 직각 마감 완벽 유지 */
+    width: auto !important;                        /* 💡 가로폭이 100%로 터지는 버그 전면 차단 */
+    height: auto !important;                       /* 높이 깨짐 방지 */
     transition: all 0.25s ease-in-out !important;
 }
 
 .mypage-header-box button:hover,
 .mypage-profile-icon-box button:last-of-type:hover,
-tbody button:hover {
-    background-color: #8C7A6B !important; /* ⚡ [보정] 올블랙 반전 대신 고급스러운 피크브라운 채우기 */
+tbody button:hover,
+.order-page-wrapper table button:hover {
+    background-color: var(--deep-caramel) !important; /* 호버 시 딥 카라멜 */
+    border-color: var(--deep-caramel) !important;
     color: #FFFFFF !important;
-    border-color: #8C7A6B !important;
 }
 
-/* ② 시그니처 딥 브라운 메인 버튼 (북마크 토글, 배송지 검색, 수정완료 등 공통) */
-.mypage-action-btn {
-    background-color: #8C7A6B !important; /* 까사미아풍 피크브라운 색상 유지 */
-    border: 1px solid #8C7A6B !important;
+/* ② 시그니처 카라멜 메인 버튼 및 '정보수정' 전용 단독 저격 */
+/* 💡 [저격 교정] 무차별 전체 button 선택자를 지우고, 정보수정 폼 내부에 들어있는 버튼만 정밀 타격 */
+.mypage-action-btn,
+.mypage-info-data-block button,
+/* .mypage-form button, */
+.order-page-wrapper > div button {
+    background-color: var(--caramel) !important; 
+    border: 1px solid var(--caramel) !important;
     color: #FFFFFF !important;
     padding: 9px 20px !important;
     font-size: 13px !important;
     font-weight: 700 !important;
-    border-radius: 0px !important; /* 직각 유지 */
+    
+    /* 💡 [크기 긴급 복구] 가로 너비가 무작정 100%로 터지지 않도록 기존 캡처본의 알맞은 고정 크기로 잠금 */
+    width: 100% !important;                       
+    max-width: 750px !important;                  /* ⚡ 회원정보 입력창 가로폭 끝선과 자석처럼 정확히 일치 */
+    height: 44px !important;                      /* 투박하지 않은 슬림하고 정갈한 세로 높이 */
+    
+    border-radius: 0px !important;                /* 직각 유지 */
     cursor: pointer !important;
+    margin: 0 auto !important;                    /* 카드 중앙에 정렬 */
+    display: block !important;
     transition: all 0.2s ease-in-out !important;
-    box-shadow: 0 3px 6px rgba(140, 122, 107, 0.12);
+    box-shadow: 0 3px 6px rgba(184, 120, 62, 0.12); 
 }
 
-.mypage-action-btn:hover {
-    background-color: #5E4431 !important; /* 딥 에스프레소 초콜릿 색상 유지 */
-    border-color: #5E4431 !important;
-    box-shadow: 0 6px 15px rgba(94, 68, 49, 0.25);
+.mypage-action-btn:hover,
+.mypage-info-data-block button:hover,
+.mypage-form button:hover,
+.order-page-wrapper > div button:hover {
+    background-color: var(--deep-caramel) !important; 
+    border-color: var(--deep-caramel) !important;
+    box-shadow: 0 6px 15px rgba(138, 79, 37, 0.25);
 }
 
-.mypage-action-btn:disabled {
-    background-color: #E2DDD5 !important;
-    border-color: #E2DDD5 !important;
+.mypage-action-btn:disabled,
+button:disabled {
+    background-color: var(--soft-border) !important; 
+    border-color: var(--soft-border) !important;
     color: #A39E95 !important;
     cursor: not-allowed !important;
 }
 
-/* =========================================================================
-   [레이아웃 최종 마감] JSX 수정 없이 버튼 박스를 제목 아래로 배치하는 정렬 시스템
-   ========================================================================= */
-
-/* 메인 대시보드 박스를 세로 배치 구조로 선언 */
-.mypage-main-content .info-content-box {
-    display: flex !important;
-    flex-direction: column !important;
+/* ========================================================
+   [추가 보정] 맨 하단 '전체보기 ▼' 버튼 규격 원상 복구 및 격리
+   ======================================================== */
+.main-body-wrapper button[id*="all"], 
+button:last-of-type,
+.main-body-wrapper > div > button {
+    width: auto !important;
+    max-width: none !important;
 }
+
 
 /* -------------------------------------------------------------------------
    [배송지 추가 헤더 내부 순서 뒤집기] - 순서 제어 기능 원본 100% 보존
@@ -523,32 +544,38 @@ tbody button:hover {
 }
 
 /* =========================================================================
-   [최종 가시성 보완] 하단 회원 탈퇴하기 글씨 시인성 및 반응형 제어
+   [최종 가시성 보완] 하단 회원 탈퇴하기 글씨 시인성 및 반응형 제어 (레드 변경)
    ========================================================================= */
 .mypage-main-content .info-content-box .link-withdraw-trigger,
-.mypage-main-content .info-content-box div[style*="justify-content: flex-end"] span {
-    /* ⚡ [보정] 붕 뜨던 인공적인 레드 대신 프리미엄 라운지에 걸맞은 깊은 마룬 브라운 레드로 밸런싱 */
-    color: #8A4F25 !important; 
+.mypage-main-content .info-content-box div[style*="justify-content: flex-end"] span,
+span[onClick*="handleDelete"] {
+    /* ⚡ [긴급 교정] 흐릿했던 회색/브라운을 지우고 리뷰 삭제 버튼과 '100% 동일한 레드'로 교체 */
+    color: #ff4d4f !important; 
     font-size: 13px !important;
-    font-weight: 700 !important; /* 글씨 두께 두껍게 주목도 유지 */
+    font-weight: 700 !important; /* 글씨 두께 두껍게 고정하여 주목도 최대화 */
     letter-spacing: -0.3px !important;
     cursor: pointer !important;
     text-decoration: none !important;
-    border-bottom: 1px dashed #8A4F25 !important; /* 세련된 밑줄 추가 */
+    
+    /* 점선 밑줄 역시 선명한 레드 실선으로 변경 */
+    border-bottom: 1px solid #ff4d4f !important; 
     padding-bottom: 2px !important;
-    opacity: 0.8 !important; /* 조금 더 선명하게 인지되도록 기본 불투명도 미세 상향 */
+    opacity: 1 !important; /* 불투명도를 100%로 상향하여 흐릿함 전면 차단 */
     transition: all 0.2s ease-in-out !important;
 }
 
-/* 마우스를 올렸을 때(Hover) 피드백 효과 */
+/* 마우스를 올렸을 때(Hover) 강렬한 경고성 반전 피드백 효과 */
 .mypage-main-content .info-content-box .link-withdraw-trigger:hover,
-.mypage-main-content .info-content-box div[style*="justify-content: flex-end"] span:hover {
-    /* ⚡ [보정] 호버 시 딥 에스프레소 초콜릿 색상으로 완전히 녹아들게 처리하여 탈퇴 버튼의 품격 마감 */
-    color: #5E4431 !important; 
-    border-bottom: 1px solid #5E4431 !important;
-    opacity: 1 !important;
-    text-shadow: 0 0 1px rgba(94, 68, 49, 0.2);
+.mypage-main-content .info-content-box div[style*="justify-content: flex-end"] span:hover,
+span[onClick*="handleDelete"]:hover {
+    /* 호버 시 리뷰 삭제 버튼의 호버 느낌처럼 은은한 연분홍 배경과 함께 텍스트가 더 쨍하게 인지되도록 보정 */
+    color: #ff4d4f !important; 
+    background-color: #fff2f0 !important; /* 마우스 올리면 부드러운 경고성 핑크 배경 추가 */
+    border-bottom: 1px solid #ff4d4f !important;
+    border-radius: 4px;
+    padding: 2px 6px !important; /* 마우스 올렸을 때 배지 느낌으로 여백 확장 */
 }
+
 
 
 /* =========================================================================
@@ -843,7 +870,9 @@ tbody button:hover {
     padding: 6px 14px !important;
     font-size: 12px !important;
     font-weight: 700 !important;
-    
+
+    display: inline-block !important;
+
     /* ⚡ [팀 규격 매칭] 공용 서브 버튼 가이드에 맞추어 완전한 직각 마감 */
     border-radius: 0px !important;
 }
@@ -947,4 +976,574 @@ tbody button:hover {
 /* 전체 회원정보 콘텐츠 상자를 기준 좌표 축으로 선언 */
 .info-content-box {
     position: relative !important;
+}
+
+.mypage-schedule-container{
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: #FFFCF7;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.mypage-schedule-title{
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--brown);
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--warm-beige);
+}
+
+.mypage-schedule-list{
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+}
+
+.mypage-schedule-card{
+    background-color: var(--content-bg);
+    border: 1px solid var(--soft-border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: box-shadow 0.2s ease;
+    margin-bottom: 10px;
+}
+
+.mypage-schedule:hover{
+    box-shadow: 0 4px 16px rgba(74, 51, 36, 0.1);
+}
+
+.mypage-schedule-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 20px;
+    background-color: var(--cream);
+    border-bottom: 1px solid var(--soft-border);
+}
+
+.mypage-schedule-order-id{
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--deep-caramel);
+}
+
+.mypage-schedule-badge{
+     background-color: var(--caramel);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 12px;
+    border-radius: 999px;
+}
+
+.mypage-schedule-card-body{
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.mypage-schedule-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+}
+
+.mypage-schedule-label{
+    color: #A98C72;
+    font-weight: 400;
+}
+
+.mypage-schedule-value{
+     color: var(--brown);
+    font-weight: 500;
+}
+
+.mypage-schedule-price{
+    color: var(--caramel);
+    font-weight: 700;
+    font-size: 15px;
+}
+
+.mypage-schedule-empty{
+    text-align: center;
+    color: #A98C72;
+    padding: 40px 0;
+    font-size: 14px;
+}
+
+/* ========================================================
+   [최종 마감] 뱃지 간섭 차단 및 전체보기 버튼 우측 강제 밀착
+   ======================================================== */
+
+/* 1. '구매내역'과 '총 11건' 뱃지가 들어있는 전체 타이틀 상자의 위치 기준점 확정 */
+h3#refund-section.mypage-info-section-title,
+.mypage-info-section-title {
+    position: relative !important;   /* 버튼을 우측 끝에 정확히 박기 위한 지지대 역할 */
+    display: flex !important;
+    align-items: center !important;
+    width: 100% !important;
+    border-bottom: 2px solid var(--caramel) !important; /* 카라멜 구분선 유지 */
+    padding-bottom: 12px !important;
+    margin-bottom: 20px !important;
+}
+
+/* 2. 💡 [최종 치트키] 중간에 낀 뱃지를 완전히 무시하고 버튼만 우측 맨 끝 벽면으로 강제 밀착 */
+h3#refund-section.mypage-info-section-title > button.mypage-action-btn,
+.mypage-info-section-title > button {
+    position: absolute !important;   /* 좁은 그릇 구조를 탈출하여 절대적인 좌표로 배치 */
+    right: 0 !important;             /* ⚡ 아래쪽 큰 사각형 카드 박스의 가장 오른쪽 세로 끝선과 칼같이 일치화 */
+    
+    /* 폰트 및 규격 원본 그대로 보존 */
+    padding: 6px 16px !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    background-color: var(--caramel) !important; /* 카라멜 색상 결합 */
+    border: 1px solid var(--caramel) !important;
+    color: #FFFFFF !important;
+    width: auto !important;
+    max-width: none !important;
+    display: inline-block !important;
+    cursor: pointer !important;
+    
+    /* ⚡ [팀 규격 매칭] 공용 서브 버튼 가이드에 맞추어 완전한 직각 마감 */
+    border-radius: 0px !important; 
+}
+
+/* 3. 마우스 올렸을 때 딥 카라멜 호버 피드백 */
+h3#refund-section.mypage-info-section-title > button.mypage-action-btn:hover,
+.mypage-info-section-title > button:hover {
+    background-color: var(--deep-caramel) !important;
+    border-color: var(--deep-caramel) !important;
+}
+
+/* ========================================================
+   [최종 완치] 리뷰 버튼 우측 밀착 및 다른 버튼 카라멜 완전 복구
+   ======================================================== */
+
+/* 1. 리뷰 수정/삭제 버튼 묶음을 카드박스 '우측 끝선'으로 정렬하는 부모 그릇 제어 */
+.mypage-info-data-block div[style*="display: flex"],
+.mypage-info-data-block div[style*="gap"],
+.mypage-info-data-block > div > div:last-child {
+    display: flex !important;
+    flex-direction: row !important; 
+    gap: 8px !important;            /* 수정/삭제 버튼 사이의 단정한 여백 */
+    width: 100% !important;
+    justify-content: flex-end !important; /* 💡 [우측 정렬] 버튼 묶음 전체를 오른쪽 맨 끝 벽면으로 밀착 */
+    margin-top: 15px !important;
+}
+
+/* 2. 💡 [정밀 저격] 다른 일반 버튼(정보수정 등)을 절대 침범하지 않도록 '리뷰 상자 내부'로만 타격 범위 완벽 격리 */
+.mypage-info-data-block button,
+.mypage-info-data-block .mypage-action-btn {
+    width: auto !important;          /* 100% 가로 터짐 현상 원천 차단 */
+    max-width: none !important;
+    height: 34px !important;         /* 정갈한 미니멀 높이 고정 */
+    padding: 0 16px !important;      /* 글자 좌우 알맞은 여백 */
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0px !important;
+    display: inline-flex !important; /* 한 줄로 나란히 안착 */
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 0px !important;   /* 원본의 모던한 직각 모서리 사수 */
+    box-shadow: none !important;     
+}
+
+/* 3. [수정하기] 버튼 전용 카라멜 컬러 수혈 및 오른쪽 정렬 극대화 */
+.mypage-info-data-block button:first-of-type,
+.mypage-info-data-block .mypage-action-btn:first-of-type {
+    background-color: var(--caramel) !important; /* #B8783E 카라멜 복구 */
+    border: 1px solid var(--caramel) !important;
+    color: #FFFFFF !important;
+    margin-left: auto !important;   /* 💡 자석처럼 무조건 우측 끝으로 밀어붙이는 동력원 */
+}
+.mypage-info-data-block button:first-of-type:hover {
+    background-color: var(--deep-caramel) !important;
+    border-color: var(--deep-caramel) !important;
+}
+
+/* 4. [삭제] 버튼 조원분 오리지널 레드 라인 아이덴티티 완벽 복원 */
+.mypage-info-data-block button[style*="color: red"],
+.mypage-info-data-block button[style*="color: 'red'"],
+.mypage-info-data-block button:last-of-type {
+    background-color: transparent !important;   
+    border: 1px solid #ff4d4f !important;       /* 조원분의 레드 라인 선 복구 */
+    color: #ff4d4f !important;                  /* 빨간색 글씨 고정 */
+    margin-left: 0 !important;                  /* 수정하기 버튼 우측 옆에 나란히 결착 */
+}
+.mypage-info-data-block button:last-of-type:hover {
+    background-color: #fff2f0 !important;        
+    color: #ff4d4f !important;
+}
+
+/* ========================================================
+   [최종 종결] 영역별 격리 타격 - 정보수정 복구 및 리뷰 우측 밀착
+   ======================================================== */
+
+/* 1. 폼 내부에 들어있는 회원정보 '정보수정' 버튼만 정밀 저격 (카라멜 복구) */
+.order-page-wrapper form button,
+.main-body-wrapper form button,
+.order-page-wrapper div[style*="flex"] > button:not(.mypage-action-btn),
+form + button {
+    background: #B8783E !important;
+    background-color: #B8783E !important;
+    border: 1px solid #B8783E !important;
+    color: #FFFFFF !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    height: 44px !important;
+    width: 100% !important;               /* 정보수정은 입력창 크기에 맞게 100% */
+    max-width: 750px !important;          /* 750px 상자 끝선에 맞춤 */
+    margin: 20px auto 0 auto !important;
+    display: block !important;
+    border-radius: 0px !important;        /* 시크한 직각 유지 */
+    cursor: pointer !important;
+}
+
+.order-page-wrapper form button:hover,
+form + button:hover {
+    background-color: #8A4F25 !important;
+    border-color: #8A4F25 !important;
+}
+
+/* 2. 💡 [리뷰 구역 완전 격리] 리뷰 박스 내부의 수정/삭제 버튼 가로 정렬 및 우측 밀착 */
+.mypage-info-data-block div[style*="display"],
+.mypage-info-data-block div:has(> .mypage-action-btn) {
+    display: flex !important;
+    flex-direction: row !important;       /* 세로 찢어짐 방지 및 가로 정렬 강제 */
+    justify-content: flex-end !important; /* 💡 버튼 묶음 전체를 오른쪽 맨 끝선으로 정렬 */
+    align-items: center !important;
+    width: 100% !important;
+    margin-top: 15px !important;
+    box-sizing: border-box !important;
+}
+
+/* 💡 리뷰 상자 내부에 박힌 버튼들의 가로폭이 100%로 터지는 현상을 원천 차단 */
+.mypage-info-data-block button,
+.mypage-info-data-block .mypage-action-btn {
+    width: auto !important;               /* 가로폭 100% 터짐 현상 완전 해제 */
+    max-width: none !important;
+    height: 34px !important;              /* 정갈한 미니멀 높이 */
+    padding: 0 16px !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    display: inline-flex !important;      /* 나란히 안착 */
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 0px !important;        /* 직각 유지 */
+    box-shadow: none !important;
+}
+
+/* 리뷰 내부 [수정하기] 단추 카라멜 컬러 지정 및 마진 밀착 */
+.mypage-info-data-block button:first-of-type,
+.mypage-info-data-block .mypage-action-btn:first-of-type {
+    background: #B8783E !important;
+    background-color: #B8783E !important;
+    border: 1px solid #B8783E !important;
+    color: #FFFFFF !important;
+    margin-left: auto !important;         /* 💡 자석처럼 무조건 우측 끝선으로 밀어붙이기 */
+}
+.mypage-info-data-block button:first-of-type:hover {
+    background-color: #8A4F25 !important;
+    border-color: #8A4F25 !important;
+}
+
+/* 리뷰 내부 [삭제] 단추 조원분 오리지널 레드 라인 룩 복구 */
+.mypage-info-data-block button:last-of-type {
+    background: transparent !important;
+    background-color: transparent !important;
+    border: 1px solid #ff4d4f !important;  /* 조원분 오리지널 레드 라인 수혈 */
+    color: #ff4d4f !important;
+    margin-left: 0 !important;            /* 수정하기 버튼 바로 옆에 정렬 */
+}
+.mypage-info-data-block button:last-of-type:hover {
+    background-color: #fff2f0 !important;
+}
+
+/* ========================================================
+   [최종 수혈] 내 북마크 상품보기 & 회원정보수정 버튼 카라멜 완전 고정
+   ======================================================== */
+
+/* ① '내 북마크 상품' 테이블 내부에 박혀있는 [상품 보기] 단추 카라멜 리브랜딩 */
+tbody td button,
+.mypage-main-content table button,
+.mypage-info-data-block table button {
+    /* 칙칙한 분홍빛 실선 테두리를 밀어내고 카라멜 색상 강제 수혈 */
+    background: #B8783E !important;
+    background-color: #B8783E !important;
+    border: 1px solid #B8783E !important;
+    
+    /* 폰트 컬러 화이트로 반전 및 가독성 마감 */
+    color: #FFFFFF !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.5px !important;
+    padding: 6px 14px !important;
+    
+    /* 기존 너비와 가구 브랜드 전용의 시크한 직각 모서리 완벽 수호 */
+    width: auto !important;
+    max-width: none !important;
+    height: auto !important;
+    border-radius: 0px !important; 
+    cursor: pointer !important;
+    display: inline-block !important;
+    transition: all 0.2s ease-in-out !important;
+    box-shadow: none !important;
+} /* 💡 상품보기 닫는 중괄호 매칭 완료 */
+
+/* [상품 보기] 마우스 호버 시 조금 더 어두운 딥 카라멜 피드백 */
+tbody td button:hover,
+.mypage-main-content table button:hover {
+    background: #8A4F25 !important;
+    background-color: #8A4F25 !important;
+    border-color: #8A4F25 !important;
+    color: #FFFFFF !important;
+} /* 💡 상품보기 호버 닫는 중괄호 매칭 완료 */
+
+
+/* ② 💡 [질문자님 정답 저격 반영] 진짜 마이페이지 회원정보 클래스명 경로 매칭 정보수정 단추 오버라이드 */
+.mypage-info-content-box .mypage-info-data-block button {
+    /* 칙칙한 기본 연분홍/빨간색 실선 테두리와 투명 배경을 무력화하고 카라멜 수혈 */
+    background: #B8783E !important;
+    background-color: #B8783E !important;
+    border: 1px solid #B8783E !important;
+    
+    /* 글자색 화이트 반전 및 폰트 가독성 최적화 */
+    color: #FFFFFF !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.5px !important;
+    text-align: center !important;
+    
+    /* 💡 [크기 완벽 고정] 가로로 무작정 터지거나 쪼그라들지 않게 딱 예쁜 원래 콤팩트 크기 그대로 고정 */
+    width: 120px !important; 
+    height: 40px !important;
+    box-sizing: border-box !important;
+    border-radius: 0px !important; /* 조원분의 시크한 모던 직각 모서리 스펙 철저 수호 */
+    cursor: pointer !important;
+    
+    /* 회원정보 카드 중앙 하단부 정렬 유지 */
+    margin: 25px auto 0 auto !important;
+    display: block !important;
+    transition: all 0.2s ease-in-out !important;
+    box-shadow: 0 4px 10px rgba(184, 120, 62, 0.15) !important;
+} /* 💡 정보수정 닫는 중괄호 매칭 완료 */
+
+/* [정보수정] 마우스 호버 시 딥 카라멜 피드백 */
+.mypage-info-content-box .mypage-info-data-block button:hover {
+    background: #8A4F25 !important;
+    background-color: #8A4F25 !important;
+    border-color: #8A4F25 !important;
+    box-shadow: 0 6px 14px rgba(138, 79, 37, 0.25) !important;
+} /* 💡 정보수정 호버 닫는 중괄호 매칭 완료 */
+
+/* ========================================================
+   [최종 마감] 구매내역 슬라이더 좌/우 화살표 버튼 완치 및 밀착
+   ======================================================== */
+
+/* ① 조원분의 진짜 클래스명인 '.slider-arrow-btn'을 다이렉트로 타격하여 평평하게 펴기 */
+.mypage-main-content .order-slider-wrapper .slider-arrow-btn,
+.order-slider-wrapper button.slider-arrow-btn,
+button.slider-arrow-btn {
+    /* 뚱뚱하게 늘어나 찌그러졌던 높이와 너비를 정갈한 36px 직각 정사각형으로 고정 */
+    width: 36px !important;
+    max-width: 36px !important;
+    height: 36px !important;
+    min-height: 36px !important;
+    
+    /* 90도 회전해서 뭉개졌던 텍스트 기호(◀, ▶)를 수평 중앙에 똑바로 안착 (평치기) */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 14px !important;
+    line-height: 1 !important;
+    letter-spacing: 0px !important;
+    padding: 0 !important;
+    
+    /* 화면을 가로막지 않도록 큰 상자 안의 정확한 좌우 모서리 끝선에 절대 좌표로 배치 */
+    position: absolute !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important; /* 세로 중앙 정렬 */
+    z-index: 15 !important;
+    
+    /* 까사미아 웜톤 무드와 완벽 싱크로율을 이루는 부드러운 가구색 마감 */
+    background-color: var(--cream) !important; /* #FFF3DF 은은한 베이지 */
+    border: 1px solid var(--soft-border) !important; /* #E8D9C8 밀크티 선 */
+    color: var(--deep-caramel) !important; /* #8A4F25 카라멜 글씨 */
+    border-radius: 0px !important; /* 조원분의 시크한 모던 직각 모서리 사수 */
+    box-shadow: 0 2px 8px rgba(74, 51, 36, 0.06) !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease-in-out !important;
+}
+
+/* ② 화살표 버튼 마우스 올렸을 때(Hover) 시그니처 카라멜 컬러 반전 효과 */
+.order-slider-wrapper button.slider-arrow-btn:hover,
+button.slider-arrow-btn:hover {
+    background-color: var(--caramel) !important; /* #B8783E */
+    border-color: var(--caramel) !important;
+    color: #FFFFFF !important;
+}
+
+/* ③ 💡 [좌우 정밀 안착] 왼쪽 화살표와 오른쪽 화살표를 큰 상자 벽면에 칼같이 자석 밀착 */
+/* 왼쪽 이동 버튼 (보통 클래스명에 prev나 왼쪽 정렬 속성이 포함됨) */
+.order-slider-wrapper button.slider-arrow-btn:first-of-type,
+button.slider-arrow-btn.prev,
+button.slider-arrow-btn:not(.next) {
+    left: 10px !important; /* 큰 흰색 상자 왼쪽 테두리 안쪽 벽면에 이쁘게 밀착 */
+}
+
+/* 오른쪽 이동 버튼 (보통 클래스명에 next나 오른쪽 정렬 속성이 포함됨) */
+.order-slider-wrapper button.slider-arrow-btn:last-of-type,
+button.slider-arrow-btn.next {
+    right: 10px !important; /* 💡 큰 흰색 상자 오른쪽 테두리 안쪽 벽면에 자석처럼 완벽히 밀착 */
+}
+
+/* 화살표 부모 그릇 상자의 위치 기준점을 명확히 잡아서 버튼 이탈 방지 */
+.order-slider-wrapper {
+    position: relative !important;
+}
+
+/* ========================================================
+   [최종 완치] #refund-section 기준 화살표 평치기 및 좌우 밀착
+   ======================================================== */
+
+/* ① 조원분의 진짜 구매내역 ID인 '#refund-section' 바로 뒤 프레임을 추적하여 화살표 직격 */
+#refund-section + div button.slider-arrow-btn,
+#refund-section ~ div button[class*="arrow"],
+#refund-section ~ div .slider-arrow-btn,
+button.slider-arrow-btn {
+    /* 1. 세로로 무식하게 늘어나 찌러졌던 그릇을 36px 직각 정방형 정사각형으로 고정 (평평하게) */
+    width: 36px !important;
+    max-width: 36px !important;
+    height: 36px !important;
+    min-height: 36px !important;
+    
+    /* 2. 90도 회전해서 찌그러져 뭉개졌던 텍스트(◀, ▶)를 수평 중앙에 똑바로 정착 (평치기) */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 14px !important;
+    line-height: 1 !important;
+    letter-spacing: 0px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    
+    /* 3. 가구 카드를 가로막지 않도록 큰 상자 안의 정확한 좌우 모서리 끝선에 세로 중앙 배치 */
+    position: absolute !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important; 
+    z-index: 15 !important;
+    
+    /* 4. 카사미아 웜톤 무드와 완벽 싱크로율을 이루는 부드러운 가구색 마감 */
+    background-color: var(--cream) !important;      /* #FFF3DF 은은한 베이지 */
+    border: 1px solid var(--soft-border) !important;  /* #E8D9C8 밀크티 선 */
+    color: var(--deep-caramel) !important;           /* #8A4F25 카라멜 글씨 */
+    border-radius: 0px !important;                     /* 조원분의 시크한 모던 직각 모서리 사수 */
+    box-shadow: 0 2px 8px rgba(74, 51, 36, 0.06) !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease-in-out !important;
+}
+
+/* ② 화살표 버튼 마우스 올렸을 때(Hover) 시그니처 카라멜 컬러 반전 효과 */
+#refund-section + div button.slider-arrow-btn:hover,
+button.slider-arrow-btn:hover {
+    background-color: var(--caramel) !important; /* #B8783E */
+    border-color: var(--caramel) !important;
+    color: #FFFFFF !important;
+}
+
+/* ③ 💡 [좌우 정밀 안착] 왼쪽 화살표와 오른쪽 화살표를 큰 상자 벽면에 칼같이 자석 밀착 */
+/* 왼쪽 이동 버튼 (보통 첫 번째 버튼이거나 prev 속성이 믹스됨) */
+#refund-section + div button.slider-arrow-btn:first-of-type,
+#refund-section ~ div button[class*="arrow"]:first-of-type {
+    left: 10px !important; /* 큰 사각형 상자 왼쪽 테두리 안쪽 벽면에 이쁘게 밀착 */
+}
+
+/* 오른쪽 이동 버튼 (보통 마지막 버튼이거나 next 속성이 믹스됨) */
+#refund-section + div button.slider-arrow-btn:last-of-type,
+#refund-section ~ div button[class*="arrow"]:last-of-type {
+    right: 10px !important; /* 💡 큰 사각형 상자 오른쪽 테두리 안쪽 벽면에 자석처럼 완벽히 밀착 */
+}
+
+/* 조원분이 짜놓은 구매내역 큰 그릇 상자의 위치 기준점을 명확히 박아 버튼 탈출 차단 */
+#refund-section + div,
+.order-slider-wrapper {
+    position: relative !important;
+}
+
+/* ========================================================
+   [최종 완결] 리뷰 버튼 양끝 분산 정렬 - 수정(좌측) / 삭제(우측)
+   ======================================================== */
+
+/* 1. 💡 [핵심 교정] 수정하기와 삭제 버튼 부모 상자를 '양 끝 벽면 정렬(space-between)'로 강제 찢기 */
+.mypage-info-data-block div[style*="display: flex"],
+.mypage-info-data-block div[style*="display:flex"],
+.mypage-info-data-block div:has(> button[onClick*="Delete"]) {
+    display: flex !important;
+    flex-direction: row !important;       /* 가로형 정렬 유지 */
+    
+    /* 💡 [치트키] 수정하기는 왼쪽 끝벽으로, 삭제는 오른쪽 끝벽으로 자석처럼 강제로 찢어버림 */
+    justify-content: space-between !important; 
+    
+    align-items: center !important;
+    width: 100% !important;               /* 부모 그릇의 가로폭을 100% 완전히 개방 */
+    box-sizing: border-box !important;
+    margin-top: 15px !important;
+}
+
+/* 2. 가로로 뚱뚱하게 늘어나 굳어있던 리뷰 내부 버튼들의 규격을 세련된 미니멀 배지 크기로 잠금 */
+.mypage-info-data-block div[style*="display"] .mypage-action-btn,
+.mypage-info-data-block div:has(> button[onClick*="Delete"]) button {
+    width: auto !important;               /* 가로 터짐 현상 완전 방지 */
+    max-width: none !important;
+    height: 34px !important;              /* 슬림한 높이 */
+    padding: 0 16px !important;           /* 정갈한 글자 좌우 패딩 */
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    display: inline-flex !important;      /* 요소를 한 줄로 나란히 안착 */
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: none !important;
+    margin: 0 !important;                 /* 기존에 걸려있던 강제 마진 밀어내기 속성 완벽 초기화 */
+    
+    /* ⚡ [팀 규격 매칭] 공용 서브 버튼 가이드에 맞추어 완전한 직각 마감 */
+    border-radius: 0px !important; 
+}
+
+/* 3. 👈 [수정하기] 버튼 카라멜 색상 고정 및 '왼쪽 벽면' 완전 밀착 */
+.mypage-info-data-block div[style*="display"] .mypage-action-btn:first-of-type,
+.mypage-info-data-block div:has(> button[onClick*="Delete"]) button:first-of-type {
+    background-color: var(--caramel) !important; /* 팀 공용 카라멜 (#B8783E) */
+    border: 1px solid var(--caramel) !important;
+    color: #FFFFFF !important;
+    
+    /* 💡 기존의 margin-left 자석을 해제하여 부모의 space-between 속성을 따라 왼쪽 구석 끝벽에 밀착 */
+    margin-left: 0 !important; 
+}
+
+.mypage-info-data-block div[style*="display"] .mypage-action-btn:first-of-type:hover {
+    background-color: var(--deep-caramel) !important;
+    border-color: var(--deep-caramel) !important;
+}
+
+/* 4. 👉 [삭제] 버튼 인호님 오리지널 레드 라인 룩 유지 및 '오른쪽 벽면' 완전 밀착 */
+.mypage-info-data-block div[style*="display"] .mypage-action-btn:last-of-type,
+.mypage-info-data-block div:has(> button[onClick*="Delete"]) button:last-of-type {
+    background: transparent !important;
+    background-color: transparent !important;
+    border: 1px solid #ff4d4f !important;  /* 인호님 오리지널 레드 라인 수혈 */
+    color: #ff4d4f !important;            
+    
+    /* 💡 부모의 space-between 속성을 따라 무조건 오른쪽 구석 끝벽에 자석처럼 결착 */
+    margin-left: 0 !important; 
+}
+
+.mypage-info-data-block div[style*="display"] .mypage-action-btn:last-of-type:hover {
+    background-color: #fff2f0 !important;
 }

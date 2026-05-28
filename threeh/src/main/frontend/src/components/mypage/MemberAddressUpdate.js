@@ -103,71 +103,75 @@ const MemberAddressUpdate = () => {
             console.error("회원 수정 최종 에러 상세:", err.response);
             alert("정보 수정 처리 중 서버 오류가 발생했습니다.");
         });
-    }; // 꼬여있던 handleSubmit 마감 괄호를 정확한 위치로 복구 완료
+    };
 
-        return (
-    <div className="mypage-grid-container">
-        {/* ========================================================= */}
-        {/* [통일 규격] 조원분의 실제 검색/GNB 기능이 담긴 글로벌 헤더      */}
-        {/* ========================================================= */}
-        {/* 장바구니 방식 그대로! 수동 header 지우고 진짜 컴포넌트 1줄 장착 */}
-        <Header />
+   return (
+        // [시작] 최상위 그리드 레이아웃 엔진 래퍼
+        <div className="mypage-grid-container">
+            
+            {/* ========================================================= */}
+            {/* [통일 규격] 조원분의 실제 검색/GNB 기능이 담긴 글로벌 헤더      */}
+            {/* ========================================================= */}
+            <Header />
 
-    <ToastContainer
-      position="top-center"
-      autoClose={1800}
-      hideProgressBar={false}
-      newestOnTop={true}
-      closeOnClick
-      pauseOnHover
-      theme="light"
-    />
+            {/* 토스트 알림 컴포넌트 안착 */}
+            <ToastContainer
+                position="top-center"
+                autoClose={1800}
+                hideProgressBar={false}
+                newestOnTop={true}
+                closeOnClick
+                pauseOnHover
+                theme="light"
+            />
 
-        {/* 🖥️ 정보수정 룸 단독형 명품 레이아웃 뷰포트 배치 */}
-        <div className="update-form-viewport">
-            <div className="update-form-card">
-                <h2>회원 정보 수정</h2>
-                
-                <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                    <div className="form-group-row">
-                        <label style={{ display: 'block', marginBottom: '5px' }}><strong>아이디</strong></label>
-                        <input type="text" name="id" value={fromData.id} disabled className="disabled-input" style={{ width: '100%', padding: '8px' }} />
-                    </div>
-                    <div className="form-group-row">
-                        <label style={{ display: 'block', marginBottom: '5px' }}><strong>이름</strong></label>
-                        <input type="text" name="name" value={fromData.name} onChange={handleChange} style={{ width: '100%', padding: '8px' }} required />
-                    </div>
-                    <div className="form-group-row">
-                        <label style={{ display: 'block', marginBottom: '5px' }}><strong>연락처</strong></label>
-                        <input type="text" name="phone" value={fromData.phone} onChange={handleChange} style={{ width: '100%', padding: '8px' }} required />
-                    </div>
-                    <div className="form-group-row">
-                        <label style={{ display: 'block', marginBottom: '5px' }}><strong>이메일</strong></label>
-                        <input type="email" name="email" value={fromData.email} onChange={handleChange} style={{ width: '100%', padding: '8px' }} required />
-                    </div>
-                    <div className="form-group-row">
-                        <label style={{ display: 'block', marginBottom: '5px' }}><strong>새 비밀번호</strong></label>
-                        <input type="password" name="password1" value={fromData.password1} onChange={handleChange} style={{ width: '100%', padding: '8px' }} required />
-                    </div>
-                    <div className="form-group-row">
-                        <label style={{ display: 'block', marginBottom: '5px' }}><strong>비밀번호 확인</strong></label>
-                        <input type="password" name="password2" value={fromData.password2} onChange={handleChange} style={{ width: '100%', padding: '8px' }} required />
-                    </div>
-                    <div className="form-action-row" style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
-                        <button type="submit" className="mypage-action-btn" style={{ flex: 1, padding: '10px', color: '#fff', border: 'none', cursor: 'pointer', fontWeight: 'bold' }}>수정 완료</button>
-                        <button type="button" className="btn-header-action" onClick={() => navigate('/mypage')} style={{ flex: 1, padding: '10px', cursor: 'pointer' }}>취소</button>
-                    </div>
-                </form>
-            </div>
-        </div>
+            {/* 🖥️ 정보수정 룸 단독형 명품 레이아웃 뷰포트 배치 */}
+            <div className="update-form-viewport">
+                <div className="update-form-card">
+                    <h2>회원 정보 수정</h2>
+                    
+                    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                        <div className="form-group-row">
+                            <label style={{ display: 'block', marginBottom: '5px' }}><strong>아이디</strong></label>
+                            <input type="text" name="id" value={fromData.id} disabled className="disabled-input" style={{ width: '100%', padding: '8px' }} />
+                        </div>
+                        <div className="form-group-row">
+                            <label style={{ display: 'block', marginBottom: '5px' }}><strong>이름</strong></label>
+                            <input type="text" name="name" value={fromData.name} onChange={handleChange} style={{ width: '100%', padding: '8px' }} required />
+                        </div>
+                        <div className="form-group-row">
+                            <label style={{ display: 'block', marginBottom: '5px' }}><strong>연락처</strong></label>
+                            <input type="text" name="phone" value={fromData.phone} onChange={handleChange} style={{ width: '100%', padding: '8px' }} required />
+                        </div>
+                        <div className="form-group-row">
+                            <label style={{ display: 'block', marginBottom: '5px' }}><strong>이메일</strong></label>
+                            <input type="email" name="email" value={fromData.email} onChange={handleChange} style={{ width: '100%', padding: '8px' }} required />
+                        </div>
+                        <div className="form-group-row">
+                            <label style={{ display: 'block', marginBottom: '5px' }}><strong>새 비밀번호</strong></label>
+                            <input type="password" name="password1" value={fromData.password1} onChange={handleChange} style={{ width: '100%', padding: '8px' }} required />
+                        </div>
+                        <div className="form-group-row">
+                            <label style={{ display: 'block', marginBottom: '5px' }}><strong>비밀번호 확인</strong></label>
+                            <input type="password" name="password2" value={fromData.password2} onChange={handleChange} style={{ width: '100%', padding: '8px' }} required />
+                        </div>
+                        
+                        {/* 최하단 액션 제어 트랙 버튼 그룹 */}
+                        <div className="form-action-row" style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+                            <button type="submit" className="mypage-action-btn" style={{ flex: 1, padding: '10px', color: '#fff', border: 'none', cursor: 'pointer', fontWeight: 'bold' }}>수정 완료</button>
+                            <button type="button" className="btn-header-action" onClick={() => navigate('/mypage')} style={{ flex: 1, padding: '10px', cursor: 'pointer' }}>취소</button>
+                        </div>
+                    </form>
+                </div> {/* [종료] update-form-card */}
+            </div> {/* [종료] update-form-viewport */}
 
-        {/* ========================================================= */}
-        {/* 🤎 [통일 규격] 조원분의 실제 기능이 담긴 글로벌 푸터 컴포넌트   */}
-        {/* ========================================================= */}
-        {/* ⚡ 장바구니 방식 그대로! 수동 footer 지우고 진짜 컴포넌트 1줄 장착 */}
-        <Footer />
-    </div>
-  );
+            {/* ========================================================= */}
+            {/* 🤎 [통일 규격] 조원분의 실제 기능이 담긴 글로벌 푸터 컴포넌트   */}
+            {/* ========================================================= */}
+            <Footer />
+
+        </div> // [종료] mypage-grid-container
+    );
 };
 
 export default MemberAddressUpdate;

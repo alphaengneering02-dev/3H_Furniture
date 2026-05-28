@@ -151,15 +151,18 @@ function Order(props) {
             {/* 2. 중앙 컨텐츠 메인 랩퍼 (가로폭 1200px 최대 제한 및 중앙 정렬) */}
             <div className="order-page-wrapper">
                 
-                {/* 대형 페이지 타이틀 */}
+                {/* 💡 [공간 해결 1] 최상단에 이 대형 타이틀 딱 하나만 남겨둡니다. */}
                 <h2 className="order-page-title">주문 / 결제</h2>
 
                 {/* [시작] 원본 이미지처럼 좌우 레이아웃을 찢어주는 플렉스 컨테이너 */}
                 <div className="order-content-layout">
                     
-                    {/* [시작] 좌측 영역: 입력 카드 컴포넌트들을 위아래로 쌓아두는 세로 정렬 박스 */}
+                    {/* 👈 [시작] 좌측 영역: 입력 카드 컴포넌트들을 위아래로 한 번에 묶어주는 세로 박스 */}
                     <div className="order-left-section">
                         
+                        {/* 💡 [공간 해결 2] 여기에 들어있던 중복 <h2 className="order-page-title">은 완전히 지웠습니다! */}
+
+                        {/* [독립 카드 1] 배송 및 설치 선택 / 주소지 정보 입력창 */}
                         <OrderInfo 
                             setOrderType={setOrderType} 
                             orderType={orderType} 
@@ -172,17 +175,20 @@ function Order(props) {
                             setAddress={setAddress}
                         />
 
+                        {/* 💡 [공간 해결 3] 이름/전화번호 컴포넌트를 이 묶음 안으로 정확하게 배치했습니다.
+                            이렇게 해야 가로폭이 넓어지거나 삐져나가지 않고 주소창 카드 바로 밑에 수직 정렬됩니다. */}
                         <OrderUser 
                             orderData={orderData}
                             deliveryDate={deliveryDate}
                             setDeliveryDate={setDeliveryDate}
                         />
                         
-                    </div> {/* [종료] order-left-section */}
+                    </div> {/* 👈 [종료] order-left-section */}
 
-                    {/* [시작] 우측 영역: 기본배송지 미리보기 + 상품 목록 + 결제 버튼 스티키 사이드바 부모 박스 */}
+                    {/* 👉 [시작] 우측 영역: 기본배송지 미리보기 + 상품 목록 + 결제 버튼 스티키 사이드바 부모 박스 */}
                     <div className="order-right-section">
                         
+                        {/* 영수증 및 결제하기 목록 전체 뷰 컴포넌트 */}
                         <OrderItemInfo 
                             setOrderType={setOrderType} 
                             orderType={orderType} 
@@ -194,7 +200,7 @@ function Order(props) {
                             detailedAddress={detailedAddress}
                         />
                         
-                    </div> {/* [종료] order-right-section */}
+                    </div> {/* 👉 [종료] order-right-section */}
 
                 </div> {/* [종료] order-content-layout (좌우 2단 분할 레이아웃 컨테이너 끝) */}
                 
