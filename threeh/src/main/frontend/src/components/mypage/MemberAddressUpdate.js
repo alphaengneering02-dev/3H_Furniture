@@ -5,6 +5,7 @@ import '../../css/myPageCss/memberAddressUpdate.css';
 import { useToast } from '../../hook/useToast';
 import Header from '../main/Header';
 import Footer from "../main/Footer";
+import { ToastContainer, toast } from "react-toastify";
 
 const MemberAddressUpdate = () => {
     const navigate = useNavigate();
@@ -102,15 +103,25 @@ const MemberAddressUpdate = () => {
             console.error("회원 수정 최종 에러 상세:", err.response);
             alert("정보 수정 처리 중 서버 오류가 발생했습니다.");
         });
-    }; // 👈 꼬여있던 handleSubmit 마감 괄호를 정확한 위치로 복구 완료
+    }; // 꼬여있던 handleSubmit 마감 괄호를 정확한 위치로 복구 완료
 
         return (
     <div className="mypage-grid-container">
         {/* ========================================================= */}
-        {/* 🤎 [통일 규격] 조원분의 실제 검색/GNB 기능이 담긴 글로벌 헤더      */}
+        {/* [통일 규격] 조원분의 실제 검색/GNB 기능이 담긴 글로벌 헤더      */}
         {/* ========================================================= */}
-        {/* ⚡ 장바구니 방식 그대로! 수동 header 지우고 진짜 컴포넌트 1줄 장착 */}
+        {/* 장바구니 방식 그대로! 수동 header 지우고 진짜 컴포넌트 1줄 장착 */}
         <Header />
+
+    <ToastContainer
+      position="top-center"
+      autoClose={1800}
+      hideProgressBar={false}
+      newestOnTop={true}
+      closeOnClick
+      pauseOnHover
+      theme="light"
+    />
 
         {/* 🖥️ 정보수정 룸 단독형 명품 레이아웃 뷰포트 배치 */}
         <div className="update-form-viewport">

@@ -160,7 +160,6 @@ function Order(props) {
                     {/* [시작] 좌측 영역: 입력 카드 컴포넌트들을 위아래로 쌓아두는 세로 정렬 박스 */}
                     <div className="order-left-section">
                         
-                        {/* [독립 카드 1] 배송 및 설치 선택 / 주소지 정보 입력창 */}
                         <OrderInfo 
                             setOrderType={setOrderType} 
                             orderType={orderType} 
@@ -173,7 +172,6 @@ function Order(props) {
                             setAddress={setAddress}
                         />
 
-                        {/* [독립 카드 2] 주문 고객 이름, 전화번호 및 배송 설치 날짜 */}
                         <OrderUser 
                             orderData={orderData}
                             deliveryDate={deliveryDate}
@@ -185,7 +183,6 @@ function Order(props) {
                     {/* [시작] 우측 영역: 기본배송지 미리보기 + 상품 목록 + 결제 버튼 스티키 사이드바 부모 박스 */}
                     <div className="order-right-section">
                         
-                        {/* 영수증 및 결제하기 목록 전체 뷰 컴포넌트 */}
                         <OrderItemInfo 
                             setOrderType={setOrderType} 
                             orderType={orderType} 
@@ -197,7 +194,7 @@ function Order(props) {
                             detailedAddress={detailedAddress}
                         />
                         
-                    </div> {/* 👉 [종료] order-right-section */}
+                    </div> {/* [종료] order-right-section */}
 
                 </div> {/* [종료] order-content-layout (좌우 2단 분할 레이아웃 컨테이너 끝) */}
                 

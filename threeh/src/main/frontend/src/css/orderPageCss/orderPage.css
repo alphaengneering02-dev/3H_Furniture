@@ -551,3 +551,53 @@ order-input:focus {
     position: static !important;
   }
 }
+
+/* ========================================================
+   [최종 확정] 5개 제한 유연한 스크롤 + 배경 레일 상시 상주형
+   ======================================================== */
+
+.order-items-list {
+  /* 1. 상품 유무나 개수와 관계없이 우측에 세로 스크롤 가이드 라인을 항상 강제 생성 */
+  overflow-y: scroll !important;   
+  
+  /* 2. 상품이 적거나 없을 때는 자동으로 높이가 줄어들고, 5개 높이(개당 약 130px)가 되면 딱 멈춤 */
+  max-height: 520px !important; 
+  
+  /* 3. 상품이 아예 없을 때(0개 상태)도 박스가 찌그러지지 않도록 부드러운 최소 높이 보장 */
+  min-height: 140px !important;  
+  
+  padding-right: 8px !important;
+  box-sizing: border-box;
+}
+
+/* 4. 브라우저 스크롤바 전체 틀을 눈에 잘 띄도록 가로폭 확정 */
+.order-items-list::-webkit-scrollbar {
+  width: 6px !important; 
+  display: block !important;
+}
+
+/* 5. 스크롤바가 지나가는 기본 레일 길 - 상품이 0개인 상태에서도 화면에 항상 은은하게 노출 */
+.order-items-list::-webkit-scrollbar-track {
+  background-color: #FFF8ED !important; /* 팀 공용 카라멜 무드 베이스 배경색 적용 */
+  border-radius: 10px !important;
+}
+
+/* 6. 스크롤바를 조작하는 움직이는 카라멜 막대 - 실제로 스크롤 할 데이터가 5개를 넘을 때만 노출 */
+.order-items-list::-webkit-scrollbar-thumb {
+  background-color: #B8783E !important; /* 팀 공용 카라멜 포인트 컬러 적용 */
+  border-radius: 10px !important;
+}
+
+/* 마우스를 스크롤 막대에 올렸을 때 강조 효과 */
+.order-items-list::-webkit-scrollbar-thumb:hover {
+  background-color: #8A4F25 !important; /* 팀 공용 딥 카라멜 컬러 적용 */
+}
+
+/* 7. 상품이 없을 때 나타나는 텅 빈 메시지 박스 세부 정렬 */
+.order-item-empty {
+  padding: 50px 0 !important;
+  text-align: center;
+  color: #999999;
+  font-size: 14px;
+  width: 100%;
+}

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../../css/myPageCss/refund.css';
 import { useToast } from '../../hook/useToast';
+import { ToastContainer, toast } from "react-toastify";
 
 
 const RefundPage = () => {
@@ -186,6 +187,21 @@ const RefundPage = () => {
             {/* [1구역 시작] 마이페이지 공통 헤더 바 (로고 THREE H 세팅)      */}
             {/* ========================================================= */}
             <header className="mypage-header-box" style={{ display: 'flex', justifyContent: 'space-between', padding: '10px', borderBottom: '1px solid #ccc' }}>
+                
+             
+            {/* <div className='main-header'>
+              <Header/>
+            </div>  */}
+
+        <ToastContainer
+            position="top-center"
+            autoClose={1800}
+            hideProgressBar={false}
+            newestOnTop={true}
+            closeOnClick
+            pauseOnHover
+            theme="light"
+        />
                 <div className="mypage-logo-box" onClick={() => navigate('/')} style={{ cursor: 'pointer', fontWeight: 'bold' }}>THREE H</div>
                 <div>
                     {member ? (
