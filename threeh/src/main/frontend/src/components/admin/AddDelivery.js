@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../css/adminCss/DeliveryAE.css';
 import axios from 'axios';
-
+import { ToastContainer, toast } from "react-toastify"; 
+import "react-toastify/dist/ReactToastify.css";
 
 const AddDelivery = () => {
 
@@ -41,14 +42,13 @@ const AddDelivery = () => {
         } catch (error) {
             console.error("세션이 만료되었거나 정보가 없습니다.", error);
             
-            // 2. 서버 세션이 없으면 브라우저 저장소 확인
+          
             const savedUser = sessionStorage.getItem("user");
             if (savedUser) {
                 const userObj = JSON.parse(savedUser);
                 setFormData(prev => ({ ...prev, adminId: userObj.adminId }));
-            } else {
-                // 3. 둘 다 없으면 로그인 페이지로 튕겨내기
-                alert("로그인 세션이 만료되었습니다.");
+            } else {              
+                toast.error("로그인 세션이 만료되었습니다.");
                 navigate("/login");
             }
         }
@@ -75,7 +75,7 @@ const AddDelivery = () => {
        e.preventDefault();
 
        if (!formData.adminId) {
-        alert("관리자 정보를 불러오는 중입니다. 잠시 후 다시 시도해주세요.");
+        toast.error("관리자 정보를 불러오는 중입니다. 잠시 후 다시 시도해주세요.");
         return;
     }
 
@@ -101,7 +101,7 @@ const AddDelivery = () => {
     const response = await axios.post('/admin/delivery', finalRequestData);
         
         if (response.status === 200) {
-            alert("✅ 기사 등록이 완료되었습니다!");
+            toast.error("✅ 기사 등록이 완료되었습니다!");
              navigate("/admin");
         }
     } catch (error) {
@@ -109,9 +109,9 @@ const AddDelivery = () => {
         if (error.response && error.response.data) {
             const { status, message } = error.response.data;
             console.error(`에러 발생 [${status}]: ${message}`);
-            alert(`❌ 등록 실패: ${message}`);
+            toast.error(`❌ 등록 실패: ${message}`);
         } else {
-            alert("서버와 통신 중 문제가 발생했습니다.");
+            toast.error("서버와 통신 중 문제가 발생했습니다.");
         }
     }
 };

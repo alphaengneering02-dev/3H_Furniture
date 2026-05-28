@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import * as XLSX from "xlsx";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const AddCompany = ({ onSuccess }) => {
     const [selectedFile, setSelectedFile] = useState(null);
@@ -14,7 +16,7 @@ const AddCompany = ({ onSuccess }) => {
 
     const handleExcelUpload = async () => {
         if (!selectedFile) {
-            alert("파일을 선택해주세요.");
+            toast.error("파일을 선택해주세요.");
             return;
         }
 
@@ -37,7 +39,7 @@ const AddCompany = ({ onSuccess }) => {
                 console.log("파싱된 엑셀 데이터:", jsonData);
 
                 if (jsonData.length === 0) {
-                    alert("엑셀 파일에 등록할 데이터가 없습니다.");
+                    toast.error("엑셀 파일에 등록할 데이터가 없습니다.");
                     setLoading(false);
                     return;
                 }
@@ -46,7 +48,7 @@ const AddCompany = ({ onSuccess }) => {
                 const response = await axios.post('/admin/delivery/bulk', jsonData, {
                 withCredentials: true
             });
-                alert("단체 등록이 완료되었습니다.");
+                toast.errort("단체 등록이 완료되었습니다.");
                 
                 // 파일 선택 초기화
                 setSelectedFile(null);
@@ -58,7 +60,7 @@ const AddCompany = ({ onSuccess }) => {
                 }
             } catch (error) {
                 console.error("엑셀 업로드 실패:", error);
-                alert(`등록 중 오류가 발생했습니다: ${error.response?.data || error.message}`);
+                toast.error(`등록 중 오류가 발생했습니다: ${error.response?.data || error.message}`);
             } finally {
                 setLoading(false);
             }
@@ -68,7 +70,9 @@ const AddCompany = ({ onSuccess }) => {
     };
 
     return (
-        <div className="admin-excel-uploader-container">
+       <div className="admin-excel-uploader-container">
+        {/* 1층: 파일 선택 버튼과 파일 이름 표시 영역 */}
+        <div className="admin-excel-top-row">
             <label htmlFor="excel-file-input" className="admin-excel-file-label">
                 파일 선택
             </label>
@@ -84,17 +88,17 @@ const AddCompany = ({ onSuccess }) => {
             <span className="admin-excel-filename-display">
                 {selectedFile ? selectedFile.name : '선택된 파일 없음'}
             </span>
-
-            <button
-                onClick={handleExcelUpload}
-                disabled={loading || !selectedFile}
-                className={`admin-excel-upload-submit-btn ${loading ? 'is-loading' : ''}`}
-                style={{ cursor: loading || !selectedFile ? 'not-allowed' : 'pointer' }}
-            >
-                {loading ? '등록중...' : '등록하기'}
-            </button>
         </div>
-    );
+
+        {/* 2층: 최종 등록하기 버튼 (밑으로 이동) */}
+        <button
+            onClick={handleExcelUpload}
+            disabled={loading || !selectedFile}
+            className={`admin-excel-upload-submit-btn ${loading ? 'is-loading' : ''}`}>
+            {loading ? '등록중...' : '등록하기'}
+        </button>
+    </div>
+);
 };
 
 export default AddCompany;

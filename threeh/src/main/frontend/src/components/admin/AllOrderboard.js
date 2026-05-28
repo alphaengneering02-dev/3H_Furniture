@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useDriverAuto } from './DriverAuto';
 import axios from 'axios';
+import { ToastContainer, toast } from "react-toastify"; 
+import "react-toastify/dist/ReactToastify.css";
 import '../../css/adminCss/AdminDashboard.css';
 
 /* 페이지네이션 UI */
@@ -112,7 +114,7 @@ const AllOrderboard = ({
     };
 
     const handleBulkReady = () => {
-        if (selectedOrderIds.length === 0) { alert('변경할 주문을 선택해주세요.'); return; }
+        if (selectedOrderIds.length === 0) { toast.error('변경할 주문을 선택해주세요.'); return; }
         if (window.confirm(`선택한 ${selectedOrderIds.length}건을 '상품준비완료(READY)' 상태로 변경하시겠습니까?`)) {
             selectedOrderIds.forEach(id => handleStatusChange(id, 'READY'));
             setSelectedOrderIds([]);
@@ -129,11 +131,11 @@ const AllOrderboard = ({
         }
 
         if (targetIds.length === 0) { 
-            alert('배정할 주문이 없습니다. 주문자 이름을 검색하거나 주문을 선택해주세요.'); 
+            toast.error('배정할 주문이 없습니다. 주문자 이름을 검색하거나 주문을 선택해주세요.'); 
             return; 
         }
         if (!items || items.length === 0) { 
-            alert('등록된 기사 정보가 없습니다.'); 
+            toast.error('등록된 기사 정보가 없습니다.'); 
             return; 
         }
         
@@ -152,7 +154,7 @@ const AllOrderboard = ({
                 handleAssignDriver(orderId, driverId); 
             });
             
-            alert(`🎉 ${buyerSearchTerm ? '[' + buyerSearchTerm + '] 고객님의 ' : ''}주문 총 ${targetIds.length}건이 ${driverName} 기사님께 묶음 배정되었습니다.`);
+            toast.error(`🎉 ${buyerSearchTerm ? '[' + buyerSearchTerm + '] 고객님의 ' : ''}주문 총 ${targetIds.length}건이 ${driverName} 기사님께 묶음 배정되었습니다.`);
             
             setSelectedOrderIds([]); // 체크박스 초기화
             setIsModalOpen(false);   // 모달창 닫기
@@ -160,8 +162,8 @@ const AllOrderboard = ({
     };
 
     const handleRoundRobinAssign = () => {
-        if (selectedOrderIds.length === 0) { alert('자동 배정할 주문을 선택해주세요.'); return; }
-        if (!items || items.length === 0) { alert('배정할 수 있는 대기 기사님이 없습니다.'); return; }
+        if (selectedOrderIds.length === 0) { toast.error('자동 배정할 주문을 선택해주세요.'); return; }
+        if (!items || items.length === 0) { toast.error('배정할 수 있는 대기 기사님이 없습니다.'); return; }
 
         if (window.confirm(`선택한 ${selectedOrderIds.length}건의 주문을 현재 등록된 ${items.length}명의 기사님께 공평하게 자동 분배하시겠습니까?`)) {
             selectedOrderIds.forEach((orderId, index) => {
@@ -172,7 +174,7 @@ const AllOrderboard = ({
                 handleAssignDriver(orderId, driverId);
             });
 
-            alert(`🎉 자동 배정이 완료되었습니다! 기사당 약 ${Math.ceil(selectedOrderIds.length / items.length)}건씩 분배되었습니다.`);
+            toast.error(`🎉 자동 배정이 완료되었습니다! 기사당 약 ${Math.ceil(selectedOrderIds.length / items.length)}건씩 분배되었습니다.`);
             setSelectedOrderIds([]);
         }
     };

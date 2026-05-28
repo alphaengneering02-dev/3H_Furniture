@@ -105,19 +105,34 @@
 /* 버튼 공통 */
 .admin-menu-btn,
 .admin-add-driver-btn,
-.admin-save-btn,
 .admin-dday-submit-btn,
 .admin-move-page-btn,
+.admin-full-width-link,
 .admin-action-button-group button {
     border: none;
     background: var(--admin-caramel);
     color: white;
     padding: 12px 18px;
-    border-radius: 999px;
+    border-radius: 8px;
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
     transition: 0.25s ease;
+}
+
+.admin-save-btn,
+.admin-full-width-del {
+    border: none;
+    width: 100%;        
+    display: block;
+    background: var(--admin-caramel);
+    color: white;
+    padding: 12px 18px;
+    border-radius: 8px;
+    font-size: 14px;     
+    margin: 6px 0;
+    cursor: pointer;
+    transition: 0.25s ease;      
 }
 
 .admin-menu-btn:hover,
@@ -129,6 +144,8 @@
     background: var(--admin-deep-caramel);
     transform: translateY(-2px);
 }
+
+
 
 /* 버튼 그룹 */
 .admin-panel-buttons,
@@ -625,10 +642,10 @@
 
 /* 기사님 이름 위에 마우스를 올렸을 때(Hover) 대시보드 테마 적용 */
 .admin-modal-driver-btn:hover {
-    background-color: var(--admin-cream); /* 크림색 배경 */
-    border-color: var(--admin-caramel);    /* 캐러멜색 선 */
-    color: var(--admin-deep-caramel);      /* 짙은 캐러멜 텍스트 */
-    transform: translateX(4px);            /* 우측으로 스윽 밀리는 액션 추가 */
+    background-color: var(--admin-cream);
+    border-color: var(--admin-caramel);
+    color: var(--admin-deep-caramel);  
+    transform: translateX(4px);
 }
 
 /* 6. 하단 닫기/취소 버튼 스타일 */
@@ -656,17 +673,20 @@
 /* 1. 업로더 전체 바깥 정렬 박스 */
 .admin-excel-uploader-container {
     display: flex;
-    align-items: center;
-    gap: 12px;
-    background-color: var(--admin-content-bg);
-    border: 1px dashed var(--admin-soft-border); /* 대시보드 톤 연한 점선 */
-    padding: 16px;
-    border-radius: 16px;
-    width: fit-content;
-    margin-top: 10px;
+    flex-direction: column;   
+    gap: 12px;                
+    background-color: var(--admin-cream); 
+    border: 3px dashed var(--admin-soft-border);
+    padding: 35px 16px;           
+    border-radius: 14px;    
+    width: 100%;           
+    min-width: 100%;           
+    max-width: 100%;  
+    flex-grow: 1;              
+    box-sizing: border-box;
 }
 
-/* 2. ⭐️ 실제 못생긴 기본 파일 인풋창을 완전히 보이지 않게 숨김 */
+/* 2. 실제 못생긴 기본 파일 인풋창 완전히 보이지 않게 숨김 */
 .admin-excel-hidden-input {
     position: absolute;
     width: 1px;
@@ -678,60 +698,82 @@
     border: 0;
 }
 
-/* 3. 디자인을 입힌 파일 선택 라벨 (버튼처럼 작동) */
+/* 3. 1층 영역: 파일 선택과 파일명을 가로로 배치 */
+.admin-excel-top-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;                
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* 4. 디자인을 입힌 파일 선택 라벨 (확실한 버튼 형태) */
 .admin-excel-file-label {
-    background-color: var(--admin-cream);
-    color: var(--admin-brown);
-    border: 1px solid var(--admin-soft-border);
-    padding: 10px 18px;
-    border-radius: 999px;
-    font-size: 13px;
+    background-color: #ffffff;             
+    color: var(--admin-brown);             
+    border: 1.5px solid var(--admin-caramel);
+    padding: 10px 25px;       
+    border-radius: 8px !important; 
+    font-size: 15.5px;             
     font-weight: 700;
+    letter-spacing: 0.5px;          
     cursor: pointer;
     transition: all 0.2s ease;
     display: inline-block;
+    flex-shrink: 0;           
+    white-space: nowrap;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
 }
 
+/* 파일 선택 버튼 마우스 올렸을 때 반전 효과 */
 .admin-excel-file-label:hover {
-    background-color: var(--admin-warm-beige);
-    color: var(--admin-black-brown);
+    background-color: var(--admin-caramel);   
+    color: #ffffff;                           
+    border-color: var(--admin-caramel);
 }
 
-/* 4. 파일 이름 출력 영역 */
+/* 5. 파일 이름 출력 영역 */
 .admin-excel-filename-display {
-    font-size: 13px;
-    color: #777;
-    min-width: 140px;
-    max-width: 240px;
+    font-size: 18px;
+    color: var(--admin-brown); 
+    opacity: 0.8;
+    flex: 1;                  
+    text-align: left;         
+    padding-left: 4px;
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis; /* 파일명이 길면 말줄임(...) 처리 */
+    text-overflow: ellipsis;  
 }
 
-/* 5. 최종 등록하기 버튼 스타일 */
+/* 6. 2층 등록하기 버튼: 다른 메인 카라멜 버튼들과 완벽히 디자인 통일 */
 .admin-excel-upload-submit-btn {
+    width: 100%;               /* 가로로 꽉 채우기 */
+    display: block;
     border: none;
-    background: var(--admin-caramel);
+    background: var(--admin-caramel); /* 💡 누락되었던 시그니처 카라멜 색상 주입 */
     color: white;
-    padding: 10px 20px;
-    border-radius: 999px;
-    font-size: 13px;
+    padding: 12px 18px;        /* 상단 관리 버튼들과 높이감 일치시킴 */
+    border-radius: 8px !important; /* 둥글기 8px 통일 */
+    font-size: 14px;
     font-weight: 600;
     cursor: pointer;
     transition: 0.25s ease;
+    box-sizing: border-box;
 }
 
+/* 등록하기 버튼 마우스 올렸을 때 효과 */
 .admin-excel-upload-submit-btn:hover:not(:disabled) {
     background: var(--admin-deep-caramel);
     transform: translateY(-1px);
 }
 
-/* 6. ⭐️ 인라인 스타일 대신 동작할 비활성화(disabled) 조건부 마우스 제어 */
+/* 7. 비활성화(disabled) 상태 스타일 (파일 선택 안 됐을 때 톤다운) */
 .admin-excel-upload-submit-btn:disabled {
     background-color: #e0e0e0;
     color: #a0a0a0;
-    border-color: #d0d0d0;
-    cursor: not-allowed; /* 클릭 불가 마우스 커서 강제 */
+    border: none;
+    cursor: not-allowed; 
     transform: none;
 }
 
@@ -739,7 +781,6 @@
 .admin-excel-upload-submit-btn.is-loading {
     opacity: 0.8;
 }
-
 /*orderboard*/
 
 /* ==========================================
@@ -843,25 +884,59 @@
 
 /* 상단 메인 버튼 디자인 모음 (엑셀, 조회 전용) */
 .admin-excel-btn {
-    border: 1px solid var(--admin-soft-border);
-    background: #fff;
-    color: #2e7d32; /* 엑셀 고유 그린 컬러 포인트 */
-    padding: 8px 16px;
-    border-radius: 12px;
-    font-size: 13px;
-    font-weight: 700;
-    cursor: pointer;
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 6px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.03);
-    transition: 0.2s;
-}
-.admin-excel-btn:hover {
-    background: #e8f5e9;
-    transform: translateY(-1px);
+    gap: 8px;
+
+    padding: 10px 18px;
+
+    border: 1px solid #c89b6d;
+    border-radius: 12px;
+
+    background: linear-gradient(
+        180deg,
+        #fffaf3 0%,
+        #f4e7d7 100%
+    );
+
+    color: #8b5e34;
+    font-size: 14px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: all 0.25s ease;
+
+    box-shadow:
+        0 2px 6px rgba(140, 94, 52, 0.08);
 }
 
+.admin-excel-btn:hover {
+    background: linear-gradient(
+        180deg,
+        #c58a52 0%,
+        #b9773d 100%
+    );
+
+    color: white;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 6px 14px rgba(185, 122, 61, 0.25);
+}
+
+.admin-excel-btn:active {
+    transform: translateY(0);
+}
+
+.admin-excel-btn .excel-icon {
+    font-size: 16px;
+}
+
+.admin-excel-btn.complete {
+    border-color: #8dbb8d;
+}
 /* 대량 수량 특수 컴포넌트 세션 */
 .admin-special-control-bar {
     display: flex;
@@ -905,6 +980,24 @@
     transition: 0.2s;
 }
 .admin-sec-btn:hover { background: var(--admin-cream); }
+
+.admin-btn-right {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 12px;
+}
+
+.admin-action-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.admin-btn-right {
+    display: flex;
+    gap: 10px;
+}
 
 /* 하단정산 요약 바 (Total Bar) */
 .admin-total-summary-bar {

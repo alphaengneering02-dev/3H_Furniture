@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import * as XLSX from 'xlsx';
+import { ToastContainer, toast } from "react-toastify"; 
+import "react-toastify/dist/ReactToastify.css";
 import '../../css/adminCss/AdminDashboard.css';
 
 const Orderboard = ({
@@ -54,7 +56,7 @@ const Orderboard = ({
     // 💡 엑셀 다운로드 함수 추가
     const downloadCompletedOrdersExcel = () => {
         if (completedOrders.length === 0) {
-            alert("다운로드할 배송 완료 주문이 없습니다.");
+            toast.error("다운로드할 배송 완료 주문이 없습니다.");
             return;
         }
 
@@ -101,7 +103,7 @@ const Orderboard = ({
     // 💡 [핵심 추가] 엑셀(CSV) 다운로드 함수
     const downloadCSV = () => {
     if (specialOrders.length === 0) {
-        alert("다운로드할 데이터가 없습니다.");
+        toast.error("다운로드할 데이터가 없습니다.");
         return;
     }
 
@@ -257,22 +259,25 @@ const Orderboard = ({
                 </table>
             </div>
 
-            {/* 💡 대용량 수량(6, 8개) 확인 및 다운로드 컨트롤러 바 */}
+            {/* 💡 대량 주문*/}
             <div className="admin-content-box">
-                <div>
+                <div className="admin-action-row">
                     <div>
-                        <h4>📦 대량 수량 조건 조회 (총 수량 6개 또는 8개)</h4>
+                        <h4>📦 대량 주문 조회</h4>
                         <p>
                             현재 대상 건수: <strong>{specialOrders.length}건</strong>
                         </p>
                     </div>
-                    <div>
-                        <button 
+                    <div className="admin-btn-right">
+                        <button
+                            className="admin-move-page-btn"
                             onClick={() => setShowSpecialList(!showSpecialList)} >
                             {showSpecialList ? "목록 닫기" : "상세 목록 보기"}
                         </button>
-                        <button onClick={downloadCSV}>
-                            Excel(CSV) 다운로드
+                        <button
+                            className="admin-move-page-btn"
+                            onClick={downloadCSV}>
+                                Excel(CSV) 다운로드
                         </button>
                     </div>
                 </div>
@@ -314,15 +319,17 @@ const Orderboard = ({
             {/* [최종 배송 완료 목록] */}
              {/* [최종 배송 완료 목록] */}
             <div className="admin-content-box">
-                <div>
-                    {/* 💡 엑셀 다운로드 버튼 */}
-                    <button 
-                        onClick={downloadCompletedOrdersExcel}
-                    >
-                        📊 엑셀 다운로드
-                    </button>
-                </div>
+                <div className="admin-action-row">
                 <h3>✅ 최종 배송 완료 목록[O.S=PURCHASED,D.S=COMPLETED인 ordersDB]</h3>
+                
+                 <div className="admin-btn-right">
+                    <button
+                        className="admin-move-page-btn"
+                        onClick={downloadCompletedOrdersExcel}
+                    >엑셀 다운로드</button>
+                </div>
+                </div>
+                
                 <table className="admin-table-style">
                     <thead><tr>
                 <th>번호</th>
@@ -371,12 +378,20 @@ const Orderboard = ({
 
             {/* [반품/교환 픽업 신청 목록] */}
             <div className="admin-content-box">
+                <div className="admin-action-row">
                 <h3>🔄 반품/교환 픽업 신청 목록[O.S=EXCHANGEorREFUND/CANCEL,D.S=COMPLETED/PICKUP인 ordersDB]</h3>
 
-                <div className="admin-tab-filter-group">
-                    <button onClick={() => setPickupFilter('ALL')}>전체</button>
-                    <button onClick={() => setPickupFilter('EXCHANGEorREFUND')}>교환/반품</button>
-                    <button onClick={() => setPickupFilter('CANCEL')}>취소</button>
+                <div className="admin-btn-right">
+                    <button 
+                    className="admin-move-page-btn"
+                    onClick={() => setPickupFilter('ALL')}>전체</button>
+                    <button 
+                    className="admin-move-page-btn"
+                    onClick={() => setPickupFilter('EXCHANGEorREFUND')}>교환/반품</button>
+                    <button 
+                    className="admin-move-page-btn"
+                    onClick={() => setPickupFilter('CANCEL')}>취소</button>
+                </div>
                 </div>
 
                 {selectedPickupIds.length > 0 && (

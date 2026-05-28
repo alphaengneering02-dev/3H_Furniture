@@ -8,6 +8,8 @@ import Orderboard from './Orderboard';
 import AdminMemoDay from './AdminMemoDay';
 import Ranking from './Ranking';
 import AdminSearch from './AdminSearch';
+import { ToastContainer, toast } from "react-toastify"; 
+import "react-toastify/dist/ReactToastify.css";
 import '../../css/adminCss/AdminDashboard.css';
 
 const AdminDashboard = () => {
@@ -42,12 +44,12 @@ const handleEditItemDetail = () => {
 
         try {
             await axios.delete(`/admin/delivery-companies/${deliveryId}`);
-            alert("삭제되었습니다.");
+            toast.error("삭제되었습니다.");
             // 리스트 새로고침
             fetchDeliveries(); 
         } catch (error) {
             console.error("삭제 실패:", error);
-            alert("삭제 중 오류가 발생했습니다.");
+            toast.error("삭제 중 오류가 발생했습니다.");
         }
     };
 
@@ -66,7 +68,7 @@ const handleEditItemDetail = () => {
         // 2. 만료 시간 체크 (선택 사항이지만 안전함)
         const now = new Date().getTime();
         if (userObj.expiry && now > userObj.expiry) {
-            alert("세션이 만료되었습니다. 다시 로그인해주세요.");
+            toast.error("세션이 만료되었습니다. 다시 로그인해주세요.");
             sessionStorage.removeItem("user");
             navigate("/login");
             return;
@@ -101,7 +103,7 @@ const handleAssignDriver = async (orderId) => {
     console.log(`[기사배정 시도] 주문ID: ${orderId} ➡️ 선택된 기사 ID: ${deliveryIdRaw}`);
 
     if (!deliveryIdRaw) {
-        alert("기사를 선택해주세요.");
+        toast.error("기사를 선택해주세요.");
         return;
     }
 
@@ -128,11 +130,11 @@ const handleAssignDriver = async (orderId) => {
         );
 
         setSelectedDrivers(prev => ({ ...prev, [orderId]: "" }));
-        alert("기사 배정 완료");
+        toast.error("기사 배정 완료");
 
     } catch (error) {
         console.error("배정 실패 상세:", error.response?.data); // 서버가 보낸 구체적 에러 확인
-        alert(`배정 실패: ${error.response?.data || "서버 오류"}`);
+        toast.error(`배정 실패: ${error.response?.data || "서버 오류"}`);
     }
 };
 
@@ -194,15 +196,15 @@ const handleStatusChange = async (orderId, nextState) => {
         
         // 2. 상태별 알림 메시지 분기 (EXCHANGEorREFUND 상태 추가)
         if (nextState === 'CANCEL') {
-            alert("주문 취소 및 기사 배정 해제가 완료되었습니다.");
+            toast.error("주문 취소 및 기사 배정 해제가 완료되었습니다.");
         } else if (nextState === 'READY') {
-            alert("상품 준비 완료 상태로 변경되었습니다.");
+            toast.error("상품 준비 완료 상태로 변경되었습니다.");
         } else if (nextState === 'EXCHANGEorREFUND') {
-            alert("교환 요청으로 변경되었습니다. 기사 수거(PICKUP) 상태가 적용됩니다.");
+            toast.error("교환 요청으로 변경되었습니다. 기사 수거(PICKUP) 상태가 적용됩니다.");
         } else if (nextState === 'PURCHASED') {
-            alert("구매 확정 처리가 완료되었습니다.");
+            toast.error("구매 확정 처리가 완료되었습니다.");
         } else {
-            alert(`주문 상태가 [${nextState}]로 변경되었습니다.`);
+            toast.error(`주문 상태가 [${nextState}]로 변경되었습니다.`);
         }
 
         // 3. 목록 새로고침
@@ -213,7 +215,7 @@ const handleStatusChange = async (orderId, nextState) => {
     } catch (error) {
         console.error("❌ 상태 변경 실패 상세 정보 ---");
         console.error(error.response?.data || error.message);
-        alert(`상태 변경 중 오류가 발생했습니다: ${error.response?.data || "서버 오류"}`);
+        toast.error(`상태 변경 중 오류가 발생했습니다: ${error.response?.data || "서버 오류"}`);
         
         if (typeof fetchOrders === 'function') {
             fetchOrders();
@@ -256,31 +258,36 @@ const fetchDeliveries = async () => {
             <div className="admin-control-panel">
                 
                 {/* 4-A. 상품 관리 파트 */}
-                    <div className="admin-panel-group">
-                        <div className="admin-panel-title">📦 상품 Admin 관리</div>
-                        <div className="admin-panel-buttons">
-                            <Link to="/item/create" className="admin-full-width-link">
-                                <button className="admin-menu-btn type-product">개별 상품 추가</button>
-                            </Link>
-                            {/* 💡 수정 1: 사이드바 내부의 수정 버튼에 onClick 추가 */}
-                            <button className="admin-menu-btn type-product-edit" onClick={handleEditItemDetail}>
-                                상품 수정 / 삭제
-                            </button>                          
-                        </div>
-                    </div>
+<div className="admin-panel-group">
+    <div className="admin-panel-title">📦 상품 Admin 관리</div>
+    
+    {/* 두 버튼을 나란히 배치하는 부모 컨테이너 */}
+    <div className="admin-panel-buttons">
+        
+        {/* 첫 번째 버튼: Link 스타일을 제거하고 안쪽 button에 집중 */}
+        <Link to="/item/create">
+            <button className="admin-menu-btn type-product">개별 상품 추가</button>
+        </Link>
+        
+        {/* 두 번째 버튼: 기존 유지 */}
+        <button className="admin-menu-btn type-product-edit" onClick={handleEditItemDetail}>
+            상품 수정 / 삭제
+        </button>                                    
+    </div>
+</div>
 
                 {/* 4-B. 배송 파트너 파트 */}
                 <div className="admin-panel-group">
                     <div className="admin-panel-title">🚚 배송 파트너 등록</div>
                     <div className="admin-panel-buttons">
                         {/* 개별 등록 */}
-                        <Link to="/admin/delivery" className="admin-full-width-link">
+                        <Link to="/admin/delivery" className="admin-full-width-del">
                             <button className="admin-menu-btn type-individual">개별 기사 직접 등록</button>
                         </Link>
                         
                         {/* 단체 등록 영역 */}
                         <div className="admin-sidebar-excel-box">
-                            <div className="admin-excel-micro-label">단체 엑셀 일괄 등록</div>
+                            <div className="admin-panel-title">🚚단체 엑셀 일괄 등록</div>
                             <AddCompany onSuccess={fetchDeliveries} />
                         </div>
                     </div>
@@ -306,7 +313,7 @@ const fetchDeliveries = async () => {
 
 <div className="admin-button-group">
                     <Link to="/item/create">
-                    <button>상품 추가</button>
+                    <button></button>
                     </Link>
                     <button className="admin-menu-btn type-product-edit" onClick={handleEditItemDetail}>
                                 상품 수정 / 삭제
@@ -335,10 +342,7 @@ const fetchDeliveries = async () => {
         </div>
 
         <div className="admin-header-actions">          
-            <div className="admin-excel-upload-wrapper">
-                <span className="admin-excel-label">엑셀 등록:</span>
-                <AddCompany onSuccess={fetchDeliveries} />
-            </div>
+           
             
             <Link to="/admin/delivery">
                 <button className="admin-add-driver-btn">기사 추가</button>
