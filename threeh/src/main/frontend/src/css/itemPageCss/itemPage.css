@@ -503,6 +503,58 @@
 }
 
 /* ================================
+   상품 정렬 / 필터 영역
+================================ */
+
+.item-sort-area {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 24px;
+}
+
+.item-sort-select {
+    min-width: 160px;
+    height: 40px;
+    padding: 0 36px 0 12px;
+    border: 1px solid #DDDDDD;
+    border-radius: 6px;
+    background-color: #FFFFFF;
+    color: #222222;
+    font-size: 14px;
+    font-family: 'Noto Sans KR', sans-serif;
+    cursor: pointer;
+}
+
+.item-sort-select:focus {
+    outline: none;
+    border-color: #333333;
+}
+
+.item-sort-select:hover {
+    border-color: #999999;
+}
+
+.item-count-box {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    margin: 8px 0 18px;
+}
+
+.item-count-text {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333333;
+}
+
+.item-rating-text {
+    margin: 0 0 6px;
+    font-size: 13px;
+    color: #777777;
+}
+/* ================================
    반응형
 ================================ */
 

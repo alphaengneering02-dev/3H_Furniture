@@ -6,8 +6,11 @@ import IconButton from "@mui/material/IconButton";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Header from "../main/Header";
 import Footer from "../main/Footer";
+
 
 //상품목록, 선택상품영역이 모두 코딩되어 있는 곳입니다. 망가지면 큰일나요.
 //관리자 상품관리/리뷰관리는 ItemAdminPage.js로 분리했습니다.
@@ -26,6 +29,13 @@ function Item() {
 
   //상품 상세페이지로 갔다가 아이템 목록으로 돌아오더라도 체킹 유지 및 체킹 목록 유지
   const SELECTED_ITEMS_KEY = "selectedItems";
+
+  //상품별 리뷰 요약 저장
+  const [reviewSummaryMap,setReviewSummaryMap] = useState({});
+  //정렬기준
+  const [sortType, setSortType] = useState("");
+  //판매상태 필터
+  const [sellStatusFilter,setSellStatusFilter] = useState("");
 
   //페이징
   const [currentPage, setCurrentPage] = useState(1);
@@ -82,6 +92,7 @@ function Item() {
   useEffect(() => {
     getItems();
     getMyBookmarks();
+    getAllReviewSummaries();
 
     //세션 유지 코드 보강(기존 코딩)
     // const savedSelectedItems =JSON.parse(sessionStorage.getItem(SELECTED_ITEMS_KEY));
@@ -189,7 +200,7 @@ function Item() {
 
     if(!sellStatusInfo.selectable){
       if(showAlert){
-        alert(sellStatusInfo.message);
+        toast.warning(sellStatusInfo.message);
       }
       return false;
     }
@@ -209,7 +220,22 @@ function Item() {
       setItems(response.data || []);
     } catch (error) {
       console.error("상품 목록 조회 실패", error);
-      alert("상품 목록을 불러오지 못했습니다.");
+      toast.error("상품 목록을 불러오지 못했습니다.");
+    }
+  };
+
+  const getAllReviewSummaries = async()=>{
+    try{
+      const response = await axios.get(
+        "http://localhost:8080/api/reviews/summary/all",
+        {
+          withCredentials:true,
+        }
+      );
+      setReviewSummaryMap(response.data||{});
+    }catch(error){
+      console.error("전체 리뷰 요약 조회 실패",error);
+      setReviewSummaryMap({});
     }
   };
 
@@ -278,7 +304,7 @@ function Item() {
       }
 
       if (!isUserRole(loginUser)) {
-        alert("일반 회원만 상품을 선택할 수 있습니다.");
+        toast.warning("일반 회원만 상품을 선택할 수 있습니다.");
         return;
       }
 
@@ -316,18 +342,18 @@ function Item() {
     const loginUser = getLoginUser();
 
     if (!loginUser) {
-      alert("로그인이 필요합니다.");
+      toast.error("로그인이 필요합니다.");
       navigate("/login");
       return;
     }
 
     if (!isUserRole(loginUser)) {
-      alert("일반 회원만 북마크를 이용할 수 있습니다.");
+      toast.warning("일반 회원만 북마크를 이용할 수 있습니다.");
       return;
     }
 
     if (!loginUser.memberId) {
-      alert("회원 정보가 올바르지 않습ㄴ디ㅏ.");
+      toast.error("회원 정보가 올바르지 않습ㄴ디ㅏ.");
       console.log("로그인 유저:", loginUser);
       return;
     }
@@ -371,7 +397,7 @@ function Item() {
         console.log("응답메시지:", error.response.data);
       }
 
-      alert("북마크 처리 실패");
+      toast.error("북마크 처리 실패");
     }
   };
 
@@ -381,7 +407,7 @@ function Item() {
 
     //수량은 1이상만 가능
     if (count < 1) {
-      alert("수량은 1개 이상이어야 합니다.");
+      toast.warning("수량은 1개 이상이어야 합니다.");
       return;
     }
 
@@ -394,7 +420,7 @@ function Item() {
 
         //재고보다 많이 선택할 수 없도록 방지
         if (count > selected.itemStock) {
-          alert("재고 수량을 초과할 수 없습니다.");
+          toast.warning("재고 수량을 초과할 수 없습니다.");
           return selected;
         }
 
@@ -424,42 +450,42 @@ function Item() {
 
     //비로그인 검사
     if (!loginUser) {
-      alert("로그인이 필요합니다.");
+      toast.error("로그인이 필요합니다.");
       navigate("/login");
       return false;
     }
 
     //일반 회원인지 검사
     if (!isUserRole(loginUser)) {
-      alert("일반 회원만 이용할 수 있습니다.");
+      toast.error("일반 회원만 이용할 수 있습니다.");
       return false;
     }
 
     //선택 상품이 있는지 검사
     if (selectedItems.length === 0) {
-      alert("상품을 1개 이상 선택해주세요.");
+      toast.error("상품을 1개 이상 선택해주세요.");
       return false;
     }
 
     //선택된 상품 하나씩 검사
     for (const item of selectedItems) {
       if (!item.itemId) {
-        alert("잘못된 상품 정보가 있습니다.");
+        toast.warning("잘못된 상품 정보가 있습니다.");
         return false;
       }
 
       if (!item.count || item.count < 1) {
-        alert(`${item.itemName}의 수량은 1개 이상이어야 합니다.`);
+        toast.warning(`${item.itemName}의 수량은 1개 이상이어야 합니다.`);
         return false;
       }
 
       if (item.count > item.itemStock) {
-        alert(`${item.itemName}의 수량이 재고보다 많습니다.`);
+        toast.warning(`${item.itemName}의 수량이 재고보다 많습니다.`);
         return false;
       }
 
       if (item.itemSellStatus && item.itemSellStatus !== "SELL") {
-        alert(`${item.itemName}은 현재 판매중인 상품이 아닙니다.`);
+        toast.warning(`${item.itemName}은 현재 판매중인 상품이 아닙니다.`);
         return false;
       }
     }
@@ -482,13 +508,13 @@ function Item() {
     const loginUser = getLoginUser();
 
     if (!loginUser) {
-      alert("로그인이 필요합니다.");
+      toast.warning("로그인이 필요합니다.");
       navigate("/login");
       return false;
     }
 
     if (!isUserRole(loginUser)) {
-      alert("일반 회원만 장바구니를 이용할 수 있습니다.");
+      toast.warning("일반 회원만 장바구니를 이용할 수 있습니다.");
       return false;
     }
 
@@ -503,7 +529,7 @@ function Item() {
       });
 
       if (showSuccessAlert) {
-        alert("장바구니에 담겼습니다.");
+        toast.success("장바구니에 담겼습니다.");
       }
 
       return true;
@@ -516,7 +542,7 @@ function Item() {
       }
 
       if (error.response?.status === 401) {
-        alert("로그인이 필요합니다.");
+        toast.error("로그인이 필요합니다.");
         navigate("/login");
       }
 
@@ -533,7 +559,7 @@ function Item() {
     const success = await handleAddCart(item.itemId, 1, true);
 
     if (!success) {
-      alert("장바구니 담기 실패");
+      toast.error("장바구니 담기 실패");
     }
   };
 
@@ -555,11 +581,11 @@ function Item() {
     }
 
     if (failedItems.length > 0) {
-      alert(`일부 상품 담기 실패: ${failedItems.join(", ")}`);
+      toast.error(`일부 상품 담기 실패: ${failedItems.join(", ")}`);
       return;
     }
 
-    alert("선택한 상품이 장바구니에 담겼습니다.");
+    toast.success("선택한 상품이 장바구니에 담겼습니다.");
 
     //성공 후 선택 목록 비우기
     setSelectedItems([]);
@@ -570,13 +596,13 @@ function Item() {
     const loginUser = getLoginUser();
 
     if (!loginUser) {
-      alert("로그인이 필요합니다.");
+      toast.error("로그인이 필요합니다.");
       navigate("/login");
       return;
     }
 
     if (!isUserRole(loginUser)) {
-      alert("일반 회원만 구매할 수 있습니다.");
+      toast.warning("일반 회원만 구매할 수 있습니다.");
       return;
     }
 
@@ -596,13 +622,13 @@ function Item() {
     const loginUser = getLoginUser();
 
     if (!loginUser) {
-      alert("로그인이 필요합니다.");
+      toast.error("로그인이 필요합니다.");
       navigate("/login");
       return;
     }
 
     if (!isUserRole(loginUser)) {
-      alert("일반 회원만 장바구니를 이용할 수 있습니다.");
+      toast.warning("일반 회원만 장바구니를 이용할 수 있습니다.");
       return;
     }
 
@@ -636,7 +662,7 @@ function Item() {
     }
 
     if (failedItems.length > 0) {
-      alert(`일부 상품 처리 실패: ${failedItems.join(", ")}`);
+      toast.error(`일부 상품 처리 실패: ${failedItems.join(", ")}`);
       return;
     }
 
@@ -656,13 +682,49 @@ function Item() {
     sessionStorage.removeItem(SELECTED_ITEMS_KEY);
   };
 
+    //상품 목록 정렬 / 필터 처리
+  const sortedItems = [...items]
+    .filter((item) => {
+      if (!sellStatusFilter) {
+        return true;
+      }
+
+      return item.itemSellStatus === sellStatusFilter;
+    })
+    .sort((a, b) => {
+      const aFinalPrice = getFinalPrice(a);
+      const bFinalPrice = getFinalPrice(b);
+
+      const aRating = Number(reviewSummaryMap[a.itemId]?.averageScore || 0);
+      const bRating = Number(reviewSummaryMap[b.itemId]?.averageScore || 0);
+
+      if (sortType === "priceHigh") {
+        return bFinalPrice - aFinalPrice;
+      }
+
+      if (sortType === "priceLow") {
+        return aFinalPrice - bFinalPrice;
+      }
+
+      if (sortType === "ratingHigh") {
+        return bRating - aRating;
+      }
+
+      if (sortType === "ratingLow") {
+        return aRating - bRating;
+      }
+
+      return 0;
+    });
+
+
   //페이징 계산
-  const totalPages = Math.max(1, Math.ceil(items.length / ITEMS_PER_PAGE));
+  const totalPages = Math.max(1, Math.ceil(sortedItems.length / ITEMS_PER_PAGE));
 
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
 
-  const pagedItems = items.slice(startIndex, endIndex);
+  const pagedItems = sortedItems.slice(startIndex, endIndex);
 
   // 5개 단위 페이지 블록 계산
   const currentPageBlock = Math.floor((currentPage - 1) / PAGE_BLOCK_SIZE);
@@ -690,6 +752,16 @@ function Item() {
   <div>
     {/* 실제 헤더 영역 */}
     <Header />
+    
+        <ToastContainer
+      position="top-center"
+      autoClose={1800}
+      hideProgressBar={false}
+      newestOnTop={true}
+      closeOnClick
+      pauseOnHover
+      theme="light"
+    />
 
     <div className="item-page">
       {/*상품 목록 페이지 제목 */}
@@ -700,6 +772,42 @@ function Item() {
         <span className="item-count-text">
             총 등록 상품: {items.length}개
         </span>
+        <span className="item-count-text">
+          현재 조건 상품: {sortedItems.length}개
+        </span>
+      </div>
+
+          {/*상품정렬/필터 영역 */}
+      <div className="item-sort-area">
+        <select
+          className="item-sort-select"
+          value={sortType}
+          onChange={(e) => {
+            setSortType(e.target.value);
+            setCurrentPage(1);
+          }}
+        >
+          <option value="">기본순</option>
+          <option value="ratingHigh">평점 높은 순</option>
+          <option value="ratingLow">평점 낮은 순</option>
+          <option value="priceHigh">가격 높은 순</option>
+          <option value="priceLow">가격 낮은 순</option>
+        </select>
+
+        <select
+          className="item-sort-select"
+          value={sellStatusFilter}
+          onChange={(e) => {
+            setSellStatusFilter(e.target.value);
+            setCurrentPage(1);
+          }}
+        >
+          <option value="">판매상태 전체</option>
+          <option value="SELL">판매중</option>
+          <option value="SOLD_OUT">품절</option>
+          <option value="STOP">판매중지</option>
+          <option value="COMING_SOON">판매예정</option>
+        </select>
       </div>
 
       {/*관리자 로그인 시에만 관리자 상품/리뷰 관리 페이지 이동 버튼 표시 */}
@@ -713,7 +821,7 @@ function Item() {
 
       {/*상품 목록 표시 영역 */}
       <div className="item-list">
-        {items.length === 0 ? (
+        {sortedItems.length === 0 ? (
           <p className="item-empty-text">상품이 없습니다.</p>
         ) : (
           pagedItems.map((item) => {
@@ -748,6 +856,10 @@ function Item() {
                   <Link className="item-link" to={`/item/${item.itemId}`}>
                     <h2 className="item-name">{item.itemName}</h2>
                   </Link>
+                  <p className="item-rating-text">
+                    평점:{Number(reviewSummaryMap[item.itemId]?.averageScore||0).toFixed(1)}
+                    /5({reviewSummaryMap[item.itemId]?.reviewCount||0})
+                  </p>
 
                   <p className="item-text">카테고리: {item.itemCategory}</p>
                   <p className="item-text">상품 설명: {item.itemDetail}</p>
@@ -813,7 +925,7 @@ function Item() {
         )}
       </div>
 
-      {items.length > ITEMS_PER_PAGE && (
+      {sortedItems.length > ITEMS_PER_PAGE && (
         <div className="item-pagination">
           <button
             type="button"

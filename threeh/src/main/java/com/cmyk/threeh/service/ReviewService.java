@@ -1,6 +1,7 @@
 package com.cmyk.threeh.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -108,6 +109,14 @@ public class ReviewService {
                 .map(ReviewDTO::from)
                 .collect(Collectors.toList());
     }
+
+    //리뷰 평점 정렬하기
+    public Map<Long,ReviewSummaryDTO> getAllReviewSummaries(){
+        return reviewRepository.getAllReviewSummaries()
+            .stream()
+            .collect(Collectors.toMap(ReviewSummaryDTO::getItemId, summary->summary));
+    }
+    
 
     // 상품 리뷰 평균 평점 / 리뷰 개수 조회
     public ReviewSummaryDTO getReviewSummary(Long itemId) {
