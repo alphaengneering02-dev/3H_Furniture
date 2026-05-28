@@ -282,49 +282,25 @@ const Header = () => {
 
                             {/* <!-- 메인메뉴2 --> */}
                             <li>
-                                <Link to="/searchResult?searchValue=거실&price=0%2C500">거실</Link>
-                                <ul className="main-header-sub1">
-                                    <li> <Link to="#"><span>서브메뉴1</span></Link> </li>
-                                    <li> <Link to="#"><span>서브메뉴2</span></Link> </li>
-                                    <li> <Link to="#"><span>서브메뉴3</span></Link> </li>
-                                    <li> <Link to="#"><span>서브메뉴4</span></Link> </li>
-                                </ul>
+                                <Link to="/item?category=거실">거실</Link>
                             </li>
 
 
                             {/* <!-- 메인메뉴3 --> */}
                             <li>
-                                <Link to="/searchResult?searchValue=침실&price=0%2C500">침실</Link>
-                                <ul className="main-header-sub1">
-                                    <li> <Link to="#"><span>서브메뉴1</span></Link> </li>
-                                    <li> <Link to="#"><span>서브메뉴2</span></Link> </li>
-                                    <li> <Link to="#"><span>서브메뉴3</span></Link> </li>
-                                    <li> <Link to="#"><span>서브메뉴4</span></Link> </li>
-                                </ul>
+                                <Link to="/item?category=침실">침실</Link>
                             </li>
 
 
                             {/* <!-- 메인메뉴4 --> */}
                             <li>
-                                <Link to="/searchResult?searchValue=주방&price=0%2C500">주방</Link>
-                                <ul className="main-header-sub1">
-                                    <li> <Link to="#"><span>서브메뉴1</span></Link> </li>
-                                    <li> <Link to="#"><span>서브메뉴2</span></Link> </li>
-                                    <li> <Link to="#"><span>서브메뉴3</span></Link> </li>
-                                    <li> <Link to="#"><span>서브메뉴4</span></Link> </li>
-                                </ul>
+                                <Link to="/item?category=주방">주방</Link>
                             </li>
 
 
                             {/* <!-- 메인메뉴5 --> */}
                             <li>
-                                <Link to="/searchResult?searchValue=욕실&price=0%2C500">욕실</Link>
-                                <ul className="main-header-sub1">
-                                    <li> <Link to="#"><span>서브메뉴1</span></Link> </li>
-                                    <li> <Link to="#"><span>서브메뉴2</span></Link> </li>
-                                    <li> <Link to="#"><span>서브메뉴3</span></Link> </li>
-                                    <li> <Link to="#"><span>서브메뉴4</span></Link> </li>
-                                </ul>
+                                <Link to="/item?category=욕실">욕실</Link>
                             </li>
                         </ul>
 

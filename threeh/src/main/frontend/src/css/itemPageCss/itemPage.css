@@ -554,6 +554,17 @@
     font-size: 13px;
     color: #777777;
 }
+
+.item-current-category {
+  margin: 10px 0 18px;
+  color: var(--brown);
+  font-size: 15px;
+}
+
+.item-current-category strong {
+  color: var(--caramel);
+  font-weight: 700;
+}
 /* ================================
    반응형
 ================================ */
