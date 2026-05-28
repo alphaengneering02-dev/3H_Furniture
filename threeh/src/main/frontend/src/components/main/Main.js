@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import Item from '../item/Item';
 import Ranking from '../admin/Ranking';
+import imgPath from '../../utils/BackendPath';
 
 //Main 전용 CSS 임포트
 import '../../css/mainPageCss/main.css';
@@ -87,6 +88,8 @@ const Main = () => {
                     statsMap[name].sales += Number(item.count || 1);
                 });
             });
+
+           
 
             const top3 = Object.values(statsMap)
                 .sort((a, b) => b.sales - a.sales)
