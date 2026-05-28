@@ -36,59 +36,34 @@ const Mypage = () => {
 
     /* [슬라이더 전용 핵심 상태] 현재 어떤 카드 인덱스 위치를 바라보고 있는지 카운팅 */
     const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
+    
+    const [isLoading, setIsLoading] = useState(true);
 
-    useEffect(() => {
-        const savedUser = sessionStorage.getItem('user');
-        if (savedUser) {
-            const userObj = JSON.parse(savedUser);
-            setMember(userObj);
 
-            axios.get('http://localhost:8080/Member/mypage.do', { withCredentials: true })
-                .then(res => {
-                    setMember(res.data.member);
 
-                    // [회원 전용 보관고 연동] 이 브라우저에 이 회원 이름으로 저장된 주소록이 있는지 확인
-                    const storageKey = `addresses_${res.data.member.id}`;
-                    const localAddresses = localStorage.getItem(storageKey);
-
-                    if (localAddresses) {
-                        setAddresses(JSON.parse(localAddresses));
-                    } else {
-                        setAddresses(res.data.addressList || []);
-                    }
-
-                    const allOrders = res.data.recentOrders || [];
-                    const activeOrders = allOrders.filter(order => order.orderState !== 'CANCEL');
-                    setOrders(activeOrders);
-
-                    const mergedUser = { ...userObj, ...res.data.member };
-                    sessionStorage.setItem('user', JSON.stringify(mergedUser));
-
-                    getMyReviews();
-                })
-                .catch(err => {
-                    console.error("최신 데이터 로드 실패", err);
-                    if (err.response && err.response.status === 401) {
-                        sessionStorage.removeItem('user');
-                        setMember(null);
-                    }
-                })
-        } else {
-            setMember(null);
-        }
-    }, [navigate]);
+    const getMyReviews = async () => {
+        try {
+            const response = await axios.get("http://localhost:8080/api/reviews/my", { withCredentials: true });
+            setMyReviews(response.data);
+        } catch (error) { console.error("내 리뷰 조회 실패", error); }
+    };
 
     //오현옥 북마크
-    const getMyBookmarkedItems = async () => {
-        if (!member || !member.memberId) {
+    const getMyBookmarkedItems = async (memberData) => {
+
+        const targetMember = memberData || member;
+
+        if (!targetMember || !targetMember.memberId) {
             alert("회원 정보를 찾을 수 없습니다.");
             return;
         }
         try {
             const bookmarkResponse = await axios.get(
-                `http://localhost:8080/api/bookmarks/member/${member.memberId}`,
+                `http://localhost:8080/api/bookmarks/member/${targetMember.memberId}`,
                 { withCredentials: true }
             );
+
+            console.log("북마크 데이터", bookmarkResponse);
             const bookmarks = bookmarkResponse.data || [];
             if (bookmarks.length === 0) {
                 setBookmarkedItems([]);
@@ -113,6 +88,58 @@ const Mypage = () => {
         }
     };
 
+    useEffect(() => {
+        const savedUser = sessionStorage.getItem('user');
+        if (savedUser) {
+            const userObj = JSON.parse(savedUser);
+            setMember(userObj);
+
+            axios.get('http://localhost:8080/Member/mypage.do', { withCredentials: true })
+                .then(res => {
+                    setMember(res.data.member);
+                    console.log(res.data);
+
+                    // [회원 전용 보관고 연동] 이 브라우저에 이 회원 이름으로 저장된 주소록이 있는지 확인
+                    const storageKey = `addresses_${res.data.member.id}`;
+                    const localAddresses = localStorage.getItem(storageKey);
+
+                    if (localAddresses) {
+                        setAddresses(JSON.parse(localAddresses));
+                    } else {
+                        setAddresses(res.data.addressList || []);
+                    }
+
+                    const allOrders = res.data.recentOrders || [];
+                    const activeOrders = allOrders.filter(order => order.orderState !== 'CANCEL');
+                    setOrders(activeOrders);
+
+                    const mergedUser = { ...userObj, ...res.data.member };
+                    sessionStorage.setItem('user', JSON.stringify(mergedUser));
+
+                    getMyReviews();
+                    getMyBookmarkedItems(res.data.member);
+                })
+                .catch(err => {
+                    console.error("최신 데이터 로드 실패", err);
+                    if (err.response && err.response.status === 401) {
+                        sessionStorage.removeItem('user');
+                        setMember(null);
+                    }
+                })
+                .finally(() => {
+                    setIsLoading(false); 
+                });
+        } else {
+            setMember(null);
+            setIsLoading(false);
+        }
+    }, []);
+
+    
+    console.log(member);
+    if(isLoading) return <div>로딩중....</div>;
+
+    
     //구매확정 버튼-->리뷰 쓰기로 넘어감.
     const handleConfirmPurchase = async (orderId) => {
         if (!window.confirm("구매를 확정하시겠습니까?")) return;
@@ -273,12 +300,8 @@ const Mypage = () => {
      * [오현옥 개발파트] 리뷰 관리 시스템 핵심 비즈니스 로직 연동 핸들러 정의 구역
      * ========================================================================= */
 
-    const getMyReviews = async () => {
-        try {
-            const response = await axios.get("http://localhost:8080/api/reviews/my", { withCredentials: true });
-            setMyReviews(response.data);
-        } catch (error) { console.error("내 리뷰 조회 실패", error); }
-    };
+    
+
 
     const findMyReviewByItemId = (itemId) => {
         if (!itemId) { return null; }
@@ -401,6 +424,7 @@ const Mypage = () => {
                                 <p><strong>아이디:</strong> {member.id}</p>
                                 <p><strong>연락처:</strong> {member.phone}</p>
                                 <p><strong>이메일:</strong> {member.email || "-"}</p>
+                                <button onClick={() => navigate(`/member/update/${member.id}`)}>정보수정</button>
                             </div>
 
                             <h3 id="refund-section" className="mypage-info-section-title">
