@@ -396,29 +396,12 @@ const Mypage = () => {
 
 
                         <div className="mypage-info-content-box">
-                         {/* ⚡ [완치] '회원정보' 제목 글씨와 버튼들이 가로로 예쁘게 일렬 정렬되도록 display flex 추가 */}
-                            <h3 className="mypage-info-section-title" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-        <span>회원정보</span>
-        
-        {/* 🤎 [긴급 복구] 사라졌던 북마크와 정보수정 버튼 마크업을 타이틀 내부에 확실하게 매립 */}
-        <div className="profile-icon-box" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-            <button type="button" className="mypage-action-btn" style={{ padding: '6px 14px', backgroundColor: '#B8783E', color: '#fff', border: 'none', cursor: 'pointer', fontSize: '12px', fontWeight: 'bold', borderRadius: '0px' }} 
-                onClick={() => { if (showBookmarks) { setShowBookmarks(false); } else { getMyBookmarkedItems(); } }}>
-                북마크
-            </button>
-            <button type="button" className="mypage-action-btn" style={{ padding: '6px 14px', backgroundColor: '#B8783E', color: '#fff', border: 'none', cursor: 'pointer', fontSize: '12px', fontWeight: 'bold', borderRadius: '0px' }} 
-                onClick={() => navigate(`/member/update/${member.id}`)}>
-                정보 수정
-            </button>
-        </div>
-    </h3>
-    
-    <div className="mypage-info-data-block">
-        <p><strong>아이디:</strong> {member.id}</p>
-        <p><strong>연락처:</strong> {member.phone}</p>
-        <p><strong>이메일:</strong> {member.email || "-"}</p>
-    </div>
-
+                            <h3 className="mypage-info-section-title">회원정보</h3>
+                            <div className="mypage-info-data-block">
+                                <p><strong>아이디:</strong> {member.id}</p>
+                                <p><strong>연락처:</strong> {member.phone}</p>
+                                <p><strong>이메일:</strong> {member.email || "-"}</p>
+                            </div>
 
                             <h3 id="refund-section" className="mypage-info-section-title">
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>

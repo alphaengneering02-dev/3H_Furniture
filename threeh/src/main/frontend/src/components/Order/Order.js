@@ -8,6 +8,9 @@ import { useToast } from '../../hook/useToast';
 import Header from '../main/Header';
 import Footer from '../main/Footer';
 
+//김인호 스타일 시트 로드
+import '../../css/orderPageCss/orderPage.css';
+
 function Order(props) {
 
     const { itemId } = useParams();
@@ -136,44 +139,76 @@ function Order(props) {
 
     
 
-    return (
-        <>
+        return (
+        // [시작] 페이지 전체 최상위 루트 (배경색 및 최소 높이 제어)
+        <div className="order-page-global-root">
+            
+            {/* 1. 상단 공용 헤더 영역 */}
             <div className='main-header'>
                 <Header/>
-            </div>
+            </div> {/* [종료] main-header */}
 
-            <OrderInfo 
-                setOrderType={setOrderType} 
-                orderType={orderType} 
-                orderData={orderData}
-                setZipcode={setZipcode}
-                zipCode={zipCode}
-                address={address}
-                detailedAddress={detailedAddress}
-                setDetailedAddress={setDetailedAddress}
-                setAddress={setAddress}
-                />
-            <OrderUser 
-                orderData={orderData}
-                deliveryDate={deliveryDate}
-                setDeliveryDate={setDeliveryDate}/>
+            {/* 2. 중앙 컨텐츠 메인 랩퍼 (가로폭 1200px 최대 제한 및 중앙 정렬) */}
+            <div className="order-page-wrapper">
+                
+                {/* 대형 페이지 타이틀 */}
+                <h2 className="order-page-title">주문 / 결제</h2>
 
-            <OrderItemInfo 
-                setOrderType={setOrderType} 
-                orderType={orderType} 
-                orderData={orderData}
-                isCartOrder={isCartOrder}
-                zipCode={zipCode}
-                address={address}
-                deliveryDate={deliveryDate}
-                detailedAddress={detailedAddress}
-               />
-            
+                {/* [시작] 원본 이미지처럼 좌우 레이아웃을 찢어주는 플렉스 컨테이너 */}
+                <div className="order-content-layout">
+                    
+                    {/* [시작] 좌측 영역: 입력 카드 컴포넌트들을 위아래로 쌓아두는 세로 정렬 박스 */}
+                    <div className="order-left-section">
+                        
+                        {/* [독립 카드 1] 배송 및 설치 선택 / 주소지 정보 입력창 */}
+                        <OrderInfo 
+                            setOrderType={setOrderType} 
+                            orderType={orderType} 
+                            orderData={orderData}
+                            setZipcode={setZipcode}
+                            zipCode={zipCode}
+                            address={address}
+                            detailedAddress={detailedAddress}
+                            setDetailedAddress={setDetailedAddress}
+                            setAddress={setAddress}
+                        />
 
+                        {/* [독립 카드 2] 주문 고객 이름, 전화번호 및 배송 설치 날짜 */}
+                        <OrderUser 
+                            orderData={orderData}
+                            deliveryDate={deliveryDate}
+                            setDeliveryDate={setDeliveryDate}
+                        />
+                        
+                    </div> {/* [종료] order-left-section */}
+
+                    {/* [시작] 우측 영역: 기본배송지 미리보기 + 상품 목록 + 결제 버튼 스티키 사이드바 부모 박스 */}
+                    <div className="order-right-section">
+                        
+                        {/* 영수증 및 결제하기 목록 전체 뷰 컴포넌트 */}
+                        <OrderItemInfo 
+                            setOrderType={setOrderType} 
+                            orderType={orderType} 
+                            orderData={orderData}
+                            isCartOrder={isCartOrder}
+                            zipCode={zipCode}
+                            address={address}
+                            deliveryDate={deliveryDate}
+                            detailedAddress={detailedAddress}
+                        />
+                        
+                    </div> {/* 👉 [종료] order-right-section */}
+
+                </div> {/* [종료] order-content-layout (좌우 2단 분할 레이아웃 컨테이너 끝) */}
+                
+            </div> {/* [종료] order-page-wrapper (중앙 메인 컨텐츠 영역 끝) */}
+
+            {/* 3. 하단 공용 푸터 영역 */}
             <div className="main-mypage-footer">
                 <Footer/>
-            </div>
-        </>
+            </div> {/* [종료] main-mypage-footer */}
+
+        </div> // [종료] order-page-global-root (페이지 전체 최상위 루트 끝)
     );
 }
 

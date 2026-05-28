@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,500;0,600;1,400&display=swap');
+
+
 /* ==========================================
    1. 전체 페이지 레이아웃 & 기본 스타일
    ========================================== */
@@ -341,4 +344,210 @@ order-input:focus {
 }
 .order-payment-btn:hover {
   background-color: #222222;
+}
+
+/* ========================================================
+   [카사미아 톤앤매너] 기존 기능 보존형 색감 & 레이아웃 마감
+   ======================================================== */
+
+/* 1. 페이지 전체 루트 컨테이너 배경색 마감 */
+.order-page-global-root {
+  background-color: var(--main-bg); /* #FFF8ED 포근한 크림베이지 베이스 */
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* 2. 기존 레이아웃 가로폭 및 중앙 정렬 강화 */
+.order-page-wrapper {
+  max-width: 1240px !important; /* 글로벌 가이드와 싱크 일치 */
+  background-color: var(--content-bg); /* #FFFCF7 */
+  padding: 40px 20px 60px 20px !important;
+}
+
+/* 3. 대형 타이틀 색상 웜톤 변경 */
+.order-page-title {
+  color: var(--black-brown) !important;
+  border-bottom: 1px solid var(--soft-border);
+}
+
+/* 4. 🖼️ 원본 시안의 배치를 위한 2단 플렉스 비율 보정 */
+.order-content-layout {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 35px !important; /* 시안 규격 여백 */
+}
+
+/* 👈 좌측 입력 섹션 확장 */
+.order-left-section {
+  flex: 1.25 !important;
+  max-width: none !important;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* 👉 우측 영수증 및 결제 퀵바 섹션 부모 */
+.order-right-section {
+  flex: 0.75 !important;
+}
+
+/* 📌 우측 래퍼 그룹 세로 나열 및 스티키 고정화 */
+.order-right-sidebar-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px; /* 기본배송지 - 상품리스트 - 결제창 사이의 여백 */
+  position: sticky;
+  top: 40px;
+  z-index: 10;
+  width: 100%;
+}
+
+/* 5. 팀원분 블록 구조에 공용 카드 질감 입히기 */
+.order-section-block,
+.order-summary-block {
+  width: 100% !important; /* 퀵바 고정너비 해제 후 유연하게 확장 */
+  background-color: var(--content-bg) !important;
+  border: 1px solid var(--soft-border) !important; /* 밀크티 선 처리 */
+  border-radius: 16px !important; /* 시안 둥글기 반영 */
+  box-shadow: 0 8px 24px rgba(74, 51, 36, 0.04) !important;
+  padding: 28px !important;
+  margin-bottom: 0 !important; /* 간격은 부모 gap으로 제어 */
+}
+
+/* 6. 헤더 하단 굵은선을 은은한 가구 아틀리에 스펙으로 변경 */
+.order-section-header {
+  border-bottom: 1px solid var(--soft-border) !important;
+  padding-bottom: 14px !important;
+}
+
+.order-section-title {
+  color: var(--black-brown) !important;
+}
+
+/* 7. 입력창 포커스 및 읽기전용 컬러 믹스인 */
+.oreder-input:focus,
+.order-date-input:focus {
+  border-color: var(--caramel) !important;
+}
+
+.order-input[readOnly] {
+  background-color: var(--main-bg) !important;
+  border: 1px solid var(--soft-border) !important;
+  color: var(--brown) !important;
+}
+
+/* 8. 뱃지 및 안내 배너 웜톤으로 무드 체인지 */
+.order-delivery-notice-tag {
+  color: var(--deep-caramel) !important;
+}
+
+.order-alert-banner {
+  background-color: var(--cream) !important;
+  color: var(--deep-caramel) !important;
+  border-radius: 8px;
+}
+
+.order-alert-banner .info-icon {
+  background-color: var(--caramel) !important;
+}
+
+/* 9. 상품 리스트 내부 디테일 마감 */
+.order-item-card {
+  border-bottom: 1px solid var(--soft-border) !important;
+}
+
+.order-item-thumb-box {
+  background-color: var(--main-bg) !important;
+  border: 1px solid var(--soft-border);
+  border-radius: 8px;
+}
+
+.order-item-brand {
+  color: #A98C72 !important;
+}
+
+.order-item-name {
+  color: var(--black-brown) !important;
+}
+
+.order-item-qty {
+  color: var(--brown) !important;
+}
+
+.order-item-price {
+  color: var(--deep-caramel) !important;
+}
+
+/* 10. 우측 최하단 결제 요약 영역 및 공용 포인트 버튼 매칭 */
+.order-summary-value-total {
+  color: var(--deep-caramel) !important; /* 최종 금액 시그니처 카라멜 변경 */
+}
+
+.order-payment-btn {
+  background-color: var(--caramel) !important; /* 공용 포인트 컬러 */
+  border-radius: 8px !important; /* 헤더 둥글기 싱크 */
+  font-family: 'Noto Sans KR', sans-serif;
+  transition: background-color 0.2s;
+}
+
+.order-payment-btn:hover {
+  background-color: var(--deep-caramel) !important;
+}
+
+/* ========================================================
+   [신규 기능 서포트] 기본 배송지 확인 박스 전용 CSS 스타일
+   ======================================================== */
+.order-badge-default {
+  background-color: var(--cream);
+  color: var(--deep-caramel);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--soft-border);
+}
+
+.order-delivery-preview-box {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--brown);
+}
+
+.preview-address-text {
+  color: var(--black-brown);
+  margin-bottom: 4px;
+}
+
+.preview-address-detail {
+  color: #7A6655;
+  margin-bottom: 6px;
+}
+
+.preview-date-text {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--caramel);
+  margin-top: 4px;
+}
+
+.order-delivery-preview-empty {
+  font-size: 13px;
+  color: #A98C72;
+  text-align: center;
+  padding: 12px 0;
+}
+
+/* ========================================================
+   [반응형 웹] 모바일 환경 전환 스위치
+   ======================================================== */
+@media (max-width: 1024px) {
+  .order-content-layout {
+    flex-direction: column !important;
+    gap: 30px !important;
+  }
+  .order-right-sidebar-container {
+    position: static !important;
+  }
 }
