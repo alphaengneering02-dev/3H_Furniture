@@ -10,6 +10,7 @@ import Ranking from '../admin/Ranking';
 import '../../css/mainPageCss/main.css';
 import Footer from './Footer';
 import Main_itemList from './Main_itemList';
+import MainCategory from './MainCategory';
 
 const Main = () => {
 
@@ -58,6 +59,10 @@ const Main = () => {
                 <div className="casamia-container main-container">
                     <div className="main-banner-section">
                         <Main_mainBanner/>  {/* 메인 배너 */}
+                    </div>
+
+                    <div>
+                        <MainCategory/>
                     </div>
 
                     <div className="main-item-section">
