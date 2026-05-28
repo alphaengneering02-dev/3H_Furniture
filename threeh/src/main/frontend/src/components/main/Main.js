@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Header from './Header';
 import Main_mainBanner from './Main_mainBanner';
 import axios from 'axios';
@@ -19,10 +19,15 @@ const Main = () => {
     const [totalItemList, setTotalItemList] = useState([])
     const [bestItems, setBestItems] = useState([]);
 
-    useEffect(() => {
-        getItemList()
-    }, [])
+    //코딩 추가_ 오현옥
+    const [selectedCategory, setSelectedCategory] = useState("");
+    const itemSectionRef = useRef(null);
 
+    useEffect(() => {
+        getItemList();
+        //코딩 추가 아래_오현옥
+        getBestItemsList();
+    }, [])
 
 
     //DB에서 전체 상품리스트를 가져오는 함수
@@ -36,32 +41,48 @@ const Main = () => {
 
 
             //콘솔 출력
+            //코딩 수정_오현옥(;이거 추가함)
             const originalItemList = [];
             for(let i=0; i<=3; i++) {
-                originalItemList.push(res.data[i])
+                originalItemList.push(res.data[i]);
             }
-            console.log("[전체 상품 리스트 (상위 4개)]\n", originalItemList)
+            console.log("[전체 상품 리스트 (상위 4개)]\n", originalItemList);
 
         } catch(error){
             console.error("[전체 상품리스트 조회 실패]\n", error);
         }
     };
 
+    //코딩 수정_오현옥(베스트 아이템 목록 불러오기_어드민대시보드 참조.)
     const getBestItemsList = async () => {
         try {
-            const res = await axios.get('/admin/orders');
-            const orders = res.data;
+            const res = await axios.get('http://localhost:8080/admin/orders',{
+                withCredentials: true,
+            });
+
+            const orders = res.data || [];
 
             const statsMap = {};
+
             orders.forEach(order => {
                 const orderItems = order.orderItems || order.orderitems || order.items || [];
-                if(!Array.isArray(orderItems)) return;
+                if(!Array.isArray(orderItems)){
+                    return;
+                } 
 
                 orderItems.forEach(item => {
                     const name = item.itemName;
-                    if(!name) return;
-                    if(statsMap[name]){
-                        statsMap[name] = {name, sales: 0, image: item.itemImage || null};
+                    const count = Number(item.count || 1);
+
+                    if(!name){
+                        return;
+                    }
+                    if(!statsMap[name]){
+                        statsMap[name]={
+                            name,
+                            sales:0,
+                            image: item.itemImage || item.itemImgUrl || null,
+                        };
                     }
                     statsMap[name].sales += Number(item.count || 1);
                 });
@@ -70,10 +91,9 @@ const Main = () => {
             const top3 = Object.values(statsMap)
                 .sort((a, b) => b.sales - a.sales)
                 .slice(0,3)
-                .map((item, idx) => ({rank: idx+1, ...item}));
+                .map((item, idx) => ({rank: idx+1, ...item,}));
 
             setBestItems(top3);
-
 
         } catch (error) {
             console.error("베스트 상품 조회 실패", error);

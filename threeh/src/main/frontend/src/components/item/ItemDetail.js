@@ -566,7 +566,7 @@ const ItemDetail = () => {
 
                         <div className="itemDetail-titleRow">
                             <Typography component="p" className="itemDetail-interestText">
-                                지금까지 <strong>63명</strong>이 관심을 보였어요.
+                                지금까지 <strong>{formatPrice(itemOrderCount)}개</strong>가 구매되었어요.
                             </Typography>
 
                             <div className="itemDetail-iconArea">
