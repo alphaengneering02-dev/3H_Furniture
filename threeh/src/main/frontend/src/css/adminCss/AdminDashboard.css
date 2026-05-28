@@ -981,6 +981,24 @@
 }
 .admin-sec-btn:hover { background: var(--admin-cream); }
 
+.admin-btn-right {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 12px;
+}
+
+.admin-action-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.admin-btn-right {
+    display: flex;
+    gap: 10px;
+}
+
 /* 하단정산 요약 바 (Total Bar) */
 .admin-total-summary-bar {
     margin-top: 20px;

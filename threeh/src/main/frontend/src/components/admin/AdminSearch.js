@@ -73,9 +73,9 @@ const AdminSearch = ({
             {/* 🚀 3층: 전체 너비 검색 버튼 */}
             <button
                 type="button"
-                onClick={handleSearchSubmit} // 💡 클릭 시에만 검색 반영
+                onClick={handleSearchSubmit}
                 className="admin-search-submit-btn-block"
-                style={{ cursor: 'pointer' }} // 클릭 유도 스타일링 추가
+                style={{ cursor: 'pointer' }}
             >
                 검색하기
             </button>

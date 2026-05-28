@@ -1,4 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { ToastContainer, toast } from "react-toastify"; 
+import "react-toastify/dist/ReactToastify.css";
 
 const AdminMemoDay = () => {
     const [memo1, setMemo1] = useState('');
@@ -28,7 +30,7 @@ const AdminMemoDay = () => {
         if (memoRef.current) {
             localStorage.setItem("memo_editor", memoRef.current.innerHTML);
         }
-        alert("메모가 저장되었습니다.");
+        toast.error("메모가 저장되었습니다.");
     };
 
     // 엔터 시 불릿 생성
@@ -87,7 +89,7 @@ const AdminMemoDay = () => {
     const handleAddDDay = (e) => {
         e.preventDefault();
         if (!newDDayTitle.trim() || !newDDayDate) {
-            alert("제목과 날짜를 모두 입력해주세요.");
+            toast.error("제목과 날짜를 모두 입력해주세요.");
             return;
         }
 
