@@ -4,6 +4,7 @@ import axios from 'axios';
 import PaymentFail from './PaymentFail';
 import { LinearProgress, Box, Typography, CircularProgress } from '@mui/material';
 import '../../css/paymentCss/payment.css';
+import { useToast } from '../../hook/useToast';
 
 function PaymentSuccess() {
 
@@ -18,6 +19,8 @@ function PaymentSuccess() {
     const amount = searchParams.get("amount");
 
     const user = JSON.parse(sessionStorage.getItem("user"));
+
+    const { success, error, warn, info } = useToast(); 
 
     useEffect(() => {
         let ignored = false;
@@ -37,7 +40,7 @@ function PaymentSuccess() {
             const orderData = JSON.parse(sessionStorage.getItem("pendingOrder"));
 
             if(!user) {
-                    alert("로그인을 다시해주세요.");
+                    info("로그인을 다시해주세요.");
                     navigate("/login");
             }
             

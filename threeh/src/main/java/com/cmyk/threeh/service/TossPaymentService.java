@@ -6,7 +6,6 @@ import java.util.Collections;
 
 import javax.transaction.Transactional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -20,10 +19,8 @@ import org.springframework.web.client.RestTemplate;
 
 import com.cmyk.threeh.domain.Member;
 import com.cmyk.threeh.domain.Payment;
-import com.cmyk.threeh.dto.PaymentDTO;
 import com.cmyk.threeh.dto.PaymentResponseDTO;
 import com.cmyk.threeh.dto.PaymentSuccessDTO;
-import com.cmyk.threeh.enums.PaymentState;
 import com.cmyk.threeh.global.config.TossPaymentsConfig;
 import com.cmyk.threeh.global.error.CustomException;
 import com.cmyk.threeh.global.error.ErrorCode;
