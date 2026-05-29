@@ -349,7 +349,7 @@ const ItemCreate = () => {
                 </div>
 
                 <div className="itemCreate-buttonArea">
-                    <button type="submit">
+                    <button type="submit" className="itemCreate-buttonArea button">
                         상품 등록
                     </button>
                 </div>

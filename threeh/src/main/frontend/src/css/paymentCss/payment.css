@@ -76,10 +76,9 @@ payment-checklogo {
 .payment-btn {
     width: 160px;
     height: 46px;
-    /* inline-flex를 유지하되, 내부 텍스트를 정가운데로 정렬하는 속성 추가 */
     display: inline-flex;
-    align-items: center;      /* 세로 중앙 정렬 */
-    justify-content: center;   /* 가로 중앙 정렬 */
+    align-items: center;     
+    justify-content: center;   
     
     background-color: #B8783E;
     color: #fff;
@@ -87,7 +86,7 @@ payment-checklogo {
     font-weight: 500;
     border: none;
     cursor: pointer;
-    text-decoration: none;    /* 혹시 a 태그일 경우 밑줄 제거 */
+    text-decoration: none;  
     transition: all 0.2s ease;
     box-sizing: border-box;
 }

@@ -15,10 +15,7 @@ import {
 function OrderInfo({orderType, setOrderType, zipcode, address, setZipcode, setAddress, detailedAddress, setDetailedAddress}) {
         return (
         <>
-            {/* 💡 [공간/중복 해결] 여기에 들어있던 중복 <h2 className="order-page-title">주문/결제</h2>를 완전히 제거했습니다. */}
-            {/* 💡 [정렬 해결] 다른 컴포넌트의 배치를 가로막던 잘못된 그릇(order-content-layout 등)을 도려냈습니다. */}
-
-            {/* 1. 배송 및 설치 선택 (독립 카드) */}
+            
             <div className="order-section-block">
                 <div className="order-section-header">
                     <h3 className="order-section-title">배송 및 설치 선택</h3>
