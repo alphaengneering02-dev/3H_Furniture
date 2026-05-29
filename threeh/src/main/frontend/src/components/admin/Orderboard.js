@@ -229,7 +229,7 @@ const Orderboard = ({
                 <h3>배송 배정 완료 목록[O.S=READY,D.S=WAITING인 ordersDB]</h3>
                 </div>
                 <table className="admin-table-style">
-                    <thead><tr><th>번호</th><th>상품</th><th>판매 금액</th><th>배정된 기사</th><th>상태</th><th>주문일</th></tr></thead>
+                    <thead><tr><th>번호</th><th>상품</th><th>배송지</th><th>배정된 기사</th><th>상태</th><th>주문일</th></tr></thead>
                     <tbody>
                         {pagedAssigned.map((order, index) => (
                             <tr key={order.orderId}>
