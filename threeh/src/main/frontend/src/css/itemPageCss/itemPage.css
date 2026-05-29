@@ -565,6 +565,55 @@
   color: var(--caramel);
   font-weight: 700;
 }
+
+/* 관리자 상품 목록 선택 삭제 버튼 */
+.item-admin-delete-button {
+    margin-left: 8px;
+    padding: 8px 14px;
+    border: 1px solid #b94a3a;
+    background-color: #b94a3a;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.item-admin-delete-button:hover:not(:disabled) {
+    background-color: #96382c;
+    border-color: #96382c;
+}
+
+.item-admin-delete-button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+/* 관리자 상품 목록 선택 삭제 버튼 */
+.item-admin-delete-button {
+    margin-left: 8px;
+    padding: 8px 14px;
+    border: 1px solid #b94a3a;
+    background-color: #b94a3a;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.item-admin-delete-button:hover:not(:disabled) {
+    background-color: #96382c;
+    border-color: #96382c;
+}
+
+.item-admin-delete-button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+/* 관리자 선택 체크박스 */
+.item-admin-checkbox {
+    accent-color: #b94a3a;
+}
 /* ================================
    반응형
 ================================ */
