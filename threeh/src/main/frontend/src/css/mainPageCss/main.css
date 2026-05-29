@@ -49,14 +49,13 @@
 /* ==========================================
    메인 헤더 Header
 ========================================== */
-
 .main-header {
   width: 100%;
   background-color: var(--main-bg-ivory);
   border-bottom: 1px solid var(--main-border-light);
   top: 0;
   z-index: 1000;
-  position: sticky;
+  position: sticky; top: 0px;
 }
 
 .main-header .main-inner {
@@ -823,7 +822,9 @@
 
 
 /* 1. 베스트 상품 타이틀 */
-.best-section-header {}
+.best-section-header {
+  margin-bottom: 8px;
+}
 
 .best-section-header .best-section-title {
   margin-bottom: 5px;
@@ -835,7 +836,8 @@
 /* 2. 베스트 상품 리스트 */
 .best-card-list {
   display: flex; justify-content: center; align-items: center; gap:120px;
-  position: relative;
+  padding: 25px 0;
+  border: 1px solid var(--main-border-light); border-radius: 10px;
 }
 
 .best-card-list .best-empty {
@@ -846,23 +848,6 @@
 
 
 /* 2-1. 각각의 베스트 상품 카드 */
-/* 1) 첫번째 카드 */
-.best-card-list .best-card:nth-child(1) {
-  position: absolute;
-  z-index: 22;
-}
-/* 2) 두번째 카드 */
-.best-card-list .best-card:nth-child(2) {
-  margin-top: 50px;
-  z-index: 21;
-}
-/* 3) 세번째 카드 */
-.best-card-list .best-card:nth-child(3) {
-  margin-top: 50px;
-  z-index: 20;
-}
-
-
 /* 모든 카드 공통 */
 .best-card-list .best-card {
   padding: 25px;
