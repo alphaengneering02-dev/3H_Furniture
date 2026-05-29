@@ -329,9 +329,7 @@ const fetchDeliveries = async () => {
                 />
 
 <div className="admin-content-box">
-
-    <div className="admin-content-title-bar admin-driver-header">
-
+    <div className="admin-driver-header">
         <div className="admin-driver-left">
             <h3>배송 파트너</h3>
             <Link to="/admin/driver">
@@ -351,7 +349,7 @@ const fetchDeliveries = async () => {
     </div>
 
     <div className="admin-driver-table-wrapper">
-        <table className="admin-table-style">
+        <table className="admindr-table-style">
             <thead>
                 <tr>
                     <th>회사</th>
