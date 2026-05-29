@@ -422,7 +422,7 @@ const Mypage = () => {
         {/* ⚡ 기존 헤더에 들어있던 member 로그인 상태 검증 로직을 본문 입구로 완벽 복구 */}
         {!member ? (
              <main style={{ textAlign: 'center', padding: '100px 20px' }}>
-        /        <h2>로그인이 필요한 service입니다.</h2>
+                <h2>로그인이 필요한 service입니다.</h2>
              </main>
          ) : ( 
              <div style={{ display: 'flex', marginTop: '20px' }}> 

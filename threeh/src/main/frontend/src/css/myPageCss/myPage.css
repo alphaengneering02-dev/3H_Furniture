@@ -395,7 +395,7 @@ tbody button:hover,
     font-weight: 700 !important;
     
     /* 💡 [크기 긴급 복구] 가로 너비가 무작정 100%로 터지지 않도록 기존 캡처본의 알맞은 고정 크기로 잠금 */
-    width: 100% !important;                       
+    width: 20% !important;                       
     max-width: 750px !important;                  /* ⚡ 회원정보 입력창 가로폭 끝선과 자석처럼 정확히 일치 */
     height: 44px !important;                      /* 투박하지 않은 슬림하고 정갈한 세로 높이 */
     
@@ -1153,6 +1153,8 @@ h3#refund-section.mypage-info-section-title > button.mypage-action-btn:hover,
     justify-content: center !important;
     border-radius: 0px !important;   /* 원본의 모던한 직각 모서리 사수 */
     box-shadow: none !important;     
+
+
 }
 
 /* 3. [수정하기] 버튼 전용 카라멜 컬러 수혈 및 오른쪽 정렬 극대화 */
