@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import '../../css/adminCss/AdminRanking.css';
+import '../../css/adminCss/AdminRanking.css'; // ⚠️ 경로가 맞는지 꼭 확인하세요!
 
 const SAMPLE_ORDERS = [];
 const SAMPLE_DRIVERS = [];
@@ -16,9 +16,6 @@ const Ranking = ({ orders = [], items = [] }) => {
         const vipStatsMap = {};
 
         finalOrders.forEach((order, idx) => {
-            if (idx === 0) {
-            }
-
             const memberId = order.memberId;
             if (!memberId) {
                 console.warn(`⚠️ [경고] ${idx}번째 주문에 memberId가 없습니다!`);
@@ -39,15 +36,15 @@ const Ranking = ({ orders = [], items = [] }) => {
                     memberId, 
                     name: memberName, 
                     count: 0, 
-                    totalSpent: 0, // 💡 누적 금액 필드 추가
+                    totalSpent: 0,
                     region: regionShort 
                 };
             }
             vipStatsMap[memberId].count += 1;
-            vipStatsMap[memberId].totalSpent += orderTotalPrice; // 💡 금액 누적
+            vipStatsMap[memberId].totalSpent += orderTotalPrice;
         });
 
-        const result = Object.values(vipStatsMap)
+        return Object.values(vipStatsMap)
             .sort((a, b) => b.count - a.count)
             .slice(0, 3)
             .map((vip, idx) => ({
@@ -55,7 +52,6 @@ const Ranking = ({ orders = [], items = [] }) => {
                 ...vip,
                 status: vip.count >= 5 ? '최우수 VIP' : '일반'
             }));
-        return result;
     }, [finalOrders]);
 
     // ==========================================
@@ -84,14 +80,13 @@ const Ranking = ({ orders = [], items = [] }) => {
             });
         });
 
-        const result = Object.values(itemStatsMap)
+        return Object.values(itemStatsMap)
             .sort((a, b) => b.sales - a.sales)
             .slice(0, 3)
             .map((item, idx) => ({
                 rank: idx + 1,
                 ...item
             }));
-        return result;
     }, [finalOrders]);
 
     // ==========================================
@@ -121,7 +116,7 @@ const Ranking = ({ orders = [], items = [] }) => {
             driverStatsMap[dId].sales += orderPrice;
         });
 
-        const result = finalItems.map(driver => {
+        return finalItems.map(driver => {
             const dId = String(driver.deliveryId || driver.DRIVER_ID || '');
             const stats = driverStatsMap[dId] || { count: 0, sales: 0 };
             const driverName = driver.deliveryName || driver.name || '이름없음';
@@ -138,50 +133,65 @@ const Ranking = ({ orders = [], items = [] }) => {
             return b.count - a.count;
         })
         .slice(0, 3);
-        return result;
     }, [finalOrders, finalItems]);
 
 
     return (
         <div className="admin-ranking-container">
-            
-            {/* 👑 VIP 고객 랭킹 카드 */}
-            <div className="admin-ranking-card-box">
-                <div className="admin-ranking-card-header">
-                    <h3>👑 실시간 VIP 고객 랭킹</h3>
-                </div>
-                <table className="admin-ranking-table">
-                    <thead>
-                        <tr>
-                            <th>순위</th>
-                            <th>회원(ID)</th>
-                            <th>누적 주문</th>
-                            <th>누적 금액</th>
-                            <th>등급</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {vipRanking.map((vip) => (
-                            <tr key={vip.memberId}>
-                                <td className="admin-rank-display admin-vip-emoji">{vip.rank}</td>
-                                <td className="admin-text-bold">{vip.name} ({vip.memberId})</td>
-                                <td className="admin-text-count-blue">{vip.count}건</td>
-                                <td className="admin-text-bold">{vip.totalSpent.toLocaleString()}원</td>
-                                <td>
-                                    <span className={`admin-badge ${vip.status === '최우수 VIP' ? 'admin-badge-vip' : 'admin-badge-normal'}`}>
-                                        {vip.status}
-                                    </span>
-                                </td>
-                            </tr>
-                        ))}
-                        {vipRanking.length === 0 && (
-                            <tr>
-                                <td colSpan="5" className="admin-ranking-empty-row">⚠️ 누적된 회원 주문이 없습니다.</td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
+
+            {/* 👑 VIP 고객 랭킹 - 시각적 배치를 위해 2위 -> 1위 -> 3위 순서로 렌더링 */}
+            <div className="vip-ranking-visual">
+                
+                {/* 2위 카드 */}
+                {vipRanking[1] ? (
+                    <div className="vip-side-card left">
+                        <div className="vip-rank">2위 우수 VIP</div>
+                        <div className="vip-name">
+                            {vipRanking[1].name} <span className="vip-id">({vipRanking[1].memberId})</span>
+                        </div>
+                        <div className="vip-info-row">               
+                            <strong>{vipRanking[1].count}건</strong>
+                        </div>
+                        <div className="vip-info-row">
+                            <strong>{vipRanking[1].totalSpent.toLocaleString()}원</strong>
+                        </div>
+                    </div>
+                ) : <div className="vip-side-card empty">2위 데이터 없음</div>}
+
+                {/* 1위 카드 (가운데 배치) */}
+                {vipRanking[0] ? (
+                    <div className="vip-center-card">
+                        <div className="vip-rank first">👑 1위 최우수 VIP</div>
+                        <div className="vip-name big">
+                            {vipRanking[0].name} <span className="vip-id">({vipRanking[0].memberId})</span>
+                        </div>
+                        <div className="vip-order-count">
+                            {vipRanking[0].count}건
+                        </div>
+                        <div className="vip-total-price">
+                            {vipRanking[0].totalSpent.toLocaleString()}원
+                        </div>
+                    </div>
+                ) : <div className="vip-center-card empty">1위 데이터 없음</div>}
+
+                {/* 3위 카드 */}
+                {vipRanking[2] ? (
+                    <div className="vip-side-card right">
+                        <div className="vip-rank">3위 우수 VIP</div>
+                        <div className="vip-name">
+                            {vipRanking[2].name} <span className="vip-id">({vipRanking[2].memberId})</span>
+                        </div>
+                        <div className="vip-info-row">
+                            <strong>{vipRanking[2].count}건</strong>
+                        </div>
+                        <div className="vip-info-row">
+                            <strong>{vipRanking[2].totalSpent.toLocaleString()}원</strong>
+                        </div>
+                    </div>
+                ) : <div className="vip-side-card empty">3위 데이터 없음</div>}
             </div>
+
+            <div className="admin-tables-row">
 
             {/* 🔥 인기 아이템 랭킹 카드 */}
             <div className="admin-ranking-card-box">
@@ -241,6 +251,7 @@ const Ranking = ({ orders = [], items = [] }) => {
                         )}
                     </tbody>
                 </table>
+            </div>
             </div>
 
         </div>

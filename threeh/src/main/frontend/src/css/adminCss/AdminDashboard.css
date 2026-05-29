@@ -871,3 +871,145 @@
 .admin-order-headerM {
     margin: 16px 0;
 }
+
+/* 기본적으로 헤더와 본문 모두 왼쪽 정렬로 초기화 */
+.admin-table-style th, 
+.admin-table-style td {
+    text-align: left;
+    vertical-align: middle;
+}
+
+/* 체크박스(1번째), 주문번호(2번째), 수량(5번째), 상태/날짜 등 짧은 항목만 중앙 정렬 */
+.admin-table-style th:nth-child(1), .admin-table-style td:nth-child(1),
+.admin-table-style th:nth-child(2), .admin-table-style td:nth-child(2), 
+.admin-table-style th:nth-child(3), .admin-table-style td:nth-child(3), 
+.admin-table-style th:nth-child(5), .admin-table-style td:nth-child(5), 
+.admin-table-style th:nth-child(6), .admin-table-style td:nth-child(6), 
+.admin-table-style th:nth-child(8), .admin-table-style td:nth-child(8), 
+.admin-table-style th:nth-child(9), .admin-table-style td:nth-child(9), 
+.admin-table-style th:nth-child(10), .admin-table-style td:nth-child(10) {text-align: center;}
+
+/* 상품명(4번째)과 주소(7번째)는 왼쪽 정렬 유지 (여백을 주면 더 이쁩니다) */
+.admin-table-style td:nth-child(4),
+.admin-table-style td:nth-child(7) {
+    padding-left: 12px; 
+}
+
+/* ==========================================================================
+   관리자 페이지 테이블 스타일 (admindr-table-style)
+   ========================================================================== */
+
+/* 테이블 기본 레이아웃 */
+.admindr-table-style {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 14px;
+    text-align: center;
+    background-color: #ffffff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* 테이블 헤더 */
+.admindr-table-style thead tr {
+    background-color: #f8f9fa;
+    color: #333333;
+    font-weight: 600;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.admindr-table-style th {
+    padding: 14px 16px;
+    font-size: 14px;
+}
+
+/* 테이블 본문 */
+.admindr-table-style tbody tr {
+    border-bottom: 1px solid #eeeeee;
+    transition: background-color 0.2s ease;
+}
+
+/* 행 마우스 오버 효과 */
+.admindr-table-style tbody tr:hover {
+    background-color: #fdfdfd;
+}
+
+.admindr-table-style td {
+    padding: 14px 16px;
+    color: #495057;
+    vertical-align: middle;
+}
+
+/* 데이터가 없을 때 스타일 (colSpan="5") */
+.admindr-table-style tbody tr td[colspan="5"] {
+    padding: 40px 0;
+    color: #868e96;
+    font-size: 15px;
+    background-color: #fafafa;
+}
+
+/* ==========================================================================
+   기사 상태 (Status) 스타일
+   ========================================================================== */
+.driver-status-text {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    background-color: #e9ecef;
+    color: #495057;
+}
+
+/* 상태가 WAITING(대기중)일 때의 스타일 */
+.driver-status-text.status-waiting {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+/* (옵션) 혹시 APPROVE나 다른 상태가 있다면 참고용 */
+.driver-status-text.status-approved {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+
+/* ==========================================================================
+   관리 버튼 (Action Buttons) 스타일
+   ========================================================================== */
+.admin-table-action-btn {
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin: 0 4px;
+}
+
+/* 수정 버튼 */
+.admin-table-action-btn.btn-edit {
+    background-color: #ffffff;
+    border-color: #0d6efd;
+    color: #0d6efd;
+}
+
+.admin-table-action-btn.btn-edit:hover {
+    background-color: #0d6efd;
+    color: #ffffff;
+}
+
+/* 삭제 버튼 */
+.admin-table-action-btn.btn-delete {
+    background-color: #ffffff;
+    border-color: #dc3545;
+    color: #dc3545;
+}
+
+.admin-table-action-btn.btn-delete:hover {
+    background-color: #dc3545;
+    color: #ffffff;
+}

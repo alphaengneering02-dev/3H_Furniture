@@ -359,10 +359,10 @@
   font-size: 11px !important;
 }
 
+
 /* ==========================================
    3. 하단 박스 Bottom Box, GNB
 ========================================== */
-
 .main-header-bottomBox {
   border-top: 1px solid var(--main-border-light);
   border-bottom: 1px solid #D9B98F;
@@ -509,7 +509,6 @@
 /* ==========================================
    메인 콘텐츠 영역 Contents
 ========================================== */
-
 .main-container {
   max-width: 1240px;
   margin: 0 auto;
@@ -517,9 +516,15 @@
   background-color: transparent;
 }
 
-/* 메인 배너 영역 */
+
+
+/* ==========================================
+   메인 배너 섹션
+========================================== */
 .main-banner {
   width: 100%;
+  margin-top: 20px;
+  margin-bottom: 60px;
 }
 
 .main-banner-mainSlide {
@@ -581,8 +586,8 @@
    상품 카테고리 섹션
 ========================================== */
 .main-category-imgsection {
-  margin-top: 70px;
   width: 100%;
+  margin-bottom: 60px;
 }
 
 .main-category-imgsection-contents {
@@ -640,19 +645,17 @@
 }
 
 
-
 /* ==========================================
    상품목록 섹션
 ========================================== */
-
 .main-item-section {
   width: 100%;
+  margin-bottom: 60px;
 }
 
 .main-itemList {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 40px 20px;
 }
 
 .main-itemList h2 {
@@ -669,7 +672,8 @@
 
 .main-product-slider-section .main-slider-container {
   position: relative;
-  width: 100%;
+  left: 50%; transform: translate(-50%, 0);
+  width: 95%;
   overflow: hidden;
 }
 
@@ -680,14 +684,16 @@
   width: 200%;
 }
 
+
+/* empty text */
 .main-itemList .main-item-empty-text {
-  padding: 60px 0;
-  margin: 0 auto;
-  font-size: 15px;
-  color: var(--main-dark-beige);
+  text-align: center;
+  margin: 150px 0;
+  font-size: 15px; font-weight: bold; color: var(--main-light-gray);
 }
 
-/* 개별 상품 카드 */
+
+/* ===============개별 상품 카드=============== */
 .main-item-card {
   box-sizing: border-box;
   display: flex;
@@ -752,10 +758,11 @@
   text-align: center;
 }
 
+
+
 /* ==========================================
    상품 슬라이더 버튼
 ========================================== */
-
 .main-product-slider-section .main-slider-btn-once {
   position: absolute;
   top: calc(50% - 25px);
@@ -763,7 +770,7 @@
   transform: translate(-50%, -50%);
   display: flex;
   justify-content: space-between;
-  width: 102%;
+  width: 100%;
   pointer-events: none;
   z-index: 20;
 }
@@ -804,6 +811,128 @@
 .main-product-slider-section .main-slider-btn-indicator li.active {
   background-color: var(--main-caramel);
 }
+
+
+
+/* ==========================================
+    베스트 상품 섹션
+========================================== */
+.best-section {
+  margin-bottom: 60px;
+}
+
+
+/* 1. 베스트 상품 타이틀 */
+.best-section-header {}
+
+.best-section-header .best-section-title {
+  margin-bottom: 5px;
+}
+.best-section-header .best-section-sub {
+  font-size: 14px;
+}
+
+/* 2. 베스트 상품 리스트 */
+.best-card-list {
+  display: flex; justify-content: center; align-items: center; gap:120px;
+  position: relative;
+}
+
+.best-card-list .best-empty {
+  text-align: center;
+  margin: 150px 0;
+  font-size: 15px; font-weight: bold; color: var(--main-light-gray);
+}
+
+
+/* 2-1. 각각의 베스트 상품 카드 */
+/* 1) 첫번째 카드 */
+.best-card-list .best-card:nth-child(1) {
+  position: absolute;
+  z-index: 22;
+}
+/* 2) 두번째 카드 */
+.best-card-list .best-card:nth-child(2) {
+  margin-top: 50px;
+  z-index: 21;
+}
+/* 3) 세번째 카드 */
+.best-card-list .best-card:nth-child(3) {
+  margin-top: 50px;
+  z-index: 20;
+}
+
+
+/* 모든 카드 공통 */
+.best-card-list .best-card {
+  padding: 25px;
+  background: var(--main-bg-white);
+  border: 1px solid var(--main-border-light); border-radius: 12px;
+  box-shadow: 0 8px 14px 3px #dfcfc4;
+  transition: 0.2s;
+  
+  max-width: 250px;
+}
+.best-card-list .best-card:hover {
+  transform: scale(1.1);
+  color: var(--main-caramel);
+  z-index: 999;
+}
+
+/* 카드 - 순위 */
+.best-card-list .best-card .best-medal {
+  text-align: center;
+  font-size: 18px; font-weight: bold;
+  margin-bottom: 18px;
+}
+.best-card-list .best-card:nth-child(1) .best-medal {
+  color: red;
+}
+.best-card-list .best-card:nth-child(2) .best-medal {
+  color: goldenrod;
+}
+.best-card-list .best-card:nth-child(3) .best-medal {
+  color: green;
+}
+
+/* 카드 - 상품 이미지 */
+.best-card-list .best-card .best-img-box img {
+  width: 170px;
+  object-fit: cover;
+}
+/* 카드 - 상품 텍스트 */
+.best-card-list .best-card .best-info p {
+  width: 100%;
+
+  /* 멀티라인 말줄임표 처리 
+  display: -webkit-box;
+  -webkit-line-clamp: 2; 보여줄 줄 수 (필요에 따라 2, 3 등으로 수정)
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;*/
+
+  /* 말줄임표 3단 콤보 */
+  white-space: nowrap; /* 줄바꿈 금지 (한 줄로만 표시) */
+  overflow: hidden;    /* 넘어가는 텍스트 숨김 */
+  text-overflow: ellipsis; /* 잘린 부분에 ... 표시 */
+}
+.best-card-list .best-card .best-info p.best-name {
+  font-size: 16px; font-weight: bold;
+  margin-bottom: 7px;
+}
+.best-card-list .best-card .best-info p.best-sales {
+  font-size: 13px;
+}
+
+
+/* ==========================================
+   랭킹
+========================================== */
+.best-Ranking-title {
+  margin-bottom: 5px;
+}
+
+
 
 /* ==========================================
    하단 푸터 영역
@@ -909,6 +1038,8 @@
 }
 
 
+
+
 /* ==========================================
    공통 transition
 ========================================== */
@@ -923,6 +1054,7 @@
               transform 0.2s ease,
               opacity 0.2s ease;
 }
+
 
 /* ==========================================
    반응형 레이아웃 처리
