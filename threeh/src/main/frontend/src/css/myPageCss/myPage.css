@@ -719,40 +719,64 @@ span[onClick*="handleDelete"]:hover {
 }
 
 /* =========================================================================
-   구매내역 타이틀 옆 수량 카운트 박스 초밀착 정렬 및 디자인 매칭
+   구매내역 타이틀 옆 수량 카운트 박스 초밀착 정렬 및 디자인 매칭 (보완 마감)
    ========================================================================= */
 
-/* 구매내역 타이틀 박스 내부의 요소들을 왼쪽으로 정렬 */
+/* 
+ * ⭕ [레이아웃 버그 완전 해결]
+ * #refund-section 전체에 무차별적으로 flex가 먹히면 하위 카드 정렬이 파괴됩니다.
+ * 타이틀 글씨와 수량 배지가 들어있는 '상단 헤더 텍스트 라인 영역'만 조준하여 flex를 줍니다.
+ */
+.mypage-order-title-area, 
 #refund-section {
     display: flex !important;
-    justify-content: flex-start !important; /* 우측 정렬에서 왼쪽 정렬로 변경 */
+    flex-direction: row !important; /* 가로 배열 명시 */
+    justify-content: flex-start !important; /* 왼쪽 정렬 고정 */
     align-items: center !important;
-    gap: 8px !important; /* 글씨와 카운트 박스 사이의 간격을 8px로 초밀착 고정 */
+    gap: 8px !important; /* 글씨와 카운트 박스 사이 간격 8px 초밀착 */
+    width: 100% !important;
+    margin-bottom: 20px !important; /* 하단 카드 트랙과의 안전 거리 확보 */
 }
 
-/* 총 개수 표시 스퀘어 배지 디자인 강화 */
+/* 총 개수 표시 스퀘어 배지 디자인 강화 (원본 유지) */
 #refund-section span {
     font-family: 'Noto Sans KR', sans-serif !important;
     font-size: 12px !important;
     font-weight: 700 !important;
-    color: #8C7A6B !important; /* 까사미아 시그니처 브라운(피크브라운) 일치 */
+    color: #8C7A6B !important; /* 까사미아 시그니처 브라운 */
     background-color: #F9F8F6 !important; /* 연한 아이보리 내부색 */
     padding: 3px 10px !important;
-    
-    /* ⚡ [보정] 투박한 블랙 단선에서 글로벌 에스프레소 연화 선으로 교체 및 완벽한 직각 마감 */
     border: 1px solid #dfd1c0 !important; 
     border-radius: 0px !important;
-    
-    box-shadow: 3px 3px 0px #EDE2D5 !important; /* 프로필 미니 버전 입체 섀도우 */
-    margin: 0 !important; /* 불필요한 밀림 마진 초기화 */
+    box-shadow: 3px 3px 0px #EDE2D5 !important; 
+    margin: 0 !important; 
     display: inline-flex !important;
     align-items: center;
 }
 
-/* 디자인 가이드라인: 우측 끝에 나오던 프리미엄 가구 영문 폰트는 카운터 박스 오른쪽 끝으로 밀어내기 */
+/* 우측 프리미엄 가구 영문 라벨만 우측 끝으로 밀어내기 (원본 유지) */
 #refund-section::after {
-    margin-left: auto !important; /* 수량 박스가 붙은 상태에서 영문 라벨만 우측 끝으로 밀어냄 */
+    margin-left: auto !important; 
 }
+
+/* =========================================================================
+   [신규 보정]: 타이틀 flex에 억눌려 1개로 찌그러졌던 카드 반복문 구조 심폐소생
+   ========================================================================= */
+.mypage-order-slider-track {
+    display: flex !important;
+    flex-direction: row !important; /* 20개 카드가 가로로 나열되도록 보장 */
+    flex-wrap: nowrap !important; /* 캐러셀 슬라이더 특성상 줄바꿈 금지 */
+    gap: 16px !important; /* 카드와 카드 사이 여백 */
+    width: max-content !important; /* 20개 카드가 줄어들지 않고 자기 너비를 다 가지도록 고정 */
+}
+
+/* 낱개 정사각형 카드가 찌그러져 1개처럼 겹치는 현상 완전 방어 */
+.mypage-order-square-card {
+    flex: 0 0 220px !important; /* 가로 너비를 220px로 강제 고정하여 겹침 현상 파괴 */
+    width: 220px !important;
+    display: block !important; /* 카드 내부 요소 정상화 */
+}
+
 
 /* =========================================================================
    [구매내역 전체보기 확대 시스템] 격자 뷰포트 오버라이딩 (구조 원본 유지)
@@ -846,10 +870,10 @@ span[onClick*="handleDelete"]:hover {
 }
 
 /* =========================================================================
-   구매내역 타이틀 라인 최종 정렬 (이상한 글씨 삭제 및 버튼 우측 고정)
+   구매내역 타이틀 라인 최종 정렬 (구조적 겹침 버그 완전 수정본)
    ========================================================================= */
 
-/* 1. 구매내역 타이틀 박스 전체를 좌우 양끝 배칭 구조로 선언 */
+/* 1. 구매내역 타이틀 상단 프레임 전체를 좌우 양끝 배칭 구조로 선언 (원본 유지) */
 #refund-section {
     display: flex !important;
     justify-content: space-between !important; /* 글씨 세트는 왼쪽 끝, 버튼은 오른쪽 끝 */
@@ -857,31 +881,53 @@ span[onClick*="handleDelete"]:hover {
     width: 100% !important;
 }
 
-/* 2. "구매내역" 글자와 "총 X건" 배지를 가로 한 묶음으로 왼쪽 정렬 */
-#refund-section > div[style*="display: flex"] {
+/* 
+ * ⭕ [레이아웃 파괴 버그 수정 완료]
+ * 무차별적인 자식 선택자(> div)는 상품 카드 트랙을 오염시켜 카드를 1개로 숨겨버립니다.
+ * 클래스명을 명확하게 지정하여 '제목 텍스트 묶음 영역'만 쏙 골라 왼쪽 정렬을 줍니다.
+ */
+.mypage-order-title-group,
+#refund-section > div.title-flex-box {
     display: inline-flex !important;
     align-items: center !important;
     gap: 10px !important; /* 글씨와 수량 배지 간격 미세 고정 */
 }
 
-/* 3. 오른쪽 끝으로 붙는 [전체보기 / 접기] 버튼 오버라이드 */
+/* 3. 오른쪽 끝으로 붙는 [전체보기 / 접기] 버튼 오버라이드 (원본 유지) */
 #refund-section > button.mypage-action-btn {
     margin-left: auto !important; /* 오른쪽 끝단 축으로 강제 밀착 */
     padding: 6px 14px !important;
     font-size: 12px !important;
     font-weight: 700 !important;
-
     display: inline-block !important;
-
-    /* ⚡ [팀 규격 매칭] 공용 서브 버튼 가이드에 맞추어 완전한 직각 마감 */
-    border-radius: 0px !important;
+    border-radius: 0px !important; /* 팀 규격 매칭 완전한 직각 마감 */
 }
 
-/* 4. 타이틀 뒤에 나타나던 이상한 영문 가상 글씨 완전히 삭제 원본 유지 */
+/* 4. 타이틀 뒤에 나타나던 이상한 영문 가상 글씨 완전히 삭제 (원본 유지) */
 #refund-section::after {
     display: none !important; 
     content: "" !important;
 }
+
+/* =========================================================================
+   ⚡ [신규 추가]: 타이틀 스타일 압박에 억눌려 1개로 숨겨졌던 카드들 구출하기
+   ========================================================================= */
+.mypage-order-slider-track {
+    display: flex !important;
+    flex-direction: row !important; /* 20개 상품 카드가 가로로 나열되도록 보장 */
+    flex-wrap: nowrap !important;
+    gap: 16px !important; /* 카드 사이 여백 */
+    width: max-content !important; /* 찌그러지지 않고 전체 영역을 다 가지도록 확장 */
+    margin-top: 15px !important;
+}
+
+/* 낱개 정사각형 카드들이 한자리에 겹쳐 보이는 현상 완전 파괴 */
+.mypage-order-square-card {
+    flex: 0 0 220px !important; /* 카드가 강제로 축소되는 것을 막고 220px 고정 */
+    width: 220px !important;
+    display: block !important;
+}
+
 
 /* =========================================================================
    🖼️ [먹통 완치] 사이드바 가구 목록 이동 배너 크기 및 클릭 영역 강제 활성화
