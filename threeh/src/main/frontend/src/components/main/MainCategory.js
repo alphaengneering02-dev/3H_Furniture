@@ -13,9 +13,9 @@ function MainCategory(props) {
     //슬라이드 데이터 배열로 관리
     const slides = [
         {id:'s1', src:livingroom_sub, title:'거실', alt:'거실 배너', describe:'미드센츄리 모던디자인 거실가구', link:'#'}, //# 자리에 링크 주소를 넣어주시면 됩니다 
-        {id:'s2', src:bedroom_sub, title:'침실', alt:'침실 배너', describe:'미드센츄리 모던디자인 거실가구', link:'#'},
-        {id:'s3', src:kitchen_sub, title:'주방', alt:'주방 배너', describe:'미드센츄리 모던디자인 거실가구', link:'#'},
-        {id:'s4', src:toilet_sub, title:'욕실', alt:'욕실 배너', describe:'미드센츄리 모던디자인 거실가구', link:'#'},
+        {id:'s2', src:bedroom_sub, title:'침실', alt:'침실 배너', describe:'미드센츄리 모던디자인 침실가구', link:'#'},
+        {id:'s3', src:kitchen_sub, title:'주방', alt:'주방 배너', describe:'미드센츄리 모던디자인 주방가구', link:'#'},
+        {id:'s4', src:toilet_sub, title:'욕실', alt:'욕실 배너', describe:'미드센츄리 모던디자인 욕실가구', link:'#'},
     ];
 
     //슬라이드가 자동으로 넘어가는 함수

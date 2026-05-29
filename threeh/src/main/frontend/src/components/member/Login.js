@@ -9,6 +9,7 @@ import { useToast } from '../../hook/useToast';
 
 //Login 전용 CSS 임포트
 import '../../css/memberPageCss/login.css';
+import Footer from '../main/Footer';
 
 const Login = () => {
 
@@ -193,7 +194,7 @@ const Login = () => {
                         <input 
                             type='text' 
                             value={id} id='id' name='id' 
-                            placeholder='아이디' 
+                            placeholder='🆔 아이디' 
                             onChange={changeInput}
                             className="login-input-field"
                         />
@@ -204,7 +205,7 @@ const Login = () => {
                         <input 
                             type='password' 
                             value={password} id='password' name='password' 
-                            placeholder='비밀번호' 
+                            placeholder='🔒 비밀번호' 
                             onChange={changeInput}
                             className="login-input-field"
                         />
@@ -271,7 +272,12 @@ const Login = () => {
                         회원가입 <span className='right-arrow'>&gt;</span>
                     </button>
                 </article>
+            </div>
 
+
+            {/* Footer 영역 */}
+            <div className="main-mypage-footer">
+                <Footer/>
             </div>
         </div>
     );
