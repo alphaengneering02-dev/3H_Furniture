@@ -40,6 +40,8 @@ function OrderItemInfo( { orderData, orderType, zipCode, address, deliveryDate, 
                 return;
            }
 
+           error("결제는 토스페이만 가능합니다.");
+
           // 1. 단건/ 장바구니 분기 계산
            const isActuallyCart = orderData?.items && orderData?.items.length > 0;
 
@@ -218,8 +220,12 @@ function OrderItemInfo( { orderData, orderType, zipCode, address, deliveryDate, 
                     </span>
                     </div>
                     
+                    <div>
+                        <label>*결제는 토스페이로만 가능합니다.</label>
+                    </div>
+
                     <div className="order-submit-box">
-                    <button className="order-payment-btn" id="paymentButton" onClick={hadlePayment}>
+                        <button className="order-payment-btn" id="paymentButton" onClick=   {hadlePayment}>
                         결제하기
                     </button>
                     </div>

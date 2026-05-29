@@ -142,25 +142,38 @@
                     int count = 0;
     
                     if (order.getOrderItems() != null && !order.getOrderItems().isEmpty()) {
-                        OrderItem firsOrderItem = order.getOrderItems().get(0);
 
-                        if(firsOrderItem.getItem() != null){
-                            itemId = firsOrderItem.getItem().getItemId();
-                            itemName = firsOrderItem.getItem().getItemName();
-                            
-                            // 장바구니에서 사용했던 변수명 규칙(orderPrice, count) 그대로 맵에 주입
-                            // 장바구니 연동 구조와 일치시켜 리액트에서 단가 및 수량, 소계금액을 바로 계산할 수 있게 토스합니다.
-                            orderPrice = firsOrderItem.getOrderPrice(); 
-                            count = firsOrderItem.getCount();
+                        // 김승우 수정
+                        for(OrderItem orderItem : order.getOrderItems()){
+
+                            if(orderItem.getItem() != null) {
+                                Map<String, Object> itemMap = new HashMap<>();
+                                
+                                itemMap.put("itemId", orderItem.getItem().getItemId());
+                                itemMap.put("itemName", orderItem.getItem().getItemName());
+                                itemMap.put("orderDate", order.getOrderDate());
+                                itemMap.put("orderId", order.getOrderId());
+                                itemMap.put("orderPrice", orderItem.getItem().getItemPrice());
+                                itemMap.put("count", orderItem.getCount());
+                                itemMap.put("orderState", order.getOrderState());
+                                itemMap.put("deliveryStatus", order.getDeliveryStatus());
+                                
+                                recentOrdersMapList.add(itemMap);// 
+                            }
                         }
+
+                        // if(firsOrderItem.getItem() != null){
+                        //     itemId = firsOrderItem.getItem().getItemId();
+                        //     itemName = firsOrderItem.getItem().getItemName();
+                            
+                        //     // 장바구니에서 사용했던 변수명 규칙(orderPrice, count) 그대로 맵에 주입
+                        //     // 장바구니 연동 구조와 일치시켜 리액트에서 단가 및 수량, 소계금액을 바로 계산할 수 있게 토스합니다.
+                        //     orderPrice = firsOrderItem.getOrderPrice(); 
+                        //     count = firsOrderItem.getCount();
+                        // }
                     }
 
-                    orderMap.put("itemId", itemId);
-                    orderMap.put("itemName", itemName);
-                    orderMap.put("orderPrice", orderPrice); // 판매단가 추가토스
-                    orderMap.put("count", count);           // 수량 추가토스
                     
-                    recentOrdersMapList.add(orderMap);
                 }
             }
             responseData.put("recentOrders", recentOrdersMapList);
