@@ -9,6 +9,7 @@ public enum OrderState {
     ORDER("주문"),
     CANCEL("주문취소"),
     READY("배송 준비중"),
+    SHIPPING("배송중"),
     EXCHANGEorREFUND("교환또는환불"),
     PURCHASED("구매확정");
 

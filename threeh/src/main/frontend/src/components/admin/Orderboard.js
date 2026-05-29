@@ -208,7 +208,7 @@ const Orderboard = ({
                                                     <option value="">기사 선택</option>
                                                     {items.map(driver => <option key={driver.deliveryId} value={driver.deliveryId}>{driver.deliveryName}</option>)}
                                                 </select>
-                                                <button onClick={() => handleAssignDriver(order.orderId)}>{order.deliveryStatus === 'REJECTED' ? '재배정' : '배정'}</button>
+                                                <button type='button' onClick={() => handleAssignDriver(order.orderId)}>{order.deliveryStatus === 'REJECTED' ? '재배정' : '배정'}</button>
                                             </>
                                         )}
                                     </td>
