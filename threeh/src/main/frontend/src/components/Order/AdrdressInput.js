@@ -29,7 +29,7 @@ function AdrdressInput({ address, setAddress, zipCode, setZipcode, detailedAddre
     const toggleHandler = () => {
         setIsOpen((prevOpenState) => {
         const nextState = !prevOpenState;
-        // 💡 주소창을 '열 때'만 key 값을 1씩 증가시켜 내부 DaumPostCode를 강제 초기화시킵니다.
+      
         if (nextState) {
             setMapKey(prev => prev + 1);
         }

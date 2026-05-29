@@ -100,7 +100,7 @@ const Mypage = () => {
             axios.get('http://localhost:8080/Member/mypage.do', { withCredentials: true })
                 .then(res => {
                     setMember(res.data.member);
-                    console.log(res.data);
+                    console.log("상품 데이터", res.data);
 
                     // [회원 전용 보관고 연동] 이 브라우저에 이 회원 이름으로 저장된 주소록이 있는지 확인
                     const storageKey = `addresses_${res.data.member.id}`;

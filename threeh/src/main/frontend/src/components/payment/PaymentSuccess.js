@@ -49,9 +49,9 @@ function PaymentSuccess() {
             console.log("파싱된 데이터:", orderData);
 
             if (!orderData) {
-                console.error("주문 데이터가 없습니다!");
-                navigate("/payment/fail");
-                return ;
+                setPayStatus("fail");
+                setFailReason("주문 정보가 없습니다.");
+                return;
             }
             try {
                 if (ignored) return;
