@@ -538,5 +538,33 @@
         padding: 16px;
     }
 
+    .itemAdmin-checkColumn {
+    width: 46px;
+    text-align: center;
+}
+
+.itemAdmin-checkColumn input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: #333333;
+}
+
+.itemAdmin-dangerButton {
+    background-color: #b94a3a;
+    border-color: #b94a3a;
+    color: #ffffff;
+}
+
+.itemAdmin-dangerButton:hover:not(:disabled) {
+    background-color: #96382c;
+    border-color: #96382c;
+}
+
+.itemAdmin-dangerButton:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
 
 }
