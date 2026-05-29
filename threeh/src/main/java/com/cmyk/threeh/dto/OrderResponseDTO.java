@@ -58,7 +58,7 @@ public class OrderResponseDTO {
                 .memberName(orders.getMember().getName()) 
                 .orderState(orders.getOrderState().getMessage())
                 //태양 order에 delivery_status 필요
-                .deliveryStatus(orders.getDeliveryStatus() != null ? orders.getDeliveryStatus().name() : null)
+                .deliveryStatus(orders.getDeliveryStatus() != null ? orders.getDeliveryStatus().getMessage() : null)
                 .orderType(orders.getOrderType())
                 .orderDate(orders.getOrderDate())
                 .deliveryDate(orders.getDeliveryDate())

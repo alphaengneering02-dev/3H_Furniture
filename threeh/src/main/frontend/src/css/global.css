@@ -311,6 +311,3 @@ header {
 .main-header-GNB > ul > li > a:hover {
   color: var(--main-bg) !important; /* 호버 시 리넨 베이지빛 폰트로 피드백 */
 }
-
-
-

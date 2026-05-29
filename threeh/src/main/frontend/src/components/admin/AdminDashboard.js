@@ -58,6 +58,10 @@ const handleEditItemDetail = () => {
         navigate(`/admin/delivery/${deliveryId}`);
     };
 
+    console.log("AdminDashboard 렌더링");
+    
+    console.log("selectedDrivers 상태:", selectedDrivers);
+
 
     useEffect(() => {
         const savedUser = sessionStorage.getItem("user");
@@ -90,14 +94,23 @@ const handleEditItemDetail = () => {
    
 
     const handleDriverSelect = (orderId, deliveryId) => {
+
+        console.log("발생", orderId, deliveryId);
     setSelectedDrivers(prev => ({
         ...prev,
         [orderId]: deliveryId
     }));
 };
 
+console.log("선택된 기사", selectedDrivers);
+
+
 const handleAssignDriver = async (orderId) => {
-    const deliveryIdRaw = selectedDrivers[orderId];
+
+    console.log("현재 기사", selectedDrivers);
+    const deliveryIdRaw = selectedDrivers?.[orderId];
+
+    
 
     // 미배정 확인 로그
     console.log(`[기사배정 시도] 주문ID: ${orderId} ➡️ 선택된 기사 ID: ${deliveryIdRaw}`);
@@ -131,6 +144,8 @@ const handleAssignDriver = async (orderId) => {
 
         setSelectedDrivers(prev => ({ ...prev, [orderId]: "" }));
         toast.error("기사 배정 완료");
+
+
 
     } catch (error) {
         console.error("배정 실패 상세:", error.response?.data); // 서버가 보낸 구체적 에러 확인

@@ -39,25 +39,30 @@ const DriverPage = () => {
     try {
         const orderRes = await axios.get(`/admin/driver/${deliveryId}/orders`);
         const dbOrders = orderRes.data; 
+
+        console.log(dbOrders);
+
+        console.log('db데이터', dbOrders);
         
         // 1. 신규 배정
         const newOrders = dbOrders.filter(o => 
-            (!o.deliveryStatus || o.deliveryStatus === 'WAITING') && o.orderState !== 'CANCEL'
+            
+            (!o.deliveryStatus || o.deliveryStatus === '대기중') && o.orderState !== '주문취소'
         );
         
         // 2. 수락된 주문
         const accepted = dbOrders.filter(o => 
-            o.deliveryStatus === 'ACCEPTED' && o.orderState !== 'CANCEL'
+            o.deliveryStatus === '수락' && o.orderState !== '주문취소'
         );
 
         // 3. 배송중 필터링
         const shipping = dbOrders.filter(o => 
-            o.deliveryStatus === 'SHIPPING' && o.orderState !== 'CANCEL'
+            o.deliveryStatus === '배송중' && o.orderState !== '주문취소'
         );
 
         // 4. 교환/반품 필터링
         const pickups = dbOrders.filter(o => 
-            o.deliveryStatus === 'PICKUP' && (o.orderState === 'EXCHANGEorREFUND' || o.orderState === 'CANCEL')
+            o.deliveryStatus === '수거' && (o.orderState === '교환또는환불' || o.orderState === '주문취소')
         );
 
         setOrders(newOrders);
@@ -315,6 +320,9 @@ const handleResetToWaiting = async () => {
             toast.error("회수 완료 처리 실패");
         }
     };
+
+
+    console.log('배송정보', orders.data);
 
     // 1️⃣ 로그인 전 화면 (비로그인 상태)
     // 1️⃣ 비로그인 상태 화면
