@@ -7,6 +7,7 @@ import SearchResult_filter from './SearchResult_filter';
 import '../../css/mainPageCss/searchResult.css';
 import Header from './Header';
 import Footer from './Footer';
+import Item from '../item/Item';
 
 const SearchResult = () => {
     
@@ -53,6 +54,23 @@ const SearchResult = () => {
     }
 
 
+    //상품 최종 가격 계산
+    //백엔드에서 itemFinalPrice가 오면 그 값을 사용
+    //없으면 원가-할인금액으로 계산
+    //천 단위 콤마 적용
+    const getFinalPrice = (item) => {
+        if (item.itemFinalPrice !== null && item.itemFinalPrice !== undefined) {
+        return Number(item.itemFinalPrice);
+        }
+
+        return Number(item.itemPrice || 0) - Number(item.itemDiscountPrice || 0);
+    };
+
+    const formatPrice = (price) => {
+        return Number(price || 0).toLocaleString();
+    };
+
+
     //상품 필터링
     //필터 선택
     /*
@@ -79,11 +97,13 @@ const SearchResult = () => {
     )
     // 3. 가격 필터링 (최소값 이상이자 최대값 이하인 상품만 보이기)
     .filter(item => {
-        const totalPrice = item.itemPrice - item.itemDiscountPrice
+        // const totalPrice = item.itemPrice - item.itemDiscountPrice
+        const finalPrice = getFinalPrice(item)
         const min = myFilter.price[0] * 10000
         const max = myFilter.price[1] * 10000
 
-        return totalPrice>=min && totalPrice<=max
+        // return totalPrice>=min && totalPrice<=max
+        return finalPrice>=min && finalPrice<=max
     })
 
     const searchValue = searchParams.get("searchValue") || "전체";
@@ -120,7 +140,7 @@ const SearchResult = () => {
                     ? (
                         <div className="search-result-grid-container">
                             {filteredItems.map(item =>
-                                <SearchResult_item key={item.itemId} item={item}/>
+                                <SearchResult_item key={item.itemId} item={item} getFinalPrice={getFinalPrice} formatPrice={formatPrice}/>
                             )}
                         </div>
                     ) 

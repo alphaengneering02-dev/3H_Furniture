@@ -13,8 +13,10 @@ const Signup_site = () => {
 
 
     //회원가입 전송용 react-hook-form 세팅
-    const { register, handleSubmit, setError, clearErrors, formState: {errors} } = useForm();  //각 입력 필드, 폼 제출 함수 정의, 에러 setter, validation 에러 객체
+    const { register, handleSubmit, setError, clearErrors, formState: {errors}, setValue } = useForm();  //각 입력 필드, 폼 제출 함수 정의, 에러 setter, validation 에러 객체
 
+
+    //이메일+사이트 주소 입력창
     const [emailId, setEmailId] = useState("")  //입력값 상태
     const [emailSite, setEmailSite] = useState("")
     const [isReadOnly, setIsReadOnly] = useState(true); // readOnly 상태
@@ -25,7 +27,8 @@ const Signup_site = () => {
     }
 
     const inputYourself = (evt) => {
-        setEmailSite(evt.target.value)
+        const cleanValue = formatInput("emailSite", evt.target.value)
+        setEmailSite(cleanValue)
         clearErrors("email")
     }
     const changeEmailSite = (evt) => {
@@ -41,6 +44,41 @@ const Signup_site = () => {
 
         clearErrors("email")
     };
+
+
+
+    //입력값 필터링, 길이제한, 포맷팅
+    const formatInput = (name, value) => {
+        let cleanValue = ""
+
+        //1) 사이트 주소
+        if(name==='emailSite') {
+            //영문만 남기기
+            cleanValue = value.replace(/[^a-zA-Z.]/g, "")
+            return cleanValue;
+        }
+
+
+        //2) 주민등록번호 (XXXXXX-XXXXXXX 형식)
+        if(name==='regNo') {
+            //숫자만 남기기
+            cleanValue = value.replace(/[^0-9]/g, "")
+
+            //13자리 제한 (13자리까지만 자름)
+            if (cleanValue.length > 13) {
+                cleanValue = cleanValue.substring(0, 13)
+            }
+
+            //XXXXXX-XXXXXXX 형식으로 포맷팅
+            if (cleanValue.length > 6) {
+                return `${cleanValue.substring(0, 6)}-${cleanValue.substring(6)}`;
+            }
+
+            return cleanValue
+        }
+
+        return value
+    }
 
 
 
@@ -210,6 +248,11 @@ const Signup_site = () => {
                             {...register('regNo')} 
                             placeholder='주민등록번호' 
                             className="signup-input-field"
+                            maxLength={14} //13자리+하이픈 제한 지정
+                            onChange={(evt) => {
+                                const formattedValue = formatInput('regNo', evt.target.value)  //1. 입력된 값을 포맷팅 함수에 통과시킴
+                                setValue('regNo', formattedValue)  //2. 포맷팅된 값을 react-hook-form 상태와 input value에 덮어씌움
+                            }}
                         />
                         {errors.regNo && <p className="signup-error-msg">{errors.regNo.message}</p>}
                     </div>

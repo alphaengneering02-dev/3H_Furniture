@@ -64,22 +64,42 @@ payment-checklogo {
     margin-top: 12px;
 }
 
-/* 홈으로 가기 버튼 (까사미아 감성의 딥 차콜 배경 + 흰색 글씨) */
+.btn-group {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+
 .payment-btn {
-    width: 180px;
-    height: 48px;
-    background-color: #2b2b2b; /* 고급스러운 딥 차콜 */
-    color: #ffffff;            /* ✨ 글자 색상 흰색 */
-    font-size: 15px;
+    width: 160px;
+    height: 46px;
+    /* inline-flex를 유지하되, 내부 텍스트를 정가운데로 정렬하는 속성 추가 */
+    display: inline-flex;
+    align-items: center;      /* 세로 중앙 정렬 */
+    justify-content: center;   /* 가로 중앙 정렬 */
+    
+    background-color: #B8783E;
+    color: #fff;
+    font-size: 14px;
     font-weight: 500;
     border: none;
-    border-radius: 2px;
     cursor: pointer;
+    text-decoration: none;    /* 혹시 a 태그일 경우 밑줄 제거 */
     transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+.payment-btn.secondary {
+    background-color: #fff;
+    color: #2b2b2b;
+    border: 1px solid #2b2b2b;
 }
 
 /* 버튼 호버 효과 */
 .payment-btn:hover {
-    background-color: #000000;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    background-color: #a56b36;
+    transform: translateY(-1px);
 }
