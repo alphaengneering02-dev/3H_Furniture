@@ -928,13 +928,13 @@
 ========================================== */
 
 @media (max-width: 1200px) {
-  .item-grid-container {
+  .main-item-grid-container {
     grid-template-columns: repeat(4, 1fr);
   }
 }
 
 @media (max-width: 900px) {
-  .item-grid-container {
+  .main-item-grid-container {
     grid-template-columns: repeat(3, 1fr);
   }
 
@@ -958,12 +958,12 @@
     padding: 0 15px;
   }
 
-  .item-grid-container {
+  .main-item-grid-container {
     grid-template-columns: repeat(2, 1fr);
     gap: 30px 12px;
   }
 
-  .section-title-area .section-title {
+  .main-section-title-area .main-section-title {
     font-size: 20px;
   }
 

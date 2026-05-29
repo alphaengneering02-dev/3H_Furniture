@@ -194,7 +194,28 @@ const ItemAdminPage = () => {
             return;
         };
          setSelectedItemIds([...selectedItemIds,numberItemId]);   
+    };
+
+    //현재 페이지 상품 전체 선택/선택헤제도...우와...신기해.
+    const handleSelectAllPagedItems = ()=>{
+        //pagedItems를 사용하는이유는: 현재 페이지에 보이는 상품만 전체 선택되게 하려는 의도로 한거니까 건들면안됌.
+        const pagedItemIds = pagedItems.map((item)=>Number(item.itemId));
+
+        const isAllSelected = pagedItemIds.every((itemId)=>selectedItemIds.includes(itemId));
+        
+        if(isAllSelected){
+            setSelectedItemIds(
+                selectedItemIds.filter((itemId)=>!pagedItemIds.includes(itemId))
+            );
+            return;
+        }
+        
+        const mergedIds = Array.from(
+            new Set([...selectedItemIds,...pagedItemIds])
+        );
+        setSelectedItemIds(mergedIds);
     }
+
 
     // 상품 삭제_ 관리자
     const handleAdminDeleteItem = async (itemId) => {
@@ -253,6 +274,9 @@ const ItemAdminPage = () => {
             // 삭제 후 상품 목록 다시 불러오기
             getItems();
 
+            //삭제된 상품은 선택목록에서 제거(단일)
+            setSelectedItemIds((prevIds)=>prevIds.filter((id)=>id !==Number(itemId)));
+
             // 삭제한 상품이 현재 리뷰 관리에서 선택된 상품이면 리뷰에서도 안보이게
             if (Number(selectedItemId) === Number(itemId)) {
                 setSelectedItemId("");
@@ -285,6 +309,106 @@ const ItemAdminPage = () => {
             );
         }
     };
+
+
+    //선택한 상품 여러개 삭제하는거 하자이제.
+const handleAdminDeleteSelectedItems = async () => {
+    if (selectedItemIds.length === 0) {
+        toast.warning("삭제할 상품을 선택해주세요.");
+        return;
+    }
+
+    const confirmDelete = window.confirm(
+        `선택한 상품 ${selectedItemIds.length}개를 삭제하시겠습니까?`
+    );
+
+    if (!confirmDelete) {
+        return;
+    }
+
+    //정리해줘야지
+    const deletedItemIds = [];
+    const notDeletableItemIds = [];
+    const failedItemIds = [];
+
+    try {
+        for (const selectedItemId of selectedItemIds) {
+            try {
+                //상품이 주문내역에 있던 상품이면 삭제 안되니까 먼저 확인.
+                const deletableResponse = await axios.get(
+                    `http://localhost:8080/api/admin/item/${selectedItemId}/deletable`,
+                    {
+                        withCredentials: true,
+                    }
+                );
+
+                if (!deletableResponse.data) {
+                    notDeletableItemIds.push(selectedItemId);
+                    continue;
+                }
+
+                //상품 삭제api하나만 호출해야
+                //이미지 db삭제하고, 상품db삭제하고,물리적파일 삭제는 내가하고...ㅜ
+                await axios.delete(
+                    `http://localhost:8080/api/admin/item/${selectedItemId}`,
+                    {
+                        withCredentials: true,
+                    }
+                );
+
+                deletedItemIds.push(selectedItemId);
+            } catch (error) {
+                console.error(`${selectedItemId}번 상품 삭제 실패..`, error);
+
+                if (error.response?.status === 401 || error.response?.status === 403) {
+                    toast.error("관리자 로그인 세션이 만료되었습니다. 다시 로그인해주세요.");
+                    sessionStorage.removeItem("user");
+
+                    setTimeout(() => {
+                        navigate("/login");
+                    }, 1000);
+
+                    return;
+                }
+
+                failedItemIds.push(selectedItemId);
+            }
+        }
+
+        if (deletedItemIds.length > 0) {
+            toast.success(`${deletedItemIds.length}개 상품이 삭제되었습니다.`);
+        }
+
+        if (notDeletableItemIds.length > 0) {
+            toast.warning(
+                `주문내역이 있는 상품 ${notDeletableItemIds.length}개는 삭제되지 않았습니다.`
+            );
+        }
+
+        if (failedItemIds.length > 0) {
+            toast.error(`${failedItemIds.length}개 상품 삭제에 실패했습니다...`);
+        }
+
+        //삭제되면 상품목록을 다시 불러와서 가져와야지
+        getItems();
+
+
+        //삭제된 상품은 선택목록에서 제거되야되고(여러개 삭제)
+        setSelectedItemIds((prevIds) =>
+            prevIds.filter((itemId) => !deletedItemIds.includes(itemId))
+        );
+
+        //삭제한 상품은 리뷰 관리에서도 안보이게
+        if (deletedItemIds.includes(Number(selectedItemId))) {
+            setSelectedItemId("");
+            setReviews([]);
+            setReviewSummary(null);
+        }
+    } catch (error) {
+        console.error("선택한 상품 삭제 실패", error);
+        toast.error("선택 상품 삭제 실패");
+    }
+};
 
     // 리뷰 관리_관리자
     const handleAdminSelectReviewItem = async (itemId) => {
@@ -539,6 +663,11 @@ const ItemAdminPage = () => {
                 >
                     리뷰 관리
                 </button>
+                {/*선택한 상품 여러개 삭제 */}
+                <button type="button" className="itemAdmin-button itemAdmin-dangerButton"
+                onClick={handleAdminDeleteSelectedItems} disabled={selectedItemIds.length===0}>
+                    선택 삭제{selectedItemIds.length>0?`(${selectedItemIds.length})`:""}
+                </button>
             </div>
 
             {/* 상품 관리 화면 */}
@@ -625,7 +754,21 @@ const ItemAdminPage = () => {
                         <div className="itemAdmin-tableWrap">
                             <table className="itemAdmin-table">
                                 <thead>
-                                    <tr>
+                                   <tr>
+                                        {/* 상품 선택 */}
+                                        <th className="itemAdmin-checkColumn">
+                                            <input
+                                                type="checkbox"
+                                                checked={
+                                                    pagedItems.length > 0 &&
+                                                    pagedItems.every((item) =>
+                                                        selectedItemIds.includes(Number(item.itemId))
+                                                    )
+                                                }
+                                                onChange={handleSelectAllPagedItems}
+                                            />
+                                        </th>
+
                                         {/* 화면 순번 */}
                                         <th>번호</th>
                                         <th>상품ID</th>
@@ -642,6 +785,16 @@ const ItemAdminPage = () => {
                                 <tbody>
                                     {pagedItems.map((item, index) => (
                                         <tr key={item.itemId}>
+
+                                            {/* 상품선택 */}
+                                            <td className="itemAdmin-checkColumn">
+                                                 <input
+                                                    type="checkbox"
+                                                    checked={isSelectedItem(item.itemId)}
+                                                    onChange={() => handleSelectAdminItem(item.itemId)}
+                                                />
+                                            </td>
+
                                             {/* 필터링된 목록 기준 순번 */}
                                             <td>
                                                 {(currentPage - 1) * ITEMS_PER_PAGE +
