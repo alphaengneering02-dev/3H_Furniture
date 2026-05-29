@@ -7,6 +7,7 @@ import Header from '../main/Header';
 
 //Signup 전용 CSS 임포트
 import '../../css/memberPageCss/signup.css';
+import Footer from '../main/Footer';
 
 // 회원가입 선택 페이지
 const Signup = () => {
@@ -74,7 +75,12 @@ const Signup = () => {
                     이미 쇼핑몰 회원이세요? 
                     <Link to="/login" className="signup-select-footer-link">로그인</Link>
                 </p>
+            </div>
 
+
+            {/* Footer 영역 */}
+            <div className="main-mypage-footer">
+                <Footer/>
             </div>
         </div>
     );

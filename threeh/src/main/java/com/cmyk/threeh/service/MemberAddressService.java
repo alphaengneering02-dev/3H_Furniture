@@ -103,7 +103,10 @@ public class MemberAddressService {
         return dto;
     }
 
-    // 3일 환불/삭제 로직
+     // 3일 환불/삭제 로직
+
+    // 🌟 [20개 주문 누락 버그 완전 타파 핵심 수정]
+    // 3일 환불/삭제 로직 보완 마감
     @Transactional
     public void processRefundOrDelete(Long orderId) {
         Orders order = orderRepository.findById(orderId)
@@ -111,12 +114,33 @@ public class MemberAddressService {
 
         LocalDateTime orderDate = order.getOrderDate();
         
+        /* 
+         * 💥 [기존 버그 수정]: orderRepository.delete(order) 구문을 과감히 제거합니다!
+         * 쇼핑몰 장부에서 데이터를 아예 삭제해 버리면 과거 결제 내역 20개가 통째로 유실됩니다.
+         * 3일이 지났든 안 지났든 장부 데이터는 안전하게 보존하고, 주문 상태만 CANCEL(취소)로 
+         * 변경해 주어야 마이페이지와 리펀드 목록에서 20개가 온전히 다 불러와집니다.
+         */
         if (LocalDateTime.now().isAfter(orderDate.plusDays(3))) {
-            orderRepository.delete(order); 
+            order.setOrderState(OrderState.CANCEL); // 3일이 지나도 삭제하지 않고 취소 상태로 안전하게 보관
         } else {
             order.setOrderState(OrderState.CANCEL); 
         }
     }
+
+
+    // @Transactional
+    // public void processRefundOrDelete(Long orderId) {
+    //     Orders order = orderRepository.findById(orderId)
+    //             .orElseThrow(() -> new IllegalArgumentException("주문 내역이 없습니다."));
+
+    //     LocalDateTime orderDate = order.getOrderDate();
+        
+    //     if (LocalDateTime.now().isAfter(orderDate.plusDays(3))) {
+    //         orderRepository.delete(order); 
+    //     } else {
+    //         order.setOrderState(OrderState.CANCEL); 
+    //     }
+    // }
 
 //     //교환 및 반품
 //     @Transactional

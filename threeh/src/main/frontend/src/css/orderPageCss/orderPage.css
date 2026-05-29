@@ -645,7 +645,7 @@ order-input:focus {
 /* 4. 이름/전화번호 카드 영역 디자인을 위쪽 주소창 박스와 똑같은 패밀리룩 카드로 강제 개조 */
 .order-user-form,
 .order-left-section > div:last-child {
-  background-color: var(--content-bg) !important;
+  background-color: var(--content-bg) !important; 
   border: 1px solid var(--soft-border) !important;
   border-radius: 16px !important; /* 둥근 모서리 일치 */
   box-shadow: 0 8px 24px rgba(74, 51, 36, 0.04) !important;
@@ -749,3 +749,156 @@ order-input:focus {
   height: 44px !important;
   margin-left: 0 !important;
 }
+
+/* ========================================================
+   🔥 [초강력 저격] HTML 태그 구조 강제 제어 및 버그 완전 격파
+   ======================================================== */
+
+/* 1. 주소찾기 버튼 - 주변 요소를 전부 무시하고 우측 끝 강제 고정 */
+.order-section-header button,
+.order-section-header .order-title-link-btn,
+[class*="order-title-link-btn"],
+[class*="order-section-header"] button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: auto !important;
+  min-width: 80px !important;
+  height: 32px !important;
+  padding: 0 12px !important;
+  background-color: var(--cream) !important;
+  color: var(--deep-caramel) !important;
+  border: 1px solid var(--soft-border) !important;
+  border-radius: 6px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  white-space: nowrap !important;
+  box-sizing: border-box !important;
+  float: right !important; /* 혹시 모를 플렉스 깨짐 방지용 방어막 */
+}
+
+/* 2. 결제하기 버튼 부모 박스 - 우측 360px 가이드라인에 강제 락(Lock) */
+.order-right-section,
+.order-right-sidebar-container,
+.order-summary-block {
+  box-sizing: border-box !important;
+}
+
+.order-submit-box,
+[class*="order-submit-box"] {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  padding: 0 !important;
+  margin: 20px 0 0 0 !important;
+  box-sizing: border-box !important;
+  clear: both !important;
+}
+
+/* 3. 결제하기 버튼 - 내부 폰트 정중앙 정렬 완전 교정 */
+.order-payment-btn,
+button.order-payment-btn,
+.order-submit-box button,
+[class*="order-payment-btn"] {
+  /* [레이아웃 강제 고정] */
+  display: flex !important;          /* line-height 대신 플렉스로 강제 정렬 */
+  align-items: center !important;     /* 💡 수직(상하) 정중앙 정렬 */
+  justify-content: center !important; /* 💡 수평(좌우) 정중앙 정렬 */
+  width: 100% !important;       
+  min-width: 100% !important;
+  max-width: 100% !important;
+  height: 54px !important;      
+  margin: 0 !important;
+  padding: 0 !important;        
+  box-sizing: border-box !important; 
+  
+  /* [디자인 및 배경] */
+  background-color: var(--caramel) !important; 
+  border: none !important;
+  border-radius: 8px !important; 
+  cursor: pointer !important;
+  
+  /* [폰트 정밀 세팅] */
+  color: #ffffff !important;
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  font-family: 'Noto Sans KR', sans-serif !important;
+  white-space: nowrap !important;
+  line-height: 1 !important;         /* 💡 기존 line-height 충돌 버그 원천 제거 */
+  text-decoration: none !important;
+}
+
+
+/* 호버 및 액션 효과 */
+.order-payment-btn:hover,
+.order-submit-box button:hover {
+  background-color: var(--deep-caramel) !important;
+}
+.order-payment-btn:active,
+.order-submit-box button:active {
+  transform: scale(0.98) !important;
+}
+
+/* ========================================================
+   🎯 [구조 교정] AdrdressInput 컴포넌트 내부 버튼 완전 제압
+   ======================================================== */
+
+/* 1. 배송지 정보 바디 내부의 모든 버튼 및 주소찾기 버튼 클래스 저격 */
+.order-section-body button,
+.order-section-body .order-title-link-btn,
+.order-section-body [class*="order-title-link-btn"],
+[class*="AdrdressInput"] button,
+button[class*="address"] {
+  /* [레이아웃 및 정중앙 정렬 강제] */
+  display: inline-flex !important;
+  align-items: center !important;     /* 💡 글자 수직 정중앙 고정 */
+  justify-content: center !important; /* 💡 글자 수평 정중앙 고정 */
+  width: 90px !important;            /* 크기 완전 고정 */
+  min-width: 90px !important;
+  max-width: 90px !important;
+  height: 38px !important;            /* 인풋창 높이와 어우러지는 슬림 스펙 */
+  padding: 0 !important;              /* 내부 패딩을 0으로 찢어서 글자 밀림 차단 */
+  margin: 0 0 0 10px !important;      /* 인풋창 우측에 배치될 때를 대비한 왼쪽 여백 */
+  box-sizing: border-box !important;
+  vertical-align: middle !important;
+
+  /* [디자인 및 배경 웜톤 매칭] */
+  background-color: var(--cream) !important;
+  color: var(--deep-caramel) !important;
+  border: 1px solid var(--soft-border) !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
+
+  /* [폰트 세부 정밀 제어] */
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  font-family: 'Noto Sans KR', sans-serif !important;
+  white-space: nowrap !important;     /* 💡 글자가 아래로 깨지는 현상 절대 방지 */
+  line-height: 1 !important;          /* 내부 line-height 충돌 삭제 */
+}
+
+/* 2. 버튼 내부의 MUI 전용 라벨이나 텍스트 껍데기까지 통째로 정렬 */
+.order-section-body button *,
+.order-section-body .order-title-link-btn *,
+[class*="AdrdressInput"] button * {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  color: inherit !important;
+  font-size: inherit !important;
+  font-weight: inherit !important;
+  line-height: 1 !important;
+}
+
+/* 마우스 호버 효과 */
+.order-section-body button:hover,
+.order-section-body .order-title-link-btn:hover {
+  background-color: var(--soft-border) !important;
+  color: var(--black-brown) !important;
+}
+
+

@@ -41,11 +41,14 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 80vh;
-    padding: 40px 20px;
+    width: 450px;
+    height: 100%;
+    padding: 20px 30px;
     background: var(--login-bg-white);
-    width: 400px;
-    margin: 0 auto;
+    margin: 70px auto;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 8px 17px 3px #dfcfc4;
 }
 
 /* 대제목 (로그인) */
@@ -88,7 +91,7 @@
    ========================================== */
 .login-form {
     width: 100%;
-    max-width: 400px;
+    max-width: 450px;
 }
 
 .login-input-group {
@@ -151,7 +154,7 @@
     font-weight: 500;
     color: var(--login-bg-white);
     background-color: var(--login-dark-beige);
-    border: none;
+    border: none; border-radius: 6px;
     cursor: pointer;
     margin-bottom: 65px;
     transition: background-color 0.3s;
@@ -169,7 +172,7 @@
    ========================================== */
 .login-divider-zone {
     width: 100%;
-    max-width: 400px;
+    max-width: 450px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -197,7 +200,7 @@
    ========================================== */
 .login-social-wrapper {
     width: 100%;
-    max-width: 400px;
+    max-width: 450px;
     display: flex;
     justify-content: center;
     gap: 24px;
@@ -229,8 +232,7 @@
    ========================================== */
 .login-signup-notice-box {
     width: 100%;
-    max-width: 400px;
-    padding: 25px 20px;
+    max-width: 450px;
     text-align: center;
 }
 
@@ -249,7 +251,6 @@
     background: none;
     border: none;
     cursor: pointer;
-    margin-bottom: 10px;
 }
 
 .login-signup-link-btn .right-arrow {

@@ -7,6 +7,7 @@ import { useToast } from '../../hook/useToast';
 
 //FindId 전용 CSS 임포트
 import '../../css/memberPageCss/findId.css';
+import Footer from '../main/Footer';
 
 const FindId = () => {
 
@@ -100,7 +101,7 @@ const FindId = () => {
                                 <input 
                                     type='text' 
                                     id='name' name='name' value={name}
-                                    placeholder='이름을 입력해주세요'
+                                    placeholder='📝 이름을 입력해주세요'
                                     onChange={changeInput}
                                     className="find-id-input-field"
                                 />
@@ -112,7 +113,7 @@ const FindId = () => {
                                 <input 
                                     type='text'
                                     id='phoneORemail' name='phoneORemail' value={phoneORemail}
-                                    placeholder='전화번호 또는 이메일을 입력해주세요' 
+                                    placeholder='📞 전화번호 또는 이메일을 입력해주세요' 
                                     onChange={changeInput}
                                     className="find-id-input-field"
                                 />
@@ -129,6 +130,12 @@ const FindId = () => {
                         <FindId_result resultId={resultId}/>
                     )
                 }
+            </div>
+
+
+            {/* Footer 영역 */}
+            <div className="main-mypage-footer">
+                <Footer/>
             </div>
         </div>
     );

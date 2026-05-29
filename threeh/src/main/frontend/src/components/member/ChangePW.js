@@ -7,6 +7,7 @@ import { useToast } from '../../hook/useToast';
 
 //ChangePW 전용 CSS 임포트
 import '../../css/memberPageCss/changePW.css';
+import Footer from '../main/Footer';
 
 const ChangePw = () => {
 
@@ -102,7 +103,7 @@ const ChangePw = () => {
                                 <p>아이디</p>
                                 <input 
                                     type='text' 
-                                    value={id} id='id' name='id' placeholder='아이디를 입력해주세요' 
+                                    value={id} id='id' name='id' placeholder='🆔 아이디를 입력해주세요' 
                                     className="change-pw-input-field"
                                     onChange={changeInput}
                                 />
@@ -114,7 +115,7 @@ const ChangePw = () => {
                                 <input 
                                     type='password' 
                                     value={oldPassword} id='oldPassword' name='oldPassword' 
-                                    placeholder='현재 비밀번호를 입력해주세요' 
+                                    placeholder='🔒 현재 비밀번호를 입력해주세요' 
                                     className="change-pw-input-field"
                                     onChange={changeInput}
                                 />
@@ -126,7 +127,7 @@ const ChangePw = () => {
                                 <input 
                                     type='password' 
                                     value={newPassword} id='newPassword' name='newPassword' 
-                                    placeholder='새롭게 변경할 비밀번호를 입력해주세요' 
+                                    placeholder='🔒 새롭게 변경할 비밀번호를 입력해주세요' 
                                     className="change-pw-input-field"
                                     onChange={changeInput}
                                 />
@@ -143,6 +144,12 @@ const ChangePw = () => {
                         <ChangePw_result resultPw={resultPw}/>
                     )
                 }
+            </div>
+
+
+            {/* Footer 영역 */}
+            <div className="main-mypage-footer">
+                <Footer/>
             </div>
         </div>
     );

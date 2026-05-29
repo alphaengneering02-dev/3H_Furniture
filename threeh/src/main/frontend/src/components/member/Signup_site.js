@@ -6,6 +6,7 @@ import Header from '../main/Header';
 
 //Signup_site 전용 CSS 임포트
 import '../../css/memberPageCss/signup_site.css';
+import Footer from '../main/Footer';
 
 const Signup_site = () => {
 
@@ -151,7 +152,7 @@ const Signup_site = () => {
                         <input 
                             type='text' 
                             {...register('id')} 
-                            placeholder='아이디' 
+                            placeholder='🆔 아이디' 
                             className="signup-input-field"
                         />
                         {errors.id && <p className="signup-error-msg">{errors.id.message}</p>}
@@ -162,7 +163,7 @@ const Signup_site = () => {
                         <input 
                             type='password' 
                             {...register('password1')} 
-                            placeholder='비밀번호' 
+                            placeholder='🔒 비밀번호' 
                             className="signup-input-field"
                         />
                         {errors.password1 && <p className="signup-error-msg">{errors.password1.message}</p>}
@@ -173,7 +174,7 @@ const Signup_site = () => {
                         <input 
                             type='password' 
                             {...register('password2')} 
-                            placeholder='비밀번호 재확인' 
+                            placeholder='🔒 비밀번호 재확인' 
                             className="signup-input-field"
                         />
                         {errors.password2 && <p className="signup-error-msg">{errors.password2.message}</p>}
@@ -185,7 +186,7 @@ const Signup_site = () => {
                         <input 
                             type='text' 
                             {...register('name')} 
-                            placeholder='이름 또는 회사명' 
+                            placeholder='📝 이름 또는 회사명' 
                             className="signup-input-field"
                         />
                         {errors.name && <p className="signup-error-msg">{errors.name.message}</p>}
@@ -196,7 +197,7 @@ const Signup_site = () => {
                         <input 
                             type='tel' 
                             {...register('phone')} 
-                            placeholder='전화번호 또는 사업장 전화번호' 
+                            placeholder='📞 전화번호 또는 사업장 전화번호' 
                             className="signup-input-field"
                         />
                         {errors.phone && <p className="signup-error-msg">{errors.phone.message}</p>}
@@ -212,7 +213,7 @@ const Signup_site = () => {
                                     id='emailId' 
                                     name='emailId' 
                                     onChange={changeEmailId} 
-                                    placeholder='이메일' 
+                                    placeholder='📧 이메일' 
                                     className="signup-email-field"
                                 />
                             </div>
@@ -246,7 +247,7 @@ const Signup_site = () => {
                         <input 
                             type='text' 
                             {...register('regNo')} 
-                            placeholder='주민등록번호' 
+                            placeholder='👤 주민등록번호' 
                             className="signup-input-field"
                             maxLength={14} //13자리+하이픈 제한 지정
                             onChange={(evt) => {
@@ -275,6 +276,11 @@ const Signup_site = () => {
                 )}
             </div>
 
+
+            {/* Footer 영역 */}
+            <div className="main-mypage-footer">
+                <Footer/>
+            </div>
         </div>
 
     );

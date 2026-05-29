@@ -39,12 +39,13 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 85vh;
-    padding: 40px 20px;
+    padding: 20px 30px;
     background: var(--signup-bg-white);
-    font-family: var(--signup-font-sans);
-    width: 400px;
-    margin: 0 auto;
+    width: 400px; height: 100%;
+    margin: 70px auto;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 8px 17px 3px #dfcfc4;
 }
 
 
@@ -69,7 +70,7 @@
     align-items: center;
 }
 
-/* 시안의 회색 박스 형태를 세련된 까사미아 스타일로 가공 */
+/* 사이트 회원가입 버튼 */
 .signup-btn-site {
     width: 100%;
     height: 55px;
@@ -77,7 +78,7 @@
     font-weight: 500;
     color: var(--signup-bg-white);
     background-color: var(--signup-dark-beige);
-    border: none;
+    border: none; border-radius: 6px;
     cursor: pointer;
     transition: background-color 0.3s, color 0.3s;
     letter-spacing: -0.3px;

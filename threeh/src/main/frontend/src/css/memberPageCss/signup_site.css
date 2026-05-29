@@ -39,10 +39,15 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 100vh;
-    padding: 60px 20px;
+    width: 450px;
+    height: 100%;
+    padding: 20px 30px;
     background: var(--signup-site-bg-white);
     font-family: var(--signup-site-font-sans);
+    margin: 70px auto;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 8px 17px 3px #dfcfc4;
 }
 
 
@@ -176,7 +181,7 @@
     font-size: 15px;
     font-weight: 500;
     cursor: pointer;
-    border: 1px solid var(--signup-site-accent-gold);
+    border: 1px solid var(--signup-site-accent-gold); border-radius: 6px;
     transition: all 0.3s;
 }
 
