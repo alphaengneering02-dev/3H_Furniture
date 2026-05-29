@@ -33,17 +33,16 @@ const ItemAdminPage = () => {
     // 예시 형태: { 리뷰아이디가 267: 리뷰개수 3 }
     const [reviewCounts, setReviewCounts] = useState({});
 
-    // 상품 카테고리 필터 상태
-    // 전체, 주방, 거실, 욕실, 침실
-    const [categoryFilter, setCategoryFilter] = useState("");
+    //조회버튼 눌러야 필터링 적용(state값을 두개로 나눠서)
+    //select에서 선택중인 값
+    const [searchCategoryFilter, setSearchCategoryFilter] = useState("");
+    const [searchSellStatusFilter, setSearchSellStatusFilter] = useState("");
+    const [searchStockSort, setSearchStockSort] = useState("");
 
-    // 판매 상태 필터 상태
-    // 전체, SELL, READY, NON_SELL
+    //실제 조회 버튼을 눌렀을 때 적용되는 값.
+    const [categoryFilter, setCategoryFilter]=useState("");
     const [sellStatusFilter, setSellStatusFilter] = useState("");
-
-    // 재고 정렬
-    // 기본순, 재고 적은순, 재고 많은순
-    const [stockSort, setStockSort] = useState("");
+    const [stockSort,setStockSort] = useState("");
 
     //현재 페이지
     const [currentPage, setCurrentPage] = useState(1);
@@ -312,103 +311,103 @@ const ItemAdminPage = () => {
 
 
     //선택한 상품 여러개 삭제하는거 하자이제.
-const handleAdminDeleteSelectedItems = async () => {
-    if (selectedItemIds.length === 0) {
-        toast.warning("삭제할 상품을 선택해주세요.");
-        return;
-    }
-
-    const confirmDelete = window.confirm(
-        `선택한 상품 ${selectedItemIds.length}개를 삭제하시겠습니까?`
-    );
-
-    if (!confirmDelete) {
-        return;
-    }
-
-    //정리해줘야지
-    const deletedItemIds = [];
-    const notDeletableItemIds = [];
-    const failedItemIds = [];
-
-    try {
-        for (const selectedItemId of selectedItemIds) {
-            try {
-                //상품이 주문내역에 있던 상품이면 삭제 안되니까 먼저 확인.
-                const deletableResponse = await axios.get(
-                    `http://localhost:8080/api/admin/item/${selectedItemId}/deletable`,
-                    {
-                        withCredentials: true,
-                    }
-                );
-
-                if (!deletableResponse.data) {
-                    notDeletableItemIds.push(selectedItemId);
-                    continue;
-                }
-
-                //상품 삭제api하나만 호출해야
-                //이미지 db삭제하고, 상품db삭제하고,물리적파일 삭제는 내가하고...ㅜ
-                await axios.delete(
-                    `http://localhost:8080/api/admin/item/${selectedItemId}`,
-                    {
-                        withCredentials: true,
-                    }
-                );
-
-                deletedItemIds.push(selectedItemId);
-            } catch (error) {
-                console.error(`${selectedItemId}번 상품 삭제 실패..`, error);
-
-                if (error.response?.status === 401 || error.response?.status === 403) {
-                    toast.error("관리자 로그인 세션이 만료되었습니다. 다시 로그인해주세요.");
-                    sessionStorage.removeItem("user");
-
-                    setTimeout(() => {
-                        navigate("/login");
-                    }, 1000);
-
-                    return;
-                }
-
-                failedItemIds.push(selectedItemId);
+        const handleAdminDeleteSelectedItems = async () => {
+            if (selectedItemIds.length === 0) {
+                toast.warning("삭제할 상품을 선택해주세요.");
+                return;
             }
-        }
 
-        if (deletedItemIds.length > 0) {
-            toast.success(`${deletedItemIds.length}개 상품이 삭제되었습니다.`);
-        }
-
-        if (notDeletableItemIds.length > 0) {
-            toast.warning(
-                `주문내역이 있는 상품 ${notDeletableItemIds.length}개는 삭제되지 않았습니다.`
+            const confirmDelete = window.confirm(
+                `선택한 상품 ${selectedItemIds.length}개를 삭제하시겠습니까?`
             );
-        }
 
-        if (failedItemIds.length > 0) {
-            toast.error(`${failedItemIds.length}개 상품 삭제에 실패했습니다...`);
-        }
+            if (!confirmDelete) {
+                return;
+            }
 
-        //삭제되면 상품목록을 다시 불러와서 가져와야지
-        getItems();
+            //정리해줘야지
+            const deletedItemIds = [];
+            const notDeletableItemIds = [];
+            const failedItemIds = [];
+
+            try {
+                for (const selectedItemId of selectedItemIds) {
+                    try {
+                        //상품이 주문내역에 있던 상품이면 삭제 안되니까 먼저 확인.
+                        const deletableResponse = await axios.get(
+                            `http://localhost:8080/api/admin/item/${selectedItemId}/deletable`,
+                            {
+                                withCredentials: true,
+                            }
+                        );
+
+                        if (!deletableResponse.data) {
+                            notDeletableItemIds.push(selectedItemId);
+                            continue;
+                        }
+
+                        //상품 삭제api하나만 호출해야
+                        //이미지 db삭제하고, 상품db삭제하고,물리적파일 삭제는 내가하고...ㅜ
+                        await axios.delete(
+                            `http://localhost:8080/api/admin/item/${selectedItemId}`,
+                            {
+                                withCredentials: true,
+                            }
+                        );
+
+                        deletedItemIds.push(selectedItemId);
+                    } catch (error) {
+                        console.error(`${selectedItemId}번 상품 삭제 실패..`, error);
+
+                        if (error.response?.status === 401 || error.response?.status === 403) {
+                            toast.error("관리자 로그인 세션이 만료되었습니다. 다시 로그인해주세요.");
+                            sessionStorage.removeItem("user");
+
+                            setTimeout(() => {
+                                navigate("/login");
+                            }, 1000);
+
+                            return;
+                        }
+
+                        failedItemIds.push(selectedItemId);
+                    }
+                }
+
+                if (deletedItemIds.length > 0) {
+                    toast.success(`${deletedItemIds.length}개 상품이 삭제되었습니다.`);
+                }
+
+                if (notDeletableItemIds.length > 0) {
+                    toast.warning(
+                        `주문내역이 있는 상품 ${notDeletableItemIds.length}개는 삭제되지 않았습니다.`
+                    );
+                }
+
+                if (failedItemIds.length > 0) {
+                    toast.error(`${failedItemIds.length}개 상품 삭제에 실패했습니다...`);
+                }
+
+                //삭제되면 상품목록을 다시 불러와서 가져와야지
+                getItems();
 
 
-        //삭제된 상품은 선택목록에서 제거되야되고(여러개 삭제)
-        setSelectedItemIds((prevIds) =>
-            prevIds.filter((itemId) => !deletedItemIds.includes(itemId))
-        );
+                //삭제된 상품은 선택목록에서 제거되야되고(여러개 삭제)
+                setSelectedItemIds((prevIds) =>
+                    prevIds.filter((itemId) => !deletedItemIds.includes(itemId))
+                );
 
-        //삭제한 상품은 리뷰 관리에서도 안보이게
-        if (deletedItemIds.includes(Number(selectedItemId))) {
-            setSelectedItemId("");
-            setReviews([]);
-            setReviewSummary(null);
-        }
-    } catch (error) {
-        console.error("선택한 상품 삭제 실패", error);
-        toast.error("선택 상품 삭제 실패");
-    }
-};
+                //삭제한 상품은 리뷰 관리에서도 안보이게
+                if (deletedItemIds.includes(Number(selectedItemId))) {
+                    setSelectedItemId("");
+                    setReviews([]);
+                    setReviewSummary(null);
+                }
+            } catch (error) {
+                console.error("선택한 상품 삭제 실패", error);
+                toast.error("선택 상품 삭제 실패");
+            }
+        };
 
     // 리뷰 관리_관리자
     const handleAdminSelectReviewItem = async (itemId) => {
@@ -538,6 +537,14 @@ const handleAdminDeleteSelectedItems = async () => {
         return "★".repeat(safeScore) + "☆".repeat(5 - safeScore);
     };
 
+    //필터 실시간 말고 조회 버튼 눌러야 가능하게 해야하니까.....^___^
+    const handleSearchFilter = () => {
+        setCategoryFilter(searchCategoryFilter);
+        setSellStatusFilter(searchSellStatusFilter);
+        setSearchStockSort(setSearchStockSort);
+        setCurrentPage(1);
+    }
+
     // 상품 목록 필터링 / 정렬 처리
     // 카테고리 필터, 판매상태 필터, 재고 정렬을 화면 출력 전에 한 번에 적용
     const filteredItems = useMemo(() => {
@@ -558,21 +565,21 @@ const handleAdminDeleteSelectedItems = async () => {
         }
 
         // 재고 적은순 정렬
-        if (stockSort === "stockAsc") {
+        if (setSearchStockSort === "stockAsc") {
             result.sort(
                 (a, b) => Number(a.itemStock || 0) - Number(b.itemStock || 0)
             );
         }
 
         // 재고 많은순 정렬
-        if (stockSort === "stockDesc") {
+        if (setSearchStockSort === "stockDesc") {
             result.sort(
                 (a, b) => Number(b.itemStock || 0) - Number(a.itemStock || 0)
             );
         }
 
         return result;
-    }, [items, categoryFilter, sellStatusFilter, stockSort]);
+    }, [items, categoryFilter, sellStatusFilter, setSearchStockSort]);
 
     //필터가 바뀌면 첫 페이지로 이동
     useEffect(() => {
@@ -691,8 +698,8 @@ const handleAdminDeleteSelectedItems = async () => {
                             <label className="itemAdmin-label">카테고리</label>
                             <select
                                 className="itemAdmin-select"
-                                value={categoryFilter}
-                                onChange={(e) => setCategoryFilter(e.target.value)}
+                                value={searchCategoryFilter}
+                                onChange={(e) => setSearchCategoryFilter(e.target.value)}
                             >
                                 <option value="">전체</option>
                                 <option value="주방">주방</option>
@@ -707,8 +714,8 @@ const handleAdminDeleteSelectedItems = async () => {
                             <label className="itemAdmin-label">판매상태</label>
                             <select
                                 className="itemAdmin-select"
-                                value={sellStatusFilter}
-                                onChange={(e) => setSellStatusFilter(e.target.value)}
+                                value={searchSellStatusFilter}
+                                onChange={(e) => setSearchSellStatusFilter(e.target.value)}
                             >
                                 <option value="">전체</option>
                                 <option value="SELL">SELL</option>
@@ -723,8 +730,8 @@ const handleAdminDeleteSelectedItems = async () => {
                             <label className="itemAdmin-label">재고 정렬</label>
                             <select
                                 className="itemAdmin-select"
-                                value={stockSort}
-                                onChange={(e) => setStockSort(e.target.value)}
+                                value={searchStockSort}
+                                onChange={(e) => setSearchStockSort(e.target.value)}
                             >
                                 <option value="">기본순</option>
                                 <option value="stockAsc">재고 적은순</option>
@@ -732,14 +739,24 @@ const handleAdminDeleteSelectedItems = async () => {
                             </select>
                         </div>
 
-                        {/* 필터 초기화 버튼 */}
+                        {/* 필터 조회,초기화 버튼 */}
+
+                        <button type="button" className="itemAdmin-button" onClick={handleSearchFilter}>  
+                        필터조회하기
+                        </button>
                         <button
                             type="button"
                             className="itemAdmin-button itemAdmin-subButton"
                             onClick={() => {
+                                setSearchCategoryFilter("");
+                                setSearchSellStatusFilter("");
+                                setSearchStockSort("");
+
                                 setCategoryFilter("");
                                 setSellStatusFilter("");
                                 setStockSort("");
+
+                                setCurrentPage(1);
                             }}
                         >
                             필터 초기화
