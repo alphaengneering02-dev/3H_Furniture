@@ -428,7 +428,7 @@ button:disabled {
    [추가 보정] 맨 하단 '전체보기 ▼' 버튼 규격 원상 복구 및 격리
    ======================================================== */
 .mypage-body-wrapper button[id*="all"], 
-button:last-of-type,
+.mypage-body-wrapper button:last-of-type,
 .mypage-body-wrapper > div > button {
     width: auto !important;
     max-width: none !important;
