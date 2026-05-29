@@ -17,86 +17,115 @@
     max-width: 1240px;
     min-height: 100vh;
     margin: 0 auto;
-    padding: 40px 20px 80px;
-    background-color: var(--content-bg);
-    color: var(--black-brown);
+    padding: 64px 32px 110px;
+    background-color: #FFFCF7;
+    color: #2B2118;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 /* 페이지 제목 */
 .itemCreate-title {
-    margin-bottom: 32px;
+    width: 100%;
+    max-width: 820px;
+    margin-bottom: 42px;
     font-family: 'Playfair Display', serif;
-    font-size: 38px;
+    font-size: 40px;
     font-weight: 600;
-    color: var(--black-brown);
-    letter-spacing: -0.5px;
+    color: #2B2118;
+    letter-spacing: -0.6px;
 }
 
 /* 상품 등록 form */
 .itemCreate-form {
     width: 100%;
-    max-width: 760px;
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 40px;
+    border: 1px solid #E8D9C8;
+    border-radius: 18px;
+    background-color: #FFFFFF;
+    box-shadow: 0 18px 44px rgba(74, 51, 36, 0.07);
 }
 
 /* 입력 항목 한 줄 */
 .itemCreate-formRow {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    margin-bottom: 20px;
+    gap: 9px;
+    margin-bottom: 24px;
 }
 
 /* label */
-.itemCreate-label {
+.itemCreate-label,
+.itemCreate-formRow label {
     font-size: 14px;
     font-weight: 700;
-    color: var(--black-brown);
+    color: #3A2A20;
+    letter-spacing: -0.2px;
 }
 
 /* input 공통 */
-.itemCreate-input {
+.itemCreate-input,
+.itemCreate-formRow input[type="text"],
+.itemCreate-formRow input[type="number"] {
     width: 100%;
-    padding: 11px 12px;
+    min-height: 46px;
+    padding: 12px 14px;
     border: 1px solid #E1C7A7;
-    background-color: #FFFFFF;
-    color: var(--black-brown);
+    border-radius: 10px;
+    background-color: #FFFCF7;
+    color: #2B2118;
     font-family: 'Noto Sans KR', sans-serif;
     font-size: 14px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
 }
 
 /* select 공통 */
-.itemCreate-select {
+.itemCreate-select,
+.itemCreate-formRow select {
     width: 100%;
-    padding: 11px 12px;
+    min-height: 46px;
+    padding: 12px 14px;
     border: 1px solid #E1C7A7;
-    background-color: #FFFFFF;
-    color: var(--black-brown);
+    border-radius: 10px;
+    background-color: #FFFCF7;
+    color: #2B2118;
     font-family: 'Noto Sans KR', sans-serif;
     font-size: 14px;
     cursor: pointer;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
 }
 
 /* textarea */
 .itemCreate-textarea {
-    width: 100%;
-    min-height: 120px;
-    padding: 11px 12px;
+    width: 100% !important;
+    min-height: 138px !important;
+    padding: 13px 14px;
     border: 1px solid #E1C7A7;
-    background-color: #FFFFFF;
-    color: var(--black-brown);
+    border-radius: 10px;
+    background-color: #FFFCF7;
+    color: #2B2118;
     font-family: 'Noto Sans KR', sans-serif;
     font-size: 14px;
-    line-height: 1.6;
-    resize: none;
+    line-height: 1.7;
+    resize: none !important;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
 }
 
 /* focus 공통 */
 .itemCreate-input:focus,
 .itemCreate-select:focus,
-.itemCreate-textarea:focus {
+.itemCreate-textarea:focus,
+.itemCreate-formRow input[type="text"]:focus,
+.itemCreate-formRow input[type="number"]:focus,
+.itemCreate-formRow select:focus {
     outline: none;
-    border-color: var(--caramel);
-    box-shadow: 0 0 0 3px rgba(184, 120, 62, 0.12);
+    border-color: #8A7A5D;
+    background-color: #FFFFFF;
+    box-shadow: 0 0 0 4px rgba(138, 122, 93, 0.14);
 }
 
 /* 상품 설명 글자 수 */
@@ -109,28 +138,37 @@
 
 /* 구분선 */
 .itemCreate-divider {
-    margin: 34px 0;
+    margin: 42px 0;
     border: none;
-    border-top: 1px solid var(--soft-border);
+    border-top: 1px solid #E8D9C8;
 }
 
 /* 이미지 섹션 제목 */
 .itemCreate-sectionTitle {
-    margin-bottom: 20px;
+    margin-bottom: 22px;
     font-size: 22px;
     font-weight: 700;
-    color: var(--black-brown);
+    color: #3A2A20;
+    letter-spacing: -0.3px;
 }
 
 /* 파일 input */
 .itemCreate-fileInput {
     width: 100%;
-    padding: 10px;
-    border: 1px solid #E1C7A7;
-    background-color: var(--cream);
-    color: var(--brown);
+    padding: 13px;
+    border: 1px dashed #CDBA9D;
+    border-radius: 12px;
+    background-color: #FFF8ED;
+    color: #4A3324;
     font-family: 'Noto Sans KR', sans-serif;
     font-size: 14px;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.itemCreate-fileInput:hover {
+    border-color: #8A7A5D;
+    background-color: #FFF3DF;
 }
 
 /* 서브 이미지 개수 */
@@ -142,7 +180,7 @@
 
 /* 선택된 서브 이미지 목록 */
 .itemCreate-fileList {
-    margin-top: 12px;
+    margin-top: 14px;
     list-style: none;
 }
 
@@ -151,12 +189,13 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
-    padding: 10px 12px;
-    margin-bottom: 8px;
-    border: 1px solid var(--soft-border);
-    background-color: var(--cream);
-    color: var(--brown);
+    gap: 14px;
+    padding: 13px 15px;
+    margin-bottom: 9px;
+    border: 1px solid #E8D9C8;
+    border-radius: 12px;
+    background-color: #FFFCF7;
+    color: #4A3324;
     font-size: 14px;
 }
 
@@ -171,58 +210,71 @@
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-    margin-top: 30px;
+    margin-top: 38px;
 }
 
 /* 공통 버튼 */
-.itemCreate-button {
-    padding: 11px 20px;
-    border: 1px solid var(--caramel);
-    background-color: var(--caramel);
+.itemCreate-button,
+.itemCreate-buttonArea button {
+    padding: 12px 26px;
+    border: 1px solid #5E6C5A;
+    border-radius: 10px;
+    background-color: #5E6C5A;
     color: #FFFFFF;
     font-family: 'Noto Sans KR', sans-serif;
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s ease;
+    box-shadow: 0 10px 22px rgba(94, 108, 90, 0.14);
+    transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.itemCreate-button:hover {
-    background-color: var(--deep-caramel);
-    border-color: var(--deep-caramel);
+.itemCreate-button:hover,
+.itemCreate-buttonArea button:hover {
+    background-color: #465142;
+    border-color: #465142;
     color: #FFFFFF;
+    transform: translateY(-1px);
+    box-shadow: 0 14px 28px rgba(94, 108, 90, 0.18);
 }
 
 /* 삭제 버튼 */
 .itemCreate-dangerButton {
-    padding: 7px 12px;
-    border: 1px solid #B94A3A;
-    background-color: #B94A3A;
+    padding: 8px 13px;
+    border: 1px solid #A55345;
+    border-radius: 8px;
+    background-color: #A55345;
     color: #FFFFFF;
     font-family: 'Noto Sans KR', sans-serif;
     font-size: 13px;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s ease;
+    box-shadow: none;
+    transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 }
 
 .itemCreate-dangerButton:hover {
-    background-color: #FFFFFF;
-    color: #B94A3A;
+    background-color: #884237;
+    border-color: #884237;
+    color: #FFFFFF;
+    transform: translateY(-1px);
 }
 
 /* 반응형 */
 @media (max-width: 768px) {
     .itemCreate-page {
-        padding: 30px 16px 60px;
+        padding: 40px 18px 70px;
     }
 
     .itemCreate-title {
         font-size: 32px;
+        margin-bottom: 30px;
     }
 
     .itemCreate-form {
         max-width: 100%;
+        padding: 26px 20px;
+        border-radius: 16px;
     }
 
     .itemCreate-buttonArea {
@@ -231,6 +283,7 @@
     }
 
     .itemCreate-button,
+    .itemCreate-buttonArea button,
     .itemCreate-dangerButton {
         width: 100%;
     }
