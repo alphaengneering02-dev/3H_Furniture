@@ -20,7 +20,7 @@ const Mypage = () => {
 
     const { success, error, warn, info } = useToast();
 
-    
+
     //북마크 추가_오현옥
     const [showBookmarks, setShowBookmarks] = useState(false);
     const [bookmarkedItems, setBookmarkedItems] = useState([]);
@@ -39,7 +39,7 @@ const Mypage = () => {
 
     /* [슬라이더 전용 핵심 상태] 현재 어떤 카드 인덱스 위치를 바라보고 있는지 카운팅 */
     const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
-    
+
     const [isLoading, setIsLoading] = useState(true);
 
 
@@ -97,12 +97,13 @@ const Mypage = () => {
             const userObj = JSON.parse(savedUser);
             setMember(userObj);
 
+            // 메인 마이페이지 진입점 주소 호출 유지
             axios.get('http://localhost:8080/Member/mypage.do', { withCredentials: true })
                 .then(res => {
                     setMember(res.data.member);
-                    console.log("상품 데이터", res.data);
+                    console.log("상품 데이터", res.data); // [확인 완료]: {recentOrders: Array(2), member: {…}} 구조
 
-                    // [회원 전용 보관고 연동] 이 브라우저에 이 회원 이름으로 저장된 주소록이 있는지 확인
+                    // [회원 전용 보관고 연동]
                     const storageKey = `addresses_${res.data.member.id}`;
                     const localAddresses = localStorage.getItem(storageKey);
 
@@ -112,8 +113,13 @@ const Mypage = () => {
                         setAddresses(res.data.addressList || []);
                     }
 
+                    // 🌟 [지시사항 반영 핵심 구역]: res.data 안에서 recentOrders 배열만 정확히 끄집어냅니다.
                     const allOrders = res.data.recentOrders || [];
+
+                    // CANCEL 상태가 아닌 일반 활성 주문들만 필터링하여 담기
                     const activeOrders = allOrders.filter(order => order.orderState !== 'CANCEL');
+
+                    // 이 orders에 recentOrders 배열 데이터가 온전하게 채워집니다.
                     setOrders(activeOrders);
 
                     const mergedUser = { ...userObj, ...res.data.member };
@@ -130,7 +136,7 @@ const Mypage = () => {
                     }
                 })
                 .finally(() => {
-                    setIsLoading(false); 
+                    setIsLoading(false);
                 });
         } else {
             setMember(null);
@@ -138,11 +144,59 @@ const Mypage = () => {
         }
     }, []);
 
-    
-    console.log(member);
-    if(isLoading) return <div>로딩중....</div>;
 
-    
+    // useEffect(() => {
+    //     const savedUser = sessionStorage.getItem('user');
+    //     if (savedUser) {
+    //         const userObj = JSON.parse(savedUser);
+    //         setMember(userObj);
+
+    //         axios.get('http://localhost:8080/Member/mypage.do', { withCredentials: true })
+    //             .then(res => {
+    //                 setMember(res.data.member);
+    //                 console.log(res.data);
+
+    //                 // [회원 전용 보관고 연동] 이 브라우저에 이 회원 이름으로 저장된 주소록이 있는지 확인
+    //                 const storageKey = `addresses_${res.data.member.id}`;
+    //                 const localAddresses = localStorage.getItem(storageKey);
+
+    //                 if (localAddresses) {
+    //                     setAddresses(JSON.parse(localAddresses));
+    //                 } else {
+    //                     setAddresses(res.data.addressList || []);
+    //                 }
+
+    //                 const allOrders = res.data.recentOrders || [];
+    //                 const activeOrders = allOrders.filter(order => order.orderState !== 'CANCEL');
+    //                 setOrders(activeOrders);
+
+    //                 const mergedUser = { ...userObj, ...res.data.member };
+    //                 sessionStorage.setItem('user', JSON.stringify(mergedUser));
+
+    //                 getMyReviews();
+    //                 getMyBookmarkedItems(res.data.member);
+    //             })
+    //             .catch(err => {
+    //                 console.error("최신 데이터 로드 실패", err);
+    //                 if (err.response && err.response.status === 401) {
+    //                     sessionStorage.removeItem('user');
+    //                     setMember(null);
+    //                 }
+    //             })
+    //             .finally(() => {
+    //                 setIsLoading(false); 
+    //             });
+    //     } else {
+    //         setMember(null);
+    //         setIsLoading(false);
+    //     }
+    // }, []);
+
+
+    console.log(member);
+    if (isLoading) return <div>로딩중....</div>;
+
+
     //구매확정 버튼-->리뷰 쓰기로 넘어감.
     const handleConfirmPurchase = async (orderId) => {
         if (!window.confirm("구매를 확정하시겠습니까?")) return;
@@ -173,7 +227,7 @@ const Mypage = () => {
     //     axios.post('http://localhost:8080/Member/order/cancel', params, { withCredentials: true })
     //         .then(res => {
     //             alert(res.data || "주문이 정상적으로 취소되었습니다.");
-                
+
     //             // 상태값만 'CANCEL'로 변경하면 뱃지와 카드가 알아서 실시간으로 지워짐
     //             setOrders(prevOrders => 
     //                 prevOrders.map(order => 
@@ -188,17 +242,17 @@ const Mypage = () => {
 
 
     const handleRefund = (orderId, itemId) => {
-        if(window.confirm(`주문번호 ${orderId}번을 교환 하시겠습니까?\n재고가 복구되고 주문이 삭제됩니다.`)) {
+        if (window.confirm(`주문번호 ${orderId}번을 교환 하시겠습니까?\n재고가 복구되고 주문이 삭제됩니다.`)) {
             const params = new URLSearchParams();
-            params.append('orderId',orderId);
+            params.append('orderId', orderId);
 
-            axios.post('http://localhost:8080/Member/refund/process',params, {withCredentials:true})
+            axios.post('http://localhost:8080/Member/refund/process', params, { withCredentials: true })
                 .then(res => {
                     success(res.data);
 
                     setOrders(prevOrders => prevOrders.filter(order => order.orderId !== orderId));
 
-                    if(itemId) {
+                    if (itemId) {
                         navigate(`/item/${itemId}`);
                     }
                 })
@@ -300,10 +354,10 @@ const Mypage = () => {
     };
 
     /* =========================================================================
-     * [오현옥 개발파트] 리뷰 관리 시스템 핵심 비즈니스 로직 연동 핸들러 정의 구역
-     * ========================================================================= */
+    * [오현옥 개발파트] 리뷰 관리 시스템 핵심 비즈니스 로직 연동 핸들러 정의 구역
+    * ========================================================================= */
 
-    
+
 
 
     const findMyReviewByItemId = (itemId) => {
@@ -348,86 +402,86 @@ const Mypage = () => {
     };
 
     return (
-    <div className="mypage-grid-container">
-        {/* ========================================================= */}
-        {/* 🤎 [통일 규격] 조원분의 실제 검색/GNB 기능이 담긴 글로벌 헤더      */}
-        {/* ========================================================= */}
-        {/* ⚡ [세션 완치]: 조원분 헤더와 인호님의 동적 세션 회원 감지 시스템을 유기적으로 결합 완료 */}
-        <Header />
+        <div className="mypage-grid-container">
+            {/* ========================================================= */}
+            {/* 🤎 [통일 규격] 조원분의 실제 검색/GNB 기능이 담긴 글로벌 헤더      */}
+            {/* ========================================================= */}
+            {/* ⚡ [세션 완치]: 조원분 헤더와 인호님의 동적 세션 회원 감지 시스템을 유기적으로 결합 완료 */}
+            <Header />
 
-    <ToastContainer
-      position="top-center"
-      autoClose={1800}
-      hideProgressBar={false}
-      newestOnTop={true}
-      closeOnClick
-      pauseOnHover
-      theme="light"
-    />
+            <ToastContainer
+                position="top-center"
+                autoClose={1800}
+                hideProgressBar={false}
+                newestOnTop={true}
+                closeOnClick
+                pauseOnHover
+                theme="light"
+            />
 
-        {/* ⚡ 기존 헤더에 들어있던 member 로그인 상태 검증 로직을 본문 입구로 완벽 복구 */}
-        {!member ? (
-             <main style={{ textAlign: 'center', padding: '100px 20px' }}>
-        /        <h2>로그인이 필요한 service입니다.</h2>
-             </main>
-         ) : ( 
-             <div style={{ display: 'flex', marginTop: '20px' }}> 
-                {/* 📌 좌측 사이드바 메뉴 */}
-                 <aside className="mypage-sidebar">
-                   <button className="sidebar-btn" onClick={() => navigate('/mypage/schedule')}>구매확정내역</button>
-                    <button className="sidebar-btn" onClick={() => navigate('/cart/return')}>교환 및 반품</button>
-                    <button className="sidebar-btn" onClick={() => navigate('/cart')}>장바구니 목록</button>
-                    <div className="sidebar-furniture-banner" onClick={() => navigate('/Item')} style={{ cursor: 'pointer' }} title="전체 가구 컬렉션 보러가기" />
-                </aside>
+            {/* ⚡ 기존 헤더에 들어있던 member 로그인 상태 검증 로직을 본문 입구로 완벽 복구 */}
+            {!member ? (
+                <main style={{ textAlign: 'center', padding: '100px 20px' }}>
+                    /        <h2>로그인이 필요한 service입니다.</h2>
+                </main>
+            ) : (
+                <div style={{ display: 'flex', marginTop: '20px' }}>
+                    {/* 📌 좌측 사이드바 메뉴 */}
+                    <aside className="mypage-sidebar">
+                        <button className="sidebar-btn" onClick={() => navigate('/mypage/schedule')}>구매확정내역</button>
+                        <button className="sidebar-btn" onClick={() => navigate('/cart/return')}>교환 및 반품</button>
+                        <button className="sidebar-btn" onClick={() => navigate('/cart')}>장바구니 목록</button>
+                        <div className="sidebar-furniture-banner" onClick={() => navigate('/Item')} style={{ cursor: 'pointer' }} title="전체 가구 컬렉션 보러가기" />
+                    </aside>
 
-                {/* 📄 우측 메인 콘텐츠 피드 구역 */}
-                <main className="mypage-main-content" style={{ flex: 1, padding: '20px' }}>
-                    
-                    {/* 북마크 리스트를 게시판 형태로 보여주기..오현옥 */}
-                    {showBookmarks && (
-                        <div className="mypage-info-content-box" style={{ marginTop: "20px" }}>
-                            <h3 className="mypage-info-section-title">내 북마크 상품</h3>
-                            <div className="mypage-info-data-block">
-                                {bookmarkedItems.length === 0 ? (
-                                    <p>북마크한 상품이 없습니다.</p>
-                                ) : (
-                                    <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "14px" }}>
-                                        <thead>
-                                            <tr>
-                                                <th>번호</th>
-                                                <th>이미지</th>
-                                                <th>상품명</th>
-                                                <th>가격</th>
-                                                <th>판매상태</th>
-                                                <th>관리</th>
+                    {/* 📄 우측 메인 콘텐츠 피드 구역 */}
+                    <main className="mypage-main-content" style={{ flex: 1, padding: '20px' }}>
+
+                        {/* 북마크 리스트를 게시판 형태로 보여주기..오현옥 */}
+                        {showBookmarks && (
+                            <div className="mypage-info-content-box" style={{ marginTop: "20px" }}>
+                                <h3 className="mypage-info-section-title">내 북마크 상품</h3>
+                                <div className="mypage-info-data-block">
+                                    {bookmarkedItems.length === 0 ? (
+                                        <p>북마크한 상품이 없습니다.</p>
+                                    ) : (
+                                        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "14px" }}>
+                                            <thead>
+                                                <tr>
+                                                    <th>번호</th>
+                                                    <th>이미지</th>
+                                                    <th>상품명</th>
+                                                    <th>가격</th>
+                                                    <th>판매상태</th>
+                                                    <th>관리</th>
                                                 </tr>
-                                        </thead>
-                                        <tbody>
-                                            {bookmarkedItems.map((item, index) => (
-                                                <tr key={item.itemId}>
-                                                    <td>{index + 1}</td>
-                                                    <td>
-                                                        {item.itemImgUrl ? (
-                                                            <img src={`http://localhost:8080${item.itemImgUrl}`} alt={item.itemName} style={{ width: "60px", height: "60px", objectFit: "cover" }} />
-                                                        ) : (<span>이미지 없음</span>)}
-                                                    </td>
-                                                    <td>
-                                                        <strong>{item.itemName}</strong>
-                                                        <p style={{ margin: "4px 0 0 0", color: "#666", fontSize: "12px" }}>{item.itemCategory || "-"}</p>
-                                                    </td>
-                                                    <td>{Number(item.itemFinalPrice || item.itemPrice || 0).toLocaleString()}원</td>
-                                                    <td>{item.itemSellStatus === "SELL" ? <span>판매중</span> : <span>{item.itemSellStatus || "판매불가"}</span>}</td>
-                                                    <td>
-                                                        <button type="button" onClick={() => navigate(`/item/${item.itemId}`)}>상품 보기</button>
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                )}
+                                            </thead>
+                                            <tbody>
+                                                {bookmarkedItems.map((item, index) => (
+                                                    <tr key={item.itemId}>
+                                                        <td>{index + 1}</td>
+                                                        <td>
+                                                            {item.itemImgUrl ? (
+                                                                <img src={`http://localhost:8080${item.itemImgUrl}`} alt={item.itemName} style={{ width: "60px", height: "60px", objectFit: "cover" }} />
+                                                            ) : (<span>이미지 없음</span>)}
+                                                        </td>
+                                                        <td>
+                                                            <strong>{item.itemName}</strong>
+                                                            <p style={{ margin: "4px 0 0 0", color: "#666", fontSize: "12px" }}>{item.itemCategory || "-"}</p>
+                                                        </td>
+                                                        <td>{Number(item.itemFinalPrice || item.itemPrice || 0).toLocaleString()}원</td>
+                                                        <td>{item.itemSellStatus === "SELL" ? <span>판매중</span> : <span>{item.itemSellStatus || "판매불가"}</span>}</td>
+                                                        <td>
+                                                            <button type="button" onClick={() => navigate(`/item/${item.itemId}`)}>상품 보기</button>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    )}
+                                </div>
                             </div>
-                        </div>
-                    )}
+                        )}
 
 
 
@@ -463,56 +517,57 @@ const Mypage = () => {
                                         style={isAllOrdersOpen ? { transform: 'none', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '16px', width: '100%' } : { transform: `translateX(calc(-${currentSlideIndex * 25}% - ${currentSlideIndex * 4}px))` }}
                                     >
 
-                                        {orders && orders.length > 0 ? (
-                                            orders
-                                            .filter(order => order.orderState !== 'CANCEL' && order.orderState !== 'EXCHANGEorREFUND' )
-                                            .map((order, index) => (
-                                                /* 낱개의 독립된 예쁜 정사각형 카드 인덱싱 */
-                                                <div key={order.orderId || order.id || index} className="mypage-order-square-card">
-                                                    <div>
-                                                        <p style={{ fontSize: '11px', color: '#8C7A6B', margin: '0 0 6px 0' }}>NO. {order.orderId || order.id}</p>
-                                                        <p style={{ fontSize: '14px', fontWeight: '700', margin: '0 0 8px 0' }}>{order.itemName || order.productName}</p>
+                                        {orders && orders.recentOrders && orders.recentOrders.length > 0 ? (
+                                            orders.recentOrders
+                                                .filter(order => order.orderState !== 'CANCEL' && order.orderState !== 'EXCHANGEorREFUND')
+                                                .map((order, index) => (
+                                                    /* 낱개의 독립된 예쁜 정사각형 카드 인덱싱 */
+                                                    <div key={order.orderId || order.id || index} className="mypage-order-square-card">
+                                                        <div>
+                                                            <p style={{ fontSize: '11px', color: '#8C7A6B', margin: '0 0 6px 0' }}>NO. {order.orderId || order.id}</p>
+                                                            <p style={{ fontSize: '14px', fontWeight: '700', margin: '0 0 8px 0' }}>{order.itemName || order.productName}</p>
 
-                                                        {/* [주문상태 이늄 컬러 완전 싱크 마감] */}
-                                                        <p style={{
-                                                            fontSize: '12px', margin: '0 0 2px 0', fontWeight: '700',
-                                                            color: order.orderState === 'ORDER' ? '#5e4431' :
-                                                                order.orderState === 'READY' ? '#c45a00' :
-                                                                    order.orderState === 'PURCHASED' ? '#0a5c36' :
-                                                                        order.orderState === 'CANCEL' ? '#a82525' :
-                                                                            order.orderState === 'EXCHANGEorREFUND' ? '#323e4f' : '#111111'
-                                                        }}>
-                                                            <strong>상태:</strong> {order.orderState}
-                                                        </p>
+                                                            {/* [주문상태 이늄 컬러 완전 싱크 마감] */}
+                                                            <p style={{
+                                                                fontSize: '12px', margin: '0 0 2px 0', fontWeight: '700',
+                                                                color: order.orderState === 'ORDER' ? '#5e4431' :
+                                                                    order.orderState === 'READY' ? '#c45a00' :
+                                                                        order.orderState === 'PURCHASED' ? '#0a5c36' :
+                                                                            order.orderState === 'CANCEL' ? '#a82525' :
+                                                                                order.orderState === 'EXCHANGEorREFUND' ? '#323e4f' : '#111111'
+                                                            }}>
+                                                                <strong>상태:</strong> {order.orderState}
+                                                            </p>
 
 
-                                                        {/* [배송상태 이늄 컬러 완전 싱크 마감] */}
-                                                        <p style={{
-                                                            fontSize: '12px', margin: '0 0 2px 0', fontWeight: '700',
-                                                            color: order.deliveryStatus === 'WAITING' ? '#801a24' :
-                                                                order.deliveryStatus === 'SHIPPING' ? '#c45a00' :
-                                                                    order.deliveryStatus === 'COMPLETED' ? '#0b3161' :
-                                                                        (order.deliveryStatus === 'PICKUP' || order.deliveryStatus === 'REJECTED') ? '#a63d2d' : '#111111'
-                                                        }}>
-                                                            <strong>배송:</strong> {order.deliveryStatus}
-                                                        </p>
-                                                    </div>
 
-                                                    <div style={{ marginTop: '10px' }}>
-                                                        {order.orderState === 'PURCHASED' ? (
-                                                            hasWrittenReview(order.itemId) ? (
-                                                                <span>리뷰 작성 완료</span>
+                                                            {/* [배송상태 이늄 컬러 완전 싱크 마감] */}
+                                                            <p style={{
+                                                                fontSize: '12px', margin: '0 0 2px 0', fontWeight: '700',
+                                                                color: order.deliveryStatus === 'WAITING' ? '#801a24' :
+                                                                    order.deliveryStatus === 'SHIPPING' ? '#c45a00' :
+                                                                        order.deliveryStatus === 'COMPLETED' ? '#0b3161' :
+                                                                            (order.deliveryStatus === 'PICKUP' || order.deliveryStatus === 'REJECTED') ? '#a63d2d' : '#111111'
+                                                            }}>
+                                                                <strong>배송:</strong> {order.deliveryStatus}
+                                                            </p>
+                                                        </div>
+
+                                                        <div style={{ marginTop: '10px' }}>
+                                                            {order.orderState === 'PURCHASED' ? (
+                                                                hasWrittenReview(order.itemId) ? (
+                                                                    <span>리뷰 작성 완료</span>
+                                                                ) : (
+                                                                    <button type="button" className="mypage-action-btn" onClick={() => navigate(`/item/${order.itemId}`)} disabled={!order.itemId}>리뷰쓰기</button>
+                                                                )
+                                                            ) : order.orderState === "READY" && order.deliveryStatus === "COMPLETED" ? (
+                                                                <button type="button" className="mypage-action-btn" onClick={() => handleConfirmPurchase(order.orderId || order.id)}>구매확정</button>
                                                             ) : (
-                                                                <button type="button" className="mypage-action-btn" onClick={() => navigate(`/item/${order.itemId}`)} disabled={!order.itemId}>리뷰쓰기</button>
-                                                            )
-                                                        ) : order.orderState === "READY" && order.deliveryStatus === "COMPLETED" ? (
-                                                            <button type="button" className="mypage-action-btn" onClick={() => handleConfirmPurchase(order.orderId || order.id)}>구매확정</button>
-                                                        ) : (
-                                                            <span style={{ color: "#64748b", fontSize: "11px", display: "block", textAlign: "center" }}>배송완료 후 확정 가능</span>
-                                                        )}
+                                                                <span style={{ color: "#64748b", fontSize: "11px", display: "block", textAlign: "center" }}>배송완료 후 확정 가능</span>
+                                                            )}
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            ))
+                                                ))
                                         ) : (
                                             <div className="mypage-order-square-card" style={{ width: '100%', aspectRatio: 'auto', justifyContent: 'center', alignItems: 'center' }}>
                                                 <p style={{ color: '#8c7a6b', margin: 0 }}>최근 주문 내역이 없습니다.</p>
@@ -636,8 +691,8 @@ const Mypage = () => {
             {/* [푸터 시작] 하단 기업 정보 및 미니멀 카피라이트 마크업          */}
             {/* ========================================================= */}
             <div className="main-mypage-footer">
-                <Footer/>
-            </div> 
+                <Footer />
+            </div>
         </div>
     );
 };
