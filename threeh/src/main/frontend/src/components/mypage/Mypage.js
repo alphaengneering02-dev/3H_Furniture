@@ -635,13 +635,9 @@ const Mypage = () => {
             {/* ========================================================= */}
             {/* [푸터 시작] 하단 기업 정보 및 미니멀 카피라이트 마크업          */}
             {/* ========================================================= */}
-            <footer className="mypage-footer">
-                <div className="mypage-footer-content">
-                    <p className="mypage-footer-logo">PROJECT CMYK</p>
-                    <p className="mypage-footer-info">주식회사 씨엠와이케이 | 공동 프로젝트 팀 | 경기도 수원시 팔달구</p>
-                    <p className="mypage-footer-copy">© 2026 PROJECT CMYK. All Rights Reserved.</p>
-                </div>
-            </footer>
+            <div className="main-mypage-footer">
+                <Footer/>
+            </div> 
         </div>
     );
 };
