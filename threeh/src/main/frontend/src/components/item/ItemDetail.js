@@ -23,6 +23,9 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
 
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+
 const ItemDetail = () => {
 
     //URL에서 Item 가져오기
@@ -378,6 +381,64 @@ const ItemDetail = () => {
         getItemOrderCount();
     }, [itemId]);
 
+
+    //상품상세페이지에서 관리자가 상품 삭제 및 수정할 수 있게.
+    const handleAdminDeleteItem = async () => {
+        const confirmDelete = window.confirm("관리자님 이 상품을 삭제하실건가요?");
+
+        if(!confirmDelete){
+            return;
+        }
+
+        try{
+            //상품이 주문내역에 있던 상품인지 삭제 가능 여부 먼저 확인
+            const deletableResponse = await axios.get(
+                `http://localhost:8080/api/admin/item/${itemId}/deletable`,
+                {
+                    withCredentials:true,
+                }
+            );
+            if(!deletableResponse.data){
+                toast.warning(
+                    "이미 주문내역이 있는 상품은 삭제할 수 없습니다. 판매상태를 STOP으로 변경해주세요."
+                );
+                return;
+            }
+            
+            //상품 삭제 api 하나만 호출
+            //이미지 db삭제, 상품db삭제, 물리파일 삭제는 제가 할게요..제발..해주세요.
+            await axios.delete(`http://localhost:8080/api/admin/item/${itemId}`,{
+                withCredentials: true,
+            });
+            toast.success("상품이 삭제되었습니다.");
+
+            setTimeout(()=>{
+                navigate("/item");
+            },900);
+        }catch(error){
+            console.error("상품 삭제 실패",error);
+
+            if(error.response){
+                console.log("상품 삭제 상태코드:",error.response.status);
+                console.log("상품 삭제 응답:",error.response.data);
+            }
+            if(error.response?.status===401||error.response?.status===403){
+                toast.error("관리자 로그인 세션이...만료되었습니다. 다시 로그인해주세요.");
+                sessionStorage.removeItem("user");
+                
+                setTimeout(()=>{
+                    navigate("/login");
+                },1000);
+                return;
+            }
+            toast.error(
+                error.response?.data?.message||
+                error.response?.data||
+                "상품 삭제 실패"
+            );
+        }
+    }
+
     //상품정보 동기화
     const getItem = async () => {
         try {
@@ -680,16 +741,29 @@ const ItemDetail = () => {
                             </p>
                         )}
 
-                        {/*관리자는 상품 상세에서 직접 수정/삭제하지 않고, 관리자 상품/리뷰 관리 페이지로 이동 */}
+                        {/*관리자는 상품 상세에서 직접 수정/삭제,그리고 관리자 상품/리뷰 관리 페이지로 이동 */}
                         {isAdmin && (
                             <div className="itemDetail-adminArea">
                                 <Button
                                     type="button"
-                                    className="itemDetail-buyButton"
-                                    onClick={() => navigate("/admin/item")}
+                                    className="itemDetail-adminEditButton"
+                                    onClick={() => navigate(`/item/update/${itemId}`)}
+                                    startIcon={<EditOutlinedIcon/>}
                                 >
-                                    관리자 상품/리뷰 관리로 이동
+                                    관리자 상품수정
                                 </Button>
+
+                            <Button type="button"
+                            className="itemDetail-adminDeleteButton" onClick={handleAdminDeleteItem}
+                            startIcon={<DeleteOutlineOutlinedIcon/>}>
+                                관리자 상품삭제
+                            </Button>
+
+                            <Button type="button" className="itemDetail-adminListButton"
+                            onClick={()=>navigate("/admin/item")}>
+                                관리자 상품관리페이지
+                            </Button>
+
                             </div>
                         )}
 

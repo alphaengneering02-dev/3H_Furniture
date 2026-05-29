@@ -13,6 +13,9 @@ const ItemAdminPage = () => {
     // 전체 상품 목록 저장
     const [items, setItems] = useState([]);
 
+    //관리자 상품목록에서 선택된 상품id(여러개지우고싶어서)
+    const [selectedItemIds, setSelectedItemIds]=useState([]);
+
     // items: 상품 관리 화면
     // reviews: 리뷰 관리 화면
     const [activeTab, setActiveTab] = useState("items");
@@ -173,6 +176,25 @@ const ItemAdminPage = () => {
 
         return response.data || [];
     };
+
+
+    //상품여러개 선택해서 삭제하기 하고싶어.진짜루 귀찮아서.
+    const isSelectedItem = (itemId)=>{
+        return selectedItemIds.includes(Number(itemId));
+    };
+
+    //상품 개별 선택하거나 해제도 해야지.
+    const handleSelectAdminItem = (itemId)=>{
+        const numberItemId = Number(itemId);
+        
+        if(selectedItemIds.includes(numberItemId)){
+            setSelectedItemIds(
+                selectedItemIds.filter((id)=> id !== numberItemId)
+            );
+            return;
+        };
+         setSelectedItemIds([...selectedItemIds,numberItemId]);   
+    }
 
     // 상품 삭제_ 관리자
     const handleAdminDeleteItem = async (itemId) => {
