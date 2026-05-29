@@ -33,17 +33,16 @@ function PaymentFail({ failReason }) {
             </div>
             
             {/* 하단 버튼 그룹 (가로 배치 및 까사미아 차콜 스타일 매칭) */}
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '12px' }}>
+            <div className="btn-group">
                 <button 
-                    className='payment-btn' 
-                    onClick={() => navigate("/cart")} // 보통 장바구니나 이전 상품페이지로 보냅니다.
-                    style={{ backgroundColor: '#ffffff', color: '#2b2b2b', border: '1px solid #2b2b2b' }}
+                    className="payment-btn secondary"
+                    onClick={() => navigate("/cart")}
                 >
                     다시 시도
                 </button>
-                
+
                 <button 
-                    className='payment-btn' 
+                    className="payment-btn"
                     onClick={() => navigate("/")}
                 >
                     홈으로

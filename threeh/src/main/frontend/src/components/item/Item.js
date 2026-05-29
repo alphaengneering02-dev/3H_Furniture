@@ -24,6 +24,9 @@ function Item() {
   //알반 유저가 체크박스로 선택한 상품 목록 저장
   const [selectedItems, setSelectedItems] = useState([]);
 
+  //관리자 체크박스 선택한 상품 목록
+  const [selectedAdminItemIds,setSelectedAdminItemIds] = useState([]);
+
   //북마크 상태 저장([201,223,230])
   const [bookmarkedItems, setBookmarkedItems] = useState([]);
 
@@ -737,6 +740,126 @@ function Item() {
       return 0;
     });
 
+ //관리자 상품 선택 여부 확인
+ const isSelectedAdminItem =(itemId)=>{
+  return selectedAdminItemIds.includes(Number(itemId));
+ };
+
+ //관리자 상품 개별 선택/선택해제 처리
+ const handleSelectAdminItem = (itemId)=>{
+  const numberItemId = Number(itemId);
+
+  if(selectedAdminItemIds.includes(numberItemId)){
+    setSelectedAdminItemIds(
+      selectedAdminItemIds.filter((id)=>id !== numberItemId)
+    );
+    return;
+  }
+  setSelectedAdminItemIds([...selectedAdminItemIds,numberItemId]);
+ };
+
+//관리자가 선택한 상품 여러 개 삭제 
+const handleAdminDeleteSelectedItems = async ()=>{
+  const loginUser = getLoginUser();
+
+  if(!loginUser){
+    toast.error("로그인이 필요합니다.");
+    navigate("/login");
+    return;
+  }
+  if(!isAdminRole(loginUser)){
+    toast.warning("관리자만 상품을 삭제할 수 있습니다.");
+    return;
+  }
+  
+  if(selectedAdminItemIds.length===0){
+    toast.warning("삭제할 상품을 선택해주세요.");
+    return;
+  }
+
+  const confirmDelete = window.confirm(
+    `선택한 상품 ${selectedAdminItemIds.length}개를 삭제하시겠습니다?`
+  );
+
+  if(!confirmDelete){
+    return;
+  }
+
+    const deletedItemIds = [];
+    const notDeletableItemIds = [];
+    const failedItemIds = [];
+
+    try {
+      for (const selectedItemId of selectedAdminItemIds) {
+        try {
+          //상품이 주문내역에 있던 상품인지 삭제 가능 여부 먼저 확인
+          const deletableResponse = await axios.get(
+            `http://localhost:8080/api/admin/item/${selectedItemId}/deletable`,
+            {
+              withCredentials: true,
+            }
+          );
+
+          if (!deletableResponse.data) {
+            notDeletableItemIds.push(selectedItemId);
+            continue;
+          }
+
+          //상품 삭제 API 하나만 호출
+          //이미지 DB 삭제, 상품DB삭제, 물리 파일 삭제는 백엔드에서 처리
+          await axios.delete(
+            `http://localhost:8080/api/admin/item/${selectedItemId}`,
+            {
+              withCredentials: true,
+            }
+          );
+
+          deletedItemIds.push(selectedItemId);
+        } catch (error) {
+          console.error(`${selectedItemId}번 상품 삭제 실패`, error);
+
+          if (error.response?.status === 401 || error.response?.status === 403) {
+            toast.error("관리자 로그인 세션이 만료되었습니다. 다시 로그인해주세요.");
+            sessionStorage.removeItem("user");
+
+            setTimeout(() => {
+              navigate("/login");
+            }, 1000);
+
+            return;
+          }
+
+          failedItemIds.push(selectedItemId);
+        }
+      }
+
+      if (deletedItemIds.length > 0) {
+        toast.success(`${deletedItemIds.length}개 상품이 삭제되었습니다.`);
+      }
+
+      if (notDeletableItemIds.length > 0) {
+        toast.warning(
+          `주문내역이 있는 상품 ${notDeletableItemIds.length}개는 삭제되지 않았습니다. 판매상태를 판매중지(STOP)로 변경해주세요.`
+        );
+      }
+
+      if (failedItemIds.length > 0) {
+        toast.error(`${failedItemIds.length}개 상품 삭제에 실패했습니다.`);
+      }
+
+      //삭제 후 상품 목록 다시 불러오기
+      getItems();
+
+      //삭제된 상품은 관리자 선택 목록에서 제거
+      setSelectedAdminItemIds((prevIds) =>
+        prevIds.filter((itemId) => !deletedItemIds.includes(itemId))
+      );
+    } catch (error) {
+      console.error("선택 상품 삭제 실패", error);
+      toast.error("선택 상품 삭제 실패");
+    }
+  };
+
 
   //페이징 계산
   const totalPages = Math.max(1, Math.ceil(sortedItems.length / ITEMS_PER_PAGE));
@@ -841,6 +964,15 @@ function Item() {
           <button type="button" onClick={() => navigate("/admin/item")}>
             관리자 상품/리뷰 관리
           </button>
+          {/* 관리자가 상품 목록에서 여러 개 선택 삭제 */}
+        <button
+          type="button"
+          className="item-admin-delete-button"
+          onClick={handleAdminDeleteSelectedItems}
+          disabled={selectedAdminItemIds.length === 0}
+        >
+          선택 삭제 {selectedAdminItemIds.length > 0 ? `(${selectedAdminItemIds.length})` : ""}
+        </button>
         </div>
       )}
 
@@ -862,6 +994,15 @@ function Item() {
                     checked={isSelected(item.itemId)}
                     disabled={!selectable}
                     onChange={() => handleSelectItem(item)}
+                  />
+                )}
+                {/* 관리자가 상품 목록에서 여러 개 선택 삭제 */}
+                {isAdmin && (
+                  <input
+                    className="item-checkbox item-admin-checkbox"
+                    type="checkbox"
+                    checked={isSelectedAdminItem(item.itemId)}
+                    onChange={() => handleSelectAdminItem(item.itemId)}
                   />
                 )}
 
