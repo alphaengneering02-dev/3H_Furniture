@@ -40,6 +40,10 @@ function Item() {
   //판매상태 필터
   const [sellStatusFilter,setSellStatusFilter] = useState("");
 
+  //조회버튼 눌렀을 때, 필터 적용
+  const [searchSortType, setSearchSortType] = useState("");
+  const [searchSellStatusFilter, setSearchSellStatusFilter] = useState("");
+
   //메인페이지랑 연결되는 필터링
   const [searchParams, setSearchParams] = useSearchParams();
   const categoryParam = searchParams.get("category") || "";
@@ -740,6 +744,14 @@ function Item() {
       return 0;
     });
 
+  //조회버튼 눌렀을 때, 필터링 적용
+  const handleSearchFilter = () =>{
+    setSortType(searchSortType);
+    setSellStatusFilter(searchSellStatusFilter);
+    setCurrentPage(1);
+  };
+
+
  //관리자 상품 선택 여부 확인
  const isSelectedAdminItem =(itemId)=>{
   return selectedAdminItemIds.includes(Number(itemId));
@@ -929,10 +941,9 @@ const handleAdminDeleteSelectedItems = async ()=>{
       <div className="item-sort-area">
         <select
           className="item-sort-select"
-          value={sortType}
+          value={searchSortType}
           onChange={(e) => {
-            setSortType(e.target.value);
-            setCurrentPage(1);
+            setSearchSortType(e.target.value);
           }}
         >
           <option value="">기본순</option>
@@ -944,10 +955,9 @@ const handleAdminDeleteSelectedItems = async ()=>{
 
         <select
           className="item-sort-select"
-          value={sellStatusFilter}
+          value={searchSellStatusFilter}
           onChange={(e) => {
-            setSellStatusFilter(e.target.value);
-            setCurrentPage(1);
+            setSearchSellStatusFilter(e.target.value);
           }}
         >
           <option value="">판매상태 전체</option>
@@ -956,6 +966,22 @@ const handleAdminDeleteSelectedItems = async ()=>{
           <option value="STOP">판매중지</option>
           <option value="COMING_SOON">판매예정</option>
         </select>
+
+        <button type="button" onClick={handleSearchFilter}>
+          필터조회하기
+        </button>
+
+                <button type="button" onClick={()=>{
+          setSearchSortType("");
+          setSearchSellStatusFilter("");
+
+          setSortType("");
+          setSellStatusFilter("");
+
+          setCurrentPage(1);
+        }}>
+          필터초기화
+        </button>
       </div>
 
       {/*관리자 로그인 시에만 관리자 상품/리뷰 관리 페이지 이동 버튼 표시 */}
