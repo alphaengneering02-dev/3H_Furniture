@@ -201,3 +201,116 @@ header {
     box-shadow: 0 8px 24px rgba(74, 51, 36, 0.06);
 }
 
+/* ========================================================
+   🌿 [AI 강력 추천 테마: 미드센추리 모던 딥 체러키 & 리넨 베이지]
+   ======================================================== */
+:root {
+  --main-bg: #FAF6F0;       /* 💡 맑고 뽀얀 고급 리넨 천의 감성이 살아있는 연베이지 (백그라운드) */
+  --content-bg: #FFFFFF;    /* 본문 카드는 극상의 화사함을 주는 순백색 */
+  --soft-border: #EAE2D5;   /* 은은하고 부드러운 오트밀 밀크티빛 선 */
+  --black-brown: #2B1D16;   /* 깊이감 있는 에스프레소 블랙 브라운 (글자색) */
+  --text-muted: #8E7A6E;    /* 차분한 보조 로스팅 카카오 브라운 텍스트 */
+  
+  --deep-cherokee: #702A24; /* 💡 AI 저격 컬러: 고급 마호가니 가구빛이 감도는 깊고 매혹적인 체리 버건디 */
+}
+
+/* 1. [백그라운드] 전체 배경 레일 - 맑고 포근한 하이엔드 리넨 베이지 고정 */
+body, 
+html, 
+#root,
+.order-page-global-root,
+.casamia-container {
+  background-color: var(--main-bg) !important;
+}
+
+/* 메인 본문 콘텐츠 영역 도화지 */
+.order-page-wrapper {
+  background-color: var(--content-bg) !important;
+  border: 1px solid var(--soft-border) !important;
+  box-shadow: 0 12px 32px rgba(112, 42, 36, 0.02) !important;
+}
+
+/* ========================================================
+   ❌ [라디오 체크박스 절대 방어] 동그란 체크 영역 스타일 완전 격리
+   ======================================================== */
+.order-radio-group,
+.order-radio,
+.MuiRadio-root,
+.MuiCheckbox-root,
+[class*="MuiRadio"],
+[class*="MuiCheckbox"],
+.MuiButtonBase-root[class*="PrivateSwitchBase"],
+.MuiTouchRipple-root {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  width: auto !important;
+  height: auto !important;
+}
+
+
+/* ========================================================
+   🖤 [글로벌 헤더] 💡 위: 리넨 베이지 / 아래: 딥 체러키 버건디 분할 마감
+   ======================================================== */
+
+/* 2. 💡 [위 레이아웃] 및 [로고 주변 메인 영역] - 은은한 '리넨 베이지' 한 통 일체화 마감 */
+.main-header-topBox,
+header,
+.main-header-logo {
+  background-color: var(--main-bg) !important; /* 💡 공간이 탁 트여 보이도록 로고 주변까지 연베이지 통일 */
+}
+
+/* 상단 연베이지 영역 내부 폰트 가독성 고정 */
+.main-header-topBox {
+  border-bottom: 1px solid rgba(112, 42, 36, 0.08) !important; 
+  padding: 8px 0 !important;
+}
+.main-header-userMenu li p,
+.main-header-topBox a,
+.main-header-topBox span {
+  color: var(--black-brown) !important; /* 리넨 베이지 위에서 시안성이 가장 높은 다크 브라운 폰트 */
+  font-weight: 600 !important;
+  font-size: 13px !important;
+}
+
+header {
+  border-bottom: none !important;
+}
+
+/* 🔍 헤더 내부의 검색창 - 미니멀하게 테두리만 블랙 라인화 */
+.main-header-bar {
+  background-color: #FFFFFF !important;   
+  border: 2px solid #000000 !important;    
+  box-shadow: none !important;             
+}
+.main-header-bar .input { color: #000000 !important; }
+.main-header-bar .input::placeholder { color: var(--text-muted) !important; }
+
+
+/* 3. 💡 [아래 레이아웃] 홈/거실/침실 네비게이션 바 - 매혹적인 '딥 체러키 버건디' + 그림자 */
+.main-header-bottomBox {
+  background-color: var(--deep-cherokee) !important; /* 💡 아래 레이아웃 명품 마호가니빛 딥 체러키(#702A24) 주입 */
+  border-top: 1px solid #8B3E37 !important;          
+  border-bottom: 1px solid #531D19 !important;     
+  
+  /* 💡 버건디 바 아래 영역으로 부드럽고 우아하게 밀려내려오는 입체적 그림자 그라데이션 */
+  position: relative;
+  z-index: 20;
+  box-shadow: 0 10px 30px rgba(112, 42, 36, 0.15), 
+              0 3px 12px rgba(112, 42, 36, 0.08) !important; 
+}
+
+/* 딥 체러키 아래 레이아웃 내부의 GNB 메뉴 글자색 - 선명한 순백색 마감 */
+.main-header-GNB > ul > li > a {
+  color: #FFFFFF !important; 
+  font-weight: 600 !important;
+  letter-spacing: 0.3px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+}
+.main-header-GNB > ul > li > a:hover {
+  color: var(--main-bg) !important; /* 호버 시 리넨 베이지빛 폰트로 피드백 */
+}
+
+
+

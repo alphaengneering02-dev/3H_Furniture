@@ -272,8 +272,9 @@ const Orderboard = ({
             </div>
             </div>
 
-            {/* 💡 대량 주문*/}
+            {/* 💡 대량 주문*/}                
             <div className="admin-content-box">
+                <div className="admin-table-scroll">
                 <div className="admin-order-header">
                 <div className="admin-order-top-row">
                     <div>
@@ -330,7 +331,7 @@ const Orderboard = ({
                         </table>
                     </div>
                 )}
-            </div>
+            </div></div>
 
             {/* [최종 배송 완료 목록] */}
             <div className="admin-content-box">
