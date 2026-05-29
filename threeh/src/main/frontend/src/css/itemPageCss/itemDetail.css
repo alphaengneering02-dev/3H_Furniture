@@ -3,8 +3,8 @@
    기준: global.css
 
    global.css 기준:
-   - body 배경: #FFF8ED
-   - 컨텐츠 박스: #FFFCF7
+   - body 배경: #FAF6F0
+   - 컨텐츠 박스: #FFFFFF
    - 기본 폰트: Noto Sans KR
    - 포인트 폰트: Playfair Display
 
@@ -34,7 +34,7 @@
     margin: 0 auto;
     padding: 80px 20px;
     background-color: var(--content-bg);
-    color: #A98C72;
+    color: var(--text-muted);
     font-size: 16px;
     text-align: center;
 }
@@ -50,18 +50,18 @@
     border: 1px solid var(--soft-border) !important;
     border-radius: 999px !important;
     background-color: #FFFFFF !important;
-    color: var(--brown) !important;
+    color: var(--black-brown) !important;
     font-family: 'Noto Sans KR', sans-serif !important;
     font-size: 13px !important;
-    font-weight: 500 !important;
+    font-weight: 600 !important;
     box-shadow: none !important;
     cursor: pointer;
 }
 
 .itemDetail-listButton:hover {
-    border-color: var(--caramel) !important;
-    background-color: var(--cream) !important;
-    color: var(--caramel) !important;
+    border-color: var(--deep-cherokee) !important;
+    background-color: var(--main-bg) !important;
+    color: var(--deep-cherokee) !important;
 }
 
 /* 기존 페이지 제목 숨김 */
@@ -94,7 +94,7 @@
     width: 100%;
     height: 560px;
     overflow: hidden;
-    background-color: var(--main-bg);
+    background-color: #F4EFE8;
     border: 1px solid var(--soft-border);
 }
 
@@ -105,7 +105,7 @@
     display: block;
     object-fit: cover;
     border: none;
-    background-color: var(--main-bg);
+    background-color: #F4EFE8;
 }
 
 /* 대표 이미지 없음 문구 */
@@ -114,7 +114,7 @@
     align-items: center;
     justify-content: center;
     height: 100%;
-    color: #A98C72;
+    color: var(--text-muted);
     font-size: 15px;
 }
 
@@ -126,7 +126,7 @@
     transform: translateX(-50%);
     padding: 5px 15px;
     border-radius: 999px;
-    background-color: rgba(31, 24, 19, 0.38);
+    background-color: rgba(43, 29, 22, 0.48);
     color: #FFFFFF;
     font-size: 13px;
     font-weight: 600;
@@ -150,7 +150,7 @@
     overflow: hidden;
     border: 1px solid var(--soft-border);
     border-radius: 6px;
-    background-color: var(--main-bg);
+    background-color: #F4EFE8;
     cursor: pointer;
     opacity: 0.72;
     transition: opacity 0.2s ease, border-color 0.2s ease;
@@ -160,7 +160,7 @@
 .itemDetail-thumbButton.active,
 .itemDetail-thumbButton:hover {
     opacity: 1;
-    border-color: var(--caramel);
+    border-color: var(--deep-cherokee);
 }
 
 /* 서브 이미지 */
@@ -188,7 +188,7 @@
     object-fit: cover;
     border: 1px solid var(--soft-border);
     border-radius: 6px;
-    background-color: var(--main-bg);
+    background-color: #F4EFE8;
 }
 
 /* 이미지 섹션 제목 숨김 */
@@ -222,12 +222,12 @@
     border: 1px solid var(--soft-border);
     border-radius: 999px;
     background-color: #FFFFFF;
-    color: var(--brown);
+    color: var(--black-brown);
     font-size: 12px;
 }
 
 .itemDetail-interestText strong {
-    color: #D93324;
+    color: var(--deep-cherokee);
     font-weight: 700;
 }
 
@@ -244,12 +244,12 @@
 }
 
 .itemDetail-iconButton:hover {
-    background-color: var(--cream) !important;
+    background-color: var(--main-bg) !important;
 }
 
 /* 북마크 활성화 */
 .itemDetail-favoriteActive {
-    color: #D93324 !important;
+    color: var(--deep-cherokee) !important;
 }
 
 /* 상품명 */
@@ -270,7 +270,7 @@
 /* 원가 */
 .itemDetail-originPrice {
     margin-bottom: 4px;
-    color: #A98C72;
+    color: var(--text-muted);
     font-size: 15px;
     text-decoration: line-through;
 }
@@ -284,7 +284,7 @@
 
 /* 할인율 */
 .itemDetail-discountRate {
-    color: #E0241B;
+    color: var(--deep-cherokee);
     font-size: 22px;
     font-weight: 800;
 }
@@ -316,9 +316,9 @@
 /* 옵션 라벨 */
 .itemDetail-label,
 .itemDetail-infoList dt {
-    color: var(--brown);
+    color: var(--black-brown);
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 600;
 }
 
 /* MUI Select */
@@ -335,11 +335,11 @@
 }
 
 .itemDetail-optionSelect:hover .MuiOutlinedInput-notchedOutline {
-    border-color: var(--caramel);
+    border-color: var(--deep-cherokee);
 }
 
 .itemDetail-optionSelect.Mui-focused .MuiOutlinedInput-notchedOutline {
-    border-color: var(--caramel) !important;
+    border-color: var(--deep-cherokee) !important;
     border-width: 1px !important;
 }
 
@@ -362,7 +362,7 @@
 
 /* 판매상태 */
 .itemDetail-status {
-    color: var(--caramel);
+    color: var(--deep-cherokee);
     font-weight: 700;
 }
 
@@ -379,7 +379,7 @@
     margin: 0;
     padding: 13px 0;
     border-bottom: 1px solid var(--soft-border);
-    color: var(--brown);
+    color: var(--black-brown);
     font-size: 14px;
     line-height: 1.6;
 }
@@ -457,15 +457,15 @@
 
 /* 장바구니 hover */
 .itemDetail-cartButton:hover {
-    border-color: var(--caramel) !important;
-    background-color: var(--cream) !important;
-    color: var(--caramel) !important;
+    border-color: var(--deep-cherokee) !important;
+    background-color: var(--main-bg) !important;
+    color: var(--deep-cherokee) !important;
 }
 
 /* 구매하기 hover */
 .itemDetail-buyButton:hover {
-    border-color: var(--deep-caramel) !important;
-    background-color: var(--deep-caramel) !important;
+    border-color: var(--deep-cherokee) !important;
+    background-color: var(--deep-cherokee) !important;
 }
 
 /* disabled 버튼 */
@@ -474,8 +474,8 @@
 .itemDetail-button:disabled,
 .Mui-disabled.itemDetail-cartButton,
 .Mui-disabled.itemDetail-buyButton {
-    border-color: var(--warm-beige) !important;
-    background-color: var(--warm-beige) !important;
+    border-color: #CFC4BA !important;
+    background-color: #CFC4BA !important;
     color: #FFFFFF !important;
     cursor: not-allowed !important;
 }
@@ -493,9 +493,9 @@
 .itemDetail-warning {
     margin: 12px 0 18px;
     padding: 13px 15px;
-    border: 1px solid #E9C7BA;
-    background-color: var(--cream);
-    color: #B94A3A;
+    border: 1px solid rgba(112, 42, 36, 0.22);
+    background-color: rgba(112, 42, 36, 0.06);
+    color: var(--deep-cherokee);
     font-size: 14px;
     font-weight: 500;
 }
@@ -521,7 +521,7 @@
 }
 
 .itemDetail-detailSection p {
-    color: var(--brown);
+    color: var(--black-brown);
     font-size: 15px;
     line-height: 1.8;
     white-space: pre-line;
@@ -543,41 +543,42 @@
     flex: 1;
     height: 48px;
     border-radius: 0;
-    background-color: #333333;
+    background-color: var(--black-brown);
     color: #ffffff;
     font-weight: 700;
 }
 
 .itemDetail-adminEditButton.MuiButton-root:hover {
-    background-color: #111111;
+    background-color: #1A120E;
 }
 
 .itemDetail-adminDeleteButton.MuiButton-root {
     flex: 1;
     height: 48px;
     border-radius: 0;
-    background-color: #b94a3a;
+    background-color: var(--deep-cherokee);
     color: #ffffff;
     font-weight: 700;
 }
 
 .itemDetail-adminDeleteButton.MuiButton-root:hover {
-    background-color: #96382c;
+    background-color: #531D19;
 }
 
 .itemDetail-adminListButton.MuiButton-root {
     flex: 1;
     height: 48px;
     border-radius: 0;
-    border: 1px solid #333333;
+    border: 1px solid var(--black-brown);
     background-color: #ffffff;
-    color: #333333;
+    color: var(--black-brown);
     font-weight: 700;
 }
 
 .itemDetail-adminListButton.MuiButton-root:hover {
-    background-color: #f5f5f5;
+    background-color: var(--main-bg);
 }
+
 /* ================================
    반응형
 ================================ */

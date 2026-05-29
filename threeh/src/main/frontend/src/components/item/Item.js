@@ -928,6 +928,7 @@ const handleAdminDeleteSelectedItems = async ()=>{
       )}
 
       {/*등록된 상품 개수 표시 */}
+      <div className="item-filter-top-area">
       <div className="item-count-box">
         <span className="item-count-text">
             총 등록 상품: {items.length}개
@@ -983,6 +984,7 @@ const handleAdminDeleteSelectedItems = async ()=>{
           필터초기화
         </button>
       </div>
+    </div>
 
       {/*관리자 로그인 시에만 관리자 상품/리뷰 관리 페이지 이동 버튼 표시 */}
       {isAdmin && (
