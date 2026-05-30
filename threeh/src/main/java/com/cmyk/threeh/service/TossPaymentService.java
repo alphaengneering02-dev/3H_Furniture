@@ -85,9 +85,12 @@ public class TossPaymentService{
     }
 
     public Payment verifyPayment(String orderId, Long amount){
-        Payment payment = paymentRepository.findByOrderId(orderId).orElseThrow(()-> {
-            throw new CustomException(ErrorCode.PAYMENT_NOT_FOUND);
-        });
+        // Payment payment = paymentRepository.findByOrderId(orderId).orElseThrow(()-> {
+        //     throw new CustomException(ErrorCode.PAYMENT_NOT_FOUND);
+        // });
+        Payment payment = paymentRepository.findByOrderId(orderId).orElseThrow(()->  //유소은_람다식(orElseThrow) 문법오류 수정
+            new CustomException(ErrorCode.PAYMENT_NOT_FOUND)
+        );
 
         if(!payment.getAmount().equals(amount)){
             throw new CustomException(ErrorCode.PAYMENT_AMOUNT_EXP);
@@ -155,9 +158,12 @@ public class TossPaymentService{
 
     @Transactional
     public void tossPaymentFail(String code, String message, String orderId){
-        Payment payment = paymentRepository.findByOrderId(orderId).orElseThrow(()-> {
-            throw new CustomException(ErrorCode.PAYMENT_NOT_FOUND);
-        });
+        // Payment payment = paymentRepository.findByOrderId(orderId).orElseThrow(()-> {
+        //     throw new CustomException(ErrorCode.PAYMENT_NOT_FOUND);
+        // });
+        Payment payment = paymentRepository.findByOrderId(orderId).orElseThrow(()->  //유소은_람다식(orElseThrow) 문법오류 수정
+            new CustomException(ErrorCode.PAYMENT_NOT_FOUND)
+        );
 
         payment.setPaySuccessYN(false);
         payment.setFailReason(message);

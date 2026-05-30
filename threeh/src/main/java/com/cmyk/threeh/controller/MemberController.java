@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -30,8 +29,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cmyk.threeh.domain.Member;
-import com.cmyk.threeh.dto.BookmarksDTO;
-import com.cmyk.threeh.dto.ItemResponseDTO;
 import com.cmyk.threeh.dto.MemberDTO;
 import com.cmyk.threeh.form.SignupUpdateForm;
 import com.cmyk.threeh.global.error.CustomException;
@@ -40,7 +37,6 @@ import com.cmyk.threeh.global.util.GetLoginId;
 import com.cmyk.threeh.service.MemberService;
 
 import lombok.RequiredArgsConstructor;
-import oracle.jdbc.proxy.annotation.Post;
 
 @RestController
 @RequestMapping("/api/member")
