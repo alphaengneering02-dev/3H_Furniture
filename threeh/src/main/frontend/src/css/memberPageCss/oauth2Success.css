@@ -34,6 +34,9 @@
 
   --oauth2-success-font-sans: 'Noto Sans KR', sans-serif;
   --oauth2-success-font-serif: 'Playfair Display', serif;
+
+  --black-brown: #2B1D16;   /* 에스프레소 블랙 브라운 */
+  --deep-cherokee: #702A24; /* 헤더의 체리 버건디색 */
 }
 
 /* 전체 oauth2-success 컴포넌트를 감싸는 래퍼 */
@@ -51,8 +54,7 @@
     align-items: center;
     justify-content: center;
     
-    background-color: var(--oauth2-success-dark-beige);
-    font-family: 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+    background-color: var(--oauth2-success-bg-ivory);
     z-index: 9999; /* 헤더나 푸터 등 다른 요소보다 무조건 위에 보이도록 설정 */
 }
 
@@ -62,7 +64,7 @@
     flex-direction: column;
     align-items: center;
     text-align: center;
-    padding: 20px;
+    padding: 40px 20px;
     width: 100%;
     max-width: 400px; /* 로딩바와 텍스트의 전체적인 최대 너비 제한 */
 }
@@ -72,16 +74,18 @@
     margin-bottom: 30px;
 }
 
+/*메인 타이틀*/
 .oauth2-success-title {
     font-size: 22px;
     font-weight: 600;
-    color: #4a3b32; /* 다크 브라운/그레이 톤 */
+    color: var(--black-brown);
     margin-bottom: 12px;
     margin-top: 0;
 }
 
+/*서브 설명문*/
 .oauth2-success-desc {
     font-size: 14px;
-    color: var(--oauth2-success-bg-white);
+    color: var(--oauth2-success-middle-gray);
     margin: 0;
 }

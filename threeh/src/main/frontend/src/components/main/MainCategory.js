@@ -76,11 +76,17 @@ function MainCategory(props) {
                                     <div className='slide-text'
                                         style={{
                                             position: 'absolute',
-                                            top: '40px', left: '40px',
-                                            color: '#fff'
+                                            bottom: '40px', right: '40px',
+                                            color: '#fff', textAlign: 'right'
                                         }}>
-                                        <h3>{slide.title}</h3>
-                                        <p>{slide.describe}</p>
+                                        <h3 style={{
+                                                fontSize: '30px', marginBottom: '5px'
+                                            }}
+                                        >{slide.title}</h3>
+                                        <p style={{
+                                                fontSize: '18px'
+                                            }}
+                                        >{slide.describe}</p>
                                     </div>
                                     <img src={slide.src} alt={slide.alt} 
                                         style={{

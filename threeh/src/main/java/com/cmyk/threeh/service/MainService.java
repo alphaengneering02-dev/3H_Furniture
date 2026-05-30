@@ -36,8 +36,6 @@ public class MainService {
         "color": [],
         "price": [0, 500]
         */
-
-
         // 1. 전체 상품 가져오기
         List<ItemResponseDTO> allItems = itemService.getAllItems();
 

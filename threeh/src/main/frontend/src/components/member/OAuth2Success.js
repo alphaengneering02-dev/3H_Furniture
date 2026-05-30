@@ -99,7 +99,7 @@ const OAuth2Success = () => {
                         sx={{
                             backgroundColor: '#e6dfd9',
                             '& .MuiLinearProgress-bar': {
-                                backgroundColor: '#8a7664'
+                                backgroundColor: '#702A24'
                             }
                         }}
                     />

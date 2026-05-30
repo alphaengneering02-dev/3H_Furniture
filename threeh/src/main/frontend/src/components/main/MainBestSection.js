@@ -24,7 +24,7 @@ function MainBestSection({ bestItems }) {
                                 className='best-card-item-link'
                                 to={`/item/${item.itemId}`}
                             >
-                                <div className="best-medal">{item.rank}</div>
+                                {/* <div className="best-medal">{item.rank}</div> */}  {/* 임시 주석처리 유소은 */}
                                 {/*코딩 수정 오현옥 */}
                                 <div className="best-img-box">
                                     {item.image || item.itemImgUrl ?(

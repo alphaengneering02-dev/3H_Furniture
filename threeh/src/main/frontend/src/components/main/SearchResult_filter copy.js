@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Slider } from "@mui/material";
 import { useSearch } from '../../hook/SearchContext';
 
-const SearchResult_filter = ({onClickSearch}) => {
+const SearchResult_filter = ({myFilter, setMyFilter}) => {
 
     //검색상태 Context에서 모든 상태와 옵션을 가져옵니다.
     const {
@@ -12,12 +12,21 @@ const SearchResult_filter = ({onClickSearch}) => {
         doSearch
     } = useSearch()
 
+    //전체 삭제 및 초기화 함수
+    const resetMyFilter = () => {
+        setMyFilter({
+            category: [],
+            color: [],
+            price: [0, 500],
+        })
+    }
+
 
     //전체 선택/해제 핸들러
     const handleAllCheck = (type, options) => {  
         //type: category, color
         //options: 선택한 항목('거실', '하얀색', ...)
-        setSearchKey((prev) => {
+        setMyFilter((prev) => {
             //기존 선택값 가져오기
             const currentList = prev[type] || [];
             
@@ -34,7 +43,7 @@ const SearchResult_filter = ({onClickSearch}) => {
 
     //개별 선택/해제 핸들러
     const handleSingleCheck = (type, value) => {
-        setSearchKey((prev) => {
+        setMyFilter((prev) => {
             const currentList = prev[type] || [];
             
             //해제/선택 토글
@@ -52,8 +61,8 @@ const SearchResult_filter = ({onClickSearch}) => {
 
     //Range Slider
     const changePrice = (evt, range) => {
-        setSearchKey({
-            ...searchKey,
+        setMyFilter({
+            ...myFilter,
             price: range
         }) 
     }
@@ -65,7 +74,7 @@ const SearchResult_filter = ({onClickSearch}) => {
             {/* 검색 조건 헤더 영역 */}
             <article className='search-result-filter-header'>
                 <h3 className='search-result-filter-main-title'>검색 조건</h3>
-                <button type='button' className='search-result-filter-reset-btn' onClick={resetSearchKey}>
+                <button type='button' className='search-result-filter-reset-btn' onClick={resetMyFilter}>
                     전체 삭제
                 </button>
             </article>
@@ -81,7 +90,7 @@ const SearchResult_filter = ({onClickSearch}) => {
                             <div className='search-result-checkbox-item'>
                                 <input type="checkbox"
                                 id="category_all"
-                                checked={searchKey.category.length === category_options.length}
+                                checked={myFilter.category.length === category_options.length}
                                 onChange={() => handleAllCheck('category', category_options)}/>
                                 <label htmlFor="category_all">전체</label>
                             </div>
@@ -91,7 +100,7 @@ const SearchResult_filter = ({onClickSearch}) => {
                                     <input 
                                         type="checkbox" 
                                         id={`category_${item}`}
-                                        checked={searchKey.category.includes(item)}
+                                        checked={myFilter.category.includes(item)}
                                         onChange={() => handleSingleCheck('category', item)}
                                     />
                                     <label htmlFor={`category_${item}`}>{item}</label>
@@ -107,7 +116,7 @@ const SearchResult_filter = ({onClickSearch}) => {
                             <div className='search-result-checkbox-item'>
                                 <input type="checkbox"
                                 id="color_all"
-                                checked={searchKey.color.length === color_options.length}
+                                checked={myFilter.color.length === color_options.length}
                                 onChange={() => handleAllCheck('color', color_options)}/>
                                 <label htmlFor="color_all">전체</label>
                             </div>
@@ -117,7 +126,7 @@ const SearchResult_filter = ({onClickSearch}) => {
                                     <input 
                                         type="checkbox" 
                                         id={`color_${item}`}
-                                        checked={searchKey.color.includes(item)}
+                                        checked={myFilter.color.includes(item)}
                                         onChange={() => handleSingleCheck('color', item)}
                                     />
                                     <label htmlFor={`color_${item}`}>{item}</label>
@@ -134,7 +143,7 @@ const SearchResult_filter = ({onClickSearch}) => {
                         <Slider
                             aria-label="가격대 범위 설정"
                             min={0} max={500}
-                            value={searchKey.price}
+                            value={myFilter.price}
                             onChange={changePrice}
                             marks={price_options}
                             valueLabelDisplay="on"
@@ -147,11 +156,6 @@ const SearchResult_filter = ({onClickSearch}) => {
                             }}
                         />
                     </div>
-                </div>
-                <div>
-                    <button onClick={onClickSearch}>
-                            search
-                    </button>
                 </div>
             </article>
         </section>

@@ -9,6 +9,7 @@ import Signup from '../components/member/Signup';
 import Signup_site from '../components/member/Signup_site';
 import FindId from '../components/member/FindId';
 import ChangePW from '../components/member/ChangePW';
+import { SearchProvider } from '../hook/SearchContext';
 
 
 //오현옥
@@ -44,10 +45,11 @@ import Schedule from '../components/mypage/Schedule';
 const Router = () => {
     return (
         <BrowserRouter>
+        <SearchProvider>
             <Routes>
 
                 <Route element={<Layout />}>
-                
+                    
                     <Route path="/" element={<Main/>} />
                     <Route path="/searchResult" element={<SearchResult/>} />
                     <Route path="/login" element={<Login/>} />
@@ -73,8 +75,8 @@ const Router = () => {
                     <Route path='/order/order' element={<Order/>} />
                     <Route path="/order/:itemId" element={<Order/>} />
                     <Route path='/payment/fail' element={<PaymentFail/>} />
-               
-              
+            
+            
                 
                     <Route path="/admin" element={<AdminDashboard/>} />
                     <Route path="/admin/delivery" element={<AddDelivery/>} />
@@ -83,6 +85,7 @@ const Router = () => {
                 </Route>
                 
             </Routes>
+            </SearchProvider>
         </BrowserRouter>
     );
 };

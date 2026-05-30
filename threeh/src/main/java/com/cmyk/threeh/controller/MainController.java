@@ -45,44 +45,20 @@ public class MainController {
     //상품 통합검색
     //프론트엔드 URL: http://localhost:8080/api/main/searchResult?searchValue=검색어&category=거실,침실&color=White,Black
     @GetMapping("/searchResult")
-    public List<ItemResponseDTO> searchItems(@RequestParam Map<String, String> allParams){
-
-        /*
-        <Parameters>
-        searchValue: 검색어,
-        "category": [],
-        "color": [],
-        "price": [0, 500]
-        */
-
-        //1. 파라미터 추출 및 분해
-        //단일 문자열 파라미터
-        String searchValue = allParams.get("searchValue");
-        if (searchValue != null) {
-            searchValue = searchValue.trim();
-        }
-
-        //다중선택 배열 파라미터 (예: "거실,침실" -> List<String> ["거실", "침실"])
-        String[] category = parseStringToArray(allParams.get("category"));
-        String[] color = parseStringToArray(allParams.get("color"));
-        String[] price = parseStringToArray(allParams.get("price"));
-                
-
+    public List<ItemResponseDTO> searchItems(@RequestParam(required = false) String searchValue,
+    @RequestParam(value = "category[]", required = false) String[] category,
+    @RequestParam(value = "color[]", required = false) String[] color,
+    @RequestParam(value = "price[]", required = false) String[] price){
 
         //========= [디버깅 확인용 로그] =========
         System.out.println("\n====== [MainController 진입] ======");
-        System.out.println("모든 파라미터: " + allParams);
-        System.out.println("------ 분해 완료 데이터 ------");
         System.out.println("검색어: " + searchValue);
-        System.out.println("카테고리: " + Arrays.toString(category));
-        System.out.println("색상: " + Arrays.toString(color));
-        System.out.println("가격대: " + Arrays.toString(price));
+        System.out.println("카테고리: " + category);
+        System.out.println("색상: " + color);
+        System.out.println("가격대: " + price);
         System.out.println("=====================================");
         //========================================
 
-        
-        
-        //2. 상품 통합검색
         List<ItemResponseDTO> searchResult = mainService.searchItems(searchValue, category, color, price);
 
         return searchResult;

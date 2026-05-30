@@ -136,65 +136,6 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         responseData.put("isNewOAuth2User", false); 
 
         response.getWriter().write(objectMapper.writeValueAsString(responseData));
-
-
-
-        /*
-        // 1. 기본 응답 상태 설정
-        String passMessage = "로그인에 성공하였습니다.";
-        boolean isNewOAuth2User = false;  //신규 가입자 여부 체크용
-
-        
-        // 2. Authentication 객체에서 인증된 사용자 정보를 가져옵니다. (authentication 객체 자체가 Principal)
-        Object principal = authentication.getPrincipal();  
-        String id = authentication.getName();
-
-
-        // 2. 신규 가입한 OAuth2 회원 여부 검사
-        if (id.contains("google_") || id.contains("naver_") || id.contains("kakao_")) {
-            Member member = memberService.getLoginUser(authentication);
-            
-            // Null 안정성 확보
-            if (member != null && member.getCreatedAt() != null) {
-                LocalDateTime createdAt = member.getCreatedAt();
-                LocalDateTime minusOneMinute = LocalDateTime.now().minusMinutes(1);
-                
-                // 가입한지 1분 이내일 때 메시지 및 상태 변경
-                if (createdAt.isAfter(minusOneMinute)) {  
-                    passMessage = "소셜 회원가입을 축하합니다. 마이페이지에서 추가 정보를 등록하시겠습니까?";
-                    isNewOAuth2User = true;
-                }
-            }
-        }
-
-
-        // 3. 백엔드 Spring session 처리
-        HttpSession httpSession = request.getSession();
-        httpSession.setAttribute("user", principal);
-        httpSession.setMaxInactiveInterval(expiredTime);
-
-		System.out.println("[백엔드 Spring session에 올라간 회원정보]"  + "\n"
-			+ "sessindId: " + httpSession.getId() + "\n"
-			+ "만료시간: " + httpSession.getMaxInactiveInterval() + "\n"
-			+ "생성시간: " + httpSession.getCreationTime() + "\n"
-			+ "마지막 접속시간: " + httpSession.getLastAccessedTime()
-		);
-
-        // 4. HTTP 응답 헤더 설정
-        response.setStatus(HttpStatus.OK.value());
-        response.setContentType("application/json;charset=UTF-8");
-
-        // 5. 최종 응답 데이터(JSON) 조립
-        Map<String, Object> responseData = new HashMap<>();
-        responseData.put("status", true);
-        responseData.put("id", id);
-        responseData.put("message", passMessage);
-        responseData.put("isNewOAuth2User", isNewOAuth2User); // React에서 if(res.data.isNewUser)로 마이페이지 이동 처리 가능
-        
-
-        // 7. JSON 문자열로 변환하여 클라이언트에게 전송(단 한 번만)  ----> React
-        response.getWriter().write(objectMapper.writeValueAsString(responseData));  //Map 객체(responseData) --> json 문자열(response)
-        */
     }
     
 }

@@ -16,13 +16,19 @@ import logo from '../../assets/logo.jpg';
 import axios, { all } from 'axios';
 import Header_searchCondition from './Header_searchCondition';
 import { useToast } from '../../hook/useToast';
+import { useSearch } from '../../hook/SearchContext'; // 검색관련 Context 임포트
 
 // 헤더
 const Header = () => {
     const navigate = useNavigate();
+    const { success, error, warn, info} = useToast();
+    const {
+        searchValue, changeSearchValue,
+        doSearch
+    } = useSearch()  // Context에서 전역 검색상태 가져오기
+
     const [user, setUser] = useState({});  //로그인한 회원정보 저장객체
 
-    const { success, error, warn, info} = useToast();
 
     const getSession = () => {
         try {
@@ -77,16 +83,28 @@ const Header = () => {
 
 
     //상품 통합검색
-    //검색어
-    const [searchValue, setSearchValue] = useState("")
-    const changeSearchValue = (evt) => {setSearchValue(evt.target.value)}
+    // //검색어
+    // const [searchValue, setSearchValue] = useState("")
+    // const changeSearchValue = (evt) => {setSearchValue(evt.target.value)}
 
-    //검색조건
-    const [searchKey, setSearchKey] = useState({
-        "category": [],
-        "color": [],
-        "price": [0, 500],
-    })
+    // //검색조건
+    // //체크박스 옵션 리스트 정의
+    // const category_options = ['거실', '침실', '욕실', '주방']
+    // const color_options = ['White', 'Black', 'Wood']  //**상품마다
+    // const price_options = [
+    //     {value: 0, label: '0원'},
+    //     {value: 100, label: '100만원'},
+    //     {value: 200, label: '200만원'},
+    //     {value: 300, label: '300만원'},
+    //     {value: 400, label: '400만원'},
+    //     {value: 500, label: '500만원'},
+    // ]
+
+    // const [searchKey, setSearchKey] = useState({
+    //     "category": category_options,
+    //     "color": color_options,
+    //     "price": [0, 500],
+    // })
 
     //검색 조건창 열림 상태
     const [isSearchCondition, setIsSearchCondition] = useState(false)
@@ -95,40 +113,10 @@ const Header = () => {
     }
 
 
-    //검색 함수
-    const doSearch = async() => {
-        try {
-            //1. Query String 생성 (예: ?searchValue=책상&space=거실,침실&size=1,6)
-            const params = new URLSearchParams()  //파라미터를 생성하는 훅
-            if (searchValue.trim() !== "") {  //parameter - 검색어
-                params.append("searchValue", searchValue);
-            }
-
-            Object.keys(searchKey).forEach(key => {  //parameter - 다중 검색 조건(searchKey)을 순회하며 파라미터에 추가
-                const value = searchKey[key];  //검색조건 배열
-                if (value.length > 0) {  //유효한 값들만 params에 쉼표(,)로 연결해 추가 (예: ["거실", "주방"])
-                    params.append(key, value.join(','))
-                }
-            })
-
-            //2. 완성된 Query String 확인 (디버깅용)
-            const queryString = params.toString()
-            console.log("현재 searchKey 상태:", searchKey);
-            console.log("검색 쿼리:", queryString)
-
-            //3. 프론트엔드 라우터(SearchResult 페이지)로 이동
-            navigate(`/searchResult?${queryString}`)
-        } catch (error) {
-            console.error("검색 이동 중 오류 발생:", error)
-        }
-    }
-
-
     //엔터키로 검색하기
     const onEnter = (evt) => {
         if(evt.key==='Enter') {
-            //브라우저의 기본 폼 제출(새로고침) 방지
-            evt.preventDefault();
+            evt.preventDefault();  //브라우저의 기본 폼 제출(새로고침) 방지
             doSearch(evt)
         }
     }
@@ -185,10 +173,7 @@ const Header = () => {
 
 
                                 {/* 검색조건 선택창 팝업 */}
-                                {
-                                    isSearchCondition &&
-                                    <Header_searchCondition searchKey={searchKey} setSearchKey={setSearchKey}/>
-                                }
+                                { isSearchCondition && <Header_searchCondition/> }
                             </form>
                         </div>
                     </div>

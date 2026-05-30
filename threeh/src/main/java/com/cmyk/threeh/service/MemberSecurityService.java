@@ -96,8 +96,17 @@ public class MemberSecurityService implements UserDetailsService, OAuth2UserServ
 	public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {  //userRequest(소셜 사용자 정보)
 
 		try {
-
 			OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2MemberService = new DefaultOAuth2UserService();
+
+
+			// ========================================================
+			// ★ 디버깅 메세지 : 기존 로직이 실행되기 전에 토큰부터 확인
+			String accessToken = userRequest.getAccessToken().getTokenValue();
+			System.out.println("=====================================");
+			System.out.println("발급된 OAuth2 소셜로그인 Access Token: " + accessToken);
+			System.out.println("=====================================");
+        	// ========================================================
+			
 		
 			//userRequest --> oAuth2UserService로 넘김(load)
 			OAuth2User oAuth2Member = oAuth2MemberService.loadUser(userRequest);

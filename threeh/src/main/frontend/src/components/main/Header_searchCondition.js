@@ -1,34 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Slider } from "@mui/material";
+import { useSearch } from '../../hook/SearchContext';
 
-const Header_searchCondition = ({searchKey, setSearchKey}) => {
+const Header_searchCondition = () => {
 
-
-    useEffect(() => {
-        resetSearchKey()
-    }, [])
-
-    //전체 삭제 및 초기화 함수
-    const resetSearchKey = () => {
-        setSearchKey({
-            category: [],
-            color: [],
-            price: [0, 500],
-        })
-    }
-
-
-    //체크박스 옵션 리스트 정의
-    const category_options = ['거실', '침실', '욕실', '주방']
-    const color_options = ['White', 'Black', 'Wood']  //**상품마다
-    const price_options = [
-        {value: 0, label: '0원'},
-        {value: 100, label: '100만원'},
-        {value: 200, label: '200만원'},
-        {value: 300, label: '300만원'},
-        {value: 400, label: '400만원'},
-        {value: 500, label: '500만원'},
-    ]
+    //검색상태 Context에서 모든 상태와 옵션을 가져옵니다.
+    const {
+        category_options, color_options, price_options,
+        searchKey, setSearchKey,
+        resetSearchKey, deleteSearchKey
+    } = useSearch()
 
 
     //전체 선택 핸들러
@@ -80,7 +61,7 @@ const Header_searchCondition = ({searchKey, setSearchKey}) => {
             {/* 조건창 상단바 */}
             <article className='main-header-searchCondition-title'>
                 <h3>검색 조건</h3>
-                <button className='deleteAll' type='button' onClick={resetSearchKey}>전체 삭제</button>
+                <button className='deleteAll' type='button' onClick={deleteSearchKey}>전체 삭제</button>
             </article>
 
 

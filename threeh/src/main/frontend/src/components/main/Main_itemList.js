@@ -76,13 +76,18 @@ const Main_itemList = ({ totalItemList }) => {
     useEffect(() => {
         try {
             if (totalItemList && totalItemList.length > 0) {
-                const sliced = [...totalItemList].slice(0, 8);
-                setItemList(sliced);
+                //상태가 SELL인 것만 먼저 거른 후, 등록순으로 8개를 자름
+                const sellItems = totalItemList
+                                .filter(item => item.itemSellStatus==="SELL")
+                                .slice(0, 8);
+
+                console.log("[메인 상품목록 데이터]\n", sellItems)
+                setItemList(sellItems);
                 
                 // [무한 슬라이드 핵심 1] 앞뒤로 카드 복제본 붙이기
-                const head = sliced.slice(-VISIBLE_COUNT); // 끝부분 4개 (5, 6, 7, 8)
-                const tail = sliced.slice(0, VISIBLE_COUNT); // 앞부분 4개 (1, 2, 3, 4)
-                setDisplayList([...head, ...sliced, ...tail]);
+                const head = sellItems.slice(-VISIBLE_COUNT); // 끝부분 4개 (5, 6, 7, 8)
+                const tail = sellItems.slice(0, VISIBLE_COUNT); // 앞부분 4개 (1, 2, 3, 4)
+                setDisplayList([...head, ...sellItems, ...tail]);
             }
         } catch (error) {
             console.error("[ITEM LIST 영역에 상품 추가 실패]\n", error);
