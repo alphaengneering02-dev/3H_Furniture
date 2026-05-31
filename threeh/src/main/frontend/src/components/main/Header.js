@@ -12,7 +12,7 @@ import icon_cart from '../../assets/icon_cart.png';
 import icon_logout from '../../assets/icon_logout.png';
 import icon_login from '../../assets/icon_login.png';
 import icon_signup from '../../assets/icon_signup.png';
-import logo from '../../assets/logo.jpg';
+import logo_header from '../../assets/logo_header.png';
 import axios, { all } from 'axios';
 import Header_searchCondition from './Header_searchCondition';
 import { useToast } from '../../hook/useToast';
@@ -81,31 +81,7 @@ const Header = () => {
     }
 
 
-
-    //상품 통합검색
-    // //검색어
-    // const [searchValue, setSearchValue] = useState("")
-    // const changeSearchValue = (evt) => {setSearchValue(evt.target.value)}
-
-    // //검색조건
-    // //체크박스 옵션 리스트 정의
-    // const category_options = ['거실', '침실', '욕실', '주방']
-    // const color_options = ['White', 'Black', 'Wood']  //**상품마다
-    // const price_options = [
-    //     {value: 0, label: '0원'},
-    //     {value: 100, label: '100만원'},
-    //     {value: 200, label: '200만원'},
-    //     {value: 300, label: '300만원'},
-    //     {value: 400, label: '400만원'},
-    //     {value: 500, label: '500만원'},
-    // ]
-
-    // const [searchKey, setSearchKey] = useState({
-    //     "category": category_options,
-    //     "color": color_options,
-    //     "price": [0, 500],
-    // })
-
+    //==================검색==================
     //검색 조건창 열림 상태
     const [isSearchCondition, setIsSearchCondition] = useState(false)
     const toggleSearchCondition = () => {
@@ -128,58 +104,17 @@ const Header = () => {
             <div>
                 {/* 1. 상단 레이아웃 박스 */}
                 <section className="main-header-topBox">
-                    {/* 좌측 SNS 아이콘 영역 */}
+                    {/* 좌측 브랜드 로고 및 검색바 영역 */}
                     <div className="main-header-left">
-                        <ul className="main-header-sns">
-                            <li><Link to="https://www.facebook.com"><img src={icon_facebook} alt="facebook" /></Link></li>
-                            <li><Link to="https://www.instagram.com"><img src={icon_instagram} alt="instagram" /></Link></li>
-                            <li><Link to="https://pf.kakao.com/_TsIAE"><img src={icon_kakao} alt="kakao" /></Link></li>
-                        </ul>
-                    </div>
-
-
-                    {/* 중앙 브랜드 로고 및 검색바 영역 */}
-                    <div className="main-header-center">
                         <h1 className='main-header-logo'> 
                             <Link to="/">
-                                <img src={logo} alt="CMYK logo"/>
+                                <img src={logo_header} alt="CMYK logo"/>
                             </Link> 
                         </h1>
-
-                        <div className="main-header-search">
-                            <form method="get">
-                                {/* 검색창 */}
-                                <section className='main-header-bar'>
-                                    <button type="button" id="do" className="do">
-                                        <img 
-                                            src={icon_search} alt="검색" 
-                                            onClick={doSearch}
-                                        />
-                                    </button>
-                                    <input className='input'
-                                        type="text" 
-                                        id={searchValue} name={searchValue} value={searchValue} 
-                                        placeholder="검색어를 입력하세요" 
-                                        onChange={changeSearchValue} 
-                                        onKeyDown={onEnter}
-                                    />
-                                    <button type="button" className="hamburger">
-                                        <img 
-                                            src={icon_hamburger} alt="검색조건 선택창" 
-                                            onClick={toggleSearchCondition}
-                                        />
-                                    </button>
-                                </section>
-
-
-                                {/* 검색조건 선택창 팝업 */}
-                                { isSearchCondition && <Header_searchCondition/> }
-                            </form>
-                        </div>
                     </div>
 
 
-                    {/* 우측 회원 메뉴 영역 */}
+                    {/* 우측 사용자 메뉴 영역 */}
                     <div className="main-header-right">
                         <ul className="main-header-userMenu">
                             {
@@ -261,38 +196,45 @@ const Header = () => {
                 <section className="main-header-bottomBox">
                     <nav className="main-header-GNB">
                         <ul>
-                            {/* <!-- 메인메뉴1 --> */}
                             <li> <Link to="/">홈</Link> </li>
-
-
-                            {/* <!-- 메인메뉴2 --> */}
-                            <li>
-                                <Link to="/item?category=거실">거실</Link>
-                            </li>
-
-
-                            {/* <!-- 메인메뉴3 --> */}
-                            <li>
-                                <Link to="/item?category=침실">침실</Link>
-                            </li>
-
-
-                            {/* <!-- 메인메뉴4 --> */}
-                            <li>
-                                <Link to="/item?category=주방">주방</Link>
-                            </li>
-
-
-                            {/* <!-- 메인메뉴5 --> */}
-                            <li>
-                                <Link to="/item?category=욕실">욕실</Link>
-                            </li>
+                            <li> <Link to="/item?category=거실">거실</Link> </li>
+                            <li> <Link to="/item?category=침실">침실</Link> </li>
+                            <li> <Link to="/item?category=주방">주방</Link> </li>
+                            <li> <Link to="/item?category=욕실">욕실</Link> </li>
                         </ul>
-
-                        
-                        {/* <!-- 배경색 박스 --> */}
-                        <div className="main-header-menuBg"></div>
                     </nav>
+
+
+                    <div className="main-header-search">
+                        <form method="get">
+                            {/* 검색창 */}
+                            <section className='main-header-bar'>
+                                <button type="button" id="do" className="do">
+                                    <img 
+                                        src={icon_search} alt="검색" 
+                                        onClick={doSearch}
+                                    />
+                                </button>
+                                <input className='input'
+                                    type="text" 
+                                    id={searchValue} name={searchValue} value={searchValue} 
+                                    placeholder="검색어를 입력하세요" 
+                                    onChange={changeSearchValue} 
+                                    onKeyDown={onEnter}
+                                />
+                                <button type="button" className="hamburger">
+                                    <img 
+                                        src={icon_hamburger} alt="검색조건 선택창" 
+                                        onClick={toggleSearchCondition}
+                                    />
+                                </button>
+                            </section>
+
+
+                            {/* 검색조건 선택창 팝업 */}
+                            { isSearchCondition && <Header_searchCondition/> }
+                        </form>
+                    </div>
                 </section>
             </div>  {/* <!-- 헤더 이너 끝 --> */}
         </header>

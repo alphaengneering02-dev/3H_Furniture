@@ -25,13 +25,13 @@
 
 
 /* =========================================
-   필터 컴포넌트 디자인 (SearchResult_filter)
+   검색조건 필터 (SearchResult_filter)
    ========================================= */
 .search-result-filter-container {
     width: 100%;
     margin-bottom: 40px;
-    background-color: #FFFCF7;
-    border: 1px solid #E8D9C8;
+    background-color: var(--main-bg-white);
+    border: 1px solid var(--main-border-light);
     border-radius: 18px;
     padding: 24px 28px;
     box-shadow: 0 8px 24px rgba(74, 51, 36, 0.06);
@@ -42,35 +42,33 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid #E8D9C8;
+    border-bottom: 1px solid var(--main-border-light);
     padding-bottom: 12px;
 }
 
-.search-result-filter-main-title {
+.search-result-filter-header h3 {
     font-size: 16px;
     font-weight: bold;
-    color: #2B2118;
+    color: var(--main-black);
 }
 
-.search-result-filter-reset-btn {
+.search-result-filter-header .deleteAll {
     background: none;
     border: none;
-    color: #A98C72;
     font-size: 14px;
+    color: var(--main-dark-beige);
     text-decoration: underline;
     cursor: pointer;
-    padding: 0;
+}
+.search-result-filter-header .deleteAll:hover {
+    color: var(--brown);
 }
 
-.search-result-filter-reset-btn:hover {
-    color: #B8783E;
-}
 
 /* 필터 그룹 */
 .search-result-filter-body {
     padding: 22px 10px 0 10px;
 }
-
 .search-result-filter-section {
     display: flex;
     gap: 10%;
@@ -80,6 +78,7 @@
     margin-bottom: 15px;
 }
 
+/* 타이틀 */
 .search-result-filter-title {
     font-size: 14px;
     font-weight: bold;
@@ -87,72 +86,47 @@
     margin-bottom: 9px;
 }
 
-/* 체크박스 가로 정렬 */
+
+/* 카테고리, 색상 필터 */
 .search-result-checkbox-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 24px;
+    display: flex; gap: 24px;
     align-items: center;
 }
-
-.search-result-checkbox-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-/* 체크박스 */
 .search-result-checkbox-item input[type="checkbox"] {
-    width: 13px;
-    height: 13px;
-    margin: 0;
+    accent-color: var(--brown);
+    width: 15px;
+    height: 15px;
     cursor: pointer;
-    accent-color: #B8783E;
+    vertical-align: middle;
+    margin-right: 6px;
 }
 
 .search-result-checkbox-item label {
     font-size: 13px;
-    color: #4A3324;
+    color: var(--brown);
     cursor: pointer;
+    user-select: none;
+    margin-left: 2px;
+    vertical-align: middle;
 }
 
 .search-result-checkbox-item label:hover {
     color: #B8783E;
 }
 
-/* 슬라이더 래퍼 */
+
+/* 가격대 슬라이더 */
 .search-result-slider-wrapper {
     padding: 30px 20px 0 20px;
     max-width: 700px;
 }
-
-/* MUI Slider 색상 */
 .search-result-slider-wrapper .MuiSlider-root {
-    color: #B8783E !important;
+    color: var(--brown) !important;
 }
-
-.search-result-slider-wrapper .MuiSlider-thumb {
-    background-color: #B8783E !important;
-    border: 2px solid #FFFCF7 !important;
-    box-shadow: 0 2px 8px rgba(138, 79, 37, 0.25) !important;
-}
-
-.search-result-slider-wrapper .MuiSlider-track {
-    background-color: #B8783E !important;
-    border-color: #B8783E !important;
-}
-
-.search-result-slider-wrapper .MuiSlider-rail {
-    background-color: #E1C7A7 !important;
-    opacity: 1 !important;
-}
-
 .search-result-slider-wrapper .MuiSlider-valueLabel {
-    background-color: #8A4F25 !important;
-    color: #fff !important;
+    background-color: var(--black-brown) !important;
     font-size: 11px !important;
 }
-
 .search-result-slider-wrapper .MuiSlider-markLabel {
     font-size: 13px;
     color: #8A7A6C;
@@ -160,6 +134,32 @@
 }
 
 
+/* 필터 조회하기 버튼 */
+.search-result-select-body {
+    text-align: right;
+}
+.search-result-select-body .select {
+    padding: 8px 16px;
+    border: 1px solid var(--main-border-light);
+    border-radius: 999px;
+    background-color: var(--main-bg-white);
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 6px 14px rgba(112, 42, 36, 0.035);
+    transition: all 0.2s ease;
+}
+.search-result-select-body .select:hover {
+    border-color: var(--brown);
+    background-color: var(--brown);
+    color: var(--main-bg-white);
+}
+
+
+
+/* =========================================
+   검색결과 리스트
+   ========================================= */
 /* 리스트 헤더 */
 .search-result-list-header {
     display: flex;

@@ -16,7 +16,7 @@ const SearchResult_item = ({item, getFinalPrice, formatPrice}) => {
             >
                 {/* 상품 이미지 영역 */}
                 <div className="search-result-item-image">
-                    <img className="search-result-image" src={item.itemImgUrl} alt={item.itemName}/>
+                    <img className="search-result-image" src={`http://localhost:8080${item.itemImgUrl}`} alt={item.itemName}/>
                 </div>
                 
                 {/* 상품 정보 영역 */}

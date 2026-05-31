@@ -57,7 +57,7 @@ export const SearchProvider = ({ children }) => {
     //검색결과 URL 생성
     const generateQueryString = (searchValue, searchKey) => {
         const params = new URLSearchParams();
-        if (searchValue.trim() !== "") params.append("searchValue", searchValue);
+        if (searchValue && searchValue.trim() !== "") params.append("searchValue", searchValue);
 
         Object.keys(searchKey).forEach(key => {
             const value = searchKey[key];
@@ -75,7 +75,7 @@ export const SearchProvider = ({ children }) => {
         try {
             //1. Query String 생성 (예: ?searchValue=책상&space=거실,침실&size=1,6)
             const params = new URLSearchParams()  //파라미터를 생성하는 훅
-            if (searchValue.trim() !== "") {  //parameter - 검색어
+            if (searchValue && searchValue.trim() !== "") {  //parameter - 검색어
                 params.append("searchValue", searchValue);
             }
 
@@ -88,6 +88,7 @@ export const SearchProvider = ({ children }) => {
 
             //2. 완성된 Query String 확인 (디버깅용)
             const queryString = params.toString()
+            console.log("현재 searchValue 상태: ", searchValue);
             console.log("현재 searchKey 상태: ", searchKey);
             console.log("검색 쿼리: ", queryString)
 
@@ -99,11 +100,39 @@ export const SearchProvider = ({ children }) => {
         }
     }
 
+    //===================================================
+    // const getSearchResult = async() => {
+    //     //2. 백엔드(Spring Boot) API로 데이터 전송하기
+    //     try {
+    //         //axios의 'params' 속성: GET 요청 시 쿼리 파라미터를 알아서 만들어줌.
+
+    //         const res = await axios.get("http://localhost:8080/api/main/searchResult", {
+    //             params: {
+    //                 searchValue: searchValue,
+    //                 category: categoryKey.join(','),  // 배열을 "침실,거실" 형태의 문자열로 변환
+    //                 color: colorKey.join(','),        // "White,Black"
+    //                 price: priceKey.join(','),        // "0,500"
+    //             }
+    //         })
+
+    //         //백엔드에서 받아온 가구 리스트를 상태에 저장
+    //         // setSearchResult(res.data)
+
+    //         //콘솔에 찍어보기
+    //         console.log("[검색된 가구리스트 (상위 4개)]\n")
+    //         const sliceRes = res.data.slice(0, 4)
+    //         console.log(sliceRes)
+    //         console.log(res.data)
+    //     } catch (error) {
+    //         console.error("검색 결과를 불러오는데 실패했습니다.", error);
+    //     }
+    // }
+    //===================================================
+
 
     //검색결과 페이지 - 재검색(URL 변경)
-    const updateAndSearch = (newSearchKey) => {
-        setSearchKey(newSearchKey) //Context 상태 업데이트
-        const queryString = generateQueryString(searchValue, newSearchKey) //새 상태로 URL 생성
+    const updateAndSearch = () => {
+        const queryString = generateQueryString(searchValue, searchKey) //새 상태로 URL 생성
         navigate(`/searchResult?${queryString}`) // 페이지 이동 (백엔드 재요청 유도)
     }
 

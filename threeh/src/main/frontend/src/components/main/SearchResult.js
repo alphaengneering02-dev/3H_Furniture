@@ -17,19 +17,16 @@ const SearchResult = () => {
         category_options, color_options, price_options,
         searchValue, setSearchValue, searchKey, setSearchKey,
         changeSearchValue, resetSearchKey, deleteSearchKey,
-        doSearch
+        generateQueryString, doSearch, updateAndSearch
     } = useSearch()
     
     const [searchParams] = useSearchParams()  //URL의 쿼리스트링(? 뒤의 파라미터)을 가져오는 훅
     const [searchResult, setSearchResult] = useState([])
 
     const memoSearchKey =  useMemo(() => {return searchKey},[searchKey])
-
     const categoryKey = useMemo(() => {return memoSearchKey.category},[memoSearchKey.category])
     const colorKey = useMemo(() => {return memoSearchKey.color},[memoSearchKey.color])
     const priceKey = useMemo(() => {return memoSearchKey.price},[memoSearchKey.price])
-
-    console.log(categoryKey)
 
 
     useEffect(() => {
@@ -46,7 +43,21 @@ const SearchResult = () => {
             color: urlColor ? urlColor.split(',') : color_options,
             price: urlPrice ? urlPrice.split(',').map(Number) : [0, 500]
         })
+        
+        // // 2. 추출한 값 가공 (null 처리)
+        // const parsedCategory = urlCategory ? urlCategory.split(',') : category_options;
+        // const parsedColor = urlColor ? urlColor.split(',') : color_options;
+        // const parsedPrice = urlPrice ? urlPrice.split(',').map(Number) : [0, 500];
 
+        // // 3. 화면 UI 동기화를 위해 Context 상태 업데이트
+        // setSearchValue(urlSearchValue);
+        // setSearchKey({
+        //     category: parsedCategory,
+        //     color: parsedColor,
+        //     price: parsedPrice
+        // });
+
+        // 4. URL 파라미터 값을 API 함수로 직접 전달
         getSearchResult()
     }, [searchParams])  //searchParams가 바뀔 때마다(새로 검색할 때마다) 다시 실행
 
@@ -55,7 +66,6 @@ const SearchResult = () => {
     }
 
 
-    
     const getSearchResult = async() => {
         //2. 백엔드(Spring Boot) API로 데이터 전송하기
         try {
@@ -82,6 +92,25 @@ const SearchResult = () => {
             console.error("검색 결과를 불러오는데 실패했습니다.", error);
         }
     }
+
+    // // 상태(State) 대신 인자(Arguments)를 받아서 API를 호출하도록 변경
+    // const getSearchResult = async(searchVal, catArr, colArr, priceArr) => {
+    //     try {
+    //         const res = await axios.get("http://localhost:8080/api/main/searchResult", {
+    //             params: {
+    //                 searchValue: searchVal,
+    //                 category: catArr.join(','), 
+    //                 color: colArr.join(','),      
+    //                 price: priceArr.join(','),      
+    //             }
+    //         });
+
+    //         setSearchResult(res.data);
+    //         console.log("[검색 성공] 데이터:", res.data);
+    //     } catch (error) {
+    //         console.error("검색 결과를 불러오는데 실패했습니다.", error);
+    //     }
+    // }
 
 
     //상품 최종 가격 계산
@@ -172,7 +201,7 @@ const SearchResult = () => {
 
                 {/* 필터 영역 */}
                 <div>
-                    <SearchResult_filter onClickSearch={onClickSearch}/>
+                    <SearchResult_filter onClickSearch={onClickSearch} updateAndSearch={updateAndSearch}/>
                     {/* <SearchResult_filter myFilter={myFilter} setMyFilter={setMyFilter}/> */}
                 </div>
 
@@ -209,18 +238,3 @@ const SearchResult = () => {
 };
 
 export default SearchResult;
-
-
-
-// {
-//     searchResult && searchResult.length>0
-//     ? (
-//         searchResult
-//         .map(item =>
-//             <SearchResult_item key={item.itemId} item={item}/>
-//         )
-//     )
-//     : (
-//         <p>검색에 실패하거나, 검색결과가 없습니다.</p>
-//     )
-// }

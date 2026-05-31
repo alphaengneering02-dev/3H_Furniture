@@ -70,7 +70,7 @@ const Header_searchCondition = () => {
                 {/* 카테고리 그룹 */}
                 <div>
                     <p>카테고리</p>
-                    <div>
+                    <div className='checkbox-group'>
                         <div>
                             <input type="checkbox"
                                 id="category_all"
@@ -99,7 +99,7 @@ const Header_searchCondition = () => {
                 {/* 색상 그룹 */}
                 <div>
                     <p>색상</p>
-                    <div>
+                    <div className='checkbox-group'>
                         <div>
                             <input type="checkbox"
                                 id="color_all"

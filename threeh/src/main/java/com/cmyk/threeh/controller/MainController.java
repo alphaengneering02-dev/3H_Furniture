@@ -45,10 +45,11 @@ public class MainController {
     //상품 통합검색
     //프론트엔드 URL: http://localhost:8080/api/main/searchResult?searchValue=검색어&category=거실,침실&color=White,Black
     @GetMapping("/searchResult")
-    public List<ItemResponseDTO> searchItems(@RequestParam(required = false) String searchValue,
-    @RequestParam(value = "category[]", required = false) String[] category,
-    @RequestParam(value = "color[]", required = false) String[] color,
-    @RequestParam(value = "price[]", required = false) String[] price){
+    public List<ItemResponseDTO> searchItems(
+        @RequestParam(required = false) String searchValue,
+        @RequestParam(value = "category[]", required = false) String[] category,
+        @RequestParam(value = "color[]", required = false) String[] color,
+        @RequestParam(value = "price[]", required = false) String[] price) {
 
         //========= [디버깅 확인용 로그] =========
         System.out.println("\n====== [MainController 진입] ======");

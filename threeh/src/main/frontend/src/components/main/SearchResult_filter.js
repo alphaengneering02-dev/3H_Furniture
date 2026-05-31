@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Slider } from "@mui/material";
 import { useSearch } from '../../hook/SearchContext';
 
-const SearchResult_filter = ({onClickSearch}) => {
+const SearchResult_filter = ({onClickSearch, updateAndSearch}) => {
 
     //검색상태 Context에서 모든 상태와 옵션을 가져옵니다.
     const {
@@ -64,15 +64,14 @@ const SearchResult_filter = ({onClickSearch}) => {
          <section className='search-result-filter-container'>
             {/* 검색 조건 헤더 영역 */}
             <article className='search-result-filter-header'>
-                <h3 className='search-result-filter-main-title'>검색 조건</h3>
-                <button type='button' className='search-result-filter-reset-btn' onClick={resetSearchKey}>
+                <h3>검색 조건</h3>
+                <button type='button' className='deleteAll' onClick={deleteSearchKey}>
                     전체 삭제
                 </button>
             </article>
 
             {/* 필터 본문 영역 */}
             <article className='search-result-filter-body'>
-                
                 {/* 카테고리 */}
                 <div className='search-result-filter-section'>
                     <div className='search-result-filter-group'>
@@ -139,20 +138,16 @@ const SearchResult_filter = ({onClickSearch}) => {
                             marks={price_options}
                             valueLabelDisplay="on"
                             disableSwap
-                            sx={{ 
-                                color: '#000', // 슬라이더 기본 색상 (검은색)
-                                '& .MuiSlider-valueLabel': {
-                                    backgroundColor: '#000', // 툴팁 배경색
-                                }
-                            }}
                         />
                     </div>
                 </div>
-                <div>
-                    <button onClick={onClickSearch}>
-                            search
-                    </button>
-                </div>
+            </article>
+
+
+            <article className='search-result-select-body'>
+                <button className='select' onClick={() => updateAndSearch()}>
+                    조회하기
+                </button>
             </article>
         </section>
     );

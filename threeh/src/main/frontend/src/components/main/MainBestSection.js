@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 
 function MainBestSection({ bestItems }) {
     
-    console.log(bestItems);
+    // console.log(bestItems);  //유소은_주석처리
 
     return (
         <div className="best-section">
