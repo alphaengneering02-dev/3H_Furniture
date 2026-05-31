@@ -10,9 +10,10 @@
 ========================= */
 /* 전체 컨테이너 */
 .admin-ranking-container {
-    padding: 20px;
-    max-width: 1400px;
-    margin: 0 auto;
+    padding: 0;
+    width: 100%;
+    max-width: 100%;     
+    margin: 0;
     font-family: 'Pretendard', sans-serif;
 }
 
@@ -20,13 +21,14 @@
 .vip-ranking-visual {
     display: flex;
     justify-content: center;
-    align-items: flex-end; /* 카드를 바닥 기준으로 정렬 */
-    gap: 15px; /* 카드 사이 간격을 살짝 좁혀서 전체 너비 확보 */
+    align-items: flex-end; 
+    gap: 20px;     
     margin-bottom: 40px;
-    padding: 30px 15px;
+    padding: 30px 20px;
     background-color: #f8f9fa;
     border-radius: 16px;
     box-shadow: inset 0 2px 4px rgba(0,0,0,0.03);
+    width: 100%;      
 }
 
 /* 공통 카드 스타일 */
@@ -48,7 +50,8 @@
     border: 2px solid #ffd700;
     padding: 24px 35px;
     min-height: 230px;
-    max-width: 380px; 
+    max-width: 420px;
+    flex: 1;
     z-index: 2;
 }
 
@@ -57,7 +60,8 @@
     border: 1px solid #e9ecef;
     padding: 24px 15px;
     min-height: 190px;
-    max-width: 260px; 
+    max-width: 320px;
+    flex: 1;
 }
 
 /* 빈 데이터 스타일 */
@@ -131,7 +135,7 @@
 .admin-ranking-card-box {
     background: #fff;
     border-radius: 12px;
-    padding: 20px;
+    padding: 20px 30px;
     margin-bottom: 24px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.04);
     border: 1px solid #efefef;
@@ -171,6 +175,8 @@
 .admin-ranking-table td {
     padding: 12px 8px;
     border-bottom: 1px solid #f1f3f5;
+    text-align: center;
+    vertical-align: middle;
 }
 
 .admin-ranking-card-header h3 {
@@ -179,6 +185,28 @@
     font-weight: 700;
     color: #343a40;
 }
+
+.admin-item-link {
+    text-decoration: none;
+    color: inherit;
+    display: inline-block;
+    max-width: 100%;
+    
+    /* 혹시 글자가 너무 길어지면 말줄임표(...) 처리되도록 안전장치 */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    
+    /* 마우스 올렸을 때 부드럽게 변하는 효과 */
+    transition: color 0.15s ease-in-out;
+}
+
+.admin-item-link:hover {
+    color: #228be6;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
 
 /* 📱 화면이 너무 좁아지면 모바일 환경을 위해 다시 세로로 떨어지게 처리 (선택사항) */
 @media (max-width: 768px) {

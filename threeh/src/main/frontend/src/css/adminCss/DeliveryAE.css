@@ -1,14 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+
 /* ==========================================
-   배송 기사 개별 등록 페이지 전용 스타일
+   배송 기사 등록 및 수정 페이지 공통 스타일 (고대비 딥 브라운 톤)
    ========================================== */
 
 /* 전체 배경 및 정렬 레이아웃 */
 .delivery-page {
+    font-family: 'Noto Sans KR', sans-serif;
     display: flex;
     justify-content: center;
     align-items: flex-start;
     min-height: 100vh;
-    background-color: #fcf9f5; /* 대시보드와 어우러지는 아주 연한 크림베이지 */
+    background-color: #f7f3ed; /* 배경을 아주 살짝 더 묵직하게 낮춤 */
     padding: 40px 20px;
     box-sizing: border-box;
 }
@@ -16,75 +19,115 @@
 /* 폼을 감싸는 카드 컨테이너 */
 .delivery-container {
     width: 100%;
-    max-width: 540px; /* 너무 퍼지지 않게 중앙 집중형 폭 설정 */
+    max-width: 540px; 
     background: #ffffff;
     padding: 35px 40px;
     border-radius: 14px;
-    box-shadow: 0 4px 16px rgba(74, 51, 36, 0.05); /* 은은한 브라운톤 음영 */
+    /* 헤더 버건디 톤 스케일에 맞춘 좀 더 명확한 그림자 */
+    box-shadow: 0 6px 20px rgba(112, 42, 36, 0.08), 0 1px 5px rgba(0, 0, 0, 0.05);
     box-sizing: border-box;
+    border: 1px solid #e1d7cd;
 }
 
 /* 페이지 메인 타이틀 */
 .delivery-title {
-    font-size: 22px;
+    font-size: 24px;
     font-weight: 800;
-    color: var(--admin-brown);
+    color: #2b1f16; /* 가독성 최상의 다크 블랙 브라운 */
     margin-top: 0;
-    margin-bottom: 28px;
+    margin-bottom: 32px;
     text-align: center;
     letter-spacing: -0.5px;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+/* 타이틀 밑에 도드라지는 포인트 선 추가 */
+.delivery-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 3px;
+    background-color: #702a24; /* 헤더의 GNB 시그니처 버건디 색상 주입 */
+    border-radius: 2px;
 }
 
 /* 폼 내부 줄 박스 정렬 */
 .delivery-form {
     display: flex;
     flex-direction: column;
-    gap: 18px; /* 입력 폼 간의 간격 균등 분배 */
+    gap: 20px; 
 }
 
 /* 입력 그룹 개별 카드 스타일 */
-.form-card {
+.delivery-form-card {
     display: flex;
     flex-direction: column;
     gap: 8px;
     width: 100%;
 }
 
-/* 라벨 스타일 */
-.form-label {
+/* 라벨 스타일 - 훨씬 진하고 선명하게 수정 */
+.delivery-form-label {
     font-size: 14px;
     font-weight: 700;
-    color: var(--admin-brown);
+    color: #2b1f16; /* 다크 브라운으로 선명도 극대화 */
     padding-left: 2px;
 }
 
-/* 기본 일반 텍스트 입력창 */
-.form-input {
+/* 기본 일반 텍스트 입력창 - 테두리를 블랙 브라운 계열로 훨씬 진하게 조절 */
+.delivery-form-input {
     width: 100%;
-    height: 44px;
-    border: 1px solid var(--admin-soft-border);
-    border-radius: 8px; /* 공통 8px 코너 반경 매칭 */
+    height: 46px;
+    border: 2px solid #a39284; /* 테두리를 두껍고(2px) 훨씬 도드라지게 변경 */
+    border-radius: 8px; 
     padding: 0 14px;
     font-size: 14px;
-    color: var(--admin-black-brown);
+    font-weight: 500;
+    color: #000000; /* 입력 텍스트 완전 블랙 고정 */
     background-color: #fff;
     outline: none;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    transition: all 0.2s ease;
     box-sizing: border-box;
 }
 
-.form-input::placeholder {
-    color: #b0a096;
+.delivery-form-input::placeholder {
+    color: #8c7b70; /* 플레이스홀더도 흐리멍텅하지 않게 상향 */
     font-size: 13.5px;
 }
 
-.form-input:focus {
-    border-color: var(--admin-caramel);
-    box-shadow: 0 0 0 3px rgba(198, 138, 97, 0.12); /* 카라멜 하이라이트 링 */
+/* 포커스 되었을 때 버건디 컬러로 강렬하게 하이라이트 */
+.delivery-form-input:focus {
+    border-color: #702a24; /* 헤더의 딥 체러키 버건디 테두리 적용 */
+    box-shadow: 0 0 0 3px rgba(112, 42, 36, 0.15); 
+}
+
+/* 🔒 [수정 페이지 전용] 수정 불가(Readonly) 영역 스타일 */
+.delivery-readonly-section {
+    opacity: 1; /* 투명도 제거해서 흐릿함 방지 */
+}
+
+.delivery-readonly-box {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 46px;
+    border: 2px dashed #bfaea2; /* 대시 스타일로 수정 불가 직관성 부여 */
+    border-radius: 8px;
+    padding: 0 14px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #59493f; /* 글자색 강화 */
+    background-color: #f0e8e1; /* 좀 더 확연히 구분되는 배경색 */
+    box-sizing: border-box;
+    cursor: not-allowed;
 }
 
 /* 📞 전화번호 & 사업자번호 삼분할 그룹 */
-.phone-group {
+.delivery-phone-group {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -93,92 +136,133 @@
 }
 
 /* 국번 셀렉트 박스 */
-.phone-select {
-    width: 32%; /* 30%에서 약간 늘림 */
-    min-width: 80px; /* 텍스트가 찌그러지지 않도록 최소 너비 보장 */
-    height: 44px;
-    border: 1px solid var(--admin-soft-border);
+.delivery-phone-select,
+.delivery-phone-group select {
+    width: 32%; 
+    min-width: 90px; 
+    height: 46px;
+    border: 2px solid #a39284; /* 테두리 강화 */
     border-radius: 8px;
-    padding: 0 25px 0 10px; /* 우측 화살표 공간 확보를 위해 패딩 수정 */
+    padding: 0 10px; 
     font-size: 14px;
-    color: var(--admin-brown);
+    font-weight: 600;
+    color: #2b1f16;
     background-color: #fff;
     outline: none;
     cursor: pointer;
     box-sizing: border-box;
 }
 
-.phone-select:focus {
-    border-color: var(--admin-caramel);
+.delivery-phone-select:focus,
+.delivery-phone-group select:focus {
+    border-color: #702a24;
 }
 
 /* 분할 입력창 */
-.phone-input {
+.delivery-phone-input {
     flex: 1;
     width: 0;
-    height: 44px;
-    border: 1px solid var(--admin-soft-border);
+    height: 46px;
+    border: 2px solid #a39284; /* 테두리 강화 */
     border-radius: 8px;
     padding: 0 10px;
     font-size: 14px;
+    font-weight: 600;
     text-align: center;
-    color: var(--admin-black-brown);
+    color: #000000;
     outline: none;
     transition: border-color 0.2s ease;
     box-sizing: border-box;
 }
 
-.phone-input::placeholder {
-    color: #ccc;
-    font-size: 13px;
+.delivery-phone-input::placeholder {
+    color: #a39284;
 }
 
-.phone-input:focus {
-    border-color: var(--admin-caramel);
+.delivery-phone-input:focus {
+    border-color: #702a24;
 }
 
 /* 하이픈 기호 */
-.phone-dash {
-    color: var(--admin-soft-border);
-    font-weight: 600;
-    font-size: 14px;
+.delivery-phone-dash {
+    color: #59493f; /* 더 진하게 변경 */
+    font-weight: 700;
+    font-size: 15px;
 }
 
-/* 🏢 사업자 정보 중간 브레이크 섹션 타이틀 */
-.business-section {
+/* 🏢 중간 브레이크 섹션 타이틀 (버건디 컨셉 매칭) */
+.delivery-business-section,
+.delivery-business-section-title {
     font-size: 15px;
     font-weight: 800;
-    color: var(--admin-deep-caramel);
-    background-color: var(--admin-cream);
-    padding: 10px 16px;
+    color: #ffffff; /* 흰색 글자 */
+    background-color: #702a24; /* 헤더 하단 바인 '딥 체러키 버건디' 전면 도입 */
+    padding: 12px 16px;
     border-radius: 8px;
-    margin-top: 14px;
-    margin-bottom: 4px;
-    border-left: 4px solid var(--admin-caramel); /* 왼쪽에 포인트 바 부여 */
+    margin-top: 18px;
+    margin-bottom: 6px;
+    box-sizing: border-box;
+    box-shadow: 0 2px 6px rgba(112, 42, 36, 0.15);
 }
 
-/* 🚀 최종 등록하기 제출 버튼 */
-.submit-btn {
+/* 🔘 하단 버튼 그룹 구조 조절 */
+.delivery-button-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
     width: 100%;
-    height: 48px;
+    margin-top: 24px;
+}
+
+/* 🚀 최종 등록하기 및 수정 완료 버튼 (메인 포인트화) */
+.delivery-submit-btn {
+    flex: 1;
+    width: 100%;
+    height: 50px;
     border: none;
-    background: var(--admin-caramel);
+    background: #702a24; /* 메인 색상을 버건디로 잡아 확실히 튀게 설정 */
     color: #ffffff;
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 700;
-    border-radius: 8px; /* 모서리 8px 통일 */
+    border-radius: 8px; 
     cursor: pointer;
-    margin-top: 20px;
-    transition: background 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
-    box-shadow: 0 3px 6px rgba(198, 138, 97, 0.15);
+    margin-top: 24px; 
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 10px rgba(112, 42, 36, 0.25);
 }
 
-.submit-btn:hover {
-    background: var(--admin-deep-caramel);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 10px rgba(138, 86, 54, 0.2);
+/* 버튼 그룹 내부에 배치될 때 마진 상쇄 */
+.delivery-button-group .delivery-submit-btn {
+    margin-top: 0;
 }
 
-.submit-btn:active {
+.delivery-submit-btn:hover {
+    background: #531d19; /* 호버 시 한 단계 더 다크한 버건디 브라운 */
+    transform: translateY(-1.5px);
+    box-shadow: 0 6px 14px rgba(83, 29, 25, 0.35);
+}
+
+.delivery-submit-btn:active {
     transform: translateY(0);
+}
+
+/* ✖ [수정 페이지 전용] 취소 버튼 스타일 (고대비화) */
+.delivery-cancel-btn {
+    flex: 1;
+    height: 50px;
+    border: 2px solid #702a24; /* 버건디 라인으로 엣지 부여 */
+    background: #ffffff;
+    color: #702a24;
+    font-size: 16px;
+    font-weight: 700;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+.delivery-cancel-btn:hover {
+    background: #fcf6f5; /* 아주 연한 버건디 틴트 */
+    color: #531d19;
+    border-color: #531d19;
 }

@@ -36,24 +36,16 @@ const AllOrderboard = ({
     const [selectedOrderIds, setSelectedOrderIds] = useState([]);
     const [perPage1, setPerPage1] = useState(5); 
     const [page1, setPage1] = useState(1);
-
-    // 주문자 검색창 상태
     const [buyerSearchTerm, setBuyerSearchTerm] = useState('');
-
-    // 💡 [추가] 커스텀 모달창 제어를 위한 열림/닫힘 상태 값
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const activeOrders = Array.isArray(propOrders) ? propOrders : localOrders;
 
     useEffect(() => {
-        if (propOrders && propOrders.length > 0) {  
-        }
-        
         if (propOrders === undefined || propOrders === null) {
             console.warn("⚠️ 부모 컴포넌트에서 orders 데이터를 받지 못했습니다. 백엔드로 직접 요청합니다!");
             axios.get('/admin/orders')
                 .then(res => {
-                    console.table(res.data);
                     setLocalOrders(res.data);
                 })
         }
@@ -68,6 +60,13 @@ const AllOrderboard = ({
         const firstName = itemsList[0].itemName || itemsList[0].ITEMNAME;
         const extraCount = itemsList.length - 1;
         return extraCount > 0 ? `${firstName} 외 ${extraCount}개 상품` : firstName;
+    };
+
+    // 조건 필터 함수 선언 ('ORDER' 및 '주문' 지원)
+    const isSelectable = (o) => {
+        if (!o || !o.orderState) return false;
+        const state = o.orderState.toString().trim().toUpperCase();
+        return state === 'ORDER' || state === '주문';
     };
 
     // 1. 데이터 표준화 및 정렬
@@ -94,23 +93,26 @@ const AllOrderboard = ({
         return name.toLowerCase().includes(buyerSearchTerm.toLowerCase().trim());
     });
 
-    // 3. 체크박스 및 페이지네이션의 기준을 모두 filteredByBuyerOrders로 변경!
-    const selectableOrders = filteredByBuyerOrders.filter(o => 
-        o.orderState !== 'CANCEL' && 
-        o.orderState !== '주문취소' && 
-        o.orderState !== 'EXCHANGEorREFUND' && 
-        o.orderState !== '교환또는환불' && 
-        o.deliveryStatus !== 'COMPLETED'
-    );
+    // 전체 필터링된 데이터 중 체크박스 선택 가능한 목록
+    const selectableOrders = filteredByBuyerOrders.filter(isSelectable);
 
+    // 3. 현재 페이지에 노출될 주문 정의 (pagedOrders 선언)
     const pagedOrders = filteredByBuyerOrders.slice((page1 - 1) * perPage1, page1 * perPage1);
+
+    // 4. 선언된 pagedOrders를 바탕으로 현재 페이지의 선택 가능 주문 필터링
+    const currentSelectableOrders = pagedOrders.filter(isSelectable);
 
     const handleCheckOrder = (orderId) => {
         setSelectedOrderIds(prev => prev.includes(orderId) ? prev.filter(id => id !== orderId) : [...prev, orderId]);
     };
 
     const handleAllCheck = (e) => {
-        setSelectedOrderIds(e.target.checked ? selectableOrders.map(o => o.orderId) : []);
+        const currentIds = currentSelectableOrders.map(o => o.orderId);
+        if (e.target.checked) {
+            setSelectedOrderIds(prev => Array.from(new Set([...prev, ...currentIds])));
+        } else {       
+            setSelectedOrderIds(prev => prev.filter(id => !currentIds.includes(id)));
+        }
     };
 
     const handleBulkReady = () => {
@@ -121,43 +123,65 @@ const AllOrderboard = ({
         }
     };
 
-    // 💡 [깔끔하게 수정] 선택 주문 선택 배정 클릭 시 모달창을 띄우는 함수
     const handleManualAssign = () => {
         let targetIds = [...selectedOrderIds];
         
-        // 체크박스 선택 안 했으면 현재 검색창 결과 전체를 타겟으로 지정
+        // 💡 [콘솔 추가] 버튼을 눌렀을 때의 현재 상태 점검
+        console.log("=== 🚚 선택 배정 버튼 클릭됨 ===");
+        console.log("1. 현재 체크박스로 선택된 주문 번호들:", targetIds);
+        console.log("2. 부모 컴포넌트에게 전달받은 기사(items) 전체 데이터:", items);
+        console.log("3. 현재 화면에 필터링되어 보이는 전체 주문 데이터:", filteredByBuyerOrders);
+
         if (targetIds.length === 0) {
-            targetIds = filteredByBuyerOrders.map(o => o.orderId);
+            console.log("👉 체크된 주문이 없으므로 자동 전체 배정을 시도합니다.");
+            const selectable = filteredByBuyerOrders.filter(isSelectable);
+            
+            // 💡 [콘솔 추가] '주문/ORDER' 상태인 건이 몇 개나 있는지 확인
+            console.log("4. 화면에 보이는 주문 중 배정 가능한(ORDER/주문 상태) 주문들:", selectable);
+            
+            targetIds = selectable.map(o => o.orderId);
         }
 
+        console.log("5. 최종 배정 대상 주문 IDs:", targetIds);
+
         if (targetIds.length === 0) { 
-            toast.error('배정할 주문이 없습니다. 주문자 이름을 검색하거나 주문을 선택해주세요.'); 
+            console.warn("❌ 배정할 수 있는 '주문' 상태의 건이 0건입니다.");
+            toast.error('배정할 주문이 없습니다. 주문 상태가 [주문(ORDER)]인 건만 배정할 수 있습니다.'); 
             return; 
         }
         if (!items || items.length === 0) { 
+            console.warn("❌ 기사(items) 배열이 비어있거나 undefined입니다.");
             toast.error('등록된 기사 정보가 없습니다.'); 
             return; 
         }
         
-        setSelectedOrderIds(targetIds); // 대상 주문 동기화
-        setIsModalOpen(true);            // 모달 팝업 오픈
+        console.log("✅ 모든 조건 통과! 모달창을 엽니다. (setIsModalOpen(true))");
+        setSelectedOrderIds(targetIds); 
+        setIsModalOpen(true);            
     };
 
-    // 💡 [깔끔하게 수정] 모달 내부에서 특정 기사 이름을 마우스로 클릭했을 때 처리되는 일괄 배정 함수
-    const handleModalDriverClick = (driverId, driverName) => {
+   const handleModalDriverClick = async (driverId, driverName) => {
         const targetIds = selectedOrderIds;
 
         if (window.confirm(`검색된 주문 ${targetIds.length}건을 모두 [${driverName}] 기사님께 한 번에 배정하시겠습니까?`)) {
-            
-            // 배열을 돌며 부모에게 전달받은 배정 메소드 연동
-            targetIds.forEach(orderId => {
-                handleAssignDriver(orderId, driverId); 
-            });
-            
-            toast.error(`🎉 ${buyerSearchTerm ? '[' + buyerSearchTerm + '] 고객님의 ' : ''}주문 총 ${targetIds.length}건이 ${driverName} 기사님께 묶음 배정되었습니다.`);
-            
-            setSelectedOrderIds([]); // 체크박스 초기화
-            setIsModalOpen(false);   // 모달창 닫기
+            try {
+                await axios.post('/admin/orders/select-delivery', {
+                    deliveryId: driverId,
+                    orderIds: targetIds
+                });
+
+                toast.success(`🎉 주문 총 ${targetIds.length}건이 ${driverName} 기사님께 묶음 배정되었습니다.`);
+
+                
+
+            } catch (error) {
+                console.error("❌ 다중 배정 통신 실패:", error);
+                toast.error("배정 처리 중 서버 오류가 발생했습니다.");
+            } finally {
+                // 어떤 경우든 작업이 끝나면 체크박스와 모달창 상태 초기화
+                setSelectedOrderIds([]); 
+                setIsModalOpen(false);   
+            }
         }
     };
 
@@ -182,102 +206,99 @@ const AllOrderboard = ({
     return (
        <div className="admin-content-box">
             <div className="admin-order-header">
+                <div className="admin-order-top-row">
+                    <h3>주문 목록 (전체 접수 건) - 현재 화면 노출: {filteredByBuyerOrders.length}건</h3>
+                    <div className="admin-buyer-search-wrapper">
+                        <label htmlFor="buyerInput">👤 주문자 검색:</label>
+                        <div className="admin-buyer-search-input-container">
+                            <input
+                                id="buyerInput"
+                                type="text"
+                                placeholder="주문자 이름을 입력하세요..."
+                                value={buyerSearchTerm}
+                                onChange={(e) => {
+                                    setBuyerSearchTerm(e.target.value);
+                                    setPage1(1);
+                                }}
+                            />
+                            {buyerSearchTerm && (
+                                <button
+                                    className="admin-buyer-clear-btn"
+                                    onClick={() => {
+                                        setBuyerSearchTerm('');
+                                        setPage1(1);
+                                    }}
+                                >✕</button>
+                            )}
+                        </div>
+                    </div>
+                </div>
 
-    <div className="admin-order-top-row">
-        <h3>
-            주문 목록 (전체 접수 건) - 현재 화면 노출: {filteredByBuyerOrders.length}건
-        </h3>
+                <div className="admin-order-bottom-row">
+                     <div className="admin-action-button-group">
+                        <button onClick={handleBulkReady}>선택 주문 준비 완료 처리 ({selectedOrderIds.length}건)</button>
+                        <button onClick={handleManualAssign} className="admin-btn-manual">선택 주문 선택 배정 ({selectedOrderIds.length}건)</button>
+                        <button onClick={handleRoundRobinAssign} className="admin-btn-auto">선택 주문 자동 배정 ({selectedOrderIds.length}건)</button>
+                    </div>
 
-        <div className="admin-buyer-search-wrapper">
-            <label htmlFor="buyerInput">👤 주문자 검색:</label>
-
-            <div className="admin-buyer-search-input-container">
-                <input
-                    id="buyerInput"
-                    type="text"
-                    placeholder="주문자 이름을 입력하세요..."
-                    value={buyerSearchTerm}
-                    onChange={(e) => {
-                        setBuyerSearchTerm(e.target.value);
-                        setPage1(1);
-                    }}
-                />
-
-                {buyerSearchTerm && (
-                    <button
-                        className="admin-buyer-clear-btn"
-                        onClick={() => {
-                            setBuyerSearchTerm('');
+                    <select
+                        value={perPage1}
+                        onChange={(e) => {
+                            setPerPage1(Number(e.target.value));
                             setPage1(1);
                         }}
                     >
-                        ✕
-                    </button>
-                )}
+                        <option value={5}>5개씩 보기</option>
+                        <option value={10}>10개씩 보기</option>
+                        <option value={15}>15개씩 보기</option>
+                    </select>
+                </div>
             </div>
-        </div>
-    </div>
-
-    <div className="admin-order-bottom-row">
-
-         <div className="admin-action-button-group">
-                <button onClick={handleBulkReady}>선택 주문 준비 완료 처리 ({selectedOrderIds.length}건)</button>
-                <button onClick={handleManualAssign} className="admin-btn-manual">선택 주문 선택 배정 ({selectedOrderIds.length}건)</button>
-                <button onClick={handleRoundRobinAssign} className="admin-btn-auto">선택 주문 자동 배정 ({selectedOrderIds.length}건)</button>
-            </div>
-
-        <select
-            value={perPage1}
-            onChange={(e) => {
-                setPerPage1(Number(e.target.value));
-                setPage1(1);
-            }}
-        >
-            <option value={5}>5개씩 보기</option>
-            <option value={10}>10개씩 보기</option>
-            <option value={15}>15개씩 보기</option>
-        </select>
-
-    </div>
-</div>
             
-           
-
             <div className="admin-table-scroll">
                 <table className="admin-table-style">
                     <thead>
                         <tr>
                             <th>
+                                {/* 💡 상단 전체 선택 제어 고도화 */}
                                 <input 
                                     type="checkbox" 
                                     onChange={handleAllCheck} 
-                                    checked={selectableOrders.length > 0 && selectableOrders.every(o => selectedOrderIds.includes(o.orderId))}
+                                    disabled={currentSelectableOrders.length === 0}
+                                    checked={currentSelectableOrders.length > 0 && currentSelectableOrders.every(o => selectedOrderIds.includes(o.orderId))}
                                 />
                             </th>
                             <th>주문 번호</th><th>주문자</th><th>상품</th><th>수량</th><th>주문 타입</th><th>주소</th><th>주문 상태</th><th>배송 상태</th><th>주문일</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {pagedOrders.map(order => (
-                            <tr key={order.orderId}>
-                                <td>
-                                    <input 
-                                        type="checkbox" 
-                                        checked={selectedOrderIds.includes(order.orderId)} 
-                                        onChange={() => handleCheckOrder(order.orderId)}
-                                    />
-                                </td>
-                                <td>{order.orderId}</td>
-                                <td><strong>{order.memberName || '비회원'}</strong></td>
-                                <td>{renderItemName(order.orderitems)}</td>
-                                <td>{order.orderitems?.reduce((sum, item) => sum + (item.count || 0), 0) || 0}개</td>
-                                <td>{order.orderType === 'DELIVERY_WITH_INSTALLATION' ? '*설치 배송*' : '*일반 배송*'}</td>
-                                <td>{order.deliveryAddr} {order.deliveryAddrDetail}</td>
-                                <td><span>{order.orderState}</span></td>
-                                <td><span>{order.deliveryStatus || '-'}</span></td>
-                                <td>{order.orderDate?.split('T')[0]}</td>
-                            </tr>
-                        ))}
+                        {pagedOrders.map(order => {
+                            // 💡 여기서 selectable 여부를 판단합니다.
+                            const selectable = isSelectable(order);
+
+                            return (
+                                <tr key={order.orderId} style={!selectable ? { opacity: 0.6 } : {}}>
+                                    <td>
+                                        {/* 💡 핵심: ORDER나 주문이 아니면 무조건 비활성화 처리 */}
+                                        <input 
+                                            type="checkbox" 
+                                            disabled={!selectable}
+                                            checked={selectedOrderIds.includes(order.orderId)} 
+                                            onChange={() => handleCheckOrder(order.orderId)}
+                                        />
+                                    </td>
+                                    <td>{order.orderId}</td>
+                                    <td><strong>{order.memberName || '비회원'}</strong></td>
+                                    <td>{renderItemName(order.orderitems)}</td>
+                                    <td>{order.orderitems?.reduce((sum, item) => sum + (item.count || 0), 0) || 0}개</td>
+                                    <td>{order.orderType === 'DELIVERY_WITH_INSTALLATION' ? '*설치 배송*' : '*일반 배송*'}</td>
+                                    <td>{order.deliveryAddr} {order.deliveryAddrDetail}</td>
+                                    <td><span>{order.orderState}</span></td>
+                                    <td><span>{order.deliveryStatus || '-'}</span></td>
+                                    <td>{order.orderDate?.split('T')[0]}</td>
+                                </tr>
+                            );
+                        })}
                         {filteredByBuyerOrders.length === 0 && (
                             <tr>
                                 <td colSpan="10" className="admin-table-no-data">
@@ -290,14 +311,11 @@ const AllOrderboard = ({
                 <TablePagination totalItems={filteredByBuyerOrders.length} itemsPerPage={perPage1} currentPage={page1} setCurrentPage={setPage1} />
             </div>
 
-
             {isModalOpen && (
                 <div className="admin-custom-modal-overlay">
                     <div className="admin-custom-modal-content">
                         <h4>🚚 배정할 기사님을 선택해주세요</h4>
-                        <p>
-                            대상 주문 건수: <span>{selectedOrderIds.length}건</span>
-                        </p>
+                        <p>대상 주문 건수: <span>{selectedOrderIds.length}건</span></p>
                         <hr />
                         
                         <div className="admin-modal-driver-list">

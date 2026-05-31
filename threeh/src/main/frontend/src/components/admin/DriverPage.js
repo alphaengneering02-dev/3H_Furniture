@@ -20,112 +20,107 @@ const DriverPage = () => {
     const [pickupOrders, setPickupOrders] = useState([]);
     const [pickupCheckeds, setPickupCheckeds] = useState([]);
 
-    const [canceledOrders, setCanceledOrders] = useState([]);
-
     const [loginInfo, setLoginInfo] = useState({ phone: '', carSuffix: '' });
 
     useEffect(() => {
-    const savedDriver = localStorage.getItem('driverInfo');
-    if (savedDriver) {
-        const driverData = JSON.parse(savedDriver);
-        setDriver(driverData);
-        setIsLoggedIn(true);
-        fetchDriverOrders(driverData.deliveryId);
-            }
-        }, []);
+        const savedDriver = localStorage.getItem('driverInfo');
+        if (savedDriver) {
+            const driverData = JSON.parse(savedDriver);
+            setDriver(driverData);
+            setIsLoggedIn(true);
+            fetchDriverOrders(driverData.deliveryId);
+        }
+    }, []);
 
-    // 💡 백엔드 상태에 맞춘 데이터 필터링 정의
+    // 💡 백엔드 DB 상태 문자열 구조에 맞춰 정확히 필터링
     const fetchDriverOrders = async (deliveryId) => {
-    try {
-        const orderRes = await axios.get(`/admin/driver/${deliveryId}/orders`);
-        const dbOrders = orderRes.data; 
+        try {
+            const orderRes = await axios.get(`/admin/driver/${deliveryId}/orders`);
+            const dbOrders = orderRes.data; 
 
-        console.log(dbOrders);
-
-        console.log('db데이터', dbOrders);
-        
-        // 1. 신규 배정
-        const newOrders = dbOrders.filter(o => 
+            console.log('DB에서 받아온 실시간 데이터:', dbOrders);
             
-            (!o.deliveryStatus || o.deliveryStatus === '대기중') && o.orderState !== '주문취소'
-        );
-        
-        // 2. 수락된 주문
-        const accepted = dbOrders.filter(o => 
-            o.deliveryStatus === '수락' && o.orderState !== '주문취소'
-        );
+            // 1. 신규 배정
+            const newOrders = dbOrders.filter(o => 
+                o.orderState === '배송 준비중' && o.deliveryStatus === '수락'
+            );
+            
+            // 2. 수락된 주문
+            const accepted = dbOrders.filter(o => 
+                o.orderState === '배송 준비중' && o.deliveryStatus === '대기중'
+            );
 
-        // 3. 배송중 필터링
-        const shipping = dbOrders.filter(o => 
-            o.deliveryStatus === '배송중' && o.orderState !== '주문취소'
-        );
+            // 3. 배송중 필터링 (출발 이후 상태)
+            const shipping = dbOrders.filter(o => 
+                o.deliveryStatus === '배송중' && o.orderState !== '주문취소'
+            );
 
-        // 4. 교환/반품 필터링
-        const pickups = dbOrders.filter(o => 
-            o.deliveryStatus === '수거' && (o.orderState === '교환또는환불' || o.orderState === '주문취소')
-        );
+            // 4. 교환/반품 필터링
+            const pickups = dbOrders.filter(o => 
+                o.deliveryStatus === '수거' && (o.orderState === '교환또는환불' || o.orderState === '주문취소')
+            );
 
-        setOrders(newOrders);
-        setAcceptedOrders(accepted); 
-        setShippingOrders(shipping);
-        setPickupOrders(pickups);
+            setOrders(newOrders);
+            setAcceptedOrders(accepted);
+            setShippingOrders(shipping);
+            setPickupOrders(pickups);
 
-    } catch (err) {
-        console.error("주문 목록 로드 실패", err);
-    }
-};
+        } catch (err) {
+            console.error("주문 목록 로드 실패", err);
+        }
+    };
 
     const DriverPhoneCell = ({ memberId }) => {
-    const [displayValue, setDisplayValue] = useState('조회 중...');
+        const [displayValue, setDisplayValue] = useState('조회 중...');
 
-    useEffect(() => {
-        if (!memberId) {
-            setDisplayValue('비회원');
-            return;
-        }
-        
-        axios.get(`/api/member/seq/${memberId}`, { withCredentials: true })
-            .then(res => {
-                const email = res.data?.email || '';
-                const phone = res.data?.phone || '';
+        useEffect(() => {
+            if (!memberId) {
+                setDisplayValue('비회원');
+                return;
+            }
+            
+            axios.get(`/api/member/seq/${memberId}`, { withCredentials: true })
+                .then(res => {
+                    const email = res.data?.email || '';
+                    const phone = res.data?.phone || '';
 
-                if (/[a-zA-Z]/.test(phone) || !phone) {
-                    return setDisplayValue(email ? email : '연락처 없음');
-                }
+                    if (/[a-zA-Z]/.test(phone) || !phone) {
+                        return setDisplayValue(email ? email : '연락처 없음');
+                    }
 
-                if (phone) {
-                    return setDisplayValue(phone);
-                }
+                    if (phone) {
+                        return setDisplayValue(phone);
+                    }
 
-                setDisplayValue('연락처 없음');
-            })
-            .catch((err) => {
-                console.error(`${memberId}번 회원 조회 실패:`, err);
-                setDisplayValue('확인 불가');
-            });
-    }, [memberId]);
+                    setDisplayValue('연락처 없음');
+                })
+                .catch((err) => {
+                    console.error(`${memberId}번 회원 조회 실패:`, err);
+                    setDisplayValue('확인 불가');
+                });
+        }, [memberId]);
 
-    return <span>{displayValue}</span>;
-};
+        return <span>{displayValue}</span>;
+    };
 
     // 로그인 핸들러
-const handleLogin = async () => {
-    try {
-        const res = await axios.post('/admin/driver/login', loginInfo);
-        
-        setDriver(res.data);
-        setIsLoggedIn(true);
-        localStorage.setItem('driverInfo', JSON.stringify(res.data)); 
+    const handleLogin = async () => {
+        try {
+            const res = await axios.post('/admin/driver/login', loginInfo);
+            
+            setDriver(res.data);
+            setIsLoggedIn(true);
+            localStorage.setItem('driverInfo', JSON.stringify(res.data)); 
 
-        await fetchDriverOrders(res.data.deliveryId);
+            await fetchDriverOrders(res.data.deliveryId);
 
-    } catch (err) {
-        console.error(err);
-        toast.error("로그인 실패");
-    }
-};
+        } catch (err) {
+            console.error(err);
+            toast.error("로그인 실패");
+        }
+    };
 
-    //로그아웃
+    // 로그아웃
     const handleLogout = () => {
         localStorage.removeItem('driverInfo');
         
@@ -158,7 +153,7 @@ const handleLogin = async () => {
         );
     };
 
-    // 🔄 회수 목록 체크박스 토글 함수 추가
+    // 🔄 회수 목록 체크박스 토글 함수
     const togglePickupSelect = (id) => {
         setPickupCheckeds(prev =>
             prev.includes(id) ? prev.filter(v => v !== id) : [...prev, id]
@@ -178,11 +173,18 @@ const handleLogin = async () => {
                 )
             );
 
-            const accepted = orders.filter(o => selectedOrders.includes(o.orderId));
+            // 💡 프론트 UI 즉시 반영 시 상태 값을 백엔드 기준('WAITING')으로 가공하여 이동시킵니다.
+            const accepted = orders
+                .filter(o => selectedOrders.includes(o.orderId))
+                .map(o => ({ ...o, deliveryStatus: '대기중' }));
 
             setAcceptedOrders(prev => [...prev, ...accepted]);
             setOrders(prev => prev.filter(o => !selectedOrders.includes(o.orderId)));
             setSelectedOrders([]);
+            toast.success("선택한 주문을 수락했습니다. (출발 대기 목록으로 이동)");
+
+            // 안전하게 데이터를 한 번 더 새로고침해 줍니다.
+            fetchDriverOrders(driver.deliveryId);
 
         } catch (err) {
             toast.error("수락 실패");
@@ -203,7 +205,7 @@ const handleLogin = async () => {
 
             fetchDriverOrders(driver.deliveryId);
             setSelectedOrders([]);
-            toast.error("선택한 주문을 거절했습니다. (어드민 미배정으로 복구)");
+            toast.error("선택한 주문을 거절했습니다.");
 
         } catch (err) {
             toast.error("거절 실패");
@@ -212,63 +214,60 @@ const handleLogin = async () => {
 
     // 배송 시작
     const handleStartDelivery = async () => {
-    try {
-        if (orders.length > 0) {
-            const rejectConfirm = window.confirm("수락하지 않은 신규 배정 주문들이 있습니다. 모두 거절 처리하고 배송을 출발하시겠습니까?");
-            
-            if (rejectConfirm) {
-                await Promise.all(
-                    orders.map(o =>
-                        axios.patch(`/admin/driver/orders/${o.orderId}/response`, {
-                            action: 'REJECT'
-                        })
-                    )
-                );
+        try {
+            if (orders.length > 0) {
+                const rejectConfirm = window.confirm("수락하지 않은 신규 배정 주문들이 있습니다. 모두 거절 처리하고 배송을 출발하시겠습니까?");
+                
+                if (rejectConfirm) {
+                    await Promise.all(
+                        orders.map(o =>
+                            axios.patch(`/admin/driver/orders/${o.orderId}/response`, {
+                                action: 'REJECT'
+                            })
+                        )
+                    );
+                } else {
+                    return; 
+                }
             }
+
+            await Promise.all(
+                acceptedOrders.map(o =>
+                    axios.post(`/admin/orders/${o.orderId}/start`) 
+                )
+            );
+
+            toast.success("배송 출발 처리가 완료되었습니다!");
+            if (driver && driver.deliveryId) {
+                await fetchDriverOrders(driver.deliveryId);
+            }
+            setAcceptedOrders([]);
+            setSelectedOrders([]); 
+
+        } catch (err) {
+            console.error("배송 출발 처리 중 에러 발생:", err);
+            toast.error("배송 출발 처리 중 오류가 발생했습니다.");
         }
+    };
 
-        await Promise.all(
-            acceptedOrders.map(o =>
-                axios.post(`/admin/orders/${o.orderId}/start`) 
-            )
-        );
-
-        toast.error("배송 출발 처리가 완료되었습니다!");
-
-        if (driver && driver.deliveryId) {
-            await fetchDriverOrders(driver.deliveryId);
-        }
-        setAcceptedOrders([]);
-        setSelectedOrders([]); 
-
-    } catch (err) {
-        console.error("배송 출발 처리 중 에러 발생:", err);
-        toast.error("배송 출발 처리 중 오류가 발생했습니다.");
-    }
-};
-
-
-// 대기 상태 전환
-const handleResetToWaiting = async () => {
-    try {
-        await axios.put(`/admin/driver/${driver.deliveryId}/reset-status`);
-        
-        setAcceptedOrders([]);    
-        setShippingOrders([]);    
-        setShippingCheckeds([]);
-        setPickupOrders([]);
-        setPickupCheckeds([]);
-        
-        toast.error("대기 상태로 전환되었습니다. 새로운 배정을 받을 수 있습니다!");
-        
-        if (typeof fetchDriverOrders === 'function') {
+    // 대기 상태 전환
+    const handleResetToWaiting = async () => {
+        try {
+            await axios.put(`/admin/driver/${driver.deliveryId}/reset-status`);
+            
+            setAcceptedOrders([]);    
+            setShippingOrders([]);    
+            setShippingCheckeds([]);
+            setPickupOrders([]);
+            setPickupCheckeds([]);
+            
+            toast.success("대기 상태로 전환되었습니다.");
             fetchDriverOrders(driver.deliveryId);
+        } catch (err) {
+            console.error(err);
+            toast.error("대기 전환 실패");
         }
-    } catch (err) {
-        console.error(err);
-        toast.error("대기 전환 실패: 서버 에러가 발생했습니다.");
-    }
-};
+    };
 
     // 선택 배송 완료 
     const handlecomplete = async () => {
@@ -289,7 +288,7 @@ const handleResetToWaiting = async () => {
             );
         
             setShippingCheckeds([]);
-            toast.error("선택하신 주문의 배송 완료 처리가 되었습니다.");
+            toast.success("선택하신 주문의 배송 완료 처리가 되었습니다.");
 
         } catch (err) {
             toast.error("배송 완료 처리 실패");
@@ -314,18 +313,13 @@ const handleResetToWaiting = async () => {
             );
 
             setPickupCheckeds([]);
-            toast.error("선택하신 주문의 회수(물건 수거) 완료 처리가 되었습니다.");
+            toast.success("선택하신 주문의 회수 완료 처리가 되었습니다.");
 
         } catch (err) {
             toast.error("회수 완료 처리 실패");
         }
     };
 
-
-    console.log('배송정보', orders.data);
-
-    // 1️⃣ 로그인 전 화면 (비로그인 상태)
-    // 1️⃣ 비로그인 상태 화면
     if (!isLoggedIn) {
         return (
             <div className="driver-body-wrapper">
@@ -356,26 +350,24 @@ const handleResetToWaiting = async () => {
                         }} 
                     />
                     <div className="driver-login-btn-row">
-                    <button className="driver-btn driver-btn-primary driver-login-submit" onClick={handleLogin}>
-                        로그인
-                    </button>
-                    <Link to="/admin" className="driver-link-flex">
-                        <button className="driver-btn driver-btn-gray driver-login-admin">
-                            관리자 메인 페이지
+                        <button className="driver-btn driver-btn-primary driver-login-submit" onClick={handleLogin}>
+                            로그인
                         </button>
-                    </Link>
-                </div>
+                        <Link to="/admin" className="driver-link-flex">
+                            <button className="driver-btn driver-btn-gray driver-login-admin">
+                                관리자 메인 페이지
+                            </button>
+                        </Link>
+                    </div>
                 </div>
             </div> 
         );
     }
 
-    // 2️⃣ 로그인 완료 후 화면
     return (
         <div className="driver-body-wrapper">
             <ToastContainer position="top-right" autoClose={2000} />
             
-            {/* 기사 상단 헤더 정보 바 */}
             <div className="driver-top-info-bar">
                 <div className="driver-top-info-list">
                     <p className="driver-info-text">
@@ -467,7 +459,7 @@ const handleResetToWaiting = async () => {
                         ))}
                         <div className="driver-action-area">
                             <button className="driver-btn-primary" onClick={handleStartDelivery}>
-                                🚚 선택 목록 일괄 배송 출발 (상차 완료 확인)
+                                🚚 수락 목록 일괄 배송 출발 (상차 완료 확인)
                             </button>
                         </div>
                     </div>

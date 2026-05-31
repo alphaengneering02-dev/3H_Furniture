@@ -89,47 +89,33 @@ public ResponseEntity<?> getAllDeliveries(HttpSession session) {
         return ResponseEntity.ok(list);
 
     } catch (Exception e) {
-        // 🔥 에러가 나면 콘솔에 빨간 줄을 긋고, 브라우저로 에러 내용을 보냅니다.
         e.printStackTrace(); 
         return ResponseEntity.status(500).body("백엔드 에러 발생 원인: " + e.toString());
     }
 }
-
-/* 
-    // 3. 단건 조회 (READ ONE)
-    @GetMapping("/{id}")
-    public Delivery getOne(@PathVariable Long id) {
+   // 단건 조회 API 수정
+    @GetMapping("/delivery/{deliveryId}")
+    public Delivery getOne(@PathVariable("deliveryId") Long id) {
+        System.out.println("🔍 기사 상세 조회 ID: " + id);
         return deliveryService.getDelivery(id);
     }
 
-    // 4. 대기 목록
-    @GetMapping("/waiting")
-    public List<Delivery> getWaiting() {
-        return deliveryService.getWaitingDeliveries();
+    /**
+     * 배송 기사 정보 수정 (PUT)
+     */
+    @PutMapping("/delivery/{deliveryId}")
+    public Delivery update(@PathVariable("deliveryId") Long id, @RequestBody DeliveryDTO dto) {
+        System.out.println("✏️ 기사 정보 수정 ID: " + id);
+        return deliveryService.updateDelivery(id, dto);
     }
 
-    // 5. 완료 목록
-    @GetMapping("/completed")
-    public List<Delivery> getCompleted() {
-        return deliveryService.getCompletedDeliveries();
-    }
-*/
-   //수정
-    @PutMapping("/delivery/{deliveryid}")
-    public Delivery update(@PathVariable("deliveryid") Long id, @RequestBody DeliveryDTO dto) {
-    return deliveryService.updateDelivery(id, dto);
-}
-
-    // 6. 삭제 (DELETE)
+    /**
+     * 배송 기사 삭제 (DELETE)
+     */
     @DeleteMapping("/delivery-companies/{deliveryid}")
     public void delete(@PathVariable("deliveryid") Long id) {
         deliveryService.deleteDelivery(id);
     }
-     @GetMapping("/delivery/{id}")
-    public Delivery getOne(@PathVariable("id") Long id) {
-        return deliveryService.getDelivery(id);
-    }
-
   @GetMapping("/{loginId}") 
 public ResponseEntity<AdminsDTO> getAdminIdByLoginId(@PathVariable("loginId") String loginId) {
 
@@ -185,9 +171,8 @@ public ResponseEntity<?> assignOrderToDelivery(
             order.changeDeliveryStatus(DeliveryStatus.PICKUP);
             driver.setStatus(DeliveryStatus.PICKUP);
         } else {
-            // 💡 일반 배송 배정일 때만 기존 서비스 로직 실행 (또는 아래처럼 직접 처리)
             adminsService.assignOrder(orderId, deliveryId);
-            order.changeDeliveryStatus(DeliveryStatus.WAITING);
+            order.changeDeliveryStatus(DeliveryStatus.ACCEPTED);
         }
         
         orderRepository.save(order);
@@ -446,25 +431,62 @@ public ResponseEntity<?> handleDriverResponse(
 // 배송 출발(waiting -> SHIPPING)
 @PostMapping("/orders/{orderId}/start")
 public ResponseEntity<?> startDelivery(@PathVariable Long orderId) {
+    
+    System.out.println("\n========== [배송 출발 API 호출 시작] ==========");
+    System.out.println("요청된 주문 ID (orderId): " + orderId);
 
     Orders order = orderRepository.findById(orderId)
             .orElseThrow(() -> new RuntimeException("주문 없음"));
 
     Delivery delivery = order.getDelivery();
-
     if (delivery == null) {
+        System.out.println("[경고] 해당 주문에 배정된 기사(Delivery)가 없습니다!");
         return ResponseEntity.badRequest().body("기사 배정 안됨");
     }
 
-    // 1. 기사의 상태를 SHIPPING으로 변경
-    delivery.setStatus(DeliveryStatus.SHIPPING);
+    // -------------------------------------------------------------------
+    // [1] 변경 전 원본 데이터 상태 확인 로그
+    // -------------------------------------------------------------------
+    System.out.println("\n--- [변경 전 DB 상태 확인] ---");
+    System.out.println("1. Delivery 테이블 기존 status: " + delivery.getStatus());
+    // 주석 유저 요청 반영 구역
+    // orderDB의 deliveryStatus (waiting -> SHIPPING 변경 전 확인)
+    // orderDB의 orderState (READY -> SHIPPING 변경 전 확인)
+    // 💡 여기서 .name()은 영문(SHIPPING), .toString() 등은 한글로 나올 수 있으니 둘 다 찍어봅니다.
+    try {
+        System.out.println("2. Orders 테이블 기존 deliveryStatus: " + order.getDeliveryStatus());
+        System.out.println("3. Orders 테이블 기존 orderState: " + order.getOrderState());
+    } catch (Exception e) {
+        System.out.println("로그 출력 실패 (Getter 메서드명을 확인해주세요): " + e.getMessage());
+    }
 
+    // -------------------------------------------------------------------
+    // [2] 상태 변경 수행 및 변경 직후 로그
+    // -------------------------------------------------------------------
+    System.out.println("\n--- [상태 변경 및 저장 수행] ---");
+    
+    delivery.setStatus(DeliveryStatus.SHIPPING); 
+    deliveryRepository.save(delivery);
+    System.out.println("=> DeliveryDB 변경 완료: " + delivery.getStatus());
     order.changeDeliveryStatus(DeliveryStatus.SHIPPING); 
-    orderRepository.save(order);
+    System.out.println("=> orderDB deliveryStatus 변경 시도 완료");
+    order.setOrderState(OrderState.SHIPPING); 
+
+    // 최종적으로 orderDB에 반영하는 곳
+    Orders savedOrder = orderRepository.save(order);
+    System.out.println("=> orderDB 최종 save 완료");
+
+    // -------------------------------------------------------------------
+    // [3] 변경 후 최종 데이터 상태 확인 로그 (실제 DB 저장 값 예측)
+    // -------------------------------------------------------------------
+    System.out.println("\n--- [변경 후 최종 결과 확인] ---");
+    System.out.println("1. 최종 Delivery status -> " + savedOrder.getDelivery().getStatus());
+    System.out.println("2. 최종 Orders deliveryStatus -> " + savedOrder.getDeliveryStatus());
+    System.out.println("3. 최종 Orders orderState -> " + savedOrder.getOrderState());
+    System.out.println("================================================\n");
 
     return ResponseEntity.ok("배송 시작");
 }
-
 
 //배송완료 ( SHIPPING  -> complete)
 @PostMapping("/orders/{orderId}/complete")
@@ -531,6 +553,36 @@ public ResponseEntity<?> completeDelivery(@PathVariable Long orderId) {
         return ResponseEntity.ok("기사 상태가 WAITING으로 전환되었습니다.");
     }
 
+    @PostMapping("/orders/select-delivery")
+public ResponseEntity<?> assignSelectDelivery(@RequestBody Map<String, Object> payload) {
+    
+    // 1. 별도 DTO 파일 없이 Map에서 필요한 데이터만 쏙 빼오기
+    if (payload.get("deliveryId") == null || payload.get("orderIds") == null) {
+        return ResponseEntity.badRequest().body("필수 데이터가 누락되었습니다.");
+    }
+    
+    Long deliveryId = Long.parseLong(payload.get("deliveryId").toString());
+    List<Integer> rawOrderIds = (List<Integer>) payload.get("orderIds");
+
+    // 2. 기사 조회
+    Delivery delivery = deliveryRepository.findById(deliveryId)
+            .orElseThrow(() -> new RuntimeException("해당 배송 기사를 찾을 수 없습니다."));
+
+    // 3. 주문들 반복 처리 (기존 엔티티 메서드만 사용)
+    for (Object id : rawOrderIds) {
+        Long orderId = Long.parseLong(id.toString());
+        Orders order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("주문 ID " + orderId + "가 존재하지 않습니다."));
+
+        // 담당자가 만든 메서드 그대로 조립
+        order.assignOrder(delivery); // READY 변경 및 기사 매핑
+        order.changeDeliveryStatus(com.cmyk.threeh.enums.DeliveryStatus.ACCEPTED); // ACCEPTED 변경
+
+        orderRepository.save(order);
+    }
+
+    return ResponseEntity.ok("선택 주문의 배정 처리가 완료되었습니다.");
+}
     //교환 환불
     @PostMapping("/orders/{orderId}/assign-pickup")
 public ResponseEntity<?> assignPickupDriver(

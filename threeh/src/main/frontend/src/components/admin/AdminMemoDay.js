@@ -194,13 +194,13 @@ const AdminMemoDay = () => {
 
                <div className="admin-dday-list">
     {dDayList.map((item) => {
-        // 현재 날짜와 타겟 날짜 비교해서 오늘이 D-Day인지 판별하는 로직 추가
+        // 현재 날짜와 타겟 날짜 비교해서 오늘이 D-Day인지 판별
         const today = new Date(); today.setHours(0, 0, 0, 0);
         const target = new Date(item.date); target.setHours(0, 0, 0, 0);
         const isToday = (target.getTime() - today.getTime()) === 0;
 
         return (
-            /* 오늘이 D-Day면 'is-today' 클래스가 붙어 색상이 변하고 깜빡입니다 */
+            /* 오늘이 D-Day면 색상이 변하고 깜빡입니다 */
             <div key={item.id} className={`admin-dday-card ${isToday ? 'is-today' : ''}`}>
                 <div className="admin-dday-card-info">
                     <span className="admin-dday-card-title">{item.title}</span>
