@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
-import '../../css/adminCss/AdminRanking.css'; // ⚠️ 경로가 맞는지 꼭 확인하세요!
+import { Link } from 'react-router-dom';
+import '../../css/adminCss/AdminRanking.css';
 
 const SAMPLE_ORDERS = [];
 const SAMPLE_DRIVERS = [];
@@ -13,9 +14,20 @@ const Ranking = ({ orders = [], items = [] }) => {
     // 👑 1. VIP 고객 랭킹 연산 및 추적
     // ==========================================
     const vipRanking = useMemo(() => {
+        const validVipOrders = finalOrders.filter(order => {
+            const orderState = String(order.orderState || order.status || '').trim();
+            const deliveryStatus = String(order.deliveryStatus || '').trim();
+            const isCompleted = deliveryStatus === 'COMPLETED' || deliveryStatus === '배송완료';
+            const isValidState = 
+                orderState === 'PURCHASED' || orderState === '구매확정' || 
+                orderState === 'EXCHANGEorREFUND' || orderState === '교환또는환불';
+
+            return isCompleted && isValidState;
+        });
+
         const vipStatsMap = {};
 
-        finalOrders.forEach((order, idx) => {
+        validVipOrders.forEach((order, idx) => {
             const memberId = order.memberId;
             if (!memberId) {
                 console.warn(`⚠️ [경고] ${idx}번째 주문에 memberId가 없습니다!`);
@@ -45,7 +57,10 @@ const Ranking = ({ orders = [], items = [] }) => {
         });
 
         return Object.values(vipStatsMap)
-            .sort((a, b) => b.count - a.count)
+            .sort((a, b) => {
+                if (b.count !== a.count) return b.count - a.count;
+                return b.totalSpent - a.totalSpent;
+            })
             .slice(0, 3)
             .map((vip, idx) => ({
                 rank: idx + 1,
@@ -55,28 +70,45 @@ const Ranking = ({ orders = [], items = [] }) => {
     }, [finalOrders]);
 
     // ==========================================
-    // 🔥 2. 인기 아이템 랭킹 연산 및 추적
+    // 🔥 2. 인기 아이템 랭킹 연산 및 추적 (⭐️ ID 추출 로직 전면 수정!)
     // ==========================================
     const itemRanking = useMemo(() => {
+        const validItemOrders = finalOrders.filter(order => {
+            const orderState = String(order.orderState || order.status || '').trim();
+            const deliveryStatus = String(order.deliveryStatus || '').trim();
+            const isCompleted = deliveryStatus === 'COMPLETED' || deliveryStatus === '배송완료';
+            const isValidState = 
+                orderState === 'PURCHASED' || orderState === '구매확정' || 
+                orderState === 'EXCHANGEorREFUND' || orderState === '교환또는환불';
+
+            return isCompleted && isValidState;
+        });
+
         const itemStatsMap = {};
 
-        finalOrders.forEach((order, idx) => {
+        validItemOrders.forEach((order) => {
             const orderItemsArray = order.orderItems || order.orderitems;
-
-            if (!orderItemsArray || !Array.isArray(orderItemsArray)) {
-                console.warn(`⚠️ [경고] ${idx}번째 주문에 orderItems 배열이 없거나 형식이 잘못되었습니다.`);
-                return;
-            }
+            if (!orderItemsArray || !Array.isArray(orderItemsArray)) return;
             
             orderItemsArray.forEach(item => {
                 const itemName = item.itemName;
                 const count = Number(item.count || 0);
+                // 💡 백엔드 데이터에 맞게 item.itemId, item.productId, item.id 중 하나를 매핑합니다.
+                const itemId = item.itemId || item.productId || item.id || item.itemNo; 
+                
                 if (!itemName) return;
 
-                if (!itemStatsMap[itemName]) {
-                    itemStatsMap[itemName] = { name: itemName, sales: 0 };
+                // ID가 있으면 ID를 Key로 삼고, 없으면 이름으로 삼아 중복 방지
+                const mapKey = itemId || itemName;
+
+                if (!itemStatsMap[mapKey]) {
+                    itemStatsMap[mapKey] = { 
+                        id: itemId, // ⭐️ 이 id 데이터가 넘어가야 Link가 활성화됩니다!
+                        name: itemName, 
+                        sales: 0 
+                    };
                 }
-                itemStatsMap[itemName].sales += count;
+                itemStatsMap[mapKey].sales += count;
             });
         });
 
@@ -94,9 +126,12 @@ const Ranking = ({ orders = [], items = [] }) => {
     // ==========================================
     const driverRanking = useMemo(() => {
         const completedOrders = finalOrders.filter(o => {
-            const deliveryStatus = String(o.deliveryStatus || '').toUpperCase();
-            const orderState = String(o.orderState || '');
-            return deliveryStatus === 'COMPLETED' && orderState !== '주문취소';
+            const deliveryStatus = String(o.deliveryStatus || '').trim();
+            const orderState = String(o.orderState || o.status || '').trim();
+            const isCompleted = deliveryStatus === 'COMPLETED' || deliveryStatus === '배송완료';
+            const isNotCanceled = orderState !== 'CANCEL' && orderState !== '주문취소';
+
+            return isCompleted && isNotCanceled;
         });
 
         const driverStatsMap = {};
@@ -135,14 +170,11 @@ const Ranking = ({ orders = [], items = [] }) => {
         .slice(0, 3);
     }, [finalOrders, finalItems]);
 
-
     return (
         <div className="admin-ranking-container">
 
-            {/* 👑 VIP 고객 랭킹 - 시각적 배치를 위해 2위 -> 1위 -> 3위 순서로 렌더링 */}
+            {/* 👑 VIP 고객 랭킹 */}
             <div className="vip-ranking-visual">
-                
-                {/* 2위 카드 */}
                 {vipRanking[1] ? (
                     <div className="vip-side-card left">
                         <div className="vip-rank">2위 우수 VIP</div>
@@ -158,7 +190,6 @@ const Ranking = ({ orders = [], items = [] }) => {
                     </div>
                 ) : <div className="vip-side-card empty">2위 데이터 없음</div>}
 
-                {/* 1위 카드 (가운데 배치) */}
                 {vipRanking[0] ? (
                     <div className="vip-center-card">
                         <div className="vip-rank first">👑 1위 최우수 VIP</div>
@@ -174,7 +205,6 @@ const Ranking = ({ orders = [], items = [] }) => {
                     </div>
                 ) : <div className="vip-center-card empty">1위 데이터 없음</div>}
 
-                {/* 3위 카드 */}
                 {vipRanking[2] ? (
                     <div className="vip-side-card right">
                         <div className="vip-rank">3위 우수 VIP</div>
@@ -193,65 +223,73 @@ const Ranking = ({ orders = [], items = [] }) => {
 
             <div className="admin-tables-row">
 
-            {/* 🔥 인기 아이템 랭킹 카드 */}
-            <div className="admin-ranking-card-box">
-                <div className="admin-ranking-card-header">
-                    <h3>🔥 이번 달 인기 아이템 TOP 3</h3>
-                </div>
-                <table className="admin-ranking-table">
-                    <thead>
-                        <tr>
-                            <th>순위</th>
-                            <th>아이템명</th>
-                            <th>판매 수량</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {itemRanking.map((item) => (
-                            <tr key={item.rank}>
-                                <td className="admin-rank-display admin-item-number">{item.rank}</td>
-                                <td className="admin-text-bold admin-item-name-ellipsis" title={item.name}>{item.name}</td>
-                                <td className="admin-text-count-red">{item.sales}개</td>
-                            </tr>
-                        ))}
-                        {itemRanking.length === 0 && (
+                {/* 🔥 인기 아이템 랭킹 카드 */}
+                <div className="admin-ranking-card-box">
+                    <div className="admin-ranking-card-header">
+                        <h3>🔥 이번 달 인기 아이템 TOP 3</h3>
+                    </div>
+                    <table className="admin-ranking-table">
+                        <thead>
                             <tr>
-                                <td colSpan="3" className="admin-ranking-empty-row">⚠️ 판매된 상품 내역이 없습니다.</td>
+                                <th>순위</th>
+                                <th>아이템명</th>
+                                <th>판매 수량</th>
                             </tr>
-                        )}
-                    </tbody>
-                </table>
-            </div>
+                        </thead>
+                        <tbody>
+                            {itemRanking.map((item) => (
+                                <tr key={item.rank}>
+                                    <td className="admin-rank-display admin-item-number">{item.rank}</td>
+                                    <td className="admin-text-bold admin-item-name-ellipsis" title={item.name}>
+                                        {item.id ? (
+                                            <Link to={`/item/${item.id}`} className="admin-item-link">
+                                                {item.name}
+                                            </Link>
+                                        ) : (
+                                            <span className="admin-item-link-fallback">{item.name}</span>
+                                        )}
+                                    </td>
+                                    <td className="admin-text-count-red">{item.sales}개</td>
+                                </tr>
+                            ))}
+                            {itemRanking.length === 0 && (
+                                <tr>
+                                    <td colSpan="3" className="admin-ranking-empty-row">⚠️ 판매된 상품 내역이 없습니다.</td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
 
-            {/* 🚚 우수 배송 기사 랭킹 카드 */}
-            <div className="admin-ranking-card-box">
-                <div className="admin-ranking-card-header">
-                    <h3>🚚 우수 배송 기사 랭킹 (완료 기준)</h3>
-                </div>
-                <table className="admin-ranking-table">
-                    <thead>
-                        <tr>
-                            <th>순위</th>
-                            <th>기사명</th>
-                            <th>완료 건수</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {driverRanking.map((driver, index) => (
-                            <tr key={driver.driverId}>
-                                <td className="admin-rank-display admin-driver-number">{index + 1}</td>
-                                <td className="admin-text-bold">{driver.name} 기사님</td>
-                                <td className="admin-text-count-blue">{driver.count}건</td>
-                            </tr>
-                        ))}
-                        {driverRanking.length === 0 && (
+                {/* 🚚 우수 배송 기사 랭킹 카드 */}
+                <div className="admin-ranking-card-box">
+                    <div className="admin-ranking-card-header">
+                        <h3>🚚 우수 배송 기사 랭킹 (완료 기준)</h3>
+                    </div>
+                    <table className="admin-ranking-table">
+                        <thead>
                             <tr>
-                                <td colSpan="4" className="admin-ranking-empty-row">⚠️ 조건에 맞는 배송 데이터가 없습니다.</td>
+                                <th>순위</th>
+                                <th>기사명</th>
+                                <th>완료 건수</th>
                             </tr>
-                        )}
-                    </tbody>
-                </table>
-            </div>
+                        </thead>
+                        <tbody>
+                            {driverRanking.map((driver, index) => (
+                                <tr key={driver.driverId}>
+                                    <td className="admin-rank-display admin-driver-number">{index + 1}</td>
+                                    <td className="admin-text-bold">{driver.name} 기사님</td>
+                                    <td className="admin-text-count-blue">{driver.count}건</td>
+                                </tr>
+                            ))}
+                            {driverRanking.length === 0 && (
+                                <tr>
+                                    <td colSpan="4" className="admin-ranking-empty-row">⚠️ 조건에 맞는 배송 데이터가 없습니다.</td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
         </div>

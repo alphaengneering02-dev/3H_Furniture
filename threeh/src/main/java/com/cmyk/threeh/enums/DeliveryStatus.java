@@ -4,8 +4,8 @@ public enum DeliveryStatus {
 
     //조장 수정
 
-    WAITING("대기중"),   //대기중
     ACCEPTED("수락"),
+    WAITING("대기중"),   //대기중
     SHIPPING("배송중"),   //배송중
     COMPLETED("배송완료"),   //배송완료
     PICKUP("수거"),     //수거(교환 및 환불시)RETURNING

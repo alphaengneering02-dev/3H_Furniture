@@ -159,11 +159,10 @@ public class DeliveryService {
                         : DeliveryStatus.WAITING
                 );
 
-                // 개별 저장 수행 (트랜잭션이 묶여있지 않아 즉시 반영됩니다)
                 deliveryRepository.save(delivery);
 
             } catch (Exception e) {
-                // DB 제약조건 등 예기치 못한 에러가 나더라도 트랜잭션 전체가 롤백되지 않고 해당 건만 실패 처리
+               
                 excelDto.setFailReason("등록 중 알 수 없는 오류 발생: " + e.getMessage());
                 failedList.add(excelDto);
             }

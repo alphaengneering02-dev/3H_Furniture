@@ -31,7 +31,14 @@
     top: 20px;
     align-items: center;
     box-shadow: 0 8px 24px rgba(74, 51, 36, 0.06);
+
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;     
+    box-sizing: border-box;
 }
+
+.admin-side-box::-webkit-scrollbar { width: 6px; }
+
 
 /* 환영 문구 */
 .admin-welcome-message {
@@ -170,7 +177,9 @@
 /* TABLE */
 
 .admin-driver-table-wrapper {
-    overflow-x: auto;
+    max-height: 330px;
+    overflow-y: auto;
+    border-bottom: 1px solid #ddd;
 }
 
 .admin-table-style {
@@ -330,14 +339,17 @@
 
 /* 오늘 디데이 */
 .admin-dday-card.is-today {
-    border-color: #F4C96A;
-    animation: todayBlink 1.3s infinite;
+    border: 3px solid #FF1E27;
+    background-color: #FFF5F5;
+    color: #D3121A;
+    animation: dangerBlink 1.2s infinite ease-in-out;
 }
 
-@keyframes todayBlink {
-    0% {box-shadow: 0 0 0 rgba(244, 201, 106, 0);}
-    50% {box-shadow: 0 0 14px rgba(244, 201, 106, 0.8);}
-    100% {box-shadow: 0 0 0 rgba(244, 201, 106, 0);}
+@keyframes dangerBlink {
+    0% { box-shadow: 0 0 4px rgba(255, 30, 39, 0.4); }
+    50% { box-shadow: 0 0 18px rgba(255, 30, 39, 0.95), 
+        inset 0 0 8px rgba(255, 30, 39, 0.2); }
+    100% { box-shadow: 0 0 4px rgba(255, 30, 39, 0.4); }
 }
 
 /*MEMO*/
@@ -431,15 +443,14 @@
 
 /* submit button */
 .admin-search-submit-btn-block {
+    width: 100%;
+    margin-top: 8px;
     border: none;
     cursor: pointer;
-
     background: #B8783E;
     color: white;
-
     font-size: 13px;
     font-weight: 600;
-
     transition: 0.2s ease;
 }
 
