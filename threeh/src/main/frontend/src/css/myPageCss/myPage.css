@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,500;0,600;1,400&display=swap');
 
 /* =========================================================================
-   🏢 PROJECT CMYK - 마이페이지 최종 텍스트 밸런싱 및 탈퇴 시인성 강화 시스템 (파트 1)
+    PROJECT CMYK - 마이페이지 최종 텍스트 밸런싱 및 탈퇴 시인성 강화 시스템 (파트 1)
    ========================================================================= */
 
 body {
@@ -25,7 +25,7 @@ body {
 }
 
 /* ==========================================
-   1. 상단 브랜드 헤더 박스 (고급 호텔 라운지 무드)
+   상단 브랜드 헤더 박스 (고급 호텔 라운지 무드)
    ========================================== */
 .mypage-header-box {
     width: 100%;
@@ -55,7 +55,7 @@ body {
 }
 
 /* ==========================================
-   2. 본문 레이아웃 그리드 (인호님 스펙 1200px 고정)
+   본문 레이아웃 그리드 (인호님 스펙 1200px 고정)
    ========================================== */
 .mypage-grid-container > div[style*="display: flex"] {
     width: 100% !important;
@@ -69,7 +69,7 @@ body {
 }
 
 /* ==========================================
-   3. 좌측 사이드바 메뉴 (280px 와이드 킹 스케일 & 대형 배너 마감)
+   좌측 사이드바 메뉴 (280px 와이드 킹 스케일 & 대형 배너 마감)
    ========================================== */
 .mypage-sidebar {
     width: 280px !important; 
@@ -142,7 +142,7 @@ body {
 }
 
 /* ==========================================
-   4. 우측 메인 콘텐츠 및 럭셔리 데이터 판넬
+   우측 메인 콘텐츠 및 럭셔리 데이터 판넬
    ========================================== */
 .mypage-main-content {
     flex: 1 !important;
@@ -232,7 +232,7 @@ body {
 }
 
 /* =========================================================================
-   📦 5. 구매내역 가로형 슬라이더 쇼룸 (글로벌 밸런싱 및 에스프레소 소프트 라인 적용)
+   구매내역 가로형 슬라이더 쇼룸 (글로벌 밸런싱 및 에스프레소 소프트 라인 적용)
    ========================================================================= */
 .mypage-order-slider-wrapper {
     display: flex;
@@ -304,7 +304,7 @@ body {
     transform: none !important;     
 }
 
-/* 📐 [개별 사각 카드 쇼룸 판넬 - 크기 다이어트 유지 및 라인 연화] */
+/* [개별 사각 카드 쇼룸 판넬 - 크기 다이어트 유지 및 라인 연화] */
 .mypage-order-square-card {
     flex: 0 0 180px !important;       
     width: 180px !important;          
@@ -312,7 +312,7 @@ body {
     min-height: 210px !important;     
     box-sizing: border-box;
     
-    /* ⚡ [보정] 붕 뜨던 매트차콜(#333) 대신 글로벌 기준선인 에스프레소 연화 선 적용 */
+    /* [보정] 붕 뜨던 매트차콜(#333) 대신 글로벌 기준선인 에스프레소 연화 선 적용 */
     border: 1px solid #dfd1c0 !important; 
     border-top: 4px solid #ede2d5 !important; /* ⚡ [팀 규칙] 미니 시그니처 탑 선 배치 */
     border-radius: 0px !important;            /* ⚡ [팀 규칙] 완벽한 직각 마감 */
@@ -333,7 +333,7 @@ body {
     width: 100% !important;
 }
 
-/* 🔥 마우스를 올렸을 때 인터랙션 밸런싱 */
+/* 마우스를 올렸을 때 인터랙션 밸런싱 */
 .mypage-order-square-card:hover {
     transform: translateY(-5px);
     border-color: #8C7A6B !important; /* ⚡ 올블랙 대신 명품 무드의 피크브라운으로 확장 */
@@ -350,10 +350,10 @@ body {
 
 
 /* =========================================================================
-   6. [신규 오버라이딩] 기존 마크업 전용 명품 라운지 버튼 스타일 클러스터
+   [신규 오버라이딩] 기존 마크업 전용 명품 라운지 버튼 스타일 클러스터
    ========================================================================= */
 
-/* ① 미니멀 헤더 액션 라인 버튼 및 테이블 내 '상품보기' 버튼 규격 고정 */
+/* 미니멀 헤더 액션 라인 버튼 및 테이블 내 '상품보기' 버튼 규격 고정 */
 .mypage-header-box button,
 .mypage-profile-icon-box button:last-of-type,
 tbody button,
@@ -381,8 +381,8 @@ tbody button:hover,
     color: #FFFFFF !important;
 }
 
-/* ② 시그니처 카라멜 메인 버튼 및 '정보수정' 전용 단독 저격 */
-/* 💡 [저격 교정] 무차별 전체 button 선택자를 지우고, 정보수정 폼 내부에 들어있는 버튼만 정밀 타격 */
+/* 시그니처 카라멜 메인 버튼 및 '정보수정' 전용 단독 저격 */
+/* [저격 교정] 무차별 전체 button 선택자를 지우고, 정보수정 폼 내부에 들어있는 버튼만 정밀 타격 */
 .mypage-action-btn,
 .mypage-info-data-block button,
 /* .mypage-form button, */
@@ -394,7 +394,7 @@ tbody button:hover,
     font-size: 13px !important;
     font-weight: 700 !important;
     
-    /* 💡 [크기 긴급 복구] 가로 너비가 무작정 100%로 터지지 않도록 기존 캡처본의 알맞은 고정 크기로 잠금 */
+    /* [크기 긴급 복구] 가로 너비가 무작정 100%로 터지지 않도록 기존 캡처본의 알맞은 고정 크기로 잠금 */
     width: 20% !important;                       
     max-width: 750px !important;                  /* ⚡ 회원정보 입력창 가로폭 끝선과 자석처럼 정확히 일치 */
     height: 44px !important;                      /* 투박하지 않은 슬림하고 정갈한 세로 높이 */
@@ -495,7 +495,7 @@ button:disabled {
     order: 2 !important;
     margin: 0 0 15px 0 !important; /* 버튼 아래 배송지 리스트/카카오창과의 최소 간격만 확보 */
     
-    /* ⚡ [확인 및 방어] 혹시 기본 테두리나 곡률이 풀리는 것을 방지하기 위한 팀 컨벤션 주입 */
+    /* [확인 및 방어] 혹시 기본 테두리나 곡률이 풀리는 것을 방지하기 위한 팀 컨벤션 주입 */
     border-radius: 0px !important; 
 }
 
@@ -582,7 +582,7 @@ span[onClick*="handleDelete"]:hover {
    [디자인 통일] 프로필 박스의 입체 섀도우 효과를 모든 데이터 박스에 확산 적용
    ========================================================================= */
 
-/* 1. 회원정보, 배송지 주소록, 나의 리뷰 관리 블록의 외곽선 및 입체 섀도우 통일 */
+/* 회원정보, 배송지 주소록, 나의 리뷰 관리 블록의 외곽선 및 입체 섀도우 통일 */
 .mypage-main-content .info-content-box .info-data-block {
     border: 2px solid #531D19 !important; /* ⚡ [보정] 강한 블랙에서 깊은 에스프레소 브라운 두께선으로 통일 */
     box-shadow: 8px 8px 0px #ede2d5 !important; /* 까사미아 시그니처 소프트베이지 섀도우 유지 */
@@ -592,7 +592,7 @@ span[onClick*="handleDelete"]:hover {
     transition: all 0.3s ease-in-out !important;
 }
 
-/* 2. 구매내역 가로형 슬라이더 쇼룸 프레임 외곽선 및 입체 섀도우 매칭 */
+/* 구매내역 가로형 슬라이더 쇼룸 프레임 외곽선 및 입체 섀도우 매칭 */
 .mypage-main-content .info-content-box .order-slider-wrapper {
     border: 2px solid #531D19 !important; /* ⚡ [보정] 에스프레소 브라운으로 두께 일치 */
     box-shadow: 8px 8px 0px #ede2d5 !important; /* 동일한 무광 입체 섀도우 투사 */
@@ -613,20 +613,20 @@ span[onClick*="handleDelete"]:hover {
    [텍스트 가독성 최적화] 회원이름 및 회원정보 데이터 라벨 명도 극대화
    ========================================================================= */
 
-/* 1. 프로필 박스 내부 "김인호님" 회원이름 글씨 선명도 및 두께 강화 */
+/* 프로필 박스 내부 "김인호님" 회원이름 글씨 선명도 및 두께 강화 */
 .mypage-profile-icon-box .profile-avatar-circle {
     color: #531D19 !important; /* ⚡ [보정] 붕 뜨던 블랙 대신 묵직한 에스프레소 브라운으로 선명도 확보 */
     font-weight: 800 !important; /* 글씨 두께 최상위 보정 유지 */
     text-shadow: none !important; /* 흐릿해 보일 수 있는 그림자 제거 */
 }
 
-/* 2. 회원정보 블록 내부 [아이디, 연락처, 이메일] 데이터 텍스트 전체 진하게 처리 */
+/* 회원정보 블록 내부 [아이디, 연락처, 이메일] 데이터 텍스트 전체 진하게 처리 */
 .mypage-main-content .info-content-box .info-data-block p {
     color: #444444 !important; /* ⚡ [보정] 투박한 블랙 대신 팀 공통 중화된 먹색으로 밸런싱 */
     font-weight: 500 !important; /* 일반 글씨 두께 상향 유지 */
 }
 
-/* 3. 회원정보 항목명(strong 태그) 강조색 보정 */
+/* 회원정보 항목명(strong 태그) 강조색 보정 */
 .mypage-main-content .info-content-box .info-data-block p strong {
     color: #531D19 !important; /* 항목 이름은 에스프레소 브라운으로 묵직하게 고정 */
     font-weight: 700 !important;
@@ -658,7 +658,7 @@ span[onClick*="handleDelete"]:hover {
    [배송지 텍스트 밸런싱] 배송지 타이틀 글자 잘림 및 줄바꿈 차단 시스템
    ========================================================================= */
 
-/* 1. "추가된 배송지", "기본 배송지" 항목의 텍스트 줄바꿈을 절대 차단 (기능 원본 보존) */
+/* "추가된 배송지", "기본 배송지" 항목의 텍스트 줄바꿈을 절대 차단 (기능 원본 보존) */
 .mypage-main-content .info-content-box .info-data-block div p strong,
 .mypage-main-content .info-content-box .info-data-block div p {
     white-space: nowrap !important; /* 글자 하단 단락 끊김 차단 */
@@ -666,7 +666,7 @@ span[onClick*="handleDelete"]:hover {
     align-items: center;
 }
 
-/* 2. 우측 버튼들과 텍스트가 겹치지 않도록 유연하게 늘어나도록 리스트 정렬 보정 (기능 원본 보존) */
+/* 우측 버튼들과 텍스트가 겹치지 않도록 유연하게 늘어나도록 리스트 정렬 보정 (기능 원본 보존) */
 .mypage-main-content .info-content-box .info-data-block > div[style*="display: flex"] {
     display: flex !important;
     justify-content: space-between !important;
@@ -675,7 +675,7 @@ span[onClick*="handleDelete"]:hover {
     width: 100% !important;
 }
 
-/* 3. 배송지 이름 텍스트의 가시성 강조 (기능 원본 보존) */
+/* 배송지 이름 텍스트의 가시성 강조 (기능 원본 보존) */
 .mypage-main-content .info-content-box .info-data-block p strong {
     font-size: 14px !important;
     width: auto !important; /* 자동 확장 활성화 */
@@ -687,33 +687,33 @@ span[onClick*="handleDelete"]:hover {
    [세로 간격 미세 조정] 대시보드 레이아웃 상하 공백 압축 오버라이딩 (구조 원본 유지)
    ========================================================================= */
 
-/* 1. 프로필 박스 하단의 거대한 공백을 25px로 압축 */
+/* 프로필 박스 하단의 거대한 공백을 25px로 압축 */
 .mypage-profile-icon-box {
     margin-bottom: 25px !important;
 }
 
-/* 2. 섹션 대제목 타이틀(회원정보, 배송지 추가 등)의 상단 여백을 25px로 대폭 줄임 */
+/* 섹션 대제목 타이틀(회원정보, 배송지 추가 등)의 상단 여백을 25px로 대폭 줄임 */
 .mypage-info-section-title {
     margin: 25px 0 15px 0 !important; /* 상단 여백을 55px -> 25px로 압축 */
     padding-bottom: 8px !important;
 }
 
-/* 3. 회원정보, 배송지 주소록, 나의 리뷰 관리 상자들의 하단 마진을 50px -> 25px로 통일 */
+/* 회원정보, 배송지 주소록, 나의 리뷰 관리 상자들의 하단 마진을 50px -> 25px로 통일 */
 .mypage-main-content .info-content-box .info-data-block {
     margin-bottom: 25px !important; /* 다음 섹션과의 간격을 촘촘하게 결합 */
 }
 
-/* 4. 구매내역 가로형 캐러셀 슬라이더 상자의 하단 마진도 25px로 압축 매칭 */
+/* 구매내역 가로형 캐러셀 슬라이더 상자의 하단 마진도 25px로 압축 매칭 */
 .mypage-main-content .info-content-box .order-slider-wrapper {
     margin-bottom: 25px !important;
 }
 
-/* 5. 배송지 설정 헤더 박스의 상단 여백 보정 */
+/* 배송지 설정 헤더 박스의 상단 여백 보정 */
 .mypage-address-section-header {
     margin-top: 25px !important; /* 40px -> 25px로 좁힘 */
 }
 
-/* 6. 최하단 회원 탈퇴 버튼 위쪽의 거대한 여백 조절 */
+/* 최하단 회원 탈퇴 버튼 위쪽의 거대한 여백 조절 */
 .mypage-main-content .info-content-box > div:last-child {
     margin-top: 40px !important; /* 60px -> 40px로 세밀하게 밀착 */
 }
@@ -723,7 +723,7 @@ span[onClick*="handleDelete"]:hover {
    ========================================================================= */
 
 /* 
- * ⭕ [레이아웃 버그 완전 해결]
+ * [레이아웃 버그 완전 해결]
  * #refund-section 전체에 무차별적으로 flex가 먹히면 하위 카드 정렬이 파괴됩니다.
  * 타이틀 글씨와 수량 배지가 들어있는 '상단 헤더 텍스트 라인 영역'만 조준하여 flex를 줍니다.
  */
@@ -782,30 +782,30 @@ span[onClick*="handleDelete"]:hover {
    [구매내역 전체보기 확대 시스템] 격자 뷰포트 오버라이딩 (구조 원본 유지)
    ========================================================================= */
 
-/* 1. 전체보기가 켜졌을 때 슬라이더 바깥 큰 상자의 가로 차단벽을 해제하고 아래로 확장 */
+/* 전체보기가 켜졌을 때 슬라이더 바깥 큰 상자의 가로 차단벽을 해제하고 아래로 확장 */
 .mypage-main-content .info-content-box .order-slider-wrapper:has(.grid-view) {
     min-height: auto !important;
     padding: 30px 25px !important;
     
-    /* ⚡ [보정] 오버라이딩 시에도 튀어나올 수 있는 테두리 실선을 에스프레소 브라운으로 결합 수호 */
+    /* [보정] 오버라이딩 시에도 튀어나올 수 있는 테두리 실선을 에스프레소 브라운으로 결합 수호 */
     border: 2px solid #531D19 !important;
     border-radius: 0px !important;
     
     transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-/* 2. 전체보기 격자 모드일 때는 좌우 이동 화살표 버튼을 깔끔하게 숨김 처리 */
+/* 전체보기 격자 모드일 때는 좌우 이동 화살표 버튼을 깔끔하게 숨김 처리 */
 .mypage-main-content .info-content-box .order-slider-wrapper:has(.grid-view) .slider-arrow-btn {
     display: none !important;
 }
 
-/* 3. 1줄 가로폭 제한이 걸려있던 컨테이너 상자의 탈출 잠금 해제 */
+/* 1줄 가로폭 제한이 걸려있던 컨테이너 상자의 탈출 잠금 해제 */
 .mypage-main-content .info-content-box .order-slider-wrapper:has(.grid-view) .order-slider-container {
     overflow: visible !important;
     margin: 0 !important;
 }
 
-/* 4. 격자로 정렬이 풀렸을 때 인호님의 예쁜 사각 카드가 찌그러지지 않게 크기 보정 */
+/* 격자로 정렬이 풀렸을 때 인호님의 예쁜 사각 카드가 찌그러지지 않게 크기 보정 */
 .mypage-order-slider-track.grid-view .order-square-card {
     flex: none !important;
     max-width: 100% !important;
@@ -813,19 +813,19 @@ span[onClick*="handleDelete"]:hover {
     min-height: 240px !important;
     box-sizing: border-box !important;
     
-    /* ⚡ [보정] 격자 뷰 확장 시 카드 외곽선도 맑고 연한 브라운선으로 일체감 부여 및 직각 사수 */
+    /* [보정] 격자 뷰 확장 시 카드 외곽선도 맑고 연한 브라운선으로 일체감 부여 및 직각 사수 */
     border: 1px solid #dfd1c0 !important;
     border-radius: 0px !important;
     
     animation: fadeInOrderCard 0.4s ease-in-out forwards;
 }
 
-/* 5. 카드 내부 글씨들이 바둑판 정렬에서도 한눈에 들어오도록 텍스트 줄바꿈 방지 세팅 */
+/* 카드 내부 글씨들이 바둑판 정렬에서도 한눈에 들어오도록 텍스트 줄바꿈 방지 세팅 */
 .mypage-order-slider-track.grid-view .order-square-card p {
     white-space: normal !important; /* 상품명이 길어도 깨지지 않게 줄바꿈 수용 */
 }
 
-/* 6. 전체보기를 누르면 카드들이 밑에서 위로 부드럽게 솟아오르는 고급 호텔 무드 효과 */
+/* 전체보기를 누르면 카드들이 밑에서 위로 부드럽게 솟아오르는 고급 호텔 무드 효과 */
 @keyframes fadeInOrderCard {
     from { opacity: 0; transform: translateY(12px); }
     to { opacity: 1; transform: translateY(0); }
@@ -864,7 +864,7 @@ span[onClick*="handleDelete"]:hover {
     min-height: 240px !important;
     box-sizing: border-box !important;
     
-    /* ⚡ [보정] 격자 리셋 시에도 테두리 선을 맑고 연한 브라운선으로 일체감 부여 및 직각 사수 */
+    /* [보정] 격자 리셋 시에도 테두리 선을 맑고 연한 브라운선으로 일체감 부여 및 직각 사수 */
     border: 1px solid #dfd1c0 !important;
     border-radius: 0px !important;
 }
@@ -873,7 +873,7 @@ span[onClick*="handleDelete"]:hover {
    구매내역 타이틀 라인 최종 정렬 (구조적 겹침 버그 완전 수정본)
    ========================================================================= */
 
-/* 1. 구매내역 타이틀 상단 프레임 전체를 좌우 양끝 배칭 구조로 선언 (원본 유지) */
+/* 구매내역 타이틀 상단 프레임 전체를 좌우 양끝 배칭 구조로 선언 (원본 유지) */
 #refund-section {
     display: flex !important;
     justify-content: space-between !important; /* 글씨 세트는 왼쪽 끝, 버튼은 오른쪽 끝 */
@@ -882,7 +882,7 @@ span[onClick*="handleDelete"]:hover {
 }
 
 /* 
- * ⭕ [레이아웃 파괴 버그 수정 완료]
+ * [레이아웃 파괴 버그 수정 완료]
  * 무차별적인 자식 선택자(> div)는 상품 카드 트랙을 오염시켜 카드를 1개로 숨겨버립니다.
  * 클래스명을 명확하게 지정하여 '제목 텍스트 묶음 영역'만 쏙 골라 왼쪽 정렬을 줍니다.
  */
@@ -893,7 +893,7 @@ span[onClick*="handleDelete"]:hover {
     gap: 10px !important; /* 글씨와 수량 배지 간격 미세 고정 */
 }
 
-/* 3. 오른쪽 끝으로 붙는 [전체보기 / 접기] 버튼 오버라이드 (원본 유지) */
+/* 오른쪽 끝으로 붙는 [전체보기 / 접기] 버튼 오버라이드 (원본 유지) */
 #refund-section > button.mypage-action-btn {
     margin-left: auto !important; /* 오른쪽 끝단 축으로 강제 밀착 */
     padding: 6px 14px !important;
@@ -903,14 +903,14 @@ span[onClick*="handleDelete"]:hover {
     border-radius: 0px !important; /* 팀 규격 매칭 완전한 직각 마감 */
 }
 
-/* 4. 타이틀 뒤에 나타나던 이상한 영문 가상 글씨 완전히 삭제 (원본 유지) */
+/* 타이틀 뒤에 나타나던 이상한 영문 가상 글씨 완전히 삭제 (원본 유지) */
 #refund-section::after {
     display: none !important; 
     content: "" !important;
 }
 
 /* =========================================================================
-   ⚡ [신규 추가]: 타이틀 스타일 압박에 억눌려 1개로 숨겨졌던 카드들 구출하기
+   [신규 추가]: 타이틀 스타일 압박에 억눌려 1개로 숨겨졌던 카드들 구출하기
    ========================================================================= */
 .mypage-order-slider-track {
     display: flex !important;
@@ -930,10 +930,10 @@ span[onClick*="handleDelete"]:hover {
 
 
 /* =========================================================================
-   🖼️ [먹통 완치] 사이드바 가구 목록 이동 배너 크기 및 클릭 영역 강제 활성화
+   [먹통 완치] 사이드바 가구 목록 이동 배너 크기 및 클릭 영역 강제 활성화
    ========================================================================= */
 
-/* 1. 기존 사이드바 텍스트 뒤에 가상으로 그리던 유령 배경은 완전히 무력화 차단 원본 유지 */
+/* 기존 사이드바 텍스트 뒤에 가상으로 그리던 유령 배경은 완전히 무력화 차단 원본 유지 */
 .mypage-sidebar::after {
     display: none !important;
     content: "" !important;
@@ -943,7 +943,7 @@ span[onClick*="handleDelete"]:hover {
     box-shadow: none !important;
 }
 
-/* 2. 인호님이 JSX에 새로 추가한 실제 <div> 박스 배너의 크기와 사진 강제 주입 */
+/* 인호님이 JSX에 새로 추가한 실제 <div> 박스 배너의 크기와 사진 강제 주입 */
 .mypage-sidebar .sidebar-furniture-banner,
 .mypage-sidebar-furniture-banner {
     display: block !important;
@@ -953,19 +953,19 @@ span[onClick*="handleDelete"]:hover {
     height: 420px !important;      /* 0px로 수축되어 있던 높이를 420px로 강제 고정 */
     margin-top: 30px !important;   /* 메뉴 버튼들과의 상단 여백 확보 */
     
-    /* 🤎 팀 공통 주방 수납장 이미지 경로 오차 없이 선명하게 박아넣기 */
+    /* 팀 공통 주방 수납장 이미지 경로 오차 없이 선명하게 박아넣기 */
     background-image: url(//localhost:8080/static/images/k5_2.jpg) !important; 
     background-size: cover !important;       
     background-position: center !important;  
     
-    /* ⚡ [팀 규격 매칭] 장바구니/정보수정과 일치하는 브라운 테두리선 및 완전한 직각 마감 */
+    /* [팀 규격 매칭] 장바구니/정보수정과 일치하는 브라운 테두리선 및 완전한 직각 마감 */
     border: 1px solid #dfd1c0 !important;    
     border-radius: 0px !important;
     box-shadow: 0 15px 35px rgba(140, 122, 107, 0.06) !important; 
     transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1) !important;
 }
 
-/* 3. 마우스를 올렸을 때 손가락 모양 반응 및 고급스럽게 솟아오르는 리빙 무드 모션 */
+/* 마우스를 올렸을 때 손가락 모양 반응 및 고급스럽게 솟아오르는 리빙 무드 모션 */
 .mypage-sidebar .sidebar-furniture-banner:hover,
 .mypage-sidebar-furniture-banner:hover {
     cursor: pointer !important;
@@ -975,10 +975,10 @@ span[onClick*="handleDelete"]:hover {
 }
 
 /* =========================================================================
-   🚨 [극약 처방] JSX 구조 무시하고 화면 우측 끝 강제 고정 시스템
+   [극약 처방] JSX 구조 무시하고 화면 우측 끝 강제 고정 시스템
    ========================================================================= */
 
-/* 1️⃣ [완치]: 튕겨나가서 안 보이던 버튼 박스를 회원정보 박스 오른쪽 위로 강제 유도 */
+/* [완치]: 튕겨나가서 안 보이던 버튼 박스를 회원정보 박스 오른쪽 위로 강제 유도 */
 .profile-icon-box,
 .mypage-profile-icon-box {
     display: flex !important;
@@ -992,13 +992,13 @@ span[onClick*="handleDelete"]:hover {
     z-index: 999 !important;        /* ⚡ 뒤로 숨지 못하게 무조건 최상단 층으로 배치 */
 }
 
-/* 2️⃣ 원형 이름 아바타 글씨는 확실하게 폭파 */
+/* 원형 이름 아바타 글씨는 확실하게 폭파 */
 .profile-icon-box .profile-avatar-circle,
 .mypage-profile-icon-box .profile-avatar-circle {
     display: none !important;
 }
 
-/* 3️⃣ [북마크], [정보 수정] 버튼을 조원분 카라멜 원색 및 슬림 직각으로 리모델링 */
+/* [북마크], [정보 수정] 버튼을 조원분 카라멜 원색 및 슬림 직각으로 리모델링 */
 .profile-icon-box .mypage-action-btn,
 .mypage-profile-icon-box .mypage-action-btn {
     background-color: var(--main-caramel) !important; /* 조원분 카라멜 원색 */
@@ -1127,7 +1127,7 @@ span[onClick*="handleDelete"]:hover {
    [최종 마감] 뱃지 간섭 차단 및 전체보기 버튼 우측 강제 밀착
    ======================================================== */
 
-/* 1. '구매내역'과 '총 11건' 뱃지가 들어있는 전체 타이틀 상자의 위치 기준점 확정 */
+/* '구매내역'과 '총 11건' 뱃지가 들어있는 전체 타이틀 상자의 위치 기준점 확정 */
 h3#refund-section.mypage-info-section-title,
 .mypage-info-section-title {
     position: relative !important;   /* 버튼을 우측 끝에 정확히 박기 위한 지지대 역할 */
@@ -1139,7 +1139,7 @@ h3#refund-section.mypage-info-section-title,
     margin-bottom: 20px !important;
 }
 
-/* 2. 💡 [최종 치트키] 중간에 낀 뱃지를 완전히 무시하고 버튼만 우측 맨 끝 벽면으로 강제 밀착 */
+/* [최종 치트키] 중간에 낀 뱃지를 완전히 무시하고 버튼만 우측 맨 끝 벽면으로 강제 밀착 */
 h3#refund-section.mypage-info-section-title > button.mypage-action-btn,
 .mypage-info-section-title > button {
     position: absolute !important;   /* 좁은 그릇 구조를 탈출하여 절대적인 좌표로 배치 */
@@ -1157,11 +1157,11 @@ h3#refund-section.mypage-info-section-title > button.mypage-action-btn,
     display: inline-block !important;
     cursor: pointer !important;
     
-    /* ⚡ [팀 규격 매칭] 공용 서브 버튼 가이드에 맞추어 완전한 직각 마감 */
+    /* [팀 규격 매칭] 공용 서브 버튼 가이드에 맞추어 완전한 직각 마감 */
     border-radius: 0px !important; 
 }
 
-/* 3. 마우스 올렸을 때 딥 카라멜 호버 피드백 */
+/* 마우스 올렸을 때 딥 카라멜 호버 피드백 */
 h3#refund-section.mypage-info-section-title > button.mypage-action-btn:hover,
 .mypage-info-section-title > button:hover {
     background-color: var(--deep-caramel) !important;
@@ -1172,7 +1172,7 @@ h3#refund-section.mypage-info-section-title > button.mypage-action-btn:hover,
    [최종 완치] 리뷰 버튼 우측 밀착 및 다른 버튼 카라멜 완전 복구
    ======================================================== */
 
-/* 1. 리뷰 수정/삭제 버튼 묶음을 카드박스 '우측 끝선'으로 정렬하는 부모 그릇 제어 */
+/* 리뷰 수정/삭제 버튼 묶음을 카드박스 '우측 끝선'으로 정렬하는 부모 그릇 제어 */
 .mypage-info-data-block div[style*="display: flex"],
 .mypage-info-data-block div[style*="gap"],
 .mypage-info-data-block > div > div:last-child {
@@ -1184,7 +1184,7 @@ h3#refund-section.mypage-info-section-title > button.mypage-action-btn:hover,
     margin-top: 15px !important;
 }
 
-/* 2. 💡 [정밀 저격] 다른 일반 버튼(정보수정 등)을 절대 침범하지 않도록 '리뷰 상자 내부'로만 타격 범위 완벽 격리 */
+/* [정밀 저격] 다른 일반 버튼(정보수정 등)을 절대 침범하지 않도록 '리뷰 상자 내부'로만 타격 범위 완벽 격리 */
 .mypage-info-data-block button,
 .mypage-info-data-block .mypage-action-btn {
     width: auto !important;          /* 100% 가로 터짐 현상 원천 차단 */
@@ -1203,7 +1203,7 @@ h3#refund-section.mypage-info-section-title > button.mypage-action-btn:hover,
 
 }
 
-/* 3. [수정하기] 버튼 전용 카라멜 컬러 수혈 및 오른쪽 정렬 극대화 */
+/* [수정하기] 버튼 전용 카라멜 컬러 수혈 및 오른쪽 정렬 극대화 */
 .mypage-info-data-block button:first-of-type,
 .mypage-info-data-block .mypage-action-btn:first-of-type {
     background-color: var(--caramel) !important; /* #B8783E 카라멜 복구 */
@@ -1216,7 +1216,7 @@ h3#refund-section.mypage-info-section-title > button.mypage-action-btn:hover,
     border-color: var(--deep-caramel) !important;
 }
 
-/* 4. [삭제] 버튼 조원분 오리지널 레드 라인 아이덴티티 완벽 복원 */
+/* [삭제] 버튼 조원분 오리지널 레드 라인 아이덴티티 완벽 복원 */
 .mypage-info-data-block button[style*="color: red"],
 .mypage-info-data-block button[style*="color: 'red'"],
 .mypage-info-data-block button:last-of-type {
@@ -1234,7 +1234,7 @@ h3#refund-section.mypage-info-section-title > button.mypage-action-btn:hover,
    [최종 종결] 영역별 격리 타격 - 정보수정 복구 및 리뷰 우측 밀착
    ======================================================== */
 
-/* 1. 폼 내부에 들어있는 회원정보 '정보수정' 버튼만 정밀 저격 (카라멜 복구) */
+/* 폼 내부에 들어있는 회원정보 '정보수정' 버튼만 정밀 저격 (카라멜 복구) */
 .order-page-wrapper form button,
 .main-body-wrapper form button,
 .order-page-wrapper div[style*="flex"] > button:not(.mypage-action-btn),
@@ -1260,7 +1260,7 @@ form + button:hover {
     border-color: #8A4F25 !important;
 } */
 
-/* 2. 💡 [리뷰 구역 완전 격리] 리뷰 박스 내부의 수정/삭제 버튼 가로 정렬 및 우측 밀착 */
+/* [리뷰 구역 완전 격리] 리뷰 박스 내부의 수정/삭제 버튼 가로 정렬 및 우측 밀착 */
 .mypage-info-data-block div[style*="display"],
 .mypage-info-data-block div:has(> .mypage-action-btn) {
     display: flex !important;
@@ -1272,7 +1272,7 @@ form + button:hover {
     box-sizing: border-box !important;
 }
 
-/* 💡 리뷰 상자 내부에 박힌 버튼들의 가로폭이 100%로 터지는 현상을 원천 차단 */
+/* 리뷰 상자 내부에 박힌 버튼들의 가로폭이 100%로 터지는 현상을 원천 차단 */
 .mypage-info-data-block button,
 .mypage-info-data-block .mypage-action-btn {
     width: auto !important;               /* 가로폭 100% 터짐 현상 완전 해제 */
@@ -1318,7 +1318,7 @@ form + button:hover {
    [최종 수혈] 내 북마크 상품보기 & 회원정보수정 버튼 카라멜 완전 고정
    ======================================================== */
 
-/* ① '내 북마크 상품' 테이블 내부에 박혀있는 [상품 보기] 단추 카라멜 리브랜딩 */
+/* '내 북마크 상품' 테이블 내부에 박혀있는 [상품 보기] 단추 카라멜 리브랜딩 */
 tbody td button,
 .mypage-main-content table button,
 .mypage-info-data-block table button {
@@ -1343,7 +1343,7 @@ tbody td button,
     display: inline-block !important;
     transition: all 0.2s ease-in-out !important;
     box-shadow: none !important;
-} /* 💡 상품보기 닫는 중괄호 매칭 완료 */
+} /* 상품보기 닫는 중괄호 매칭 완료 */
 
 /* [상품 보기] 마우스 호버 시 조금 더 어두운 딥 카라멜 피드백 */
 tbody td button:hover,
@@ -1352,10 +1352,10 @@ tbody td button:hover,
     background-color: #8A4F25 !important;
     border-color: #8A4F25 !important;
     color: #FFFFFF !important;
-} /* 💡 상품보기 호버 닫는 중괄호 매칭 완료 */
+} /* 상품보기 호버 닫는 중괄호 매칭 완료 */
 
 
-/* ② 💡 [질문자님 정답 저격 반영] 진짜 마이페이지 회원정보 클래스명 경로 매칭 정보수정 단추 오버라이드 */
+/* ② [질문자님 정답 저격 반영] 진짜 마이페이지 회원정보 클래스명 경로 매칭 정보수정 단추 오버라이드 */
 .mypage-info-content-box .mypage-info-data-block button {
     /* 칙칙한 기본 연분홍/빨간색 실선 테두리와 투명 배경을 무력화하고 카라멜 수혈 */
     background: #B8783E !important;
@@ -1369,7 +1369,7 @@ tbody td button:hover,
     letter-spacing: 0.5px !important;
     text-align: center !important;
     
-    /* 💡 [크기 완벽 고정] 가로로 무작정 터지거나 쪼그라들지 않게 딱 예쁜 원래 콤팩트 크기 그대로 고정 */
+    /* [크기 완벽 고정] 가로로 무작정 터지거나 쪼그라들지 않게 딱 예쁜 원래 콤팩트 크기 그대로 고정 */
     width: 120px !important; 
     height: 40px !important;
     box-sizing: border-box !important;
@@ -1381,7 +1381,7 @@ tbody td button:hover,
     display: block !important;
     transition: all 0.2s ease-in-out !important;
     box-shadow: 0 4px 10px rgba(184, 120, 62, 0.15) !important;
-} /* 💡 정보수정 닫는 중괄호 매칭 완료 */
+} /* 정보수정 닫는 중괄호 매칭 완료 */
 
 /* [정보수정] 마우스 호버 시 딥 카라멜 피드백 */
 .mypage-info-content-box .mypage-info-data-block button:hover {
@@ -1389,13 +1389,13 @@ tbody td button:hover,
     background-color: #8A4F25 !important;
     border-color: #8A4F25 !important;
     box-shadow: 0 6px 14px rgba(138, 79, 37, 0.25) !important;
-} /* 💡 정보수정 호버 닫는 중괄호 매칭 완료 */
+} /*정보수정 호버 닫는 중괄호 매칭 완료 */
 
 /* ========================================================
    [최종 마감] 구매내역 슬라이더 좌/우 화살표 버튼 완치 및 밀착
    ======================================================== */
 
-/* ① 조원분의 진짜 클래스명인 '.slider-arrow-btn'을 다이렉트로 타격하여 평평하게 펴기 */
+/* 조원분의 진짜 클래스명인 '.slider-arrow-btn'을 다이렉트로 타격하여 평평하게 펴기 */
 .mypage-main-content .order-slider-wrapper .slider-arrow-btn,
 .order-slider-wrapper button.slider-arrow-btn,
 button.slider-arrow-btn {
@@ -1430,7 +1430,7 @@ button.slider-arrow-btn {
     transition: all 0.2s ease-in-out !important;
 }
 
-/* ② 화살표 버튼 마우스 올렸을 때(Hover) 시그니처 카라멜 컬러 반전 효과 */
+/* 화살표 버튼 마우스 올렸을 때(Hover) 시그니처 카라멜 컬러 반전 효과 */
 .order-slider-wrapper button.slider-arrow-btn:hover,
 button.slider-arrow-btn:hover {
     background-color: var(--caramel) !important; /* #B8783E */
@@ -1438,7 +1438,7 @@ button.slider-arrow-btn:hover {
     color: #FFFFFF !important;
 }
 
-/* ③ 💡 [좌우 정밀 안착] 왼쪽 화살표와 오른쪽 화살표를 큰 상자 벽면에 칼같이 자석 밀착 */
+/* [좌우 정밀 안착] 왼쪽 화살표와 오른쪽 화살표를 큰 상자 벽면에 칼같이 자석 밀착 */
 /* 왼쪽 이동 버튼 (보통 클래스명에 prev나 왼쪽 정렬 속성이 포함됨) */
 .order-slider-wrapper button.slider-arrow-btn:first-of-type,
 button.slider-arrow-btn.prev,
@@ -1449,7 +1449,7 @@ button.slider-arrow-btn:not(.next) {
 /* 오른쪽 이동 버튼 (보통 클래스명에 next나 오른쪽 정렬 속성이 포함됨) */
 .order-slider-wrapper button.slider-arrow-btn:last-of-type,
 button.slider-arrow-btn.next {
-    right: 10px !important; /* 💡 큰 흰색 상자 오른쪽 테두리 안쪽 벽면에 자석처럼 완벽히 밀착 */
+    right: 10px !important; /* 큰 흰색 상자 오른쪽 테두리 안쪽 벽면에 자석처럼 완벽히 밀착 */
 }
 
 /* 화살표 부모 그릇 상자의 위치 기준점을 명확히 잡아서 버튼 이탈 방지 */
@@ -1461,18 +1461,18 @@ button.slider-arrow-btn.next {
    [최종 완치] #refund-section 기준 화살표 평치기 및 좌우 밀착
    ======================================================== */
 
-/* ① 조원분의 진짜 구매내역 ID인 '#refund-section' 바로 뒤 프레임을 추적하여 화살표 직격 */
+/* 조원분의 진짜 구매내역 ID인 '#refund-section' 바로 뒤 프레임을 추적하여 화살표 직격 */
 #refund-section + div button.slider-arrow-btn,
 #refund-section ~ div button[class*="arrow"],
 #refund-section ~ div .slider-arrow-btn,
 button.slider-arrow-btn {
-    /* 1. 세로로 무식하게 늘어나 찌러졌던 그릇을 36px 직각 정방형 정사각형으로 고정 (평평하게) */
+    /* 세로로 무식하게 늘어나 찌러졌던 그릇을 36px 직각 정방형 정사각형으로 고정 (평평하게) */
     width: 36px !important;
     max-width: 36px !important;
     height: 36px !important;
     min-height: 36px !important;
     
-    /* 2. 90도 회전해서 찌그러져 뭉개졌던 텍스트(◀, ▶)를 수평 중앙에 똑바로 정착 (평치기) */
+    /* 90도 회전해서 찌그러져 뭉개졌던 텍스트(◀, ▶)를 수평 중앙에 똑바로 정착 (평치기) */
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -1482,13 +1482,13 @@ button.slider-arrow-btn {
     padding: 0 !important;
     margin: 0 !important;
     
-    /* 3. 가구 카드를 가로막지 않도록 큰 상자 안의 정확한 좌우 모서리 끝선에 세로 중앙 배치 */
+    /* 가구 카드를 가로막지 않도록 큰 상자 안의 정확한 좌우 모서리 끝선에 세로 중앙 배치 */
     position: absolute !important;
     top: 50% !important;
     transform: translateY(-50%) !important; 
     z-index: 15 !important;
     
-    /* 4. 카사미아 웜톤 무드와 완벽 싱크로율을 이루는 부드러운 가구색 마감 */
+    /* 카사미아 웜톤 무드와 완벽 싱크로율을 이루는 부드러운 가구색 마감 */
     background-color: var(--cream) !important;      /* #FFF3DF 은은한 베이지 */
     border: 1px solid var(--soft-border) !important;  /* #E8D9C8 밀크티 선 */
     color: var(--deep-caramel) !important;           /* #8A4F25 카라멜 글씨 */
@@ -1498,7 +1498,7 @@ button.slider-arrow-btn {
     transition: all 0.2s ease-in-out !important;
 }
 
-/* ② 화살표 버튼 마우스 올렸을 때(Hover) 시그니처 카라멜 컬러 반전 효과 */
+/* 화살표 버튼 마우스 올렸을 때(Hover) 시그니처 카라멜 컬러 반전 효과 */
 #refund-section + div button.slider-arrow-btn:hover,
 button.slider-arrow-btn:hover {
     background-color: var(--caramel) !important; /* #B8783E */
@@ -1506,7 +1506,7 @@ button.slider-arrow-btn:hover {
     color: #FFFFFF !important;
 }
 
-/* ③ 💡 [좌우 정밀 안착] 왼쪽 화살표와 오른쪽 화살표를 큰 상자 벽면에 칼같이 자석 밀착 */
+/* [좌우 정밀 안착] 왼쪽 화살표와 오른쪽 화살표를 큰 상자 벽면에 칼같이 자석 밀착 */
 /* 왼쪽 이동 버튼 (보통 첫 번째 버튼이거나 prev 속성이 믹스됨) */
 #refund-section + div button.slider-arrow-btn:first-of-type,
 #refund-section ~ div button[class*="arrow"]:first-of-type {
@@ -1516,7 +1516,7 @@ button.slider-arrow-btn:hover {
 /* 오른쪽 이동 버튼 (보통 마지막 버튼이거나 next 속성이 믹스됨) */
 #refund-section + div button.slider-arrow-btn:last-of-type,
 #refund-section ~ div button[class*="arrow"]:last-of-type {
-    right: 10px !important; /* 💡 큰 사각형 상자 오른쪽 테두리 안쪽 벽면에 자석처럼 완벽히 밀착 */
+    right: 10px !important; /* 큰 사각형 상자 오른쪽 테두리 안쪽 벽면에 자석처럼 완벽히 밀착 */
 }
 
 /* 조원분이 짜놓은 구매내역 큰 그릇 상자의 위치 기준점을 명확히 박아 버튼 탈출 차단 */
@@ -1529,14 +1529,14 @@ button.slider-arrow-btn:hover {
    [최종 완결] 리뷰 버튼 양끝 분산 정렬 - 수정(좌측) / 삭제(우측)
    ======================================================== */
 
-/* 1. 💡 [핵심 교정] 수정하기와 삭제 버튼 부모 상자를 '양 끝 벽면 정렬(space-between)'로 강제 찢기 */
+/* [핵심 교정] 수정하기와 삭제 버튼 부모 상자를 '양 끝 벽면 정렬(space-between)'로 강제 찢기 */
 .mypage-info-data-block div[style*="display: flex"],
 .mypage-info-data-block div[style*="display:flex"],
 .mypage-info-data-block div:has(> button[onClick*="Delete"]) {
     display: flex !important;
     flex-direction: row !important;       /* 가로형 정렬 유지 */
     
-    /* 💡 [치트키] 수정하기는 왼쪽 끝벽으로, 삭제는 오른쪽 끝벽으로 자석처럼 강제로 찢어버림 */
+    /* [치트키] 수정하기는 왼쪽 끝벽으로, 삭제는 오른쪽 끝벽으로 자석처럼 강제로 찢어버림 */
     justify-content: space-between !important; 
     
     align-items: center !important;
@@ -1545,7 +1545,7 @@ button.slider-arrow-btn:hover {
     margin-top: 15px !important;
 }
 
-/* 2. 가로로 뚱뚱하게 늘어나 굳어있던 리뷰 내부 버튼들의 규격을 세련된 미니멀 배지 크기로 잠금 */
+/* 가로로 뚱뚱하게 늘어나 굳어있던 리뷰 내부 버튼들의 규격을 세련된 미니멀 배지 크기로 잠금 */
 .mypage-info-data-block div[style*="display"] .mypage-action-btn,
 .mypage-info-data-block div:has(> button[onClick*="Delete"]) button {
     width: auto !important;               /* 가로 터짐 현상 완전 방지 */
@@ -1560,18 +1560,18 @@ button.slider-arrow-btn:hover {
     box-shadow: none !important;
     margin: 0 !important;                 /* 기존에 걸려있던 강제 마진 밀어내기 속성 완벽 초기화 */
     
-    /* ⚡ [팀 규격 매칭] 공용 서브 버튼 가이드에 맞추어 완전한 직각 마감 */
+    /* [팀 규격 매칭] 공용 서브 버튼 가이드에 맞추어 완전한 직각 마감 */
     border-radius: 0px !important; 
 }
 
-/* 3. 👈 [수정하기] 버튼 카라멜 색상 고정 및 '왼쪽 벽면' 완전 밀착 */
+/* [수정하기] 버튼 카라멜 색상 고정 및 '왼쪽 벽면' 완전 밀착 */
 .mypage-info-data-block div[style*="display"] .mypage-action-btn:first-of-type,
 .mypage-info-data-block div:has(> button[onClick*="Delete"]) button:first-of-type {
     background-color: var(--caramel) !important; /* 팀 공용 카라멜 (#B8783E) */
     border: 1px solid var(--caramel) !important;
     color: #FFFFFF !important;
     
-    /* 💡 기존의 margin-left 자석을 해제하여 부모의 space-between 속성을 따라 왼쪽 구석 끝벽에 밀착 */
+    /* 기존의 margin-left 자석을 해제하여 부모의 space-between 속성을 따라 왼쪽 구석 끝벽에 밀착 */
     margin-left: 0 !important; 
 }
 
@@ -1580,7 +1580,7 @@ button.slider-arrow-btn:hover {
     border-color: var(--deep-caramel) !important;
 }
 
-/* 4. 👉 [삭제] 버튼 인호님 오리지널 레드 라인 룩 유지 및 '오른쪽 벽면' 완전 밀착 */
+/* [삭제] 버튼 인호님 오리지널 레드 라인 룩 유지 및 '오른쪽 벽면' 완전 밀착 */
 .mypage-info-data-block div[style*="display"] .mypage-action-btn:last-of-type,
 .mypage-info-data-block div:has(> button[onClick*="Delete"]) button:last-of-type {
     background: transparent !important;
@@ -1588,7 +1588,7 @@ button.slider-arrow-btn:hover {
     border: 1px solid #ff4d4f !important;  /* 인호님 오리지널 레드 라인 수혈 */
     color: #ff4d4f !important;            
     
-    /* 💡 부모의 space-between 속성을 따라 무조건 오른쪽 구석 끝벽에 자석처럼 결착 */
+    /* 부모의 space-between 속성을 따라 무조건 오른쪽 구석 끝벽에 자석처럼 결착 */
     margin-left: 0 !important; 
 }
 
@@ -1597,10 +1597,10 @@ button.slider-arrow-btn:hover {
 }
 
 /* =========================================================================
-   🚨 [최종 마감 수혈] 마이페이지 모든 버튼박스 '딥체리' 컬러 일괄 강제 보정
+   [최종 마감 수혈] 마이페이지 모든 버튼박스 '딥체리' 컬러 일괄 강제 보정
    ========================================================================= */
 
-/* ① [정보수정] 대형 폼 버튼 및 120px 콤팩트 정보수정 단추 딥체리 일괄 주입 */
+/* [정보수정] 대형 폼 버튼 및 120px 콤팩트 정보수정 단추 딥체리 일괄 주입 */
 .order-page-wrapper form button,
 .main-body-wrapper form button,
 .order-page-wrapper div[style*="flex"] > button:not(.mypage-action-btn),
@@ -1612,7 +1612,7 @@ form + button,
     color: #FFFFFF !important;
 }
 
-/* ② [내 북마크 상품보기] 및 테이블 내부 모든 미니 액션 단추 딥체리 주입 */
+/* [내 북마크 상품보기] 및 테이블 내부 모든 미니 액션 단추 딥체리 주입 */
 tbody td button,
 .mypage-main-content table button,
 .mypage-info-data-block table button {
@@ -1622,7 +1622,7 @@ tbody td button,
     color: #FFFFFF !important;
 }
 
-/* ③ [구매내역 우측 끝] 전체보기 버튼 & [리뷰 왼쪽 끝] 수정하기 버튼 딥체리 주입 */
+/* [구매내역 우측 끝] 전체보기 버튼 & [리뷰 왼쪽 끝] 수정하기 버튼 딥체리 주입 */
 h3#refund-section.mypage-info-section-title > button.mypage-action-btn,
 .mypage-info-section-title > button,
 .mypage-info-data-block div[style*="display"] .mypage-action-btn:first-of-type,
@@ -1634,7 +1634,7 @@ h3#refund-section.mypage-info-section-title > button.mypage-action-btn,
 }
 
 /* =========================================================================
-   ✨ 모든 딥체리 버튼 및 슬라이더 화살표 마우스 호버(Hover) 반전 효과 일괄 선언
+   모든 딥체리 버튼 및 슬라이더 화살표 마우스 호버(Hover) 반전 효과 일괄 선언
    ========================================================================= */
 .order-page-wrapper form button:hover,
 .main-body-wrapper form button:hover,
@@ -1656,7 +1656,7 @@ button.slider-arrow-btn:hover,
 }
 
 /* =========================================================================
-   🚨 [긴급 추가 저격] '+ 새 배송지 추가' 버튼 딥체리 컬러 강제 보정
+   [긴급 추가 저격] '+ 새 배송지 추가' 버튼 딥체리 컬러 강제 보정
    ========================================================================= */
 
 /* 배송지 추가 헤더 내부에 있는 모든 버튼/링크/박스 형태를 정밀 타격 */
@@ -1683,3 +1683,4 @@ button.slider-arrow-btn:hover,
     border-color: #250907 !important;
     box-shadow: 0 6px 15px rgba(37, 9, 7, 0.3) !important;
 }
+

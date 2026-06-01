@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,500;0,600;1,400&display=swap');
 
 /* =========================================================================
-   🏢 PROJECT CMYK - 네이버 회원가입 룩앤필 프리미엄 폼 가이드 (진짜 클래스명 완치본)
+   PROJECT CMYK - 네이버 회원가입 룩앤필 프리미엄 폼 가이드 (진짜 클래스명 완치본)
    ========================================================================= */
 
 /* 1. 🖥️ 질문자님 리턴문 실제 이름 매칭: 단독형 수정 폼 전체를 화면 한가운데 정렬 */
@@ -15,10 +15,10 @@
     box-sizing: border-box;
 }
 
-/* 2. 💡 [네이버 공식] 정갈하고 컴팩트한 독채형 흰색 메인 서류 상자 디자인 */
+/* [네이버 공식] 정갈하고 컴팩트한 독채형 흰색 메인 서류 상자 디자인 */
 .update-form-card {
     width: 100% !important;
-    max-width: 460px !important; /* 💡 네이버 로그인/회원가입 폼 표준 규격 폭 적용 */
+    max-width: 460px !important; /* 네이버 로그인/회원가입 폼 표준 규격 폭 적용 */
     background-color: #FFFFFF !important;
     padding: 50px 40px !important; /* 내부 패딩을 넓혀서 답답함을 완전히 해제 */
     
@@ -40,31 +40,32 @@
     letter-spacing: -0.5px;
 }
 
-/* 3. 네이버 공식 위아래 적층형 Row 가이드 라인 */
+/* 네이버 공식 위아래 적층형 Row 가이드 라인 */
 .form-group-row {
     width: 100% !important;
-    margin-bottom: 20px !important; /* 💡 입력 칸끼리 겹치지 않게 시원시원한 숨구멍 배정 */
+    margin-bottom: 20px !important; /* 입력 칸끼리 겹치지 않게 시원시원한 숨구멍 배정 */
 }
 
-/* 💡 [레이블 폰트 보정] 레이블 글씨 두께를 조절하여 인풋창과 깔끔하게 분리 */
+/* [레이블 폰트 보정] 레이블 글씨 두께를 조절하여 인풋창과 깔끔하게 분리 */
 .form-group-row label strong {
     font-size: 14px !important;
     font-weight: 600 !important;
-    color:  !important; /* 아늑한 다크 브라운 */
-    display: inline-block;
+    color: #531D19 !important; /* [완치] 비어있던 자리에 헤더선 일치형 다크 브라운 주입 */
+    display: inline-block !important;
     margin-bottom: 8px !important; /* 텍스트와 하단 인풋창 사이에 여백 부여 */
 }
 
-/* 4. ⚡ 네이버 회원가입 전용 '뚱뚱하고 편안한' 인풋 입력창 커스텀 */
+
+/* 네이버 회원가입 전용 '뚱뚱하고 편안한' 인풋 입력창 커스텀 */
 .form-group-row input {
     width: 100% !important;
-    height: 46px !important; /* 💡 [네이버 공식 높이] 40px에서 46px의 시원한 높이로 확장 */
+    height: 46px !important; /* [네이버 공식 높이] 40px에서 46px의 시원한 높이로 확장 */
     padding: 0 16px !important; /* 좌우 패딩을 넓혀 글씨 짤림 차단 */
     font-size: 14px !important;
     color: #444444 !important; 
     background-color: #FFFFFF !important;
     border: 1px solid #dfd1c0 !important; /* 연한 브라운 테두리선 */
-    border-radius: 6px !important; /* 💡 투박한 직각 마감을 버리고 세련된 라운딩 창 적용 */
+    border-radius: 6px !important; /* 투박한 직각 마감을 버리고 세련된 라운딩 창 적용 */
     box-sizing: border-box !important;
     transition: all 0.2s ease-in-out;
 }
@@ -77,7 +78,7 @@
     box-shadow: 0 0 0 3px rgba(140, 122, 107, 0.1) !important; /* 부드러운 포커스 아우라 추가 */
 }
 
-/* 5. 수정 불가능한 아이디 창 전용 락(Lock) 스타일 */
+/* 수정 불가능한 아이디 창 전용 락(Lock) 스타일 */
 .form-group-row input.disabled-input,
 .form-group-row input[disabled] {
     background-color: #F8F7F4 !important; /* 은은한 웜 그레이 베이지 */
@@ -128,16 +129,16 @@
 }
 
 /* =========================================================================
-   👑 [정보 수정 폼 완결] 네이버 스타일 카드 체리 브라운 브랜드 컬러 전사
+   [정보 수정 폼 완결] 네이버 스타일 카드 체리 브라운 브랜드 컬러 전사
    ========================================================================= */
 
-/* 1️⃣ 입력창 마우스 클릭(Focus) 시 테두리를 튀는 카라멜 대신 체리 브라운으로 하이라이트 */
+/* 입력창 마우스 클릭(Focus) 시 테두리를 튀는 카라멜 대신 체리 브라운으로 하이라이트 */
 .form-group-row input:focus {
     border-color: #531D19 !important; /* 헤더선과 동일한 은은한 체리 브라운 */
     box-shadow: 0 0 0 3px rgba(83, 29, 25, 0.1) !important; /* 체리 브라운 톤의 부드러운 아우라 */
 }
 
-/* 2️⃣ [수정 완료] 메인 버튼 딥체리/체리브라운 리브랜딩 */
+/* [수정 완료] 메인 버튼 딥체리/체리브라운 리브랜딩 */
 .form-action-row button.mypage-action-btn {
     background-color: #531D19 !important; /* 주황 카라멜을 지우고 체리 브라운 주입 */
     border: 1px solid #531D19 !important;
@@ -150,7 +151,7 @@
     border-color: #3A1210 !important;
 }
 
-/* 3️⃣ [취소] 보조 버튼 테두리 및 텍스트 포인트 톤 세련되게 보정 */
+/* [취소] 보조 버튼 테두리 및 텍스트 포인트 톤 세련되게 보정 */
 .form-action-row button.btn-header-action {
     color: #531D19 !important; /* 카라멜 글씨를 헤더선 일치형 체리 브라운으로 변경 */
     background-color: #FFFFFF !important;

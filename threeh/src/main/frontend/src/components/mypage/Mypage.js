@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-/* ⚡ DaumPostCode 라이브러리 임포트 유지 */
+/* DaumPostCode 라이브러리 임포트 유지 */
 import DaumPostCode from 'react-daum-postcode';
-/* 💡 폴더명(mypageCss)과 파일명(myPage.css) 대소문자 규격 오차 없이 싱크 적용 */
+/* 폴더명(mypageCss)과 파일명(myPage.css) 대소문자 규격 오차 없이 싱크 적용 */
 import '../../css/myPageCss/myPage.css';
 import { useToast } from '../../hook/useToast';
 import { ToastContainer, toast } from "react-toastify";
@@ -117,7 +117,7 @@ const Mypage = () => {
                         setAddresses(res.data.addressList || []);
                     }
 
-                    // 🌟 [지시사항 반영 핵심 구역]: res.data 안에서 recentOrders 배열만 정확히 끄집어냅니다.
+                    // [지시사항 반영 핵심 구역]: res.data 안에서 recentOrders 배열만 정확히 끄집어냅니다.
                     const allOrders = res.data.recentOrders || [];
 
                     // CANCEL 상태가 아닌 일반 활성 주문들만 필터링하여 담기
@@ -411,9 +411,9 @@ const Mypage = () => {
     return (
         <div className="mypage-grid-container">
             {/* ========================================================= */}
-            {/* 🤎 [통일 규격] 조원분의 실제 검색/GNB 기능이 담긴 글로벌 헤더      */}
+            {/* [통일 규격] 조원분의 실제 검색/GNB 기능이 담긴 글로벌 헤더      */}
             {/* ========================================================= */}
-            {/* ⚡ [세션 완치]: 조원분 헤더와 인호님의 동적 세션 회원 감지 시스템을 유기적으로 결합 완료 */}
+            {/* [세션 완치]: 조원분 헤더와 인호님의 동적 세션 회원 감지 시스템을 유기적으로 결합 완료 */}
             <Header />
 
             <ToastContainer
@@ -426,7 +426,7 @@ const Mypage = () => {
                 theme="light"
             />
 
-            {/* ⚡ 기존 헤더에 들어있던 member 로그인 상태 검증 로직을 본문 입구로 완벽 복구 */}
+            {/* 기존 헤더에 들어있던 member 로그인 상태 검증 로직을 본문 입구로 완벽 복구 */}
             {!member ? (
                 <main style={{ textAlign: 'center', padding: '100px 20px' }}>
                     <h2>로그인이 필요한 service입니다.</h2>
@@ -441,7 +441,7 @@ const Mypage = () => {
                         <div className="sidebar-furniture-banner" onClick={() => navigate('/Item')} style={{ cursor: 'pointer' }} title="전체 가구 컬렉션 보러가기" />
                     </aside>
 
-                    {/* 📄 우측 메인 콘텐츠 피드 구역 */}
+                    {/* 우측 메인 콘텐츠 피드 구역 */}
                     <main className="mypage-main-content" style={{ flex: 1, padding: '20px' }}>
 
                         {/* 북마크 리스트를 게시판 형태로 보여주기..오현옥 */}
@@ -518,7 +518,7 @@ const Mypage = () => {
                                 <button className="mypage-slider-arrow-btn prev" onClick={handlePrevSlide} disabled={currentSlideIndex === 0}>&lt;</button>
                                 <div className="mypage-order-slider-container">
 
-                                    {/* 👇 딱 이 1줄(트랙 선언부)만 조건부 연산자로 스위칭 완료되었습니다! */}
+                                    {/* 딱 이 1줄(트랙 선언부)만 조건부 연산자로 스위칭 완료되었습니다! */}
                                     <div
                                         className={`mypage-order-slider-track ${isAllOrdersOpen ? 'grid-view' : ''}`}
                                         style={isAllOrdersOpen ? { transform: 'none', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '16px', width: '100%' } : { transform: `translateX(calc(-${currentSlideIndex * 25}% - ${currentSlideIndex * 4}px))` }}
@@ -527,14 +527,14 @@ const Mypage = () => {
                                         {orders && orders.length > 0 ? (
                                             orders
                                                 .filter(order => order.orderState !== 'CANCEL' && order.orderState !== 'EXCHANGEorREFUND')
-                                                // 🌟 [배열 반복문 설정]: orders 배열 안의 모든 데이터(20개든 30개든)를 순서대로 한 장씩 순회하며 카드로 찍어냅니다.
+                                                // [배열 반복문 설정]: orders 배열 안의 모든 데이터(20개든 30개든)를 순서대로 한 장씩 순회하며 카드로 찍어냅니다.
                                                 .map((order, index) => (
                                                     /* 낱개의 독립된 예쁜 정사각형 카드 인덱싱 */
                                                     <div key={order.orderId || order.id || index} className="mypage-order-square-card">
                                                         <div>
                                                             <p style={{ fontSize: '11px', color: '#8C7A6B', margin: '0 0 6px 0' }}>NO. {order.orderId || order.id}</p>
 
-                                                            {/* ⭕ [반복문 변수 매핑]: 루프를 도는 개별 order 객체에서 백엔드가 보내준 정확한 Key명 'itemName'을 가져와 상품명을 띄웁니다. */}
+                                                            {/* [반복문 변수 매핑]: 루프를 도는 개별 order 객체에서 백엔드가 보내준 정확한 Key명 'itemName'을 가져와 상품명을 띄웁니다. */}
                                                             <p style={{ fontSize: '14px', fontWeight: '700', margin: '0 0 8px 0' }}>{order.itemName || '주문 상품'}</p>
 
                                                             {/* [주문상태 이늄 컬러 완전 싱크 마감] */}

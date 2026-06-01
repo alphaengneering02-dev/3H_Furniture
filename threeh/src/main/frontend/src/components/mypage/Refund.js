@@ -29,17 +29,17 @@ const RefundPage = () => {
         return savedUser ? JSON.parse(savedUser) : null;
     });
     
-         // 🚀 [형님 뜻 반영]: Mypage.js의 검증된 원본 창구와 데이터 주입부를 100% 똑같이 이식 완료
+         // [형님 뜻 반영]: Mypage.js의 검증된 원본 창구와 데이터 주입부를 100% 똑같이 이식 완료
     const fetchTabData = (tabNumber) => {
-        // 💡 1번 탭이든 2번 탭이든, 상품명이 완벽하게 다 들어있는 마이페이지 검증 주소를 똑같이 찌릅니다.
+        // 1번 탭이든 2번 탭이든, 상품명이 완벽하게 다 들어있는 마이페이지 검증 주소를 똑같이 찌릅니다.
         const apiUrl = 'http://localhost:8080/Member/mypage.do'; 
 
         axios.get(apiUrl, { withCredentials: true })
             .then(res => {
-                // 💡 [핵심]: 마이페이지 메인에서 가구명과 가격을 완벽하게 띄우던 'recentOrders' 원본 배열을 가져옵니다.
+                // [핵심]: 마이페이지 메인에서 가구명과 가격을 완벽하게 띄우던 'recentOrders' 원본 배열을 가져옵니다.
                 const allOrders = res.data.recentOrders || [];
                 
-                // 💡 마이페이지 메인과 똑같은 날것 그대로의 순수 데이터 상태로 보관함에 주입합니다!
+                // 마이페이지 메인과 똑같은 날것 그대로의 순수 데이터 상태로 보관함에 주입합니다!
                 setOrders(allOrders); 
                 setSelectedOrder(null);
                 setCurrentPage(1);
@@ -125,17 +125,17 @@ const RefundPage = () => {
         }
         if (window.confirm(`주문번호 ${orderId}번 주문을 취소하시겠습니까?`)) {
             
-            // 🚨 [400 에러 격파 핵심]: 문자열로 꼬여있던 orderId를 순수 자바 Long 타입과 호환되도록 강제 숫자 변환
+            // [400 에러 격파 핵심]: 문자열로 꼬여있던 orderId를 순수 자바 Long 타입과 호환되도록 강제 숫자 변환
             const numericOrderId = Number(orderId);
 
             const params = new URLSearchParams();
-            params.append('orderId', numericOrderId); // 🚀 숫자로 포장해서 던집니다.
+            params.append('orderId', numericOrderId); // 숫자로 포장해서 던집니다.
             params.append('itemId', Number(itemId));
 
             axios.post('http://localhost:8080/Member/order/cancel', params, { 
                 withCredentials: true,
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded' // 🚀 스프링 컨트롤러 RequestParam 표준 규격
+                    'Content-Type': 'application/x-www-form-urlencoded' // 스프링 컨트롤러 RequestParam 표준 규격
                 }
             })
             .then(res => {
@@ -145,7 +145,7 @@ const RefundPage = () => {
                 // 실제 DB가 무사히 바뀌었으므로 화면 리액트 상태값도 실시간 일치화
                 setOrders(prevOrders => 
                     prevOrders.map(order => {
-                        const currentId = Number(order.orderId || order.id); // 💡 비교 대상도 숫자로 통일
+                        const currentId = Number(order.orderId || order.id); // 비교 대상도 숫자로 통일
                         return currentId === numericOrderId ? { ...order, orderState: 'CANCEL' } : order;
                     })
                 );
@@ -173,7 +173,7 @@ const RefundPage = () => {
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     
-    // 💡 [통합 필터링 매커니즘]: READY, PURCHASED 상태 트래킹 연동 완료
+    // [통합 필터링 매커니즘]: READY, PURCHASED 상태 트래킹 연동 완료
     const filteredOrders = orders.filter(order => {
         if (activeTab === 1) {
             return order.orderState !== 'CANCEL' && order.orderState !== 'REFUND' && order.orderState !== 'EXCHANGEorREFUND';
@@ -259,7 +259,7 @@ const RefundPage = () => {
                             </div>
 
                             {/* ========================================================= */}
-                            {/* 📋 가로 격자 테이블 바디 아이템 카드 리스트 구역               */}
+                            {/* 가로 격자 테이블 바디 아이템 카드 리스트 구역               */}
                             {/* ========================================================= */}
                             <div className="refund-item-list">
                                 {currentOrders && currentOrders.length > 0 ? (
@@ -268,7 +268,7 @@ const RefundPage = () => {
                                         const isProcessing = order.orderState === 'EXCHANGEorREFUND' || order.orderState === 'REFUND' || order.deliveryStatus === 'PICKUP';
                                         const isChecked = selectedOrder && (selectedOrder.orderId || selectedOrder.id) === orderIdStr;
 
-                                        // 🚀 [최종 해결 마감]: 형님이 보여주신 Mypage.js 구조와 100% 동일하게 1층 변수명 이름표로 direct 매핑 완수!
+                                        // [최종 해결 마감]: 형님이 보여주신 Mypage.js 구조와 100% 동일하게 1층 변수명 이름표로 direct 매핑 완수!
                                         const targetItemName = order.itemName || order.productName || "상품 정보 없음";
                                         const targetPrice = Number(order.orderPrice || order.itemPrice || order.price || 0);
                                         const targetCount = Number(order.count || 0);
@@ -276,24 +276,24 @@ const RefundPage = () => {
 
                                         return (
                                             <div key={orderIdStr || index} className="refund-item-card">
-                                                {/* 1. 라디오 버튼 선택 셀 */}
+                                                {/* 라디오 버튼 선택 셀 */}
                                                 <div className="refund-td-select">
                                                     <input 
                                                         type="radio" 
                                                         name="refund-select-item"
                                                         checked={!!isChecked}
-                                                        /* 💡 배송 준비중(READY), 배송중/완료, 구매확정인 건은 단순 취소 실수를 방지하기 위해 자동 잠금 */
+                                                        /* 배송 준비중(READY), 배송중/완료, 구매확정인 건은 단순 취소 실수를 방지하기 위해 자동 잠금 */
                                                         disabled={activeTab !== 1 || isProcessing || order.orderState === 'CANCEL' || order.orderState === 'READY' || order.orderState === 'PURCHASED' || order.deliveryStatus === 'SHIPPING' || order.deliveryStatus === 'COMPLETED'}
                                                         onChange={() => setSelectedOrder(order)}
                                                     />
                                                 </div>
 
-                                                {/* 2. 주문번호 셀 */}
+                                                {/* 주문번호 셀 */}
                                                 <div className="refund-td-order-id">{orderIdStr}</div>
 
-                                                {/* 3. 상품명 셀 */}
+                                                {/* 상품명 셀 */}
                                                 <div className="refund-td-product-name">
-                                                    {/* ✨ [대대적 대성공]: 마이페이지와 조준선이 완벽히 일치하여 진짜 가구 상품명이 선명하게 대노출됩니다! */}
+                                                    {/* [대대적 대성공]: 마이페이지와 조준선이 완벽히 일치하여 진짜 가구 상품명이 선명하게 대노출됩니다! */}
                                                     <span className="refund-product-name"><strong>{targetItemName}</strong></span>
                                                     {isProcessing && (
                                                         <p style={{ margin: '5px 0 0 0', fontSize: '13px', color: '#801a24', fontWeight: 'bold' }}>
@@ -329,7 +329,7 @@ const RefundPage = () => {
                                                     ) : order.orderState === 'READY' || order.deliveryStatus === 'SHIPPING' ? (
                                                         <div>
                                                             <span style={{ color: '#1a73e8', fontWeight: 'bold', display: 'block', marginBottom: '2px' }}>
-                                                                {order.deliveryStatus === 'SHIPPING' ? "🚚 배송중" : "📦 준비중"}
+                                                                {order.deliveryStatus === 'SHIPPING' ? "배송중" : "준비중"}
                                                             </span>
                                                             <span style={{ display: 'inline-block', padding: '2px 6px', fontSize: '11px', backgroundColor: '#fce8e6', color: '#c5221f', fontWeight: '700', borderRadius: '4px' }}>
                                                                 배송중 취소불가
@@ -381,7 +381,7 @@ const RefundPage = () => {
                                             color: (!selectedOrder || selectedOrder.deliveryStatus !== 'WAITING' || selectedOrder.orderState !== 'ORDER') ? '#999' : '#a82525',
                                             cursor: (!selectedOrder || selectedOrder.deliveryStatus !== 'WAITING' || selectedOrder.orderState !== 'ORDER') ? 'not-allowed' : 'pointer'
                                         }}
-                                        /* 🚨 [400 버그 해결 마침표]: 자바 백엔드가 간절히 원하던 itemId 파라미터를 콤마 뒤에 안전하게 수령하여 탑재 완료! */
+                                        /* [400 버그 해결 마침표]: 자바 백엔드가 간절히 원하던 itemId 파라미터를 콤마 뒤에 안전하게 수령하여 탑재 완료! */
                                         onClick={() => handleCancelOrder(selectedOrder?.orderId || selectedOrder?.id, selectedOrder?.itemId)}
                                         disabled={!selectedOrder || selectedOrder.deliveryStatus !== 'WAITING' || selectedOrder.orderState !== 'ORDER'}
                                     >
@@ -408,7 +408,7 @@ const RefundPage = () => {
                 </div>
             )}
 
-            {/* 💡 [에러 완치 핵심] 아침 규격 공용 Footer를 삼항연산자 바깥, 최상위 루트 래퍼의 바로 안쪽 정위치에 안전 안착시킵니다. */}
+            {/* [에러 완치 핵심] 아침 규격 공용 Footer를 삼항연산자 바깥, 최상위 루트 래퍼의 바로 안쪽 정위치에 안전 안착시킵니다. */}
             <div className="main-mypage-footer">
                 <Footer/>
             </div> 

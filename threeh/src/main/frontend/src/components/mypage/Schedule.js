@@ -76,14 +76,14 @@ const Schedule = () => {
                     구매 확정된 내역
                 </h2>
                 
-                {/* 💡 [구조 개혁 핵심] 상자들을 세로로 쌓지 않고, 가로(row) 방향으로 나란히 정렬시키는 가로 흐름 플렉스 트랙 가동 */}
+                {/* [구조 개혁 핵심] 상자들을 세로로 쌓지 않고, 가로(row) 방향으로 나란히 정렬시키는 가로 흐름 플렉스 트랙 가동 */}
                 <div className='mypage-schedule-lis' style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: '20px', width: '100%', boxSizing: 'border-box' }}>
                     {orders
                         // [조장님 지시] 확정된(PURCHASED) 주문만 필터링하여 보여줌
                         .filter(order => order.orderState === 'PURCHASED')
                         .map(order => (
                         
-                            /* 💡 [너비 고정] 상자가 화면 전체를 먹지 않고 가로로 나란히 붙을 수 있도록 딱 이쁜 290px 너비로 컴팩트하게 축소 조정 */
+                            /* [너비 고정] 상자가 화면 전체를 먹지 않고 가로로 나란히 붙을 수 있도록 딱 이쁜 290px 너비로 컴팩트하게 축소 조정 */
                             <div key={order.orderId} className='mypage-schedule-card' style={{ margin: '0', width: '290px', minWidth: '290px', backgroundColor: 'var(--content-bg)', border: '1px solid var(--soft-border)', borderRadius: '12px', padding: '20px', boxSizing: 'border-box', boxShadow: '0 4px 12px rgba(74, 51, 36, 0.02)' }}>
                                 <div className='mypage-schedule-header' style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--soft-border)', paddingBottom: '10px', marginBottom: '15px' }}>
                                     <p className='mypage-schedule-order-id' style={{ margin: '0', fontWeight: '700', color: 'var(--brown)', fontFamily: "'Playfair Display', serif" }}>주문번호: {order.orderId}</p>

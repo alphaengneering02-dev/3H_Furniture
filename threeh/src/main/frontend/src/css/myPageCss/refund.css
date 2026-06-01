@@ -14,7 +14,7 @@
 }
 
 /* ==========================================
-   1. [부조장님 기획 반영] 2대 대형 통합 탭바 (200px 와이드 균등 정렬)
+   [부조장님 기획 반영] 2대 대형 통합 탭바 (200px 와이드 균등 정렬)
    ========================================== */
 .refund-tabs-bar {
     display: flex;
@@ -65,7 +65,7 @@
 }
 
 /* ==========================================
-   2. 가로형 격자 테이블 헤더 라인 (.info-data-block 두께 매핑)
+   가로형 격자 테이블 헤더 라인 (.info-data-block 두께 매핑)
    ========================================== */
 .refund-table-header {
     display: flex;
@@ -89,7 +89,7 @@
 .refund-th-status, .refund-td-status             { width: 12%; text-align: center; }
 
 /* ==========================================
-   3. 테이블 바디 및 데이터 행 아이템 카드
+   테이블 바디 및 데이터 행 아이템 카드
    ========================================== */
 .refund-item-list {
     display: flex;
@@ -167,7 +167,7 @@
 }
 
 /* ==========================================
-   4. 하단 직각 사각 페이징 내비게이션 바
+   하단 직각 사각 페이징 내비게이션 바
    ========================================== */
 .refund-pagination-bar {
     display: flex;
@@ -226,7 +226,7 @@
 }
 
 /* ==========================================
-   5. [부조장님 기획 반영] 최하단 공통 제출 제어 Zone
+   [부조장님 기획 반영] 최하단 공통 제출 제어 Zone
    ========================================== */
 .refund-action-submit-zone {
     display: flex;
@@ -272,7 +272,7 @@
    [최종 종결] 질문자님 리펀드 클래스명 경로 정밀 저격 - 상단 여백 수혈
    ======================================================== */
 
-/* 💡 [진짜 리펀드 타격] 천장에 칼같이 붙어있던 교환/반품 컨테이너와 탭바 전체를 아래로 40px 정갈하게 내립니다 */
+/* [진짜 리펀드 타격] 천장에 칼같이 붙어있던 교환/반품 컨테이너와 탭바 전체를 아래로 40px 정갈하게 내립니다 */
 .refund-container,
 .refund-tabs-bar {
     margin-top: 40px !important;
@@ -280,7 +280,7 @@
     box-sizing: border-box !important;
 }
 
-/* 👈 좌측 사이드바 메뉴 축도 천장에서 똑같이 40px 밀어내어 가로 평행 라인 수평 일치화 */
+/* 좌측 사이드바 메뉴 축도 천장에서 똑같이 40px 밀어내어 가로 평행 라인 수평 일치화 */
 .mypage-sidebar {
     margin-top: 40px !important;
     box-sizing: border-box !important;
@@ -295,7 +295,7 @@
    [최종 마감] 프로필 박스(이름/버튼) 완전 제거 및 상단 정렬 복구
    ======================================================== */
 
-/* 💡 [정밀 저격] 레이아웃을 파괴하던 김인호11님 이름과 마이페이지 버튼 전체를 화면에서 삭제 */
+/* [정밀 저격] 레이아웃을 파괴하던 김인호11님 이름과 마이페이지 버튼 전체를 화면에서 삭제 */
 .mypage-profile-icon-box,
 .mypage-profile-avatar-circle,
 .mypage-main-content > .mypage-profile-icon-box {
@@ -330,7 +330,7 @@
    [최종 수술] 테이블 가로축 라인 동기화 및 하단 3대 버튼 카라멜 중앙 정렬
    ======================================================== */
 
-/* 1. 💡 [테이블 터짐 완치] 오른쪽 화면 밖으로 삐져나가던 테이블 전체 너비를 탭바 크기와 칼매칭 */
+/* [테이블 터짐 완치] 오른쪽 화면 밖으로 삐져나가던 테이블 전체 너비를 탭바 크기와 칼매칭 */
 .refund-container,
 .refund-table-header,
 .refund-item-list,
@@ -347,7 +347,7 @@
     box-sizing: border-box !important;
 }
 
-/* 2. 💡 [버튼 묶음 중앙 정렬] 우측 구석에 처박혀 있던 버튼 트랙 전체를 테이블 정중앙으로 워프 */
+/* [버튼 묶음 중앙 정렬] 우측 구석에 처박혀 있던 버튼 트랙 전체를 테이블 정중앙으로 워프 */
 .refund-action-submit-zone {
     display: flex !important;
     justify-content: center !important; /* ⚡ 3개 단추를 화면 한가운데 황금 비율 축으로 중앙 배치 */
@@ -361,7 +361,7 @@
     box-sizing: border-box !important;
 }
 
-/* 3. 🛠️ 개별 버튼 크기 정상화 및 시그니처 카라멜 컬러 감성 수혈 */
+/* 개별 버튼 크기 정상화 및 시그니처 카라멜 컬러 감성 수혈 */
 .refund-action-submit-zone .refund-btn {
     width: 160px !important;        /* 💡 글씨가 2줄로 찌그러지지 않도록 160px 가로폭 고정 잠금 */
     height: 44px !important;
@@ -375,14 +375,14 @@
     transition: all 0.2s ease-in-out !important;
 }
 
-/* ① [주문취소 (배송전)] 버튼 - 평소 비활성화 상태거나 활성화 시 와인 레드 보존 */
+/* [주문취소 (배송전)] 버튼 - 평소 비활성화 상태거나 활성화 시 와인 레드 보존 */
 .refund-action-submit-zone .refund-btn-cancel {
     background-color: transparent !important;
     border: 1px solid #a82525 !important;
     color: #a82525 !important;
 }
 
-/* ② [교환 신청] 버튼 - 은은한 은빛 밀크티 베이지에서 텍스트만 딥 카라멜 포인트 */
+/* [교환 신청] 버튼 - 은은한 은빛 밀크티 베이지에서 텍스트만 딥 카라멜 포인트 */
 .refund-action-submit-zone .refund-btn-exchange {
     background-color: var(--main-bg) !important; /* #FFF8ED */
     border: 1px solid var(--soft-border) !important; /* #E8D9C8 */
@@ -405,7 +405,7 @@
     border-color: var(--deep-caramel) !important;
 }
 
-/* 🔒 라디오 버튼 미체크 상태 시 투박한 그레이 잠금 스펙 통일 */
+/* 라디오 버튼 미체크 상태 시 투박한 그레이 잠금 스펙 통일 */
 .refund-action-submit-zone .refund-btn:disabled {
     background-color: #F5F4F0 !important;
     border: 1px solid #E2DDD5 !important;
@@ -418,7 +418,7 @@
    [최종 완결] 인라인 방해 무력화 - 탭바 카라멜 수혈 및 격자 960px 완벽 매칭
    ========================================================================= */
 
-/* ① 💡 [인라인 스타일 무력화] 조원분이 박아둔 width: 100% 족쇄를 풀고 탭바와 함께 960px 축으로 강제 고정 */
+/* ① [인라인 스타일 무력화] 조원분이 박아둔 width: 100% 족쇄를 풀고 탭바와 함께 960px 축으로 강제 고정 */
 div.refund-container,
 .mypage-main-content div.refund-container {
     width: 960px !important;       /* ⚡ 터져나가던 테이블 그릇을 960px로 완벽 잠금 */
@@ -443,7 +443,7 @@ div.refund-container,
     box-sizing: border-box !important;
 }
 
-/* ② 💡 [탭바 카라멜 강제 주입] 기존 꼬여있던 우선순위를 완전히 파괴하고 카사미아 시그니처 카라멜 무드 수혈 */
+/* ② [탭바 카라멜 강제 주입] 기존 꼬여있던 우선순위를 완전히 파괴하고 카사미아 시그니처 카라멜 무드 수혈 */
 .refund-tabs-bar button.refund-tab-btn,
 .refund-tab-btn {
     background-color: #ffffff !important;
@@ -462,7 +462,7 @@ div.refund-container,
     top: 1px !important;             
 }
 
-/* 🔥 [액티브 저격 마침표] activeTab === true 일 때 켜지는 샌드 베이지 채우기와 브라운 강조 테두리 강제 활성화 */
+/* [액티브 저격 마침표] activeTab === true 일 때 켜지는 샌드 베이지 채우기와 브라운 강조 테두리 강제 활성화 */
 .refund-tabs-bar button.refund-tab-btn.active,
 .refund-tab-btn.active {
     background-color: var(--soft-border) !important; /* 💡 팀 공용 밀크티 베이지 샌드 톤 채우기 완료 (#E8D9C8) */
@@ -492,14 +492,14 @@ div.refund-container,
    [최종 마감] 게시판 제목 간섭 차단 - 활성화 탭 상자 배경 카라멜 주입
    ======================================================== */
 
-/* 💡 [진짜 저격] 게시판 부제목 글씨는 원래의 단정한 먹색(#444)으로 철저히 원상 복구 */
+/* [진짜 저격] 게시판 부제목 글씨는 원래의 단정한 먹색(#444)으로 철저히 원상 복구 */
 .refund-title,
 .mypage-main-content .refund-title {
     color: #444444 !important; 
     font-weight: 700 !important;
 }
 
-/* 🔥 [치트키] 꼬여있던 우선순위를 완전히 파괴하고 활성화된 '탭 상자 배경'에 카라멜색 가득 채우기 */
+/* [치트키] 꼬여있던 우선순위를 완전히 파괴하고 활성화된 '탭 상자 배경'에 카라멜색 가득 채우기 */
 .refund-tabs-bar button.refund-tab-btn.active,
 .refund-tabs-bar .active,
 button.refund-tab-btn.active,
@@ -516,7 +516,7 @@ button.refund-tab-btn.active,
     z-index: 10 !important;
 }
 
-/* 👈 활성화되지 않은 평소의 일반 탭 단추는 원래 기획하셨던 깔끔한 흰색 바탕 유지 */
+/* 활성화되지 않은 평소의 일반 탭 단추는 원래 기획하셨던 깔끔한 흰색 바탕 유지 */
 .refund-tabs-bar button.refund-tab-btn,
 .refund-tab-btn {
     background-color: #FFFFFF !important;
@@ -540,7 +540,7 @@ div.refund-container,
    [최종 종결] 질문자님 JSX 본문 경로 정밀 저격 - 좌측 여백 수혈
    ======================================================== */
 
-/* 💡 [진짜 리펀드 우측 본문 저격] 왼쪽 메뉴선에 쩍 붙어있던 메인 콘텐츠 상자 자체를 오른쪽으로 25px 이동 */
+/* [진짜 리펀드 우측 본문 저격] 왼쪽 메뉴선에 쩍 붙어있던 메인 콘텐츠 상자 자체를 오른쪽으로 25px 이동 */
 main.mypage-main-content,
 .mypage-main-content,
 .order-page-wrapper main,
@@ -564,7 +564,7 @@ main.mypage-main-content,
    [최종 마감] 주문취소 버튼 텍스트 #B8783E 카라멜 색상 직격 고정
    ======================================================= */
 
-/* 💡 [정밀 저격] 주문취소 버튼의 평소 테두리와 글씨 색상을 순도 100% 카라멜로 전면 리브랜딩 */
+/* [정밀 저격] 주문취소 버튼의 평소 테두리와 글씨 색상을 순도 100% 카라멜로 전면 리브랜딩 */
 .refund-action-submit-zone .refund-btn-cancel,
 .refund-action-submit-zone .refund-btn:first-of-type {
     /* 기존 와인 레드를 완벽히 해제하고 카라멜 염료 강제 수혈 */
@@ -583,12 +583,12 @@ main.mypage-main-content,
 
 
 /* =========================================================================
-   🎨 [색감 완화 보정] 너무 어두웠던 색상을 헤더와 어울리는 세련된 체리 브라운으로 조율
+   [색감 완화 보정] 너무 어두웠던 색상을 헤더와 어울리는 세련된 체리 브라운으로 조율
    - 기본 상태 (적당히 묵직한 체리 브라운): #531D19 (헤더와 동일 코드 적용)
    - 호버 상태 (살짝만 깊어지는 체리우드): #3A1210
    ========================================================================= */
 
-/* 1️⃣ 탭바 활성화(Active) 상태 및 주문취소 버튼 색감 완화 */
+/* 탭바 활성화(Active) 상태 및 주문취소 버튼 색감 완화 */
 .refund-tabs-bar button.refund-tab-btn.active,
 .refund-tabs-bar .active,
 button.refund-tab-btn.active,
@@ -608,7 +608,7 @@ button.refund-tab-btn.active,
 }
 
 
-/* 2️⃣ 🚨 [정밀 저격] 안 바뀌던 '반품신청' 관련 모든 버튼박스 강제 수술 */
+/* [정밀 저격] 안 바뀌던 '반품신청' 관련 모든 버튼박스 강제 수술 */
 .refund-action-submit-zone .refund-btn-return,
 .refund-action-submit-zone button[class*="return"],
 .refund-action-submit-zone .refund-btn:last-of-type,
@@ -622,7 +622,7 @@ button.refund-btn-return {
 }
 
 
-/* 3️⃣ ✨ 마우스 올렸을 때(Hover)의 피드백도 너무 어둡지 않게 일괄 완화 보정 */
+/* 마우스 올렸을 때(Hover)의 피드백도 너무 어둡지 않게 일괄 완화 보정 */
 .refund-tabs-bar button.refund-tab-btn.active:hover,
 .refund-tab-btn.active:hover,
 .refund-action-submit-zone .refund-btn-cancel:hover:not(:disabled),

@@ -228,7 +228,7 @@ const Cart = () => {
     };
 
     return (
-    /* 🚨 조원분 지시 규칙 수혈을 위해 가장 최상단 래퍼 감싸기 */
+    /* 조원분 지시 규칙 수혈을 위해 가장 최상단 래퍼 감싸기 */
     <div className="order-page-global-root">
             {/* ========================================================= */}
             {/* [1구역 완성] 장바구니 방식 그대로! 공용 Header 컴포넌트 1줄 장착 */}
@@ -251,14 +251,14 @@ const Cart = () => {
             </main>
         ) : (
             <div style={{ display: 'flex' }}>
-                {/* 📌 [사이드바 완벽 싱크] 장바구니 목록 active 하이라이트 활성화 상주 */}
+                {/* [사이드바 완벽 싱크] 장바구니 목록 active 하이라이트 활성화 상주 */}
                 <aside className="mypage-sidebar">
                     <button className="sidebar-btn" onClick={() => navigate('/mypage/schedule')}>구매확정내역</button>
                     <button className="sidebar-btn" onClick={() => navigate('/cart/return')}>교환 및 반품</button>
                     <button className="sidebar-btn active" style={{ color: '#8C7A6B', fontWeight: 'bold' }} onClick={() => navigate('/cart')}>장바구니 목록</button>
                 </aside>
 
-                {/* 📄 우측 메인 장바구니 제어 컨텐츠 피드 */}
+                {/* 우측 메인 장바구니 제어 컨텐츠 피드 */}
                 <main className="mypage-main-content" style={{ flex: 1, padding: '20px' }}>
                     <div className="profile-icon-box">
                         <div className="profile-avatar-circle">{member.name ? member.name +"님" : "U"}</div>
@@ -299,7 +299,7 @@ const Cart = () => {
                         </div>
 
 
-                        {/* 📦 인호님 오리지널 장바구니 데이터 행 루프 구역 */}
+                        {/* 인호님 오리지널 장바구니 데이터 행 루프 구역 */}
                         <div className="cart-item-list-group">
                             {cartItems.length === 0 ? (
                                 <p style={{ textAlign: 'center', padding: '30px 0', color: '#8c7a6b' }}>장바구니가 비어 있습니다.</p>
@@ -357,7 +357,7 @@ const Cart = () => {
             {/* ========================================================= */}
             <Footer />
 
-    </div> /* 🚨 최상단 main-body-wrapper 축을 완전히 닫아주는 최종 대칭 마감 괄호 */
+    </div> /* 최상단 main-body-wrapper 축을 완전히 닫아주는 최종 대칭 마감 괄호 */
   );
 };
 
