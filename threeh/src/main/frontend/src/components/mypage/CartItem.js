@@ -11,7 +11,8 @@ const CartItem = ({itemId, count}) => {
         params.append('itemId', itemId)
         params.append('count',count);
 
-        axios.post('http://localhost:8080/cartItem/add',params, {withCredentials:true})
+        //api주소 수정_오현옥
+        axios.post('http://localhost:8080/api/cartItem/add',params, {withCredentials:true})
         .then(res => {
             success("장바구니에 상품이 담겼습니다!")
         })

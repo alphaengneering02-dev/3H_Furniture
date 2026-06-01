@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cmyk.threeh.dto.SessionMember; 
 import com.cmyk.threeh.form.CartItemForm;
+import com.cmyk.threeh.global.util.GetLoginId;
 import com.cmyk.threeh.service.CartItemService;
 
 import lombok.RequiredArgsConstructor;
@@ -40,7 +41,11 @@ public class CartItemController {
         }
 
         // 세션에 담는 키값 "member"로 로그인 여부 확인
-        String member =  principal.getName();        
+        //수정_오현옥 소셜로그인시, 아래 스트링 멤버값은 아이디를 찾을 수 없음.
+        //String member =  principal.getName();_기존 코드
+        String member = GetLoginId.getloginId(principal);
+        
+        
         // 로그인 정보가 없으면 401(미인증) 에러를 리액트에 쏴서 로그인 창으로 유도합니다.
         if(member == null) {
             return ResponseEntity.status(401).body("로그인이 필요한 서비스입니다.");
