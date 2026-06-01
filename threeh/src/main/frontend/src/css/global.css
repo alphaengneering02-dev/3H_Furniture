@@ -342,7 +342,11 @@ a {
   color: var(--main-black);
 }
 .main-header-searchCondition .main-header-searchCondition-filters div .checkbox-group {
-  display: flex; gap: 20px;
+  display: flex; gap: 5px;
+  flex-wrap: wrap;
+}
+.main-header-searchCondition .main-header-searchCondition-filters div .checkbox-group > div {
+  margin-right: 10px;
 }
 
 .main-header-searchCondition input[type="checkbox"] {

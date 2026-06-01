@@ -9,7 +9,7 @@ const SearchResult_filter = ({myFilter, setMyFilter}) => {
         category_options, color_options, price_options,
         searchValue, setSearchValue, searchKey, setSearchKey,
         changeSearchValue, resetSearchKey, deleteSearchKey,
-        doSearch
+        generateQueryString, doSearch
     } = useSearch()
 
     //전체 삭제 및 초기화 함수

@@ -22,10 +22,13 @@ import { useSearch } from '../../hook/SearchContext'; // 검색관련 Context �
 const Header = () => {
     const navigate = useNavigate();
     const { success, error, warn, info} = useToast();
+    //검색상태 Context에서 모든 상태와 옵션을 가져옵니다.
     const {
-        searchValue, changeSearchValue,
-        doSearch
-    } = useSearch()  // Context에서 전역 검색상태 가져오기
+        category_options, color_options, price_options,
+        searchValue, setSearchValue, searchKey, setSearchKey,
+        changeSearchValue, resetSearchKey, deleteSearchKey,
+        generateQueryString, doSearch
+    } = useSearch()
 
     const [user, setUser] = useState({});  //로그인한 회원정보 저장객체
 

@@ -7,8 +7,9 @@ const Header_searchCondition = () => {
     //검색상태 Context에서 모든 상태와 옵션을 가져옵니다.
     const {
         category_options, color_options, price_options,
-        searchKey, setSearchKey,
-        resetSearchKey, deleteSearchKey
+        searchValue, setSearchValue, searchKey, setSearchKey,
+        changeSearchValue, resetSearchKey, deleteSearchKey,
+        generateQueryString, doSearch
     } = useSearch()
 
 

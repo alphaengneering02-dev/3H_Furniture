@@ -69,10 +69,10 @@
 .search-result-filter-body {
     padding: 22px 10px 0 10px;
 }
-.search-result-filter-section {
+/* .search-result-filter-section {
     display: flex;
     gap: 10%;
-}
+} */
 
 .search-result-filter-group {
     margin-bottom: 15px;
@@ -88,9 +88,13 @@
 
 
 /* 카테고리, 색상 필터 */
+
 .search-result-checkbox-group {
-    display: flex; gap: 24px;
-    align-items: center;
+    display: flex; gap: 3px; 
+    flex-wrap: wrap;
+}
+.search-result-checkbox-item {
+    margin-right: 15px;
 }
 .search-result-checkbox-item input[type="checkbox"] {
     accent-color: var(--brown);

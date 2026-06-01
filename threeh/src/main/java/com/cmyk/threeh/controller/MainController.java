@@ -46,17 +46,32 @@ public class MainController {
     //프론트엔드 URL: http://localhost:8080/api/main/searchResult?searchValue=검색어&category=거실,침실&color=White,Black
     @GetMapping("/searchResult")
     public List<ItemResponseDTO> searchItems(
-        @RequestParam(required = false) String searchValue,
-        @RequestParam(value = "category[]", required = false) String[] category,
-        @RequestParam(value = "color[]", required = false) String[] color,
-        @RequestParam(value = "price[]", required = false) String[] price) {
+        @RequestParam(required=false) String searchValue,
+        @RequestParam(required=false) String[] category,
+        @RequestParam(required=false) String[] color,
+        @RequestParam(required=false) String[] price) {
 
         //========= [디버깅 확인용 로그] =========
         System.out.println("\n====== [MainController 진입] ======");
         System.out.println("검색어: " + searchValue);
-        System.out.println("카테고리: " + category);
-        System.out.println("색상: " + color);
-        System.out.println("가격대: " + price);
+
+        if(category!=null && category.length!=0) {
+            System.out.println("카테고리: " + Arrays.toString(category));
+        } else {
+            System.out.println("카테고리: " + null);
+        }
+
+        if(color!=null && color.length!=0) {
+            System.out.println("색상: " + Arrays.toString(color));
+        } else {
+            System.out.println("색상: " + null);
+        }
+        
+        if(price!=null && price.length!=0) {
+            System.out.println("가격대: " + Arrays.toString(price));
+        } else {
+            System.out.println("가격대: " + null);
+        }
         System.out.println("=====================================");
         //========================================
 

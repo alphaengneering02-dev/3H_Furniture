@@ -2,14 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { Slider } from "@mui/material";
 import { useSearch } from '../../hook/SearchContext';
 
-const SearchResult_filter = ({onClickSearch, updateAndSearch}) => {
+const SearchResult_filter = () => {
 
     //검색상태 Context에서 모든 상태와 옵션을 가져옵니다.
     const {
         category_options, color_options, price_options,
         searchValue, setSearchValue, searchKey, setSearchKey,
         changeSearchValue, resetSearchKey, deleteSearchKey,
-        doSearch
+        generateQueryString, doSearch
     } = useSearch()
 
 
@@ -145,7 +145,7 @@ const SearchResult_filter = ({onClickSearch, updateAndSearch}) => {
 
 
             <article className='search-result-select-body'>
-                <button className='select' onClick={() => updateAndSearch()}>
+                <button className='select' onClick={doSearch}>
                     조회하기
                 </button>
             </article>

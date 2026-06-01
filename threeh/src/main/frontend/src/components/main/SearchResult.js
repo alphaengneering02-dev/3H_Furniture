@@ -17,11 +17,12 @@ const SearchResult = () => {
         category_options, color_options, price_options,
         searchValue, setSearchValue, searchKey, setSearchKey,
         changeSearchValue, resetSearchKey, deleteSearchKey,
-        generateQueryString, doSearch, updateAndSearch
+        generateQueryString, doSearch
     } = useSearch()
     
     const [searchParams] = useSearchParams()  //URL의 쿼리스트링(? 뒤의 파라미터)을 가져오는 훅
     const [searchResult, setSearchResult] = useState([])
+    const [currentSearchValue, setCurrentSearchValue] = useState("전체")
 
     const memoSearchKey =  useMemo(() => {return searchKey},[searchKey])
     const categoryKey = useMemo(() => {return memoSearchKey.category},[memoSearchKey.category])
@@ -29,48 +30,10 @@ const SearchResult = () => {
     const priceKey = useMemo(() => {return memoSearchKey.price},[memoSearchKey.price])
 
 
-    useEffect(() => {
-        //1. URL에서 필요한 데이터 꺼내기 (꺼낼 때 %2C는 자동으로 쉼표로 해석됨)
-        const urlSearchValue = searchParams.get("searchValue"); // "검색어"
-        const urlCategory = searchParams.get("category");       // "거실,침실"
-        const urlColor = searchParams.get("color");             // "White,Black"
-        const urlPrice = searchParams.get("price");             // "200,300"
-
-        // 2. 읽어온 URL 파라미터를 Context 상태(UI)에 반영 (UI 동기화의 핵심)
-        setSearchValue(urlSearchValue);
-        setSearchKey({
-            category: urlCategory ? urlCategory.split(',') : category_options,
-            color: urlColor ? urlColor.split(',') : color_options,
-            price: urlPrice ? urlPrice.split(',').map(Number) : [0, 500]
-        })
-        
-        // // 2. 추출한 값 가공 (null 처리)
-        // const parsedCategory = urlCategory ? urlCategory.split(',') : category_options;
-        // const parsedColor = urlColor ? urlColor.split(',') : color_options;
-        // const parsedPrice = urlPrice ? urlPrice.split(',').map(Number) : [0, 500];
-
-        // // 3. 화면 UI 동기화를 위해 Context 상태 업데이트
-        // setSearchValue(urlSearchValue);
-        // setSearchKey({
-        //     category: parsedCategory,
-        //     color: parsedColor,
-        //     price: parsedPrice
-        // });
-
-        // 4. URL 파라미터 값을 API 함수로 직접 전달
-        getSearchResult()
-    }, [searchParams])  //searchParams가 바뀔 때마다(새로 검색할 때마다) 다시 실행
-
-    const onClickSearch = () => {
-        getSearchResult()
-    }
-
-
+    //검색된 데이터를 가져오는 함수
     const getSearchResult = async() => {
-        //2. 백엔드(Spring Boot) API로 데이터 전송하기
         try {
-            //axios의 'params' 속성: GET 요청 시 쿼리 파라미터를 알아서 만들어줌.
-
+            //1. 백엔드(Spring Boot) API에서 데이터 가져오기
             const res = await axios.get("http://localhost:8080/api/main/searchResult", {
                 params: {
                     searchValue: searchValue,
@@ -80,11 +43,11 @@ const SearchResult = () => {
                 }
             })
 
-            //백엔드에서 받아온 가구 리스트를 상태에 저장
+            //2. 백엔드에서 받아온 가구 리스트를 상태에 저장
             setSearchResult(res.data)
 
-            //콘솔에 찍어보기
-            console.log("[검색된 가구리스트 (상위 4개)]\n")
+            //3. 콘솔에 찍어보기
+            console.log("[새로 조회된 가구리스트 (상위 4개)]\n")
             const sliceRes = res.data.slice(0, 4)
             console.log(sliceRes)
             console.log(res.data)
@@ -93,24 +56,28 @@ const SearchResult = () => {
         }
     }
 
-    // // 상태(State) 대신 인자(Arguments)를 받아서 API를 호출하도록 변경
-    // const getSearchResult = async(searchVal, catArr, colArr, priceArr) => {
-    //     try {
-    //         const res = await axios.get("http://localhost:8080/api/main/searchResult", {
-    //             params: {
-    //                 searchValue: searchVal,
-    //                 category: catArr.join(','), 
-    //                 color: colArr.join(','),      
-    //                 price: priceArr.join(','),      
-    //             }
-    //         });
 
-    //         setSearchResult(res.data);
-    //         console.log("[검색 성공] 데이터:", res.data);
-    //     } catch (error) {
-    //         console.error("검색 결과를 불러오는데 실패했습니다.", error);
-    //     }
-    // }
+    //검색결과 페이지 진입 시, 검색된 데이터 가져오기
+    useEffect(() => {
+        //1. URL에서 필요한 데이터 꺼내기 (꺼낼 때 %2C는 자동으로 쉼표로 해석됨)
+        const urlSearchValue = searchParams.get("searchValue"); // "검색어"
+        const urlCategory = searchParams.get("category");       // "거실,침실"
+        const urlColor = searchParams.get("color");             // "White,Black"
+        const urlPrice = searchParams.get("price");             // "200,300"
+
+        // 2. 읽어온 URL 파라미터를 Context 상태(UI)에 반영 (UI 동기화의 핵심)
+        setSearchValue(urlSearchValue);
+        setCurrentSearchValue(searchParams.get("searchValue") || "전체");
+        setSearchKey({
+            category: urlCategory ? urlCategory.split(',') : category_options,
+            color: urlColor ? urlColor.split(',') : color_options,
+            price: urlPrice ? urlPrice.split(',').map(Number) : [0, 500]
+        })
+
+        // 4. URL 파라미터 값으로 데이터 가져오기
+        getSearchResult()
+    }, [searchParams])  //searchParams가 바뀔 때마다(새로 검색할 때마다) 다시 실행
+
 
 
     //상품 최종 가격 계산
@@ -130,61 +97,6 @@ const SearchResult = () => {
     };
 
 
-    //상품 필터링
-    //필터 선택
-    /*
-    filter (다중 선택 가능)
-    - category: [거실, 침실, 주방...] 
-    - color: [책상, 의자, 책꽃이...]
-    */
-    // const [myFilter, setMyFilter] = useState(searchKey)  //객체
-
-
-    // // 필터링된 결과 배열을 미리 계산 (상품 개수 표시를 위해)
-    // const filteredItems = searchResult
-    // // 1. 카테고리 필터링 (선택 안했으면 통과, 선택했으면 포함된 것만 유지)
-    // .filter(item => 
-    //     searchKey.category.length===0 || searchKey.category.includes(item.itemCategory)
-    // )
-    // // 2. 색상 필터링 (선택 안했으면 통과, 선택했으면 포함된 것만 유지)
-    // .filter(item => 
-    //     searchKey.color.length === 0 || searchKey.color.includes(item.itemColor)
-    // )
-    // // 3. 가격 필터링 (최소값 이상이자 최대값 이하인 상품만 보이기)
-    // .filter(item => {
-    //     // const totalPrice = item.itemPrice - item.itemDiscountPrice
-    //     const finalPrice = getFinalPrice(item)
-    //     const min = searchKey.price[0] * 10000
-    //     const max = searchKey.price[1] * 10000
-
-    //     // return totalPrice>=min && totalPrice<=max
-    //     return finalPrice>=min && finalPrice<=max
-    // })
-
-    // // 필터링된 결과 배열을 미리 계산 (상품 개수 표시를 위해)
-    // const filteredItems = searchResult
-    // // 1. 카테고리 필터링 (선택 안했으면 통과, 선택했으면 포함된 것만 유지)
-    // .filter(item => 
-    //     myFilter.category.length===0 || myFilter.category.includes(item.itemCategory)
-    // )
-    // // 2. 색상 필터링 (선택 안했으면 통과, 선택했으면 포함된 것만 유지)
-    // .filter(item => 
-    //     myFilter.color.length === 0 || myFilter.color.includes(item.itemColor)
-    // )
-    // // 3. 가격 필터링 (최소값 이상이자 최대값 이하인 상품만 보이기)
-    // .filter(item => {
-    //     // const totalPrice = item.itemPrice - item.itemDiscountPrice
-    //     const finalPrice = getFinalPrice(item)
-    //     const min = myFilter.price[0] * 10000
-    //     const max = myFilter.price[1] * 10000
-
-    //     // return totalPrice>=min && totalPrice<=max
-    //     return finalPrice>=min && finalPrice<=max
-    // })
-
-    // const searchValue = searchParams.get("searchValue") || "전체";
-
-
 
     return (
         <div>
@@ -196,12 +108,12 @@ const SearchResult = () => {
             {/* 상단 검색어 타이틀 */}
             <div className="search-result-page">
                 <div className="search-result-header">
-                    <h2><span className="search-result-highlight">'{searchValue || "전체"}'</span> 에 대한 검색결과</h2>
+                    <h2><span className="search-result-highlight">{currentSearchValue}</span> 에 대한 검색결과</h2>
                 </div>
 
                 {/* 필터 영역 */}
                 <div>
-                    <SearchResult_filter onClickSearch={onClickSearch} updateAndSearch={updateAndSearch}/>
+                    <SearchResult_filter/>
                     {/* <SearchResult_filter myFilter={myFilter} setMyFilter={setMyFilter}/> */}
                 </div>
 
