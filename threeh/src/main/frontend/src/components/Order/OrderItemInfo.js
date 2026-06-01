@@ -18,8 +18,13 @@ function OrderItemInfo( { orderData, orderType, zipCode, address, deliveryDate, 
       
        
    
-       const hadlePayment = async () => {
-           
+       const handlePayment = async () => {
+        //확인용 오현옥
+           //console.log("결제하기 버튼 클릭됨");
+           //console.log("orderType:", orderType);
+           //console.log("address:",address);
+           //console.log("deliveryDate:",deliveryDate);
+           //console.log("orderData",orderData);
         
            if(isLoadingRef.current) return; 
 
@@ -225,7 +230,7 @@ function OrderItemInfo( { orderData, orderType, zipCode, address, deliveryDate, 
                     </div>
 
                     <div className="order-submit-box">
-                        <button className="order-payment-btn" id="paymentButton" onClick=   {hadlePayment}>
+                        <button className="order-payment-btn" id="paymentButton" onClick=   {handlePayment}>
                         결제하기
                     </button>
                     </div>

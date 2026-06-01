@@ -30,8 +30,8 @@ const ItemAdminPage = () => {
     const [reviewSummary, setReviewSummary] = useState(null);
 
     // 추가: 상품별 리뷰 개수 저장
-    // 예시 형태: { 리뷰아이디가 267: 리뷰개수 3 }
     const [reviewCounts, setReviewCounts] = useState({});
+    const[reviewProductFilter,setReviewProductFilter] = useState("hasReview");
 
     //조회버튼 눌러야 필터링 적용(state값을 두개로 나눠서)
     //select에서 선택중인 값
@@ -140,10 +140,14 @@ const ItemAdminPage = () => {
         const countData = {};
 
         Object.entries(summaries).forEach(([itemId, summary])=>{
-            countData[itemId] = summary?.reviewCount || 0;
+            countData[itemId] = {
+                itemId:Number(itemId),
+                averageScore:summary.averageScore || 0,
+                reviewCounts: summary?.reviewCount || 0,
+            };
         });
 
-        setReviewCounts(countData);
+            setReviewCounts(countData);
        }catch(error){
         console.error("리뷰 개수 조회 실패",error);
         toast.error("리뷰 개수를 불러오지 못했습니다.");
@@ -614,6 +618,33 @@ const ItemAdminPage = () => {
         setCurrentPage(page);
     };
 
+    const reviewProductItems = useMemo(()=>{
+        let result = items.map((item)=>{
+            const summary = reviewCounts[item.itemId];
+
+            return{
+                ...item,
+                reviewCounts: summary?.reviewCount||0,
+                averageScore: summary?.averageScore||0,
+            };
+        })
+        .filter((item)=>item.reviewCount > 0);
+        if(reviewProductFilter === "lowScore"){
+            result = result.filter((item)=>item.averageScore < 3);
+        }
+        if(reviewProductFilter === "manyReviews"){
+            result = [...result].sort(
+                (a,b) => Number(b.reviewCount || 0) - Number(a.reviewCount || 0)
+            );
+        }
+        if(reviewProductFilter === "highScore"){
+            result = [...result].sort(
+                (a,b) => Number(b.averageScore||0)- Number(a.averageScore ||0)
+            );
+        }
+        return result;
+    },[items,reviewCounts,reviewProductFilter]);
+
     //============================================================//
 
     return (
@@ -832,7 +863,7 @@ const ItemAdminPage = () => {
                                                     </button>
 
                                                     <span className="itemAdmin-reviewCount">
-                                                        {reviewCounts[item.itemId] ?? "-"}개
+                                                        {reviewCounts[item.itemId]?.reviewCount ?? 0}개
                                                     </span>
                                                 </div>
                                             </td>
@@ -914,13 +945,13 @@ const ItemAdminPage = () => {
 
                     {/* 리뷰를 관리할 상품 선택 영역 */}
                     <div className="itemAdmin-reviewSelectArea">
-                        <label className="itemAdmin-label">상품 선택:</label>
+                        <label className="itemAdmin-label">리뷰 상품 필터:</label>
 
                         <select
                             className="itemAdmin-select"
-                            value={selectedItemId}
+                            value={reviewProductFilter}
                             onChange={(e) =>
-                                handleAdminSelectReviewItem(e.target.value)
+                                setReviewProductFilter(e.target.value)
                             }
                         >
                             <option value="">상품을 선택하세요</option>
