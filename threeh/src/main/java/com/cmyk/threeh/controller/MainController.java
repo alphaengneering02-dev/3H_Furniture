@@ -27,20 +27,7 @@ import lombok.RequiredArgsConstructor;
 public class MainController {
 
     private final MainService mainService;
-
-
-    //쿼리 스트링을 String[]으로 변환하는 메소드
-    private String[] parseStringToArray(String str) {
-        if (str==null || str.trim().isEmpty()) {
-            return null;
-        }
-        
-        return Arrays.stream(str.split(","))  //쉼표로 구분
-                     .map(String::trim)  //앞뒤 공백 제거
-                     .filter(s -> !s.isEmpty()) // 빈 문자열 제외
-                     .toArray(String[]::new);  //배열로 변환
-    }
-
+    
 
     //상품 통합검색
     //프론트엔드 URL: http://localhost:8080/api/main/searchResult?searchValue=검색어&category=거실,침실&color=White,Black
