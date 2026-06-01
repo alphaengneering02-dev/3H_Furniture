@@ -117,7 +117,7 @@ const ItemAdminPage = () => {
 
             // 추가: 상품 목록을 가져온 뒤, 각 상품별 리뷰 개수도 함께 조회
             // 상품 개수만큼 /api/reviews/summary/{itemId} API가 반복 호출되어 요청이 많아지므로 자동 조회하지 않음
-            // getReviewCounts(itemList);
+            getReviewCounts();
         } catch (error) {
             console.error("상품 목록 조회 실패", error);
             toast.error("상품 목록을 불러오지 못했습니다.");
@@ -126,40 +126,28 @@ const ItemAdminPage = () => {
 
     // 상품별 리뷰 개수 가져오기
     // 테이블의 리뷰보기 버튼 옆에
-    // 현재는 상품 목록 조회 시 자동 호출하지 않음
-    // 추후 백엔드에서 리뷰 개수 일괄 조회 API를 만들면 이 부분을 교체하는 방식 추천
-    const getReviewCounts = async (itemList) => {
-        try {
-            const countData = {};
+    // 상품 목록 조회 시 자동 호출하지 않음
+    const getReviewCounts = async () => {
+       try{
+        const response = await axios.get(
+            "http://localhost:8080/api/reviews/summary/all",
+            {
+                withCredentials: true,
+            }
+        );
 
-            await Promise.all(
-                itemList.map(async (item) => {
-                    try {
-                        const response = await axios.get(
-                            `http://localhost:8080/api/reviews/summary/${item.itemId}`,
-                            {
-                                withCredentials: true,
-                            }
-                        );
+        const summaries = response.data || {};
+        const countData = {};
 
-                        countData[item.itemId] = response.data?.reviewCount || 0;
-                    } catch (error) {
-                        console.error(
-                            `${item.itemId}번 상품 리뷰 개수 조회 실패`,
-                            error
-                        );
+        Object.entries(summaries).forEach(([itemId, summary])=>{
+            countData[itemId] = summary?.reviewCount || 0;
+        });
 
-                        // 리뷰 개수 조회 실패 시에도 화면이 깨지지 않도록 0개로 처리
-                        countData[item.itemId] = 0;
-                    }
-                })
-            );
-
-            setReviewCounts(countData);
-        } catch (error) {
-            console.error("리뷰 개수 전체 조회 실패", error);
-            toast.error("리뷰 개수를 불러오지 못했습니다.");
-        }
+        setReviewCounts(countData);
+       }catch(error){
+        console.error("리뷰 개수 조회 실패",error);
+        toast.error("리뷰 개수를 불러오지 못했습니다.");
+       }
     };
 
     // 특정 상품의 이미지 목록 불러오기
@@ -541,7 +529,7 @@ const ItemAdminPage = () => {
     const handleSearchFilter = () => {
         setCategoryFilter(searchCategoryFilter);
         setSellStatusFilter(searchSellStatusFilter);
-        setSearchStockSort(setSearchStockSort);
+        setSearchStockSort(searchStockSort);
         setCurrentPage(1);
     }
 
@@ -565,21 +553,21 @@ const ItemAdminPage = () => {
         }
 
         // 재고 적은순 정렬
-        if (setSearchStockSort === "stockAsc") {
+        if (stockSort === "stockAsc") {
             result.sort(
                 (a, b) => Number(a.itemStock || 0) - Number(b.itemStock || 0)
             );
         }
 
         // 재고 많은순 정렬
-        if (setSearchStockSort === "stockDesc") {
+        if (stockSort === "stockDesc") {
             result.sort(
                 (a, b) => Number(b.itemStock || 0) - Number(a.itemStock || 0)
             );
         }
 
         return result;
-    }, [items, categoryFilter, sellStatusFilter, setSearchStockSort]);
+    }, [items, categoryFilter, sellStatusFilter, stockSort]);
 
     //필터가 바뀌면 첫 페이지로 이동
     useEffect(() => {

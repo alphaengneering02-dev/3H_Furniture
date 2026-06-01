@@ -719,11 +719,26 @@ function Item() {
       return true;
     })
     .sort((a, b) => {
+
+      //판매중인 상품이 우선해서 나오게 분류(가장 우선)
+      const aIsSell = a.itemSellStatus === "SELL";
+      const bIsSell = b.itemSellStatus === "SELL";
+
+      if(aIsSell && !bIsSell){
+        return -1;
+      }
+
+      if(!aIsSell && bIsSell){
+        return 1;
+      }
+
+      //사용자가 필터 선택할 때,
       const aFinalPrice = getFinalPrice(a);
       const bFinalPrice = getFinalPrice(b);
 
       const aRating = Number(reviewSummaryMap[a.itemId]?.averageScore || 0);
       const bRating = Number(reviewSummaryMap[b.itemId]?.averageScore || 0);
+
 
       if (sortType === "priceHigh") {
         return bFinalPrice - aFinalPrice;
