@@ -1684,3 +1684,18 @@ button.slider-arrow-btn:hover,
     box-shadow: 0 6px 15px rgba(37, 9, 7, 0.3) !important;
 }
 
+/* =========================================================================
+   [정밀 디버깅] 배송지 설정 내 제목 영역만 가로 너비 해제 (주변 오염 방지)
+   - 원인: 상위 박스의 width: 80px 또는 flex-basis 족쇄로 인한 글자 낙하 현상
+   - 해결: 배송지 카드 내부의 타이틀 속성만 저격하여 white-space 락 해제
+   ========================================================================= */
+.mypage-main-content h3 + div h4,
+.mypage-main-content h3 + div h5,
+.mypage-main-content strong,
+.mypage-main-content .address-name,
+.mypage-main-content [class*="title"] {
+    white-space: nowrap !important;
+    width: auto !important;
+    max-width: none !important;
+    display: block !important;
+}
