@@ -227,7 +227,7 @@ const Cart = () => {
         })
     };
 
-       return (
+    return (
     /* 🚨 조원분 지시 규칙 수혈을 위해 가장 최상단 래퍼 감싸기 */
     <div className="order-page-global-root">
             {/* ========================================================= */}
@@ -344,7 +344,7 @@ const Cart = () => {
                             <h3>총 결제 예상 금액: <span style={{ color: '#d9534f', fontSize: '24px' }}>{totalOrderPrice.toLocaleString()}</span>원</h3>
                         </div>
 
-                        <button onClick={handleOrder} style={{ marginTop: '20px', padding: '15px', backgroundColor: '#333', color: '#fff', border: 'none', cursor: 'pointer', width: '100%', fontSize: '16px', fontWeight: 'bold' }}>
+                        <button onClick={handleOrder} style={{ marginTop: '20px', padding: '15px', backgroundColor: '#531D19', color: '#fff', border: 'none', cursor: 'pointer', width: '100%', fontSize: '16px', fontWeight: 'bold' }}>
                             {selectedIds.length}개 상품 주문하기
                         </button>
                     </div>

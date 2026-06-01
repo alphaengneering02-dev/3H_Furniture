@@ -18,6 +18,10 @@ const Mypage = () => {
     const [orders, setOrders] = useState([]);
     const [isAllOrdersOpen, setIsAllOrdersOpen] = useState(false); // 구매내역 전체보기 토글
 
+    // 방금 마이페이지에서 실시간으로 구매확정을 완료한 주문 ID들을 기록하는 배열
+    //const [confirmedOrderIds, setConfirmedOrderIds] = useState([]);
+
+
     const { success, error, warn, info } = useToast();
 
 
@@ -195,6 +199,9 @@ const Mypage = () => {
 
     console.log(member);
     if (isLoading) return <div>로딩중....</div>;
+
+
+    
 
 
     //구매확정 버튼-->리뷰 쓰기로 넘어감.
@@ -491,7 +498,7 @@ const Mypage = () => {
                                 <p><strong>아이디:</strong> {member.id}</p>
                                 <p><strong>연락처:</strong> {member.phone}</p>
                                 <p><strong>이메일:</strong> {member.email || "-"}</p>
-                                <button onClick={() => navigate(`/member/update/${member.id}`)}>정보수정</button>
+                                <button onClick={() => navigate(`/member/update/${member.id}`)}>회원정보 수정</button>
                             </div>
 
                             <h3 id="refund-section" className="mypage-info-section-title">

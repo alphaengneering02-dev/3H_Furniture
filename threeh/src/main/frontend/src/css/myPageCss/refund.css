@@ -581,3 +581,56 @@ main.mypage-main-content,
     border-color: var(--caramel) !important;
 }
 
+
+/* =========================================================================
+   🎨 [색감 완화 보정] 너무 어두웠던 색상을 헤더와 어울리는 세련된 체리 브라운으로 조율
+   - 기본 상태 (적당히 묵직한 체리 브라운): #531D19 (헤더와 동일 코드 적용)
+   - 호버 상태 (살짝만 깊어지는 체리우드): #3A1210
+   ========================================================================= */
+
+/* 1️⃣ 탭바 활성화(Active) 상태 및 주문취소 버튼 색감 완화 */
+.refund-tabs-bar button.refund-tab-btn.active,
+.refund-tabs-bar .active,
+button.refund-tab-btn.active,
+.refund-tab-btn.active {
+    background: #531D19 !important;
+    background-color: #531D19 !important; /* 헤더선과 동일한 은은한 체리 브라운 */
+    border: 1px solid #531D19 !important;
+    border-bottom: 1px solid #531D19 !important;
+    color: #FFFFFF !important;
+}
+
+.refund-action-submit-zone .refund-btn-cancel,
+.refund-action-submit-zone .refund-btn:first-of-type {
+    border: 1px solid #531D19 !important;
+    color: #531D19 !important;
+    background-color: #FFFFFF !important;
+}
+
+
+/* 2️⃣ 🚨 [정밀 저격] 안 바뀌던 '반품신청' 관련 모든 버튼박스 강제 수술 */
+.refund-action-submit-zone .refund-btn-return,
+.refund-action-submit-zone button[class*="return"],
+.refund-action-submit-zone .refund-btn:last-of-type,
+.refund-action-submit-zone button:nth-of-type(3),
+button.refund-btn-return {
+    background: #531D19 !important;
+    background-color: #531D19 !important; /* 주황 카라멜을 완벽히 지우고 체리 브라운 주입 */
+    border: 1px solid #531D19 !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 4px 12px rgba(83, 29, 25, 0.15) !important;
+}
+
+
+/* 3️⃣ ✨ 마우스 올렸을 때(Hover)의 피드백도 너무 어둡지 않게 일괄 완화 보정 */
+.refund-tabs-bar button.refund-tab-btn.active:hover,
+.refund-tab-btn.active:hover,
+.refund-action-submit-zone .refund-btn-cancel:hover:not(:disabled),
+.refund-action-submit-zone .refund-btn:first-of-type:hover:not(:disabled),
+.refund-action-submit-zone .refund-btn-return:hover:not(:disabled),
+.refund-action-submit-zone button[class*="return"]:hover:not(:disabled),
+.refund-action-submit-zone .refund-btn:last-of-type:hover:not(:disabled) {
+    background-color: #3A1210 !important; /* 부드럽게 눌리는 다크 체리 */
+    border-color: #3A1210 !important;
+    color: #FFFFFF !important;
+}

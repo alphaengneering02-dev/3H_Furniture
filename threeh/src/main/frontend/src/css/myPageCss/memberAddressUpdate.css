@@ -50,7 +50,7 @@
 .form-group-row label strong {
     font-size: 14px !important;
     font-weight: 600 !important;
-    color: #5E4431 !important; /* 아늑한 다크 브라운 */
+    color:  !important; /* 아늑한 다크 브라운 */
     display: inline-block;
     margin-bottom: 8px !important; /* 텍스트와 하단 인풋창 사이에 여백 부여 */
 }
@@ -127,3 +127,38 @@
     border-color: #8C7A6B !important;
 }
 
+/* =========================================================================
+   👑 [정보 수정 폼 완결] 네이버 스타일 카드 체리 브라운 브랜드 컬러 전사
+   ========================================================================= */
+
+/* 1️⃣ 입력창 마우스 클릭(Focus) 시 테두리를 튀는 카라멜 대신 체리 브라운으로 하이라이트 */
+.form-group-row input:focus {
+    border-color: #531D19 !important; /* 헤더선과 동일한 은은한 체리 브라운 */
+    box-shadow: 0 0 0 3px rgba(83, 29, 25, 0.1) !important; /* 체리 브라운 톤의 부드러운 아우라 */
+}
+
+/* 2️⃣ [수정 완료] 메인 버튼 딥체리/체리브라운 리브랜딩 */
+.form-action-row button.mypage-action-btn {
+    background-color: #531D19 !important; /* 주황 카라멜을 지우고 체리 브라운 주입 */
+    border: 1px solid #531D19 !important;
+    color: #FFFFFF !important; /* 글자색 선명하게 화이트 반전 */
+}
+
+/* [수정 완료] 버튼 마우스 올렸을 때(Hover) 피드백 */
+.form-action-row button.mypage-action-btn:hover {
+    background-color: #3A1210 !important; /* 호버 시 한 단계 더 깊어지는 다크 체리우드 */
+    border-color: #3A1210 !important;
+}
+
+/* 3️⃣ [취소] 보조 버튼 테두리 및 텍스트 포인트 톤 세련되게 보정 */
+.form-action-row button.btn-header-action {
+    color: #531D19 !important; /* 카라멜 글씨를 헤더선 일치형 체리 브라운으로 변경 */
+    background-color: #FFFFFF !important;
+}
+
+/* [취소] 버튼 마우스 올렸을 때(Hover) 피드백 */
+.form-action-row button.btn-header-action:hover {
+    background-color: #FDFBF7 !important;
+    border-color: #531D19 !important; /* 호버 시 체리 브라운 하이라이트 라인 결합 */
+    color: #3A1210 !important;
+}
