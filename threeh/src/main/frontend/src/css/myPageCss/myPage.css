@@ -1699,3 +1699,35 @@ button.slider-arrow-btn:hover,
     max-width: none !important;
     display: block !important;
 }
+
+/* =========================================================================
+   [마이페이지 최종 구출] 구매내역 슬라이더 카드 내 버튼 찌그러짐 버그 완치
+   - 원인: 상위 주문 페이지 클래스 바인딩 오류로 인한 오버라이딩 미적용 현상
+   - 해결: 부모 스펙을 제거하고 클래스네임 단독 및 가로 락(Lock)으로 칼정렬 성공
+   ========================================================================= */
+/* 💡 주황빛 갈색 버튼 상자 자체를 가로로 세련되게 넓혀주는 치트키 */
+.mypage-action-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    white-space: nowrap !important; /* 💡 "구매확정", "리뷰쓰기" 글자가 절대 밑으로 낙하하지 않게 강력 잠금 */
+    width: auto !important;
+    min-width: 85px !important; /* 💡 네 글자가 찌그러짐 없이 안착할 안전 펜스 구축 */
+    max-width: none !important;
+    height: 32px !important;
+    padding: 6px 12px !important;
+    background-color: #531D19 !important; /* 💡 마호가니 헤더선과 일치하는 은은한 체리 브라운 통일 */
+    color: #ffffff !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    border-radius: 4px !important; /* 💡 시크하고 깔끔한 주니어 스타일 직각 마감 */
+    border: none !important;
+    cursor: pointer !important;
+    text-align: center !important;
+}
+
+/* 💡 버튼 글씨가 세로로 쪼개지는 잔상 버그까지 완벽 격리 진압 */
+.mypage-action-btn * {
+    white-space: nowrap !important;
+    display: inline-block !important;
+}

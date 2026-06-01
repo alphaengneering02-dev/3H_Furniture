@@ -1,367 +1,560 @@
-/* ================================
-   ItemUpdate CSS
-   기준: global.css
+/* =========================================================
+   itemUpdate.css
+   Modern Admin Product Update Page Style
+   - 관리자 상품 수정 페이지 전용
+   - 기존 itemUpdate- 클래스명 유지
+   - 추가 클래스도 itemUpdate- prefix 사용
+   - Main mood: warm ivory / deep burgundy / soft brown
+========================================================= */
 
-   global.css 기준:
-   - body 배경: #FAF6F0
-   - 컨텐츠 박스: #FFFFFF
-   - 기본 폰트: Noto Sans KR
-   - 포인트 폰트: Playfair Display
+:root {
+  --itemUpdate-bg: #faf6f0;
+  --itemUpdate-bg-soft: #f4ede4;
+  --itemUpdate-surface: #ffffff;
+  --itemUpdate-surface-soft: #fffaf5;
 
-   네이밍 규칙:
-   - 상품 수정 페이지 전용 클래스는 전부 itemUpdate- 로 시작
-================================ */
+  --itemUpdate-main: #531d19;
+  --itemUpdate-main-light: #702a24;
+  --itemUpdate-main-soft: rgba(83, 29, 25, 0.08);
 
-/* 전체 상품 수정 페이지 */
+  --itemUpdate-brown: #2b1d16;
+  --itemUpdate-brown-soft: #6f5b50;
+  --itemUpdate-muted: #9a8678;
+
+  --itemUpdate-border: rgba(83, 29, 25, 0.12);
+  --itemUpdate-border-strong: rgba(83, 29, 25, 0.25);
+
+  --itemUpdate-danger: #b42318;
+  --itemUpdate-danger-dark: #7a1510;
+
+  --itemUpdate-shadow-sm: 0 8px 20px rgba(43, 29, 22, 0.06);
+  --itemUpdate-shadow-md: 0 16px 36px rgba(43, 29, 22, 0.09);
+
+  --itemUpdate-radius-sm: 12px;
+  --itemUpdate-radius-md: 18px;
+  --itemUpdate-radius-lg: 28px;
+  --itemUpdate-radius-pill: 999px;
+
+  --itemUpdate-transition: 0.22s ease;
+}
+
+/* =========================================================
+   Page Layout
+========================================================= */
+
 .itemUpdate-page {
-    max-width: 1240px;
-    min-height: 100vh;
-    margin: 0 auto;
-    padding: 44px 24px 90px;
-    background-color: var(--content-bg);
-    color: var(--black-brown);
+  max-width: 1280px;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 54px 24px 100px;
+  color: var(--itemUpdate-brown);
+  background:
+    radial-gradient(circle at 0% 0%, rgba(112, 42, 36, 0.08), transparent 30%),
+    radial-gradient(circle at 100% 8%, rgba(139, 107, 84, 0.08), transparent 24%),
+    linear-gradient(180deg, var(--itemUpdate-bg) 0%, #f8f1e8 100%);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-/* 페이지 제목 */
 .itemUpdate-title {
-    margin-bottom: 34px;
-    font-family: 'Noto Sans KR', sans-serif;
-    font-size: 34px;
-    font-weight: 900;
-    color: var(--black-brown);
-    letter-spacing: -0.05em;
+  width: 100%;
+  max-width: 920px;
+  margin: 0 auto 24px;
+  color: var(--itemUpdate-brown);
+  font-size: clamp(32px, 4vw, 48px);
+  font-weight: 950;
+  line-height: 1;
+  letter-spacing: -0.06em;
 }
 
-/* 상품 수정 form */
+/* =========================================================
+   Form Card
+========================================================= */
+
 .itemUpdate-form {
-    width: 100%;
-    max-width: 860px;
-    padding: 34px;
-    border: 1px solid var(--soft-border);
-    background-color: #FFFFFF;
-    box-shadow: 0 14px 30px rgba(112, 42, 36, 0.06);
+  width: 100%;
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 34px;
+  border: 1px solid var(--itemUpdate-border);
+  border-radius: var(--itemUpdate-radius-lg);
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: var(--itemUpdate-shadow-md);
+  backdrop-filter: blur(14px);
+  box-sizing: border-box;
 }
 
-/* 입력 항목 한 줄 */
 .itemUpdate-formRow {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-bottom: 22px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 22px;
+  box-sizing: border-box;
 }
 
-/* label */
 .itemUpdate-label {
-    font-size: 14px;
-    font-weight: 800;
-    color: var(--black-brown);
+  color: var(--itemUpdate-brown);
+  font-size: 14px;
+  font-weight: 950;
+  letter-spacing: -0.025em;
 }
 
-/* input 공통 */
-.itemUpdate-input {
-    width: 100%;
-    height: 44px;
-    padding: 0 13px;
-    border: 1px solid var(--soft-border);
-    background-color: #FFFFFF;
-    color: var(--black-brown);
-    font-family: 'Noto Sans KR', sans-serif;
-    font-size: 14px;
-}
+/* =========================================================
+   Inputs / Select / Textarea
+========================================================= */
 
-/* select 공통 */
-.itemUpdate-select {
-    width: 100%;
-    height: 44px;
-    padding: 0 13px;
-    border: 1px solid var(--soft-border);
-    background-color: #FFFFFF;
-    color: var(--black-brown);
-    font-family: 'Noto Sans KR', sans-serif;
-    font-size: 14px;
-    cursor: pointer;
-}
-
-/* textarea */
+.itemUpdate-input,
+.itemUpdate-select,
 .itemUpdate-textarea {
-    width: 100%;
-    min-height: 130px;
-    padding: 13px;
-    border: 1px solid var(--soft-border);
-    background-color: #FFFFFF;
-    color: var(--black-brown);
-    font-family: 'Noto Sans KR', sans-serif;
-    font-size: 14px;
-    line-height: 1.7;
-    resize: none;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-/* focus 공통 */
+.itemUpdate-input {
+  min-height: 46px;
+  padding: 0 14px;
+  border: 1px solid var(--itemUpdate-border);
+  border-radius: var(--itemUpdate-radius-sm);
+  background: #ffffff;
+  color: var(--itemUpdate-brown);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 750;
+  outline: none;
+  transition:
+    border-color var(--itemUpdate-transition),
+    box-shadow var(--itemUpdate-transition),
+    background-color var(--itemUpdate-transition);
+}
+
+.itemUpdate-select {
+  min-height: 46px;
+  padding: 0 38px 0 14px;
+  border: 1px solid var(--itemUpdate-border);
+  border-radius: var(--itemUpdate-radius-sm);
+  background: #ffffff;
+  color: var(--itemUpdate-brown);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 750;
+  cursor: pointer;
+  outline: none;
+  transition:
+    border-color var(--itemUpdate-transition),
+    box-shadow var(--itemUpdate-transition),
+    background-color var(--itemUpdate-transition);
+}
+
+.itemUpdate-textarea {
+  display: block;
+  min-height: 150px;
+  padding: 14px;
+  border: 1px solid var(--itemUpdate-border);
+  border-radius: var(--itemUpdate-radius-sm);
+  background: #ffffff;
+  color: var(--itemUpdate-brown);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.75;
+  resize: vertical;
+  outline: none;
+  transition:
+    border-color var(--itemUpdate-transition),
+    box-shadow var(--itemUpdate-transition),
+    background-color var(--itemUpdate-transition);
+}
+
+.itemUpdate-input:hover,
+.itemUpdate-select:hover,
+.itemUpdate-textarea:hover {
+  border-color: var(--itemUpdate-border-strong);
+  background: var(--itemUpdate-surface-soft);
+}
+
 .itemUpdate-input:focus,
 .itemUpdate-select:focus,
 .itemUpdate-textarea:focus {
-    outline: none;
-    border-color: var(--deep-cherokee);
-    box-shadow: 0 0 0 4px rgba(112, 42, 36, 0.1);
+  border-color: var(--itemUpdate-main);
+  background: #ffffff;
+  box-shadow: 0 0 0 4px var(--itemUpdate-main-soft);
 }
 
-/* 상품 설명 글자 수 */
 .itemUpdate-count {
-    margin-top: 4px;
-    font-size: 13px;
-    color: var(--text-muted);
-    text-align: right;
+  margin-top: 4px;
+  color: var(--itemUpdate-muted);
+  font-size: 13px;
+  font-weight: 750;
+  text-align: right;
 }
 
-/* 구분선 */
+/* =========================================================
+   Divider / Section
+========================================================= */
+
 .itemUpdate-divider {
-    margin: 36px 0;
-    border: none;
-    border-top: 1px solid var(--soft-border);
+  margin: 36px 0;
+  border: none;
+  border-top: 1px solid var(--itemUpdate-border);
 }
 
-/* 섹션 제목 */
 .itemUpdate-sectionTitle {
-    margin-bottom: 20px;
-    font-size: 21px;
-    font-weight: 900;
-    color: var(--black-brown);
-    letter-spacing: -0.04em;
+  margin: 0 0 20px;
+  color: var(--itemUpdate-brown);
+  font-size: 22px;
+  font-weight: 950;
+  letter-spacing: -0.045em;
 }
 
-/* ================================
-   기존 이미지 영역
-================================ */
+/* =========================================================
+   Existing Image Area
+   - 이미지 / 배지 / 삭제체크 세로 카드
+   - 카드들은 가로 나열
+========================================================= */
 
-/* 기존 이미지 목록 */
 .itemUpdate-imageList {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    margin-bottom: 28px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 24px;
+  margin-bottom: 28px;
+  padding: 0;
 }
 
-/* 기존 이미지 한 개 */
 .itemUpdate-imageItem {
-    display: flex;
-    align-items: center;
-    gap: 18px;
-    padding: 16px;
-    border: 1px solid var(--soft-border);
-    background-color: #FAF6F0;
+  width: 138px;
+  min-width: 138px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
 }
 
-/* 기존 이미지 */
+/* 이미지가 카드 최상단 */
 .itemUpdate-image {
-    width: 120px;
-    height: 120px;
-    object-fit: cover;
-    border: 1px solid var(--soft-border);
-    background-color: #F4EFE8;
+  width: 124px;
+  height: 96px;
+  object-fit: cover;
+  border: 2px solid var(--itemUpdate-main);
+  border-radius: 14px;
+  background: var(--itemUpdate-bg-soft);
+  box-sizing: border-box;
+  box-shadow: 0 6px 14px rgba(83, 29, 25, 0.08);
 }
 
-/* 이미지 정보 */
+/* 이미지 아래 영역 */
 .itemUpdate-imageInfo {
-    display: flex;
-    flex-direction: column;
-    gap: 9px;
+  width: 124px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  box-sizing: border-box;
 }
 
-/* 대표/서브 이미지 표시 */
+/* 이미지 아래 대표/서브 이미지 칸 */
 .itemUpdate-imageBadge {
-    display: inline-block;
-    width: fit-content;
-    padding: 6px 10px;
-    border: 1px solid var(--deep-cherokee);
-    background-color: #FFFFFF;
-    color: var(--deep-cherokee);
-    font-size: 13px;
-    font-weight: 800;
+  width: 112px;
+  min-height: 28px;
+  padding: 0 8px;
+  border: 1px solid var(--itemUpdate-main);
+  border-radius: 6px;
+  background: #ffffff;
+  color: var(--itemUpdate-main);
+  font-size: 12px;
+  font-weight: 950;
+  white-space: nowrap;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
 }
 
-/* 이미지 삭제 체크 label */
+/* 배지 아래 삭제 체크박스 */
 .itemUpdate-checkLabel {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    font-size: 14px;
-    color: var(--black-brown);
-    cursor: pointer;
+  width: 112px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: var(--itemUpdate-brown-soft);
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  text-align: center;
 }
 
-/* 체크박스 */
 .itemUpdate-checkbox {
-    width: 16px;
-    height: 16px;
-    accent-color: var(--deep-cherokee);
+  width: 16px;
+  height: 16px;
+  accent-color: var(--itemUpdate-main);
+  cursor: pointer;
 }
 
-/* ================================
-   새 이미지 추가 영역
-================================ */
+/* =========================================================
+   New Image Upload Area
+========================================================= */
 
-/* 파일 input */
 .itemUpdate-fileInput {
-    width: 100%;
-    padding: 11px;
-    border: 1px solid var(--soft-border);
-    background-color: #FAF6F0;
-    color: var(--black-brown);
-    font-family: 'Noto Sans KR', sans-serif;
-    font-size: 14px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 16px;
+  border: 1px dashed var(--itemUpdate-border-strong);
+  border-radius: var(--itemUpdate-radius-md);
+  background:
+    linear-gradient(135deg, var(--itemUpdate-bg) 0%, #fffaf5 100%);
+  color: var(--itemUpdate-brown);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  transition:
+    border-color var(--itemUpdate-transition),
+    background-color var(--itemUpdate-transition),
+    box-shadow var(--itemUpdate-transition);
 }
 
-/* 새 서브 이미지 개수 */
+.itemUpdate-fileInput:hover {
+  border-color: var(--itemUpdate-main);
+  background: var(--itemUpdate-surface-soft);
+  box-shadow: 0 0 0 4px var(--itemUpdate-main-soft);
+}
+
 .itemUpdate-fileCount {
-    margin-top: 8px;
-    font-size: 13px;
-    color: var(--text-muted);
+  margin-top: 9px;
+  color: var(--itemUpdate-muted);
+  font-size: 13px;
+  font-weight: 800;
 }
 
-/* 새 서브 이미지 목록 */
 .itemUpdate-fileList {
-    margin-top: 12px;
-    list-style: none;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
 }
 
-/* 새 서브 이미지 한 줄 */
 .itemUpdate-fileItem {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    padding: 11px 13px;
-    margin-bottom: 8px;
-    border: 1px solid var(--soft-border);
-    background-color: #FAF6F0;
-    color: var(--black-brown);
-    font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 9px;
+  padding: 13px 14px;
+  border: 1px solid var(--itemUpdate-border);
+  border-radius: var(--itemUpdate-radius-md);
+  background: #ffffff;
+  color: var(--itemUpdate-brown);
+  font-size: 14px;
+  font-weight: 750;
+  box-shadow: var(--itemUpdate-shadow-sm);
+  box-sizing: border-box;
 }
 
-/* 파일명 */
 .itemUpdate-fileName {
-    flex: 1;
-    word-break: break-all;
+  flex: 1;
+  min-width: 0;
+  color: var(--itemUpdate-brown-soft);
+  word-break: break-all;
 }
 
-/* ================================
-   버튼
-================================ */
+/* =========================================================
+   Buttons
+========================================================= */
 
-/* 버튼 영역 */
 .itemUpdate-buttonArea {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 32px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 32px;
 }
 
-/* 공통 버튼 */
 .itemUpdate-button {
-    min-width: 112px;
-    height: 44px;
-    padding: 0 20px;
-    border: 1px solid var(--deep-cherokee);
-    background-color: var(--deep-cherokee);
-    color: #FFFFFF;
-    font-family: 'Noto Sans KR', sans-serif;
-    font-size: 14px;
-    font-weight: 800;
-    cursor: pointer;
-    transition: all 0.2s ease;
+  min-width: 118px;
+  min-height: 44px;
+  padding: 0 20px;
+  border: 1px solid var(--itemUpdate-main);
+  border-radius: var(--itemUpdate-radius-pill);
+  background: var(--itemUpdate-main);
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 950;
+  cursor: pointer;
+  transition: all var(--itemUpdate-transition);
+  box-shadow: 0 10px 22px rgba(83, 29, 25, 0.18);
 }
 
 .itemUpdate-button:hover {
-    background-color: #531D19;
-    border-color: #531D19;
-    color: #FFFFFF;
+  border-color: var(--itemUpdate-main-light);
+  background: var(--itemUpdate-main-light);
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 14px 28px rgba(83, 29, 25, 0.23);
 }
 
-/* 보조 버튼 */
+.itemUpdate-button:disabled {
+  border-color: #d8cec4;
+  background: #d8cec4;
+  color: #ffffff;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
 .itemUpdate-subButton {
-    border: 1px solid var(--black-brown);
-    background-color: #FFFFFF;
-    color: var(--black-brown);
+  border-color: var(--itemUpdate-border-strong);
+  background: #ffffff;
+  color: var(--itemUpdate-brown);
+  box-shadow: none;
 }
 
 .itemUpdate-subButton:hover {
-    background-color: var(--black-brown);
-    border-color: var(--black-brown);
-    color: #FFFFFF;
+  border-color: var(--itemUpdate-brown);
+  background: var(--itemUpdate-brown);
+  color: #ffffff;
 }
 
-/* 삭제 버튼 */
 .itemUpdate-dangerButton {
-    min-width: 84px;
-    height: 36px;
-    padding: 0 13px;
-    border: 1px solid var(--deep-cherokee);
-    background-color: var(--deep-cherokee);
-    color: #FFFFFF;
-    font-family: 'Noto Sans KR', sans-serif;
-    font-size: 13px;
-    font-weight: 800;
-    cursor: pointer;
-    transition: all 0.2s ease;
+  min-width: 88px;
+  min-height: 36px;
+  padding: 0 14px;
+  border: 1px solid var(--itemUpdate-danger);
+  border-radius: var(--itemUpdate-radius-pill);
+  background: #ffffff;
+  color: var(--itemUpdate-danger);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 950;
+  cursor: pointer;
+  transition: all var(--itemUpdate-transition);
 }
 
 .itemUpdate-dangerButton:hover {
-    background-color: #FFFFFF;
-    color: var(--deep-cherokee);
+  border-color: var(--itemUpdate-danger);
+  background: var(--itemUpdate-danger);
+  color: #ffffff;
+  transform: translateY(-1px);
 }
 
-/* 반응형 */
+/* =========================================================
+   Responsive
+========================================================= */
+
 @media (max-width: 768px) {
-    .itemUpdate-page {
-        padding: 30px 16px 60px;
-    }
+  .itemUpdate-page {
+    padding: 42px 16px 76px;
+  }
 
-    .itemUpdate-title {
-        font-size: 30px;
-    }
+  .itemUpdate-title {
+    max-width: 100%;
+    margin-bottom: 22px;
+  }
 
-    .itemUpdate-form {
-        max-width: 100%;
-        padding: 24px 18px;
-    }
+  .itemUpdate-form {
+    max-width: 100%;
+    padding: 24px 18px;
+    border-radius: 24px;
+  }
 
-    .itemUpdate-imageItem {
-        flex-direction: column;
-        align-items: flex-start;
-    }
+  .itemUpdate-imageList {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 20px;
+    padding-bottom: 10px;
+  }
 
-    .itemUpdate-image {
-        width: 100%;
-        height: 260px;
-    }
+  .itemUpdate-imageItem {
+    width: 132px;
+    min-width: 132px;
+  }
 
-    .itemUpdate-buttonArea {
-        flex-direction: column;
-        align-items: stretch;
-    }
+  .itemUpdate-image {
+    width: 120px;
+    height: 94px;
+  }
 
-    .itemUpdate-button,
-    .itemUpdate-subButton,
-    .itemUpdate-dangerButton {
-        width: 100%;
-    }
+  .itemUpdate-imageInfo {
+    width: 120px;
+  }
 
-    .itemUpdate-fileItem {
-        flex-direction: column;
-        align-items: stretch;
-    }
+  .itemUpdate-imageBadge,
+  .itemUpdate-checkLabel {
+    width: 108px;
+  }
+
+  .itemUpdate-buttonArea {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .itemUpdate-button,
+  .itemUpdate-subButton,
+  .itemUpdate-dangerButton {
+    width: 100%;
+  }
+
+  .itemUpdate-fileItem {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }
 
 @media (max-width: 480px) {
-    .itemUpdate-title {
-        font-size: 27px;
-    }
+  .itemUpdate-page {
+    padding: 32px 14px 66px;
+  }
 
-    .itemUpdate-sectionTitle {
-        font-size: 20px;
-    }
+  .itemUpdate-title {
+    font-size: 28px;
+  }
 
-    .itemUpdate-image {
-        height: 220px;
-    }
+  .itemUpdate-form {
+    padding: 22px 14px;
+  }
+
+  .itemUpdate-sectionTitle {
+    font-size: 20px;
+  }
+
+  .itemUpdate-input,
+  .itemUpdate-select {
+    min-height: 44px;
+  }
+
+  .itemUpdate-textarea {
+    min-height: 130px;
+  }
+
+  .itemUpdate-imageItem {
+    width: 124px;
+    min-width: 124px;
+  }
+
+  .itemUpdate-image {
+    width: 112px;
+    height: 88px;
+    border-radius: 12px;
+  }
+
+  .itemUpdate-imageInfo {
+    width: 112px;
+  }
+
+  .itemUpdate-imageBadge,
+  .itemUpdate-checkLabel {
+    width: 102px;
+  }
 }

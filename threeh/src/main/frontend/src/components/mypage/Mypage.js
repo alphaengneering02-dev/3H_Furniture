@@ -354,7 +354,7 @@ const Mypage = () => {
 
     const handleDelete = () => {
         if (window.confirm("정말로 탈퇴하시겠습니까?")) {
-            axios.post('http://localhost:8080/Member/delete', {}, { withCredentials: true })
+            axios.delete(`http://localhost:8080/api/member/delete/${member.id}`, {})
                 .then((res) => { success("탈퇴가 완료되었습니다."); sessionStorage.removeItem('user'); navigate('/'); })
                 .catch(err => { console.error("탈퇴 오류:", err); error("탈퇴 실패: " + (err.response?.data || "서버 오류가 발생했습니다.")); });
         }
@@ -570,7 +570,7 @@ const Mypage = () => {
                                                                 ) : (
                                                                     <button type="button" className="mypage-action-btn" onClick={() => navigate(`/item/${order.itemId}`)} disabled={!order.itemId}>리뷰쓰기</button>
                                                                 )
-                                                            ) : order.orderState === "READY" && order.deliveryStatus === "COMPLETED" ? (
+                                                            ) : order.orderState === "SHIPPING" && order.deliveryStatus === "COMPLETED" ? (
                                                                 <button type="button" className="mypage-action-btn" onClick={() => handleConfirmPurchase(order.orderId || order.id)}>구매확정</button>
                                                             ) : (
                                                                 <span style={{ color: "#64748b", fontSize: "11px", display: "block", textAlign: "center" }}>배송완료 후 확정 가능</span>

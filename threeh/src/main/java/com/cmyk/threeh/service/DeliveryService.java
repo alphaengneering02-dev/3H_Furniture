@@ -87,13 +87,21 @@ public class DeliveryService {
     //수정
     public Delivery updateDelivery(Long id, DeliveryDTO dto) {
 
+    // 1. 기존에 저장되어 있던 배송 기사(Delivery) 정보를 조회
     Delivery delivery = deliveryRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("해당 배송업체가 존재하지 않습니다. id=" + id));
 
-    Admins admin = adminsRepository.findById(dto.getAdminId())
-            .orElseThrow(() -> new RuntimeException("관리자 정보가 없습니다."));
+    // 🌟 [핵심 변경] adminId가 전달되었을 때만 관리자 정보를 조회하고 세팅합니다.
+    // 기사 본인이 수정하여 adminId가 null로 들어오면 이 블록을 건너뛰므로 에러가 나지 않습니다.
+    if (dto.getAdminId() != null) {
+        Admins admin = adminsRepository.findById(dto.getAdminId())
+                .orElseThrow(() -> new RuntimeException("관리자 정보가 없습니다."));
+        delivery.setAdmin(admin);
+    } 
+    // 만약 기사가 수정할 때 기존 관리자 연결을 끊지 않고 유지하고 싶다면 else 블록은 비워두면 됩니다.
+    // (기존 delivery 엔티티에 세팅되어 있던 admin 참조가 그대로 유지됨)
 
-    delivery.setAdmin(admin);
+    // 2. 나머지 정보들은 누가 수정하든 상관없이 업데이트
     delivery.setCompanyName(dto.getCompanyName());
     delivery.setBusinessName(dto.getBusinessName());
     delivery.setBusinessPhone(dto.getBusinessPhone());
