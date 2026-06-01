@@ -126,7 +126,7 @@ const ItemAdminPage = () => {
 
     // 상품별 리뷰 개수 가져오기
     // 테이블의 리뷰보기 버튼 옆에
-    // 상품 목록 조회 시 자동 호출하지 않음
+    // 상품 목록 조회 시 자동 호출하지 않음 한번만
     const getReviewCounts = async () => {
        try{
         const response = await axios.get(
@@ -143,7 +143,7 @@ const ItemAdminPage = () => {
             countData[itemId] = {
                 itemId:Number(itemId),
                 averageScore:summary.averageScore || 0,
-                reviewCounts: summary?.reviewCount || 0,
+                reviewCount: summary?.reviewCount || 0,
             };
         });
 
@@ -624,7 +624,7 @@ const ItemAdminPage = () => {
 
             return{
                 ...item,
-                reviewCounts: summary?.reviewCount||0,
+                reviewCount: summary?.reviewCount||0,
                 averageScore: summary?.averageScore||0,
             };
         })
@@ -647,11 +647,12 @@ const ItemAdminPage = () => {
 
     //============================================================//
 
-    return (
-        <div>
-            {/*헤더영역 메인에서 가져옴 */}
-            <Header/>
-            <div className="itemAdmin-page">
+   return (
+    <div>
+        {/* 헤더 영역 */}
+        <Header />
+
+        <div className="itemAdmin-page">
             <ToastContainer
                 position="top-center"
                 autoClose={1800}
@@ -661,19 +662,20 @@ const ItemAdminPage = () => {
                 pauseOnHover
                 theme="light"
             />
-              {/* 관리자 페이지 제목 */}
+
+            {/* 관리자 페이지 제목 */}
             <h1 className="itemAdmin-title">관리자 상품/ 리뷰관리</h1>
 
-            {/* 상품 등록하기 버튼과 리뷰 관리 버튼을 같은 레벨에 배치 */}
-            {/* 상품 관리 버튼은 따로 노출하지 않음 */}
+            {/* 상단 관리자 버튼 영역 */}
             <div className="itemAdmin-adminActionArea">
-                 <button
+                <button
                     type="button"
                     className="itemAdmin-button itemAdmin-subButton"
                     onClick={() => navigate("/item")}
                 >
                     상품목록으로
                 </button>
+
                 <button
                     type="button"
                     className="itemAdmin-button"
@@ -685,14 +687,27 @@ const ItemAdminPage = () => {
                 <button
                     type="button"
                     className="itemAdmin-button itemAdmin-subButton"
+                    onClick={() => setActiveTab("items")}
+                >
+                    상품 관리
+                </button>
+
+                <button
+                    type="button"
+                    className="itemAdmin-button itemAdmin-subButton"
                     onClick={() => setActiveTab("reviews")}
                 >
                     리뷰 관리
                 </button>
-                {/*선택한 상품 여러개 삭제 */}
-                <button type="button" className="itemAdmin-button itemAdmin-dangerButton"
-                onClick={handleAdminDeleteSelectedItems} disabled={selectedItemIds.length===0}>
-                    선택 삭제{selectedItemIds.length>0?`(${selectedItemIds.length})`:""}
+
+                <button
+                    type="button"
+                    className="itemAdmin-button itemAdmin-dangerButton"
+                    onClick={handleAdminDeleteSelectedItems}
+                    disabled={selectedItemIds.length === 0}
+                >
+                    선택 삭제
+                    {selectedItemIds.length > 0 ? `(${selectedItemIds.length})` : ""}
                 </button>
             </div>
 
@@ -700,21 +715,23 @@ const ItemAdminPage = () => {
             {activeTab === "items" && (
                 <div className="itemAdmin-section">
                     <h2 className="itemAdmin-sectionTitle">상품 관리</h2>
-                    {/*등록된 상품 개수 표시 */}
+
+                    {/* 등록 상품 개수 */}
                     <div className="itemAdmin-countBox">
                         <span className="itemAdmin-countText">
                             총 등록 상품: {items.length}개
                         </span>
+
                         <span className="itemAdmin-countText">
                             현재 조건 상품: {filteredItems.length}개
                         </span>
                     </div>
-                    
+
                     {/* 상품 목록 필터 / 정렬 영역 */}
                     <div className="itemAdmin-filterArea">
-                        {/* 카테고리 필터 */}
                         <div className="itemAdmin-filterGroup">
                             <label className="itemAdmin-label">카테고리</label>
+
                             <select
                                 className="itemAdmin-select"
                                 value={searchCategoryFilter}
@@ -728,9 +745,9 @@ const ItemAdminPage = () => {
                             </select>
                         </div>
 
-                        {/* 판매상태 필터 */}
                         <div className="itemAdmin-filterGroup">
                             <label className="itemAdmin-label">판매상태</label>
+
                             <select
                                 className="itemAdmin-select"
                                 value={searchSellStatusFilter}
@@ -744,9 +761,9 @@ const ItemAdminPage = () => {
                             </select>
                         </div>
 
-                        {/* 재고 정렬 */}
                         <div className="itemAdmin-filterGroup">
                             <label className="itemAdmin-label">재고 정렬</label>
+
                             <select
                                 className="itemAdmin-select"
                                 value={searchStockSort}
@@ -758,11 +775,14 @@ const ItemAdminPage = () => {
                             </select>
                         </div>
 
-                        {/* 필터 조회,초기화 버튼 */}
-
-                        <button type="button" className="itemAdmin-button" onClick={handleSearchFilter}>  
-                        필터조회하기
+                        <button
+                            type="button"
+                            className="itemAdmin-button"
+                            onClick={handleSearchFilter}
+                        >
+                            필터조회하기
                         </button>
+
                         <button
                             type="button"
                             className="itemAdmin-button itemAdmin-subButton"
@@ -790,8 +810,7 @@ const ItemAdminPage = () => {
                         <div className="itemAdmin-tableWrap">
                             <table className="itemAdmin-table">
                                 <thead>
-                                   <tr>
-                                        {/* 상품 선택 */}
+                                    <tr>
                                         <th className="itemAdmin-checkColumn">
                                             <input
                                                 type="checkbox"
@@ -805,7 +824,6 @@ const ItemAdminPage = () => {
                                             />
                                         </th>
 
-                                        {/* 화면 순번 */}
                                         <th>번호</th>
                                         <th>상품ID</th>
                                         <th>카테고리</th>
@@ -821,36 +839,39 @@ const ItemAdminPage = () => {
                                 <tbody>
                                     {pagedItems.map((item, index) => (
                                         <tr key={item.itemId}>
-
-                                            {/* 상품선택 */}
                                             <td className="itemAdmin-checkColumn">
-                                                 <input
+                                                <input
                                                     type="checkbox"
                                                     checked={isSelectedItem(item.itemId)}
-                                                    onChange={() => handleSelectAdminItem(item.itemId)}
+                                                    onChange={() =>
+                                                        handleSelectAdminItem(item.itemId)
+                                                    }
                                                 />
                                             </td>
 
-                                            {/* 필터링된 목록 기준 순번 */}
                                             <td>
                                                 {(currentPage - 1) * ITEMS_PER_PAGE +
                                                     index +
                                                     1}
                                             </td>
+
                                             <td>{item.itemId}</td>
                                             <td>{item.itemCategory}</td>
+
                                             <td className="itemAdmin-tableTextLeft">
-                                                <Link to={`/item/${item.itemId}`}
-                                                className="itemAdmin-nameLink">
-                                                {item.itemName}
+                                                <Link
+                                                    to={`/item/${item.itemId}`}
+                                                    className="itemAdmin-nameLink"
+                                                >
+                                                    {item.itemName}
                                                 </Link>
                                             </td>
+
                                             <td>{formatPrice(item.itemPrice)}원</td>
                                             <td>{item.itemStock}</td>
                                             <td>{item.itemSellStatus}</td>
 
                                             <td>
-                                                {/* 리뷰보기 버튼 옆에 리뷰 개수 표시 */}
                                                 <div className="itemAdmin-reviewButtonBox">
                                                     <button
                                                         type="button"
@@ -943,27 +964,21 @@ const ItemAdminPage = () => {
                 <div className="itemAdmin-section">
                     <h2 className="itemAdmin-sectionTitle">리뷰 관리</h2>
 
-                    {/* 리뷰를 관리할 상품 선택 영역 */}
+                    {/* 리뷰 상품 필터 영역 */}
                     <div className="itemAdmin-reviewSelectArea">
                         <label className="itemAdmin-label">리뷰 상품 필터:</label>
 
                         <select
                             className="itemAdmin-select"
                             value={reviewProductFilter}
-                            onChange={(e) =>
-                                setReviewProductFilter(e.target.value)
-                            }
+                            onChange={(e) => setReviewProductFilter(e.target.value)}
                         >
-                            <option value="">상품을 선택하세요</option>
-
-                            {items.map((item) => (
-                                <option key={item.itemId} value={item.itemId}>
-                                    [{item.itemId}] {item.itemName}
-                                </option>
-                            ))}
+                            <option value="hasReview">리뷰 있는 상품</option>
+                            <option value="lowScore">낮은 평점 상품</option>
+                            <option value="manyReviews">리뷰 많은 상품</option>
+                            <option value="highScore">평점 높은 상품</option>
                         </select>
 
-                        {/* 리뷰 관리 화면에서 상품 관리 화면으로 돌아가기 */}
                         <button
                             type="button"
                             className="itemAdmin-button itemAdmin-subButton"
@@ -973,13 +988,76 @@ const ItemAdminPage = () => {
                         </button>
                     </div>
 
+                    {/* 리뷰 달린 상품 목록 */}
+                    <div className="itemAdmin-tableWrap">
+                        <table className="itemAdmin-table">
+                            <thead>
+                                <tr>
+                                    <th>상품ID</th>
+                                    <th>상품명</th>
+                                    <th>카테고리</th>
+                                    <th>판매상태</th>
+                                    <th>평균 평점</th>
+                                    <th>리뷰 수</th>
+                                    <th>관리</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {reviewProductItems.length === 0 ? (
+                                    <tr>
+                                        <td colSpan="7" className="itemAdmin-emptyText">
+                                            조건에 맞는 리뷰 상품이 없습니다.
+                                        </td>
+                                    </tr>
+                                ) : (
+                                    reviewProductItems.map((item) => (
+                                        <tr key={item.itemId}>
+                                            <td>{item.itemId}</td>
+
+                                            <td className="itemAdmin-tableTextLeft">
+                                                <Link
+                                                    to={`/item/${item.itemId}`}
+                                                    className="itemAdmin-nameLink"
+                                                >
+                                                    {item.itemName}
+                                                </Link>
+                                            </td>
+
+                                            <td>{item.itemCategory}</td>
+                                            <td>{item.itemSellStatus}</td>
+
+                                            <td>
+                                                {Number(item.averageScore || 0).toFixed(1)} / 5
+                                            </td>
+
+                                            <td>{item.reviewCount}개</td>
+
+                                            <td>
+                                                <button
+                                                    type="button"
+                                                    className="itemAdmin-tableButton itemAdmin-tableSubButton"
+                                                    onClick={() =>
+                                                        handleAdminSelectReviewItem(item.itemId)
+                                                    }
+                                                >
+                                                    리뷰 상세보기
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {/* 선택한 상품의 리뷰 상세 */}
                     {!selectedItemId ? (
                         <p className="itemAdmin-emptyText">
-                            리뷰를 관리할 상품을 선택해주세요.
+                            위 목록에서 리뷰를 확인할 상품을 선택해주세요.
                         </p>
                     ) : (
                         <div className="itemAdmin-reviewContent">
-                            {/* 선택한 상품의 리뷰 요약 */}
                             {reviewSummary && (
                                 <div className="itemAdmin-summaryBox">
                                     <p className="itemAdmin-summaryText">
@@ -1041,9 +1119,7 @@ const ItemAdminPage = () => {
 
                                                     <td>
                                                         {review.createdAt
-                                                            ? String(
-                                                                  review.createdAt
-                                                              ).substring(0, 10)
+                                                            ? String(review.createdAt).substring(0, 10)
                                                             : "-"}
                                                     </td>
 
@@ -1073,10 +1149,11 @@ const ItemAdminPage = () => {
                 </div>
             )}
         </div>
-        {/*푸터 영역 */}
-        <Footer/>
+
+        {/* 푸터 영역 */}
+        <Footer />
     </div>
-    );
+);
 };
 
 export default ItemAdminPage;
