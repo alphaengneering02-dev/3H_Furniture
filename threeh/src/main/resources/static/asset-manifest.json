@@ -1,15 +1,40 @@
 {
   "files": {
-    "main.css": "/static/css/main.f855e6bc.css",
-    "main.js": "/static/js/main.aa0147f3.js",
+    "main.css": "/static/css/main.7e27816d.css",
+    "main.js": "/static/js/main.e6506165.js",
     "static/js/453.825386d9.chunk.js": "/static/js/453.825386d9.chunk.js",
+    "static/media/livingroom_sub.png": "/static/media/livingroom_sub.d1b83ec088bb215a1b89.png",
+    "static/media/banner_main2.png": "/static/media/banner_main2.666a0c46b2eaeb679d97.png",
+    "static/media/banner_main3.png": "/static/media/banner_main3.4cb26b7fd8e0fe80d2e2.png",
+    "static/media/banner_main1.png": "/static/media/banner_main1.69423b792224491d5019.png",
+    "static/media/icon_mypage.png": "/static/media/icon_mypage.48bc8e08835c2b358185.png",
+    "static/media/icon_facebook.png": "/static/media/icon_facebook.5619f4c14ad3bdc07bfb.png",
+    "static/media/icon_cart.png": "/static/media/icon_cart.590aca4b10151b5b25f0.png",
+    "static/media/icon_instagram_brown.png": "/static/media/icon_instagram_brown.c78d2bbaa56c2827b661.png",
+    "static/media/icon_google.png": "/static/media/icon_google.9c93828d7b255d4f8189.png",
+    "static/media/icon_facebook_brown.png": "/static/media/icon_facebook_brown.41c6c495bbfdb4a62904.png",
+    "static/media/bedroom_sub.jfif": "/static/media/bedroom_sub.fce1a7703126ed7059d9.jfif",
+    "static/media/logo_header.png": "/static/media/logo_header.ee0c8000b0882ffb77a2.png",
+    "static/media/bedroom_main.jfif": "/static/media/bedroom_main.0aa6a8aa58c95236955a.jfif",
+    "static/media/icon_kakao_brown.png": "/static/media/icon_kakao_brown.413b6b3521a4b2e9942a.png",
+    "static/media/kitchen_main.jfif": "/static/media/kitchen_main.e5fb3609538c1f91b39c.jfif",
+    "static/media/logo.jpg": "/static/media/logo.84f5e6a8c5937234c2a7.jpg",
+    "static/media/toilet_main.jfif": "/static/media/toilet_main.52448366828783fe9ba9.jfif",
+    "static/media/toilet_sub.jfif": "/static/media/toilet_sub.e6e6a9bf90ee9c162517.jfif",
+    "static/media/livingroom_main.jfif": "/static/media/livingroom_main.697d232bc46fb7e3cae0.jfif",
+    "static/media/kitchen_sub.jfif": "/static/media/kitchen_sub.b3a21b9b80e58ae1e5f2.jfif",
+    "static/media/icon_instagram.png": "/static/media/icon_instagram.72f08f87cdffb7eb6a3e.png",
+    "static/media/icon_product.png": "/static/media/icon_product.34fdbecffe87ec9cb38b.png",
+    "static/media/icon_login.png": "/static/media/icon_login.58e851b8f5ba0b8935c7.png",
+    "static/media/icon_dashboard.png": "/static/media/icon_dashboard.e45ba02c7b0b8e18b2de.png",
+    "static/media/icon_kakao2.png": "/static/media/icon_kakao2.cf428903d0dc50fddf48.png",
     "index.html": "/index.html",
-    "main.f855e6bc.css.map": "/static/css/main.f855e6bc.css.map",
-    "main.aa0147f3.js.map": "/static/js/main.aa0147f3.js.map",
+    "main.7e27816d.css.map": "/static/css/main.7e27816d.css.map",
+    "main.e6506165.js.map": "/static/js/main.e6506165.js.map",
     "453.825386d9.chunk.js.map": "/static/js/453.825386d9.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.f855e6bc.css",
-    "static/js/main.aa0147f3.js"
+    "static/css/main.7e27816d.css",
+    "static/js/main.e6506165.js"
   ]
 }

@@ -15,9 +15,9 @@ import { useSearch } from '../../hook/SearchContext';
 const Main = () => {
 
     //검색상태 Context에서 모든 상태와 옵션을 가져옵니다.
-        const {
-            resetSearchKey
-        } = useSearch()
+    const {
+        resetSearchKey
+    } = useSearch()
 
     useEffect(() => {
         resetSearchKey()
