@@ -108,13 +108,14 @@ public class ReviewController {
     // Mypage.js에서 사용
     @GetMapping("/my")
     public ResponseEntity<?> getMyReviews(Principal principal) {
+       
+        String loginId = GetLoginId.getloginId(principal);
+
         if (principal == null || principal.getName() == null) {
-            return ResponseEntity.status(401).body("로그인이 필요합니다.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
         }
 
-        List<ReviewDTO> reviews = reviewService.getMyReviews(
-                principal.getName()
-        );
+        List<ReviewDTO> reviews = reviewService.getMyReviews(loginId);
 
         return ResponseEntity.ok(reviews);
     }
@@ -158,14 +159,13 @@ public class ReviewController {
     @DeleteMapping("/{reviewId}")
     public ResponseEntity<?> deleteReviewByMember(
             @PathVariable Long reviewId,
-            @AuthenticationPrincipal CustomMemberDetails principal
+            Principal principal
     ) {
+        String loginId = GetLoginId.getloginId(principal);
 
         if(principal==null){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
         }
-
-        String loginId = principal.getUsername();
         try {
             reviewService.deleteReview(loginId, reviewId);
 
