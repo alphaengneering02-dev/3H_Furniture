@@ -201,24 +201,61 @@ const Mypage = () => {
     if (isLoading) return <div>로딩중....</div>;
 
 
-    
 
 
-    //구매확정 버튼-->리뷰 쓰기로 넘어감.
-    const handleConfirmPurchase = async (orderId) => {
-        if (!window.confirm("구매를 확정하시겠습니까?")) return;
-        try {
-            const params = new URLSearchParams();
-            params.append('orderId', orderId);
-            const response = await axios.post("http://localhost:8080/Member/purchase/confirm", params, { withCredentials: true });
-            success(response.data || "구매가 확정되었습니다.");
-            setOrders((prevOrders) => prevOrders.map((order) => (order.orderId || order.id) === orderId ? { ...order, orderState: "PURCHASED" } : order));
-        } catch (err) {
-            console.error("구매 확정 오류:", err);
-            if (err.response) { error(err.response.data); return; }
-            error("구매 확정 처리 중 오류가 발생했습니다.");
+
+    // 구매확정 버튼-->리뷰 쓰기로 넘어감.
+    const handleConfirmPurchase = async (orderId, itemId) => {
+    if (!window.confirm("구매를 확정하시겠습니까?")) return;
+    try {
+        const params = new URLSearchParams();
+        // 안전하게 순수 숫자 ID 추출
+        const targetId = (typeof orderId === 'object') ? (orderId.orderId || orderId.id) : orderId;
+        params.append('orderId', targetId);
+
+        // 🚨 [404 완전 완치]: 반품 성공 대문자 'Member' + 마이페이지 성공 확장자 '.do' 최종 결합 저격!
+        const response = await axios.post("http://localhost:8080/Member/purchase/confirm.do", params, { withCredentials: true });
+        
+        // [object Object] 방지 처리 마감
+        const successMsg = typeof response.data === 'object' ? (response.data.message || "구매가 확정되었습니다.") : response.data;
+        success(successMsg);
+        
+        // 실시간 영문 PURCHASED 화면 상자 동기화 대전환
+        setOrders((prevOrders) => 
+            prevOrders.map((order) => {
+                const currentOrderId = order.orderId || order.id;
+                const currentItemId = order.itemId;
+                return (currentOrderId === targetId && currentItemId === itemId) 
+                    ? { ...order, orderState: "PURCHASED" } 
+                    : order;
+            })
+        );
+    } catch (err) {
+        console.error("구매 확정 오류:", err);
+        if (err.response && err.response.data) {
+            const errMsg = typeof err.response.data === 'object' ? err.response.data.message : err.response.data;
+            error(errMsg);
+            return;
         }
-    };
+        error("구매 확정 처리 중 오류가 발생했습니다.");
+    }
+};
+
+
+    // const handleConfirmPurchase = async (orderId) => {
+    //     if (!window.confirm("구매를 확정하시겠습니까?")) return;
+    //     try {
+    //         const params = new URLSearchParams();
+    //         params.append('orderId', orderId);
+    //         const response = await axios.post("http://localhost:8080/Member/purchase/confirm", params, { withCredentials: true });
+    //         success(response.data || "구매가 확정되었습니다.");
+    //         setOrders((prevOrders) => prevOrders.map((order) => (order.orderId || order.id) === orderId ? { ...order, orderState: "PURCHASED" } : order));
+    //     } catch (err) {
+    //         console.error("구매 확정 오류:", err);
+    //         if (err.response) { error(err.response.data); return; }
+    //         error("구매 확정 처리 중 오류가 발생했습니다.");
+    //     }
+    // };
 
 
     // // 주문 취소
@@ -540,13 +577,22 @@ const Mypage = () => {
                                                             {/* [주문상태 이늄 컬러 완전 싱크 마감] */}
                                                             <p style={{
                                                                 fontSize: '12px', margin: '0 0 2px 0', fontWeight: '700',
-                                                                color: order.orderState === 'ORDER' ? '#5e4431' :
-                                                                    order.orderState === 'READY' ? '#c45a00' :
-                                                                        order.orderState === 'PURCHASED' ? '#0a5c36' :
-                                                                            order.orderState === 'CANCEL' ? '#a82525' :
-                                                                                order.orderState === 'EXCHANGEorREFUND' ? '#323e4f' : '#111111'
+                                                                // 🚨 [영문 스펙 동기화 완수]: 한글을 백엔드 진짜 영문 이늄 명칭으로 정밀 매칭 교체!
+                                                                color: order.orderState === 'ORDER' ? '#5e4431' :                 // 주문
+                                                                    order.orderState === 'READY' ? '#c45a00' :                 // 배송 준비중
+                                                                        order.orderState === 'PURCHASED' ? '#0a5c36' :             // 구매확정
+                                                                            order.orderState === 'CANCEL' ? '#a82525' :                // 주문취소
+                                                                                order.orderState === 'EXCHANGEorREFUND' ? '#323e4f' : '#111111' // 교환또는환불
                                                             }}>
-                                                                <strong>상태:</strong> {order.orderState}
+                                                                {/* 🌟 [출력 텍스트 한글 번역 마감]: 데이터는 영어로 판별하되, 사용자 눈에는 친절한 한글로 보이게 가공 */}
+                                                                <strong>상태:</strong> {
+                                                                    order.orderState === 'ORDER' ? '주문 완료' :
+                                                                        order.orderState === 'READY' ? '배송 준비중' :
+                                                                            order.orderState === 'SHIPPING' ? '배송중' :
+                                                                                order.orderState === 'PURCHASED' ? '구매확정 완료' :
+                                                                                    order.orderState === 'CANCEL' ? '주문취소 완료' :
+                                                                                        order.orderState === 'EXCHANGEorREFUND' ? '교환/반품 진행중' : order.orderState
+                                                                }
                                                             </p>
 
 
@@ -564,29 +610,37 @@ const Mypage = () => {
                                                         </div>
 
                                                         <div style={{ marginTop: '10px' }}>
+                                                            {/* 1. 🌟 [질문자님 엔티티 스펙 싱크]: order.itemId가 단독으로 오거나 item 객체 내부에 숨어있어도 모두 추적 완수! */}
                                                             {order.orderState === 'PURCHASED' ? (
-                                                                hasWrittenReview(order.itemId) ? (
+                                                                hasWrittenReview(order.itemId || order.item?.itemId) ? (
                                                                     <span>리뷰 작성 완료</span>
                                                                 ) : (
-                                                                    <button type="button" className="mypage-action-btn" onClick={() => navigate(`/item/${order.itemId}`)} disabled={!order.itemId}>리뷰쓰기</button>
+                                                                    <button type="button" className="mypage-action-btn" onClick={() => navigate(`/item/${order.itemId || order.item?.itemId}`)} disabled={!(order.itemId || order.item?.itemId)}>리뷰쓰기</button>
                                                                 )
+                                                                // 2. [영문 정석 통일]: SHIPPING과 COMPLETED 상태일 때 구매확정 버튼 노출 및 itemId 매개변수 실장 완료 */}
                                                             ) : order.orderState === "SHIPPING" && order.deliveryStatus === "COMPLETED" ? (
-                                                                <button type="button" className="mypage-action-btn" onClick={() => handleConfirmPurchase(order.orderId || order.id)}>구매확정</button>
+                                                                <button type="button" className="mypage-action-btn" onClick={() => handleConfirmPurchase(order.orderId || order.id, order.itemId || order.item?.itemId)}>구매확정</button>
                                                             ) : (
+                                                                // 3. 배송이 아직 완료되지 않았을 때 가이드 문구
                                                                 <span style={{ color: "#64748b", fontSize: "11px", display: "block", textAlign: "center" }}>배송완료 후 확정 가능</span>
                                                             )}
                                                         </div>
+                                                        {/* 🚨 [질문자님 원본 복원 마감]: map 닫는 괄호 정위치 매칭 */}
                                                     </div>
                                                 ))
                                         ) : (
+                                            // [질문자님 원본 복원 마감]: 최근 주문 내역이 없을 때의 예외 스퀘어 카드 레이아웃 유지
                                             <div className="mypage-order-square-card" style={{ width: '100%', aspectRatio: 'auto', justifyContent: 'center', alignItems: 'center' }}>
                                                 <p style={{ color: '#8c7a6b', margin: 0 }}>최근 주문 내역이 없습니다.</p>
                                             </div>
                                         )}
                                     </div>
                                 </div>
+                                {/* [질문자님 원본 복원 마감]: 슬라이더 우측 화살표 이동 단추 정위치 안착 */}
                                 <button className="mypage-slider-arrow-btn next" onClick={handleNextSlide} disabled={currentSlideIndex >= Math.max(orders.length - 4, 0)}>&gt;</button>
                             </div>
+
+
 
                             {/* 오리지널 100% 완벽 복구된 배송지 설정 구역 (원본 필드명 및 동적 주소 보관함 마감) */}
                             <div className="mypage-address-section-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '40px' }}>

@@ -80,7 +80,7 @@ const Schedule = () => {
                 <div className='mypage-schedule-lis' style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: '20px', width: '100%', boxSizing: 'border-box' }}>
                     {orders
                         // [조장님 지시] 확정된(PURCHASED) 주문만 필터링하여 보여줌
-                        .filter(order => order.orderState === 'PURCHASED')
+                        .filter(order => order.orderState === '구매확정')
                         .map(order => (
                         
                             /* [너비 고정] 상자가 화면 전체를 먹지 않고 가로로 나란히 붙을 수 있도록 딱 이쁜 290px 너비로 컴팩트하게 축소 조정 */
@@ -112,7 +112,7 @@ const Schedule = () => {
                 </div>
 
                 {/* 데이터 예외 처리 구역 */}
-                {orders.filter(o => o.orderState === 'PURCHASED').length === 0 && (
+                {orders.filter(o => o.orderState === '구매확정').length === 0 && (
                     <div style={{ padding: '80px 0', textAlign: 'center', backgroundColor: 'var(--content-bg)', border: '1px solid var(--soft-border)', borderRadius: '12px', width: '100%' }}>
                         <p className="mypage-schedule-empty" style={{ margin: '0', color: '#999', fontSize: '14px' }}>구매 확정된 내역이 없습니다.</p>
                     </div>

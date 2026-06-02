@@ -61,7 +61,7 @@ const OAuth2Success = () => {
             
             if (isNewOAuth2User) {
                 // 신규 소셜 회원의 경우
-                const passMessage = "소셜 회원가입이 완료되었습니다! 추가 정보를 입력하시려면 마이페이지로 이동합니다.";
+                const passMessage = "소셜 회원가입이 완료되었습니다! 추가 정보를 입력하기 위해 마이페이지로 이동합니다.";
                 if(window.confirm(passMessage)) {
                     navigate("/mypage");  // 확인 누르면 마이페이지로
                 } else {
