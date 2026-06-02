@@ -735,7 +735,7 @@ const ItemAdminPage = () => {
                         className="itemAdmin-button itemAdmin-subButton"
                         onClick={() => setActiveTab("items")}
                     >
-                        상품 관리
+                        상품 관리목록
                     </button>
 
                     <button
@@ -751,7 +751,7 @@ const ItemAdminPage = () => {
                             setSearchReviewProductFilter(reviewProductFilter);
                         }}
                     >
-                        리뷰 관리
+                        리뷰 관리목록
                     </button>
 
                     <button

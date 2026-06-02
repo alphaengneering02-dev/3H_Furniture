@@ -1073,14 +1073,9 @@ const handleAdminDeleteSelectedItems = async ()=>{
                   {/*<p className="item-text">카테고리: {item.itemCategory}</p>*/}
                   {/*<p className="item-text">상품 설명: {item.itemDetail}</p>*/}
                   {/*<p className="item-text">상품 색상: {item.itemColor}</p>*/}
-                  <p className="item-text">
-                    상품 가격: {formatPrice(item.itemPrice)}원
-                  </p>
-                  <p className="item-text">
-                    상품 할인가격: {formatPrice(item.itemDiscountPrice)}원
-                  </p>
+
                   <p className="item-text item-price">
-                    상품 최종가격: {formatPrice(getFinalPrice(item))}원
+                    상품 가격: {formatPrice(getFinalPrice(item))}원
                   </p>
                   <p className="item-text">상품 재고: {item.itemStock}</p>
                   <p className="item-text">
