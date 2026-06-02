@@ -258,7 +258,7 @@ const RefundPage = () => {
                                 <div className="refund-th-status">주문현황</div>
                             </div>
 
-                            {/* ========================================================= */}
+{/* ========================================================= */}
 {/* 가로 격자 테이블 바디 아이템 카드 리스트 구역               */}
 {/* ========================================================= */}
 <div className="refund-item-list">
@@ -267,7 +267,7 @@ const RefundPage = () => {
             const orderIdStr = order.orderId || order.id;
             const isProcessing = order.orderState === 'EXCHANGEorREFUND' || order.orderState === 'REFUND' || order.deliveryStatus === 'PICKUP';
             
-            // 🚨 [라디오 체크 연동 완수]: 주문번호가 같으면서 + (상품아이디가 정확히 일치하거나, 새 주문이라서 itemId가 둘 다 없을 때도) 체크를 정상 유지합니다!
+            // [라디오 체크 연동 완수]: 주문번호가 같으면서 + (상품아이디가 정확히 일치하거나, 새 주문이라서 itemId가 둘 다 없을 때도) 체크를 정상 유지합니다!
             const isChecked = selectedOrder && 
                 (selectedOrder.orderId || selectedOrder.id) === (order.orderId || order.id) && 
                 (selectedOrder.itemId === order.itemId || (!selectedOrder.itemId && !order.itemId));
@@ -286,7 +286,7 @@ const RefundPage = () => {
                             type="radio" 
                             name="refund-select-item"
                             checked={!!isChecked}
-                            // 🚨 [잠금 해제 핵심 마침표]: 
+                            // [잠금 해제 핵심 마침표]: 
                             // 1. 이미 취소완료(CANCEL) 되었거나, 완전히 정산 마감된 구매확정(PURCHASED) 주문만 '철저하게 잠금(true)' 처리합니다.
                             // 2. 질문자님 기획대로 배송 완료(COMPLETED) 상태이거나 웨이팅/주문 상태인 정상 주문 건은 무조건 잠금이 해제(false)되므로 라디오 버튼이 정상 클릭됩니다!
                             disabled={order.orderState === 'CANCEL'}

@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ToastContainer } from "react-toastify";
 import { useToast } from '../../hook/useToast';
-import { ToastContainer, toast } from "react-toastify";
-import Header from '../main/Header';
 import Footer from "../main/Footer";
+import Header from '../main/Header';
 
 const Schedule = () => {
     const [orders, setOrders] = useState([]);
@@ -79,29 +79,37 @@ const Schedule = () => {
                 {/* [구조 개혁 핵심] 상자들을 세로로 쌓지 않고, 가로(row) 방향으로 나란히 정렬시키는 가로 흐름 플렉스 트랙 가동 */}
                 <div className='mypage-schedule-lis' style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: '20px', width: '100%', boxSizing: 'border-box' }}>
                     {orders
-                        // [조장님 지시] 확정된(PURCHASED) 주문만 필터링하여 보여줌
-                        .filter(order => order.orderState === '구매확정')
+                        // 🚨 [하이브리드 필터 가드]: 데이터가 영어('PURCHASED') 또는 한글('구매확정') 어떤 이름표로 오든 누락 없이 100% 잡아냅니다!
+                        .filter(order => order.orderState === 'PURCHASED' || order.orderState === '구매확정')
                         .map(order => (
                         
                             /* [너비 고정] 상자가 화면 전체를 먹지 않고 가로로 나란히 붙을 수 있도록 딱 이쁜 290px 너비로 컴팩트하게 축소 조정 */
                             <div key={order.orderId} className='mypage-schedule-card' style={{ margin: '0', width: '290px', minWidth: '290px', backgroundColor: 'var(--content-bg)', border: '1px solid var(--soft-border)', borderRadius: '12px', padding: '20px', boxSizing: 'border-box', boxShadow: '0 4px 12px rgba(74, 51, 36, 0.02)' }}>
                                 <div className='mypage-schedule-header' style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--soft-border)', paddingBottom: '10px', marginBottom: '15px' }}>
                                     <p className='mypage-schedule-order-id' style={{ margin: '0', fontWeight: '700', color: 'var(--brown)', fontFamily: "'Playfair Display', serif" }}>주문번호: {order.orderId}</p>
-                                    <p style={{ margin: '0', fontSize: '13px' }}>상태: <strong style={{ color: 'var(--caramel)' }}>{order.orderState}</strong></p>
+                                    <p style={{ margin: '0', fontSize: '13px' }}>상태: <strong style={{ color: 'var(--caramel)' }}>구매확정</strong></p>
                                 </div>
                                 <div className='mypage-schedule-card-body' style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                    
+                                    {/* 🚨 [원본 100% 싱크 복원]: orderItems[0] 인덱스 참조 기법 복귀 완료! */}
                                     <div className='schedule-row' style={{ display: 'flex', justifyContent: 'space-between' }}>
                                         <p className='mypage-schedule-label' style={{ margin: '0', color: '#888888', fontSize: '13px' }}>상품명</p>
-                                        <span className='mypage-schedule-value' style={{ fontWeight: '700', color: 'var(--black-brown)', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', maxWidth: '160px' }}>{order.orderItems[0].itemName}</span>
+                                        <span className='mypage-schedule-value' style={{ fontWeight: '700', color: 'var(--black-brown)', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', maxWidth: '160px' }}>
+                                            {order.orderItems && order.orderItems[0] ? order.orderItems[0].itemName : "상품 정보 없음"}
+                                        </span>
                                     </div>
                                 
                                     <div className='schedule-row' style={{ display: 'flex', justifyContent: 'space-between' }}>
                                         <p className='mypage-schedule-label' style={{ margin: '0', color: '#888888', fontSize: '13px' }}>수량</p>
-                                        <span className='mypage-schedule-value' style={{ color: 'var(--black-brown)' }}>{order.orderItems[0].count}개</span>
+                                        <span className='mypage-schedule-value' style={{ color: 'var(--black-brown)' }}>
+                                            {order.orderItems && order.orderItems[0] ? order.orderItems[0].count : 0}개
+                                        </span>
                                     </div>
                                     <div className='schedule-row' style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
                                         <p className='mypage-schedule-label' style={{ margin: '0', color: '#888888', fontSize: '13px' }}>가격</p>
-                                        <span className='mypage-schedul-price' style={{ fontWeight: '700', color: 'var(--caramel)' }}>{order.orderItems[0].orderPrice.toLocaleString()}원</span>
+                                        <span className='mypage-schedul-price' style={{ fontWeight: '700', color: 'var(--caramel)' }}>
+                                            {order.orderItems && order.orderItems[0] ? order.orderItems[0].orderPrice.toLocaleString() : 0}원
+                                        </span>
                                     </div>
                                     
                                     <p style={{ color: '#B8783E', fontWeight: '700', margin: '8px 0 0 0', fontSize: '13px', textAlign: 'right' }}>✓ 구매가 확정된 상품입니다.</p>
@@ -112,7 +120,7 @@ const Schedule = () => {
                 </div>
 
                 {/* 데이터 예외 처리 구역 */}
-                {orders.filter(o => o.orderState === '구매확정').length === 0 && (
+                {orders.filter(o => o.orderState === 'PURCHASED' || o.orderState === '구매확정').length === 0 && (
                     <div style={{ padding: '80px 0', textAlign: 'center', backgroundColor: 'var(--content-bg)', border: '1px solid var(--soft-border)', borderRadius: '12px', width: '100%' }}>
                         <p className="mypage-schedule-empty" style={{ margin: '0', color: '#999', fontSize: '14px' }}>구매 확정된 내역이 없습니다.</p>
                     </div>
