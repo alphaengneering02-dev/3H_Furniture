@@ -283,9 +283,7 @@ const AdminDashboard = () => {
                 </div>
 
                 <Orderboard 
-                orders={orders?.filter(order => 
-                    order.deliveryStatus === "배송완료" && order.orderState === "구매확정"
-                    )}  
+                orders={orders} 
                     drivers={drivers} 
                     selectedDrivers={selectedDrivers}
                     handleDriverSelect={handleDriverSelect}
