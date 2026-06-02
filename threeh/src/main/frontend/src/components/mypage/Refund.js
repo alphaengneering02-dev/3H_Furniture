@@ -283,7 +283,7 @@ const RefundPage = () => {
                                                         name="refund-select-item"
                                                         checked={!!isChecked}
                                                         /* 배송 준비중(READY), 배송중/완료, 구매확정인 건은 단순 취소 실수를 방지하기 위해 자동 잠금 */
-                                                        disabled={activeTab !== 1 || isProcessing || order.orderState === 'CANCEL' || order.orderState === 'READY' || order.orderState === 'PURCHASED' || order.deliveryStatus === 'SHIPPING' || order.deliveryStatus === 'COMPLETED'}
+                                                        disabled={activeTab !== 1 || isProcessing || order.orderState === 'CANCEL' ||  order.orderState === 'SHIPPING'}
                                                         onChange={() => setSelectedOrder(order)}
                                                     />
                                                 </div>
@@ -379,11 +379,11 @@ const RefundPage = () => {
                                         style={{ 
                                             borderColor: (!selectedOrder || selectedOrder.deliveryStatus !== 'WAITING' || selectedOrder.orderState !== 'ORDER') ? '#ccc' : '#a82525', 
                                             color: (!selectedOrder || selectedOrder.deliveryStatus !== 'WAITING' || selectedOrder.orderState !== 'ORDER') ? '#999' : '#a82525',
-                                            cursor: (!selectedOrder || selectedOrder.deliveryStatus !== 'WAITING' || selectedOrder.orderState !== 'ORDER') ? 'not-allowed' : 'pointer'
+                                            // cursor: (!selectedOrder || selectedOrder.deliveryStatus === 'WAITING' || selectedOrder.orderState === 'ORDER') ? 'not-allowed' : 'pointer'
                                         }}
                                         /* [400 버그 해결 마침표]: 자바 백엔드가 간절히 원하던 itemId 파라미터를 콤마 뒤에 안전하게 수령하여 탑재 완료! */
                                         onClick={() => handleCancelOrder(selectedOrder?.orderId || selectedOrder?.id, selectedOrder?.itemId)}
-                                        disabled={!selectedOrder || selectedOrder.deliveryStatus !== 'WAITING' || selectedOrder.orderState !== 'ORDER'}
+                                        // disabled={!selectedOrder || selectedOrder.deliveryStatus !== 'WAITING' || selectedOrder.orderState !== 'ORDER'}
                                     >
                                         주문취소 (배송전)
                                     </button>

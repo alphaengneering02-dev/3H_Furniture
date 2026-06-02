@@ -1,9 +1,7 @@
 import React from 'react';
 import AdrdressInput from './AdrdressInput';
-import { Link } from 'react-router-dom';
 import '../../css/orderPageCss/orderPage.css';
-import Header from '../main/Header';
-import Footer from "../main/Footer";
+
 
 import { 
   RadioGroup, 
