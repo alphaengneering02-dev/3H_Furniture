@@ -19,7 +19,8 @@
     import com.cmyk.threeh.domain.Member;
     import com.cmyk.threeh.domain.Orders;
     import com.cmyk.threeh.domain.OrderItem;
-    import com.cmyk.threeh.enums.OrderState;
+import com.cmyk.threeh.enums.DeliveryStatus;
+import com.cmyk.threeh.enums.OrderState;
     import com.cmyk.threeh.repository.OrderRepository;
     import com.cmyk.threeh.service.MemberAddressService;
     import com.cmyk.threeh.service.MemberService;
@@ -316,8 +317,8 @@
                     return ResponseEntity.badRequest().body("이미 구매확정된 주문입니다.");
                 }
 
-                if(order.getOrderState() != OrderState.READY){
-                    return ResponseEntity.badRequest().body("배송 준비중 상태의 주문만 구매확정 할 수 있습니다.");
+                if(order.getOrderState() != OrderState.SHIPPING && order.getDeliveryStatus() != DeliveryStatus.COMPLETED){
+                    return ResponseEntity.badRequest().body("배송 완료 상태의 주문만 구매확정 할 수 있습니다.");
                 }
 
                 if(order.getDeliveryStatus()==null|| !"COMPLETED".equals(order.getDeliveryStatus().name())){
@@ -364,6 +365,8 @@
         @Transactional
         public ResponseEntity<String> processRefund(
                 @RequestParam("orderId") Long orderId, Principal principal) {
+
+            //order state 검증 코드
             
             String loginId = getLoginIdOrNull(principal);
             if (loginId == null) return ResponseEntity.status(401).body("로그인이 필요합니다.");
