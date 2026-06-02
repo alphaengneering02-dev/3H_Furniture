@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
-import { useNavigate,Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../../css/itemPageCss/itemAdminPage.css";
@@ -14,16 +14,23 @@ const ItemAdminPage = () => {
     const [items, setItems] = useState([]);
 
     //관리자 상품목록에서 선택된 상품id(여러개지우고싶어서)
-    const [selectedItemIds, setSelectedItemIds]=useState([]);
+    const [selectedItemIds, setSelectedItemIds] = useState([]);
 
     // items: 상품 관리 화면
     // reviews: 리뷰 관리 화면
     const [activeTab, setActiveTab] = useState("items");
 
+    // 리뷰 관리 화면 모드
+    // 실무형 구조에서는 리뷰 상세는 상품 상세페이지에서 관리하므로 list만 사용
+    const [reviewViewMode, setReviewViewMode] = useState("list");
+
     // 리뷰 관리에서 선택한 상품 ID
+    // 현재는 상품 상세페이지로 이동하는 방식이라 직접 상세 테이블에서는 사용하지 않음
     const [selectedItemId, setSelectedItemId] = useState("");
+    const [selectedReviewItemName, setSelectedReviewItemName] = useState("");
 
     // 선택한 상품의 리뷰 목록
+    // 현재는 상품 상세페이지 Review 컴포넌트에서 관리
     const [reviews, setReviews] = useState([]);
 
     // 선택한 상품의 리뷰 평균 평점 / 리뷰 개수
@@ -31,7 +38,12 @@ const ItemAdminPage = () => {
 
     // 추가: 상품별 리뷰 개수 저장
     const [reviewCounts, setReviewCounts] = useState({});
-    const[reviewProductFilter,setReviewProductFilter] = useState("hasReview");
+
+    // 실제 적용되는 리뷰 상품 필터
+    const [reviewProductFilter, setReviewProductFilter] = useState("hasReview");
+
+    // 필터가 바로 적용되지 않고, 조회하기 버튼을 눌러야 적용
+    const [searchReviewProductFilter, setSearchReviewProductFilter] = useState("hasReview");
 
     //조회버튼 눌러야 필터링 적용(state값을 두개로 나눠서)
     //select에서 선택중인 값
@@ -40,9 +52,9 @@ const ItemAdminPage = () => {
     const [searchStockSort, setSearchStockSort] = useState("");
 
     //실제 조회 버튼을 눌렀을 때 적용되는 값.
-    const [categoryFilter, setCategoryFilter]=useState("");
+    const [categoryFilter, setCategoryFilter] = useState("");
     const [sellStatusFilter, setSellStatusFilter] = useState("");
-    const [stockSort,setStockSort] = useState("");
+    const [stockSort, setStockSort] = useState("");
 
     //현재 페이지
     const [currentPage, setCurrentPage] = useState(1);
@@ -128,30 +140,30 @@ const ItemAdminPage = () => {
     // 테이블의 리뷰보기 버튼 옆에
     // 상품 목록 조회 시 자동 호출하지 않음 한번만
     const getReviewCounts = async () => {
-       try{
-        const response = await axios.get(
-            "http://localhost:8080/api/reviews/summary/all",
-            {
-                withCredentials: true,
-            }
-        );
+        try {
+            const response = await axios.get(
+                "http://localhost:8080/api/reviews/summary/all",
+                {
+                    withCredentials: true,
+                }
+            );
 
-        const summaries = response.data || {};
-        const countData = {};
+            const summaries = response.data || {};
+            const countData = {};
 
-        Object.entries(summaries).forEach(([itemId, summary])=>{
-            countData[itemId] = {
-                itemId:Number(itemId),
-                averageScore:summary.averageScore || 0,
-                reviewCount: summary?.reviewCount || 0,
-            };
-        });
+            Object.entries(summaries).forEach(([itemId, summary]) => {
+                countData[itemId] = {
+                    itemId: Number(itemId),
+                    averageScore: summary.averageScore || 0,
+                    reviewCount: summary?.reviewCount || 0,
+                };
+            });
 
             setReviewCounts(countData);
-       }catch(error){
-        console.error("리뷰 개수 조회 실패",error);
-        toast.error("리뷰 개수를 불러오지 못했습니다.");
-       }
+        } catch (error) {
+            console.error("리뷰 개수 조회 실패", error);
+            toast.error("리뷰 개수를 불러오지 못했습니다.");
+        }
     };
 
     // 특정 상품의 이미지 목록 불러오기
@@ -168,45 +180,46 @@ const ItemAdminPage = () => {
         return response.data || [];
     };
 
-
     //상품여러개 선택해서 삭제하기 하고싶어.진짜루 귀찮아서.
-    const isSelectedItem = (itemId)=>{
+    const isSelectedItem = (itemId) => {
         return selectedItemIds.includes(Number(itemId));
     };
 
     //상품 개별 선택하거나 해제도 해야지.
-    const handleSelectAdminItem = (itemId)=>{
+    const handleSelectAdminItem = (itemId) => {
         const numberItemId = Number(itemId);
-        
-        if(selectedItemIds.includes(numberItemId)){
-            setSelectedItemIds(
-                selectedItemIds.filter((id)=> id !== numberItemId)
-            );
-            return;
-        };
-         setSelectedItemIds([...selectedItemIds,numberItemId]);   
-    };
 
-    //현재 페이지 상품 전체 선택/선택헤제도...우와...신기해.
-    const handleSelectAllPagedItems = ()=>{
-        //pagedItems를 사용하는이유는: 현재 페이지에 보이는 상품만 전체 선택되게 하려는 의도로 한거니까 건들면안됌.
-        const pagedItemIds = pagedItems.map((item)=>Number(item.itemId));
-
-        const isAllSelected = pagedItemIds.every((itemId)=>selectedItemIds.includes(itemId));
-        
-        if(isAllSelected){
+        if (selectedItemIds.includes(numberItemId)) {
             setSelectedItemIds(
-                selectedItemIds.filter((itemId)=>!pagedItemIds.includes(itemId))
+                selectedItemIds.filter((id) => id !== numberItemId)
             );
             return;
         }
-        
+
+        setSelectedItemIds([...selectedItemIds, numberItemId]);
+    };
+
+    //현재 페이지 상품 전체 선택/선택헤제도...우와...신기해.
+    const handleSelectAllPagedItems = () => {
+        //pagedItems를 사용하는이유는: 현재 페이지에 보이는 상품만 전체 선택되게 하려는 의도로 한거니까 건들면안됌.
+        const pagedItemIds = pagedItems.map((item) => Number(item.itemId));
+
+        const isAllSelected = pagedItemIds.every((itemId) =>
+            selectedItemIds.includes(itemId)
+        );
+
+        if (isAllSelected) {
+            setSelectedItemIds(
+                selectedItemIds.filter((itemId) => !pagedItemIds.includes(itemId))
+            );
+            return;
+        }
+
         const mergedIds = Array.from(
-            new Set([...selectedItemIds,...pagedItemIds])
+            new Set([...selectedItemIds, ...pagedItemIds])
         );
         setSelectedItemIds(mergedIds);
-    }
-
+    };
 
     // 상품 삭제_ 관리자
     const handleAdminDeleteItem = async (itemId) => {
@@ -266,13 +279,17 @@ const ItemAdminPage = () => {
             getItems();
 
             //삭제된 상품은 선택목록에서 제거(단일)
-            setSelectedItemIds((prevIds)=>prevIds.filter((id)=>id !==Number(itemId)));
+            setSelectedItemIds((prevIds) =>
+                prevIds.filter((id) => id !== Number(itemId))
+            );
 
             // 삭제한 상품이 현재 리뷰 관리에서 선택된 상품이면 리뷰에서도 안보이게
             if (Number(selectedItemId) === Number(itemId)) {
                 setSelectedItemId("");
+                setSelectedReviewItemName("");
                 setReviews([]);
                 setReviewSummary(null);
+                setReviewViewMode("list");
             }
         } catch (error) {
             console.error("상품 삭제 실패", error);
@@ -301,121 +318,131 @@ const ItemAdminPage = () => {
         }
     };
 
-
     //선택한 상품 여러개 삭제하는거 하자이제.
-        const handleAdminDeleteSelectedItems = async () => {
-            if (selectedItemIds.length === 0) {
-                toast.warning("삭제할 상품을 선택해주세요.");
-                return;
+    const handleAdminDeleteSelectedItems = async () => {
+        if (selectedItemIds.length === 0) {
+            toast.warning("삭제할 상품을 선택해주세요.");
+            return;
+        }
+
+        const confirmDelete = window.confirm(
+            `선택한 상품 ${selectedItemIds.length}개를 삭제하시겠습니까?`
+        );
+
+        if (!confirmDelete) {
+            return;
+        }
+
+        //정리해줘야지
+        const deletedItemIds = [];
+        const notDeletableItemIds = [];
+        const failedItemIds = [];
+
+        try {
+            for (const selectedItemId of selectedItemIds) {
+                try {
+                    //상품이 주문내역에 있던 상품이면 삭제 안되니까 먼저 확인.
+                    const deletableResponse = await axios.get(
+                        `http://localhost:8080/api/admin/item/${selectedItemId}/deletable`,
+                        {
+                            withCredentials: true,
+                        }
+                    );
+
+                    if (!deletableResponse.data) {
+                        notDeletableItemIds.push(selectedItemId);
+                        continue;
+                    }
+
+                    //상품 삭제api하나만 호출해야
+                    //이미지 db삭제하고, 상품db삭제하고,물리적파일 삭제는 내가하고...ㅜ
+                    await axios.delete(
+                        `http://localhost:8080/api/admin/item/${selectedItemId}`,
+                        {
+                            withCredentials: true,
+                        }
+                    );
+
+                    deletedItemIds.push(selectedItemId);
+                } catch (error) {
+                    console.error(`${selectedItemId}번 상품 삭제 실패..`, error);
+
+                    if (error.response?.status === 401 || error.response?.status === 403) {
+                        toast.error("관리자 로그인 세션이 만료되었습니다. 다시 로그인해주세요.");
+                        sessionStorage.removeItem("user");
+
+                        setTimeout(() => {
+                            navigate("/login");
+                        }, 1000);
+
+                        return;
+                    }
+
+                    failedItemIds.push(selectedItemId);
+                }
             }
 
-            const confirmDelete = window.confirm(
-                `선택한 상품 ${selectedItemIds.length}개를 삭제하시겠습니까?`
+            if (deletedItemIds.length > 0) {
+                toast.success(`${deletedItemIds.length}개 상품이 삭제되었습니다.`);
+            }
+
+            if (notDeletableItemIds.length > 0) {
+                toast.warning(
+                    `주문내역이 있는 상품 ${notDeletableItemIds.length}개는 삭제되지 않았습니다.`
+                );
+            }
+
+            if (failedItemIds.length > 0) {
+                toast.error(`${failedItemIds.length}개 상품 삭제에 실패했습니다...`);
+            }
+
+            //삭제되면 상품목록을 다시 불러와서 가져와야지
+            getItems();
+
+            //삭제된 상품은 선택목록에서 제거되야되고(여러개 삭제)
+            setSelectedItemIds((prevIds) =>
+                prevIds.filter((itemId) => !deletedItemIds.includes(itemId))
             );
 
-            if (!confirmDelete) {
-                return;
+            //삭제한 상품은 리뷰 관리에서도 안보이게
+            if (deletedItemIds.includes(Number(selectedItemId))) {
+                setSelectedItemId("");
+                setSelectedReviewItemName("");
+                setReviews([]);
+                setReviewSummary(null);
+                setReviewViewMode("list");
             }
-
-            //정리해줘야지
-            const deletedItemIds = [];
-            const notDeletableItemIds = [];
-            const failedItemIds = [];
-
-            try {
-                for (const selectedItemId of selectedItemIds) {
-                    try {
-                        //상품이 주문내역에 있던 상품이면 삭제 안되니까 먼저 확인.
-                        const deletableResponse = await axios.get(
-                            `http://localhost:8080/api/admin/item/${selectedItemId}/deletable`,
-                            {
-                                withCredentials: true,
-                            }
-                        );
-
-                        if (!deletableResponse.data) {
-                            notDeletableItemIds.push(selectedItemId);
-                            continue;
-                        }
-
-                        //상품 삭제api하나만 호출해야
-                        //이미지 db삭제하고, 상품db삭제하고,물리적파일 삭제는 내가하고...ㅜ
-                        await axios.delete(
-                            `http://localhost:8080/api/admin/item/${selectedItemId}`,
-                            {
-                                withCredentials: true,
-                            }
-                        );
-
-                        deletedItemIds.push(selectedItemId);
-                    } catch (error) {
-                        console.error(`${selectedItemId}번 상품 삭제 실패..`, error);
-
-                        if (error.response?.status === 401 || error.response?.status === 403) {
-                            toast.error("관리자 로그인 세션이 만료되었습니다. 다시 로그인해주세요.");
-                            sessionStorage.removeItem("user");
-
-                            setTimeout(() => {
-                                navigate("/login");
-                            }, 1000);
-
-                            return;
-                        }
-
-                        failedItemIds.push(selectedItemId);
-                    }
-                }
-
-                if (deletedItemIds.length > 0) {
-                    toast.success(`${deletedItemIds.length}개 상품이 삭제되었습니다.`);
-                }
-
-                if (notDeletableItemIds.length > 0) {
-                    toast.warning(
-                        `주문내역이 있는 상품 ${notDeletableItemIds.length}개는 삭제되지 않았습니다.`
-                    );
-                }
-
-                if (failedItemIds.length > 0) {
-                    toast.error(`${failedItemIds.length}개 상품 삭제에 실패했습니다...`);
-                }
-
-                //삭제되면 상품목록을 다시 불러와서 가져와야지
-                getItems();
-
-
-                //삭제된 상품은 선택목록에서 제거되야되고(여러개 삭제)
-                setSelectedItemIds((prevIds) =>
-                    prevIds.filter((itemId) => !deletedItemIds.includes(itemId))
-                );
-
-                //삭제한 상품은 리뷰 관리에서도 안보이게
-                if (deletedItemIds.includes(Number(selectedItemId))) {
-                    setSelectedItemId("");
-                    setReviews([]);
-                    setReviewSummary(null);
-                }
-            } catch (error) {
-                console.error("선택한 상품 삭제 실패", error);
-                toast.error("선택 상품 삭제 실패");
-            }
-        };
+        } catch (error) {
+            console.error("선택한 상품 삭제 실패", error);
+            toast.error("선택 상품 삭제 실패");
+        }
+    };
 
     // 리뷰 관리_관리자
-    const handleAdminSelectReviewItem = async (itemId) => {
+    // 기존 함수는 남겨둠.
+    // 다만 실무형 구조에서는 리뷰 상세 관리를 상품 상세페이지 Review 컴포넌트에서 처리하므로,
+    // 현재 버튼들은 handleGoItemReviewDetail()을 사용함.
+    const handleAdminSelectReviewItem = async (itemId, itemName = "") => {
         // 상품 선택을 해제한 경우 리뷰 관련 state 초기화
         if (!itemId) {
             setSelectedItemId("");
+            setSelectedReviewItemName("");
             setReviews([]);
             setReviewSummary(null);
+            setReviewViewMode("list");
             return;
         }
 
         // 선택한 상품 ID 저장
         setSelectedItemId(itemId);
 
+        setSelectedReviewItemName(itemName);
+
         // 리뷰보기 클릭 시 리뷰 관리 화면으로 이동
         setActiveTab("reviews");
+
+        //특정 상품 리뷰보기는 상세 페이지로 이동
+        setReviewViewMode("detail");
 
         try {
             // 선택한 상품의 리뷰 목록 조회
@@ -440,7 +467,11 @@ const ItemAdminPage = () => {
             // 리뷰보기 클릭 시 해당 상품의 리뷰 수만 갱신
             setReviewCounts((prevCounts) => ({
                 ...prevCounts,
-                [itemId]: summaryResponse.data?.reviewCount || 0,
+                [itemId]: {
+                    itemId: Number(itemId),
+                    averageScore: summaryResponse.data?.averageScore || 0,
+                    reviewCount: summaryResponse.data?.reviewCount || 0,
+                },
             }));
         } catch (error) {
             console.error("리뷰 조회 실패", error);
@@ -466,6 +497,8 @@ const ItemAdminPage = () => {
     };
 
     // 리뷰 삭제하기
+    // 현재 관리자 페이지 안에서는 직접 사용하지 않고,
+    // 상품 상세페이지의 Review 컴포넌트에서 관리자 리뷰 삭제를 처리함.
     const handleAdminDeleteReview = async (reviewId) => {
         const confirmDelete = window.confirm("이 리뷰를 삭제하시겠습니까?");
 
@@ -485,7 +518,7 @@ const ItemAdminPage = () => {
 
             // 현재 선택된 상품이 있으면 해당 상품 리뷰 목록 다시 불러오기
             if (selectedItemId) {
-                handleAdminSelectReviewItem(selectedItemId);
+                handleAdminSelectReviewItem(selectedItemId, selectedReviewItemName);
             }
 
             // 추가: 리뷰 삭제 후 상품 목록의 리뷰 개수도 다시 갱신
@@ -529,13 +562,18 @@ const ItemAdminPage = () => {
         return "★".repeat(safeScore) + "☆".repeat(5 - safeScore);
     };
 
+    //관리자 리뷰보기: 상품 상세 페이지의 리뷰 영역가기
+    const handleGoItemReviewDetail = (itemId) => {
+        navigate(`/item/${itemId}?adminReview=true`);
+    };
+
     //필터 실시간 말고 조회 버튼 눌러야 가능하게 해야하니까.....^___^
     const handleSearchFilter = () => {
         setCategoryFilter(searchCategoryFilter);
         setSellStatusFilter(searchSellStatusFilter);
-        setSearchStockSort(searchStockSort);
+        setStockSort(searchStockSort);
         setCurrentPage(1);
-    }
+    };
 
     // 상품 목록 필터링 / 정렬 처리
     // 카테고리 필터, 판매상태 필터, 재고 정렬을 화면 출력 전에 한 번에 적용
@@ -618,542 +656,470 @@ const ItemAdminPage = () => {
         setCurrentPage(page);
     };
 
-    const reviewProductItems = useMemo(()=>{
-        let result = items.map((item)=>{
-            const summary = reviewCounts[item.itemId];
+    // 리뷰가 달린 상품 목록
+    // 리뷰 관리 탭에서는 리뷰가 있는 상품만 보여주고,
+    // 필터는 조회하기 버튼을 눌렀을 때 reviewProductFilter 값으로 적용됨.
+    const reviewProductItems = useMemo(() => {
+        let result = items
+            .map((item) => {
+                const summary = reviewCounts[item.itemId];
 
-            return{
-                ...item,
-                reviewCount: summary?.reviewCount||0,
-                averageScore: summary?.averageScore||0,
-            };
-        })
-        .filter((item)=>item.reviewCount > 0);
-        if(reviewProductFilter === "lowScore"){
-            result = result.filter((item)=>item.averageScore < 3);
+                return {
+                    ...item,
+                    reviewCount: summary?.reviewCount || 0,
+                    averageScore: summary?.averageScore || 0,
+                };
+            })
+            .filter((item) => item.reviewCount > 0);
+
+        if (reviewProductFilter === "lowScore") {
+            result = result.filter((item) => item.averageScore < 3);
         }
-        if(reviewProductFilter === "manyReviews"){
+
+        if (reviewProductFilter === "manyReviews") {
             result = [...result].sort(
-                (a,b) => Number(b.reviewCount || 0) - Number(a.reviewCount || 0)
+                (a, b) => Number(b.reviewCount || 0) - Number(a.reviewCount || 0)
             );
         }
-        if(reviewProductFilter === "highScore"){
+
+        if (reviewProductFilter === "highScore") {
             result = [...result].sort(
-                (a,b) => Number(b.averageScore||0)- Number(a.averageScore ||0)
+                (a, b) => Number(b.averageScore || 0) - Number(a.averageScore || 0)
             );
         }
+
         return result;
-    },[items,reviewCounts,reviewProductFilter]);
+    }, [items, reviewCounts, reviewProductFilter]);
 
     //============================================================//
 
-   return (
-    <div>
-        {/* 헤더 영역 */}
-        <Header />
+    return (
+        <div>
+            {/* 헤더 영역 */}
+            <Header />
 
-        <div className="itemAdmin-page">
-            <ToastContainer
-                position="top-center"
-                autoClose={1800}
-                hideProgressBar={false}
-                newestOnTop={true}
-                closeOnClick
-                pauseOnHover
-                theme="light"
-            />
+            <div className="itemAdmin-page">
+                <ToastContainer
+                    position="top-center"
+                    autoClose={1800}
+                    hideProgressBar={false}
+                    newestOnTop={true}
+                    closeOnClick
+                    pauseOnHover
+                    theme="light"
+                />
 
-            {/* 관리자 페이지 제목 */}
-            <h1 className="itemAdmin-title">관리자 상품/ 리뷰관리</h1>
+                {/* 관리자 페이지 제목 */}
+                <h1 className="itemAdmin-title">관리자 상품/ 리뷰관리</h1>
 
-            {/* 상단 관리자 버튼 영역 */}
-            <div className="itemAdmin-adminActionArea">
-                <button
-                    type="button"
-                    className="itemAdmin-button itemAdmin-subButton"
-                    onClick={() => navigate("/item")}
-                >
-                    상품목록으로
-                </button>
+                {/* 상단 관리자 버튼 영역 */}
+                <div className="itemAdmin-adminActionArea">
+                    <button
+                        type="button"
+                        className="itemAdmin-button itemAdmin-subButton"
+                        onClick={() => navigate("/item")}
+                    >
+                        상품목록으로
+                    </button>
 
-                <button
-                    type="button"
-                    className="itemAdmin-button"
-                    onClick={() => navigate("/item/create")}
-                >
-                    상품 등록하기
-                </button>
+                    <button
+                        type="button"
+                        className="itemAdmin-button"
+                        onClick={() => navigate("/item/create")}
+                    >
+                        상품 등록하기
+                    </button>
 
-                <button
-                    type="button"
-                    className="itemAdmin-button itemAdmin-subButton"
-                    onClick={() => setActiveTab("items")}
-                >
-                    상품 관리
-                </button>
+                    <button
+                        type="button"
+                        className="itemAdmin-button itemAdmin-subButton"
+                        onClick={() => setActiveTab("items")}
+                    >
+                        상품 관리
+                    </button>
 
-                <button
-                    type="button"
-                    className="itemAdmin-button itemAdmin-subButton"
-                    onClick={() => setActiveTab("reviews")}
-                >
-                    리뷰 관리
-                </button>
+                    <button
+                        type="button"
+                        className="itemAdmin-button itemAdmin-subButton"
+                        onClick={() => {
+                            setActiveTab("reviews");
+                            setReviewViewMode("list");
+                            setSelectedItemId("");
+                            setSelectedReviewItemName("");
+                            setReviews([]);
+                            setReviewSummary(null);
+                            setSearchReviewProductFilter(reviewProductFilter);
+                        }}
+                    >
+                        리뷰 관리
+                    </button>
 
-                <button
-                    type="button"
-                    className="itemAdmin-button itemAdmin-dangerButton"
-                    onClick={handleAdminDeleteSelectedItems}
-                    disabled={selectedItemIds.length === 0}
-                >
-                    선택 삭제
-                    {selectedItemIds.length > 0 ? `(${selectedItemIds.length})` : ""}
-                </button>
-            </div>
+                    <button
+                        type="button"
+                        className="itemAdmin-button itemAdmin-dangerButton"
+                        onClick={handleAdminDeleteSelectedItems}
+                        disabled={selectedItemIds.length === 0}
+                    >
+                        선택 삭제
+                        {selectedItemIds.length > 0 ? `(${selectedItemIds.length})` : ""}
+                    </button>
+                </div>
 
-            {/* 상품 관리 화면 */}
-            {activeTab === "items" && (
-                <div className="itemAdmin-section">
-                    <h2 className="itemAdmin-sectionTitle">상품 관리</h2>
+                {/* 상품 관리 화면 */}
+                {activeTab === "items" && (
+                    <div className="itemAdmin-section">
+                        <h2 className="itemAdmin-sectionTitle">상품 관리</h2>
 
-                    {/* 등록 상품 개수 */}
-                    <div className="itemAdmin-countBox">
-                        <span className="itemAdmin-countText">
-                            총 등록 상품: {items.length}개
-                        </span>
+                        {/* 등록 상품 개수 */}
+                        <div className="itemAdmin-countBox">
+                            <span className="itemAdmin-countText">
+                                총 등록 상품: {items.length}개
+                            </span>
 
-                        <span className="itemAdmin-countText">
-                            현재 조건 상품: {filteredItems.length}개
-                        </span>
+                            <span className="itemAdmin-countText">
+                                현재 조건 상품: {filteredItems.length}개
+                            </span>
+                        </div>
+
+                        {/* 상품 목록 필터 / 정렬 영역 */}
+                        <div className="itemAdmin-filterArea">
+                            <div className="itemAdmin-filterGroup">
+                                <label className="itemAdmin-label">카테고리</label>
+
+                                <select
+                                    className="itemAdmin-select"
+                                    value={searchCategoryFilter}
+                                    onChange={(e) => setSearchCategoryFilter(e.target.value)}
+                                >
+                                    <option value="">전체</option>
+                                    <option value="주방">주방</option>
+                                    <option value="거실">거실</option>
+                                    <option value="욕실">욕실</option>
+                                    <option value="침실">침실</option>
+                                </select>
+                            </div>
+
+                            <div className="itemAdmin-filterGroup">
+                                <label className="itemAdmin-label">판매상태</label>
+
+                                <select
+                                    className="itemAdmin-select"
+                                    value={searchSellStatusFilter}
+                                    onChange={(e) => setSearchSellStatusFilter(e.target.value)}
+                                >
+                                    <option value="">전체</option>
+                                    <option value="SELL">SELL</option>
+                                    <option value="SOLD_OUT">SOLD_OUT</option>
+                                    <option value="STOP">STOP</option>
+                                    <option value="COMING_SOON">COMING_SOON</option>
+                                </select>
+                            </div>
+
+                            <div className="itemAdmin-filterGroup">
+                                <label className="itemAdmin-label">재고 정렬</label>
+
+                                <select
+                                    className="itemAdmin-select"
+                                    value={searchStockSort}
+                                    onChange={(e) => setSearchStockSort(e.target.value)}
+                                >
+                                    <option value="">기본순</option>
+                                    <option value="stockAsc">재고 적은순</option>
+                                    <option value="stockDesc">재고 많은순</option>
+                                </select>
+                            </div>
+
+                            <button
+                                type="button"
+                                className="itemAdmin-button"
+                                onClick={handleSearchFilter}
+                            >
+                                필터조회하기
+                            </button>
+
+                            <button
+                                type="button"
+                                className="itemAdmin-button itemAdmin-subButton"
+                                onClick={() => {
+                                    setSearchCategoryFilter("");
+                                    setSearchSellStatusFilter("");
+                                    setSearchStockSort("");
+
+                                    setCategoryFilter("");
+                                    setSellStatusFilter("");
+                                    setStockSort("");
+
+                                    setCurrentPage(1);
+                                }}
+                            >
+                                필터 초기화
+                            </button>
+                        </div>
+
+                        {filteredItems.length === 0 ? (
+                            <p className="itemAdmin-emptyText">
+                                조건에 맞는 상품이 없습니다.
+                            </p>
+                        ) : (
+                            <div className="itemAdmin-tableWrap">
+                                <table className="itemAdmin-table">
+                                    <thead>
+                                        <tr>
+                                            <th className="itemAdmin-checkColumn">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={
+                                                        pagedItems.length > 0 &&
+                                                        pagedItems.every((item) =>
+                                                            selectedItemIds.includes(Number(item.itemId))
+                                                        )
+                                                    }
+                                                    onChange={handleSelectAllPagedItems}
+                                                />
+                                            </th>
+
+                                            <th>번호</th>
+                                            <th>상품ID</th>
+                                            <th>카테고리</th>
+                                            <th>상품명</th>
+                                            <th>가격</th>
+                                            <th>재고</th>
+                                            <th>판매상태</th>
+                                            <th>리뷰</th>
+                                            <th>관리</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        {pagedItems.map((item, index) => (
+                                            <tr key={item.itemId}>
+                                                <td className="itemAdmin-checkColumn">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={isSelectedItem(item.itemId)}
+                                                        onChange={() =>
+                                                            handleSelectAdminItem(item.itemId)
+                                                        }
+                                                    />
+                                                </td>
+
+                                                <td>
+                                                    {(currentPage - 1) * ITEMS_PER_PAGE +
+                                                        index +
+                                                        1}
+                                                </td>
+
+                                                <td>{item.itemId}</td>
+                                                <td>{item.itemCategory}</td>
+
+                                                <td className="itemAdmin-tableTextLeft">
+                                                    <Link
+                                                        to={`/item/${item.itemId}`}
+                                                        className="itemAdmin-nameLink"
+                                                    >
+                                                        {item.itemName}
+                                                    </Link>
+                                                </td>
+
+                                                <td>{formatPrice(item.itemPrice)}원</td>
+                                                <td>{item.itemStock}</td>
+                                                <td>{item.itemSellStatus}</td>
+
+                                                <td>
+                                                    <div className="itemAdmin-reviewButtonBox">
+                                                        <button
+                                                            type="button"
+                                                            className="itemAdmin-tableButton itemAdmin-tableSubButton"
+                                                            onClick={() =>
+                                                                handleGoItemReviewDetail(item.itemId)
+                                                            }
+                                                        >
+                                                            리뷰보기
+                                                        </button>
+
+                                                        <span className="itemAdmin-reviewCount">
+                                                            {reviewCounts[item.itemId]?.reviewCount ?? 0}개
+                                                        </span>
+                                                    </div>
+                                                </td>
+
+                                                <td>
+                                                    <div className="itemAdmin-tableButtonArea">
+                                                        <button
+                                                            type="button"
+                                                            className="itemAdmin-tableButton"
+                                                            onClick={() =>
+                                                                navigate(`/item/update/${item.itemId}`)
+                                                            }
+                                                        >
+                                                            수정
+                                                        </button>
+
+                                                        <button
+                                                            type="button"
+                                                            className="itemAdmin-tableButton itemAdmin-tableDangerButton"
+                                                            onClick={() =>
+                                                                handleAdminDeleteItem(item.itemId)
+                                                            }
+                                                        >
+                                                            삭제
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+
+                                {/* 페이지네이션 */}
+                                {filteredItems.length > ITEMS_PER_PAGE && (
+                                    <div className="itemAdmin-pagination">
+                                        <button
+                                            type="button"
+                                            className="itemAdmin-pageButton"
+                                            onClick={() => goPage(startPage - 1)}
+                                            disabled={startPage === 1}
+                                        >
+                                            &lt;
+                                        </button>
+
+                                        {pageNumbers.map((page) => (
+                                            <button
+                                                key={page}
+                                                type="button"
+                                                className={
+                                                    currentPage === page
+                                                        ? "itemAdmin-pageButton itemAdmin-pageButtonActive"
+                                                        : "itemAdmin-pageButton"
+                                                }
+                                                onClick={() => goPage(page)}
+                                            >
+                                                {page}
+                                            </button>
+                                        ))}
+
+                                        <button
+                                            type="button"
+                                            className="itemAdmin-pageButton"
+                                            onClick={() => goPage(endPage + 1)}
+                                            disabled={endPage === totalPages}
+                                        >
+                                            &gt;
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                        )}
                     </div>
+                )}
 
-                    {/* 상품 목록 필터 / 정렬 영역 */}
-                    <div className="itemAdmin-filterArea">
-                        <div className="itemAdmin-filterGroup">
-                            <label className="itemAdmin-label">카테고리</label>
+                {/* 리뷰 관리 화면 */}
+                {activeTab === "reviews" && (
+                    <div className="itemAdmin-section">
+                        <h2 className="itemAdmin-sectionTitle">리뷰 관리</h2>
 
-                            <select
-                                className="itemAdmin-select"
-                                value={searchCategoryFilter}
-                                onChange={(e) => setSearchCategoryFilter(e.target.value)}
-                            >
-                                <option value="">전체</option>
-                                <option value="주방">주방</option>
-                                <option value="거실">거실</option>
-                                <option value="욕실">욕실</option>
-                                <option value="침실">침실</option>
-                            </select>
-                        </div>
-
-                        <div className="itemAdmin-filterGroup">
-                            <label className="itemAdmin-label">판매상태</label>
+                        {/* 리뷰 상품 필터 영역 */}
+                        <div className="itemAdmin-reviewSelectArea">
+                            <label className="itemAdmin-label">리뷰 상품 필터:</label>
 
                             <select
                                 className="itemAdmin-select"
-                                value={searchSellStatusFilter}
-                                onChange={(e) => setSearchSellStatusFilter(e.target.value)}
+                                value={searchReviewProductFilter}
+                                onChange={(e) => setSearchReviewProductFilter(e.target.value)}
                             >
-                                <option value="">전체</option>
-                                <option value="SELL">SELL</option>
-                                <option value="SOLD_OUT">SOLD_OUT</option>
-                                <option value="STOP">STOP</option>
-                                <option value="COMING_SOON">COMING_SOON</option>
+                                <option value="hasReview">리뷰 있는 상품</option>
+                                <option value="lowScore">낮은 평점 상품</option>
+                                <option value="manyReviews">리뷰 많은 상품</option>
+                                <option value="highScore">평점 높은 상품</option>
                             </select>
+
+                            <button
+                                type="button"
+                                className="itemAdmin-button"
+                                onClick={() => setReviewProductFilter(searchReviewProductFilter)}
+                            >
+                                조회하기
+                            </button>
+
+                            <button
+                                type="button"
+                                className="itemAdmin-button itemAdmin-subButton"
+                                onClick={() => setActiveTab("items")}
+                            >
+                                상품 관리로 돌아가기
+                            </button>
                         </div>
 
-                        <div className="itemAdmin-filterGroup">
-                            <label className="itemAdmin-label">재고 정렬</label>
-
-                            <select
-                                className="itemAdmin-select"
-                                value={searchStockSort}
-                                onChange={(e) => setSearchStockSort(e.target.value)}
-                            >
-                                <option value="">기본순</option>
-                                <option value="stockAsc">재고 적은순</option>
-                                <option value="stockDesc">재고 많은순</option>
-                            </select>
-                        </div>
-
-                        <button
-                            type="button"
-                            className="itemAdmin-button"
-                            onClick={handleSearchFilter}
-                        >
-                            필터조회하기
-                        </button>
-
-                        <button
-                            type="button"
-                            className="itemAdmin-button itemAdmin-subButton"
-                            onClick={() => {
-                                setSearchCategoryFilter("");
-                                setSearchSellStatusFilter("");
-                                setSearchStockSort("");
-
-                                setCategoryFilter("");
-                                setSellStatusFilter("");
-                                setStockSort("");
-
-                                setCurrentPage(1);
-                            }}
-                        >
-                            필터 초기화
-                        </button>
-                    </div>
-
-                    {filteredItems.length === 0 ? (
-                        <p className="itemAdmin-emptyText">
-                            조건에 맞는 상품이 없습니다.
-                        </p>
-                    ) : (
+                        {/* 리뷰 달린 상품 목록 */}
                         <div className="itemAdmin-tableWrap">
                             <table className="itemAdmin-table">
                                 <thead>
                                     <tr>
-                                        <th className="itemAdmin-checkColumn">
-                                            <input
-                                                type="checkbox"
-                                                checked={
-                                                    pagedItems.length > 0 &&
-                                                    pagedItems.every((item) =>
-                                                        selectedItemIds.includes(Number(item.itemId))
-                                                    )
-                                                }
-                                                onChange={handleSelectAllPagedItems}
-                                            />
-                                        </th>
-
-                                        <th>번호</th>
                                         <th>상품ID</th>
-                                        <th>카테고리</th>
                                         <th>상품명</th>
-                                        <th>가격</th>
-                                        <th>재고</th>
+                                        <th>카테고리</th>
                                         <th>판매상태</th>
-                                        <th>리뷰</th>
+                                        <th>평균 평점</th>
+                                        <th>리뷰 수</th>
                                         <th>관리</th>
                                     </tr>
                                 </thead>
 
                                 <tbody>
-                                    {pagedItems.map((item, index) => (
-                                        <tr key={item.itemId}>
-                                            <td className="itemAdmin-checkColumn">
-                                                <input
-                                                    type="checkbox"
-                                                    checked={isSelectedItem(item.itemId)}
-                                                    onChange={() =>
-                                                        handleSelectAdminItem(item.itemId)
-                                                    }
-                                                />
+                                    {reviewProductItems.length === 0 ? (
+                                        <tr>
+                                            <td colSpan="7" className="itemAdmin-emptyText">
+                                                조건에 맞는 리뷰 상품이 없습니다.
                                             </td>
+                                        </tr>
+                                    ) : (
+                                        reviewProductItems.map((item) => (
+                                            <tr key={item.itemId}>
+                                                <td>{item.itemId}</td>
 
-                                            <td>
-                                                {(currentPage - 1) * ITEMS_PER_PAGE +
-                                                    index +
-                                                    1}
-                                            </td>
+                                                <td className="itemAdmin-tableTextLeft">
+                                                    <Link
+                                                        to={`/item/${item.itemId}`}
+                                                        className="itemAdmin-nameLink"
+                                                    >
+                                                        {item.itemName}
+                                                    </Link>
+                                                </td>
 
-                                            <td>{item.itemId}</td>
-                                            <td>{item.itemCategory}</td>
+                                                <td>{item.itemCategory}</td>
+                                                <td>{item.itemSellStatus}</td>
 
-                                            <td className="itemAdmin-tableTextLeft">
-                                                <Link
-                                                    to={`/item/${item.itemId}`}
-                                                    className="itemAdmin-nameLink"
-                                                >
-                                                    {item.itemName}
-                                                </Link>
-                                            </td>
+                                                <td>
+                                                    {Number(item.averageScore || 0).toFixed(1)} / 5
+                                                </td>
 
-                                            <td>{formatPrice(item.itemPrice)}원</td>
-                                            <td>{item.itemStock}</td>
-                                            <td>{item.itemSellStatus}</td>
+                                                <td>{item.reviewCount}개</td>
 
-                                            <td>
-                                                <div className="itemAdmin-reviewButtonBox">
+                                                <td>
                                                     <button
                                                         type="button"
                                                         className="itemAdmin-tableButton itemAdmin-tableSubButton"
                                                         onClick={() =>
-                                                            handleAdminSelectReviewItem(item.itemId)
+                                                            handleGoItemReviewDetail(item.itemId)
                                                         }
                                                     >
                                                         리뷰보기
                                                     </button>
-
-                                                    <span className="itemAdmin-reviewCount">
-                                                        {reviewCounts[item.itemId]?.reviewCount ?? 0}개
-                                                    </span>
-                                                </div>
-                                            </td>
-
-                                            <td>
-                                                <div className="itemAdmin-tableButtonArea">
-                                                    <button
-                                                        type="button"
-                                                        className="itemAdmin-tableButton"
-                                                        onClick={() =>
-                                                            navigate(`/item/update/${item.itemId}`)
-                                                        }
-                                                    >
-                                                        수정
-                                                    </button>
-
-                                                    <button
-                                                        type="button"
-                                                        className="itemAdmin-tableButton itemAdmin-tableDangerButton"
-                                                        onClick={() =>
-                                                            handleAdminDeleteItem(item.itemId)
-                                                        }
-                                                    >
-                                                        삭제
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))}
+                                                </td>
+                                            </tr>
+                                        ))
+                                    )}
                                 </tbody>
                             </table>
-
-                            {/* 페이지네이션 */}
-                            {filteredItems.length > ITEMS_PER_PAGE && (
-                                <div className="itemAdmin-pagination">
-                                    <button
-                                        type="button"
-                                        className="itemAdmin-pageButton"
-                                        onClick={() => goPage(startPage - 1)}
-                                        disabled={startPage === 1}
-                                    >
-                                        &lt;
-                                    </button>
-
-                                    {pageNumbers.map((page) => (
-                                        <button
-                                            key={page}
-                                            type="button"
-                                            className={
-                                                currentPage === page
-                                                    ? "itemAdmin-pageButton itemAdmin-pageButtonActive"
-                                                    : "itemAdmin-pageButton"
-                                            }
-                                            onClick={() => goPage(page)}
-                                        >
-                                            {page}
-                                        </button>
-                                    ))}
-
-                                    <button
-                                        type="button"
-                                        className="itemAdmin-pageButton"
-                                        onClick={() => goPage(endPage + 1)}
-                                        disabled={endPage === totalPages}
-                                    >
-                                        &gt;
-                                    </button>
-                                </div>
-                            )}
                         </div>
-                    )}
-                </div>
-            )}
-
-            {/* 리뷰 관리 화면 */}
-            {activeTab === "reviews" && (
-                <div className="itemAdmin-section">
-                    <h2 className="itemAdmin-sectionTitle">리뷰 관리</h2>
-
-                    {/* 리뷰 상품 필터 영역 */}
-                    <div className="itemAdmin-reviewSelectArea">
-                        <label className="itemAdmin-label">리뷰 상품 필터:</label>
-
-                        <select
-                            className="itemAdmin-select"
-                            value={reviewProductFilter}
-                            onChange={(e) => setReviewProductFilter(e.target.value)}
-                        >
-                            <option value="hasReview">리뷰 있는 상품</option>
-                            <option value="lowScore">낮은 평점 상품</option>
-                            <option value="manyReviews">리뷰 많은 상품</option>
-                            <option value="highScore">평점 높은 상품</option>
-                        </select>
-
-                        <button
-                            type="button"
-                            className="itemAdmin-button itemAdmin-subButton"
-                            onClick={() => setActiveTab("items")}
-                        >
-                            상품 관리로 돌아가기
-                        </button>
                     </div>
+                )}
+            </div>
 
-                    {/* 리뷰 달린 상품 목록 */}
-                    <div className="itemAdmin-tableWrap">
-                        <table className="itemAdmin-table">
-                            <thead>
-                                <tr>
-                                    <th>상품ID</th>
-                                    <th>상품명</th>
-                                    <th>카테고리</th>
-                                    <th>판매상태</th>
-                                    <th>평균 평점</th>
-                                    <th>리뷰 수</th>
-                                    <th>관리</th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                                {reviewProductItems.length === 0 ? (
-                                    <tr>
-                                        <td colSpan="7" className="itemAdmin-emptyText">
-                                            조건에 맞는 리뷰 상품이 없습니다.
-                                        </td>
-                                    </tr>
-                                ) : (
-                                    reviewProductItems.map((item) => (
-                                        <tr key={item.itemId}>
-                                            <td>{item.itemId}</td>
-
-                                            <td className="itemAdmin-tableTextLeft">
-                                                <Link
-                                                    to={`/item/${item.itemId}`}
-                                                    className="itemAdmin-nameLink"
-                                                >
-                                                    {item.itemName}
-                                                </Link>
-                                            </td>
-
-                                            <td>{item.itemCategory}</td>
-                                            <td>{item.itemSellStatus}</td>
-
-                                            <td>
-                                                {Number(item.averageScore || 0).toFixed(1)} / 5
-                                            </td>
-
-                                            <td>{item.reviewCount}개</td>
-
-                                            <td>
-                                                <button
-                                                    type="button"
-                                                    className="itemAdmin-tableButton itemAdmin-tableSubButton"
-                                                    onClick={() =>
-                                                        handleAdminSelectReviewItem(item.itemId)
-                                                    }
-                                                >
-                                                    리뷰 상세보기
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
-
-                    {/* 선택한 상품의 리뷰 상세 */}
-                    {!selectedItemId ? (
-                        <p className="itemAdmin-emptyText">
-                            위 목록에서 리뷰를 확인할 상품을 선택해주세요.
-                        </p>
-                    ) : (
-                        <div className="itemAdmin-reviewContent">
-                            {reviewSummary && (
-                                <div className="itemAdmin-summaryBox">
-                                    <p className="itemAdmin-summaryText">
-                                        평균 평점:{" "}
-                                        <span className="itemAdmin-summaryStrong">
-                                            {Number(
-                                                reviewSummary.averageScore || 0
-                                            ).toFixed(1)}
-                                            /5
-                                        </span>
-                                    </p>
-
-                                    <p className="itemAdmin-summaryText">
-                                        리뷰 수:{" "}
-                                        <span className="itemAdmin-summaryStrong">
-                                            {reviewSummary.reviewCount || 0}
-                                        </span>
-                                    </p>
-                                </div>
-                            )}
-
-                            {reviews.length === 0 ? (
-                                <p className="itemAdmin-emptyText">
-                                    이 상품에는 아직 리뷰가 없습니다.
-                                </p>
-                            ) : (
-                                <div className="itemAdmin-tableWrap">
-                                    <table className="itemAdmin-table">
-                                        <thead>
-                                            <tr>
-                                                <th>리뷰ID</th>
-                                                <th>작성자</th>
-                                                <th>별점</th>
-                                                <th>내용</th>
-                                                <th>작성일</th>
-                                                <th>관리</th>
-                                            </tr>
-                                        </thead>
-
-                                        <tbody>
-                                            {reviews.map((review) => (
-                                                <tr key={review.reviewId}>
-                                                    <td>{review.reviewId}</td>
-
-                                                    <td>
-                                                        {review.memberName ||
-                                                            review.memberLoginId ||
-                                                            "회원"}
-                                                    </td>
-
-                                                    <td className="itemAdmin-stars">
-                                                        {renderStars(review.reviewScore)}
-                                                        ({review.reviewScore}점)
-                                                    </td>
-
-                                                    <td className="itemAdmin-reviewTextCell">
-                                                        {review.reviewText}
-                                                    </td>
-
-                                                    <td>
-                                                        {review.createdAt
-                                                            ? String(review.createdAt).substring(0, 10)
-                                                            : "-"}
-                                                    </td>
-
-                                                    <td>
-                                                        <div className="itemAdmin-tableButtonArea">
-                                                            <button
-                                                                type="button"
-                                                                className="itemAdmin-tableButton itemAdmin-tableDangerButton"
-                                                                onClick={() =>
-                                                                    handleAdminDeleteReview(
-                                                                        review.reviewId
-                                                                    )
-                                                                }
-                                                            >
-                                                                리뷰 삭제
-                                                            </button>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            )}
-                        </div>
-                    )}
-                </div>
-            )}
+            {/* 푸터 영역 */}
+            <Footer />
         </div>
-
-        {/* 푸터 영역 */}
-        <Footer />
-    </div>
-);
+    );
 };
 
 export default ItemAdminPage;

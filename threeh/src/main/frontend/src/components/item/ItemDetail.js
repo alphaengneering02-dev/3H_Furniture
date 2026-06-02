@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import Review from './Review';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -31,6 +31,7 @@ const ItemDetail = () => {
     //URL에서 Item 가져오기
     const { itemId } = useParams();
     const navigate = useNavigate();
+    const location = useLocation();
 
     //상품 상태 관리
     const [item, setItem] = useState(null);
