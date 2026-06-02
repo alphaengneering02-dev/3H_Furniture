@@ -294,42 +294,42 @@ import com.cmyk.threeh.enums.OrderState;
             return ResponseEntity.ok(refundList);
         }
 
-        // //구매확정_코딩추가
-        // @PostMapping("/purchase/confirm")
-        // @Transactional
-        // public ResponseEntity<String> confResponseEntity(
-        //     @RequestParam("orderId") Long orderId, Principal principal) 
-        //     {
-        //         String loginId = getLoginIdOrNull(principal);
+        //구매확정_코딩추가
+        @PostMapping("/purchase/confirm")
+        @Transactional
+        public ResponseEntity<String> confResponseEntity(
+            @RequestParam("orderId") Long orderId, Principal principal) 
+            {
+                String loginId = getLoginIdOrNull(principal);
 
-        //         if (loginId == null) {
-        //             return ResponseEntity.status(401).body("로그인이 필요합니다.");
-        //         }
+                if (loginId == null) {
+                    return ResponseEntity.status(401).body("로그인이 필요합니다.");
+                }
 
-        //         Orders order = orderRepository.findById(orderId)
-        //                 .orElseThrow(() -> new IllegalArgumentException("주문을 찾을 수 없습니다."));
+                Orders order = orderRepository.findById(orderId)
+                        .orElseThrow(() -> new IllegalArgumentException("주문을 찾을 수 없습니다."));
                 
-        //         if(order.getOrderState() == OrderState.CANCEL){
-        //             return ResponseEntity.badRequest().body("취소된 주문은 구매확정할 수 없습니다.");
-        //         }
+                if(order.getOrderState() == OrderState.CANCEL){
+                    return ResponseEntity.badRequest().body("취소된 주문은 구매확정할 수 없습니다.");
+                }
 
-        //         if(order.getOrderState() == OrderState.PURCHASED){
-        //             return ResponseEntity.badRequest().body("이미 구매확정된 주문입니다.");
-        //         }
+                if(order.getOrderState() == OrderState.PURCHASED){
+                    return ResponseEntity.badRequest().body("이미 구매확정된 주문입니다.");
+                }
 
-        //         if(order.getOrderState() != OrderState.SHIPPING && order.getDeliveryStatus() != DeliveryStatus.COMPLETED){
-        //             return ResponseEntity.badRequest().body("배송 완료 상태의 주문만 구매확정 할 수 있습니다.");
-        //         }
+                if(order.getOrderState() != OrderState.SHIPPING && order.getDeliveryStatus() != DeliveryStatus.COMPLETED){
+                    return ResponseEntity.badRequest().body("배송 완료 상태의 주문만 구매확정 할 수 있습니다.");
+                }
 
-        //         if(order.getDeliveryStatus()==null|| !"COMPLETED".equals(order.getDeliveryStatus().name())){
-        //             return ResponseEntity.badRequest().body("배송완료된 주문만 구매확정 할 수 있습니다.");
-        //         }
+                if(order.getDeliveryStatus()==null|| !"COMPLETED".equals(order.getDeliveryStatus().name())){
+                    return ResponseEntity.badRequest().body("배송완료된 주문만 구매확정 할 수 있습니다.");
+                }
 
-        //         // 끊겼던 구매확정 최종 저장 및 응답 로직 처리 마감
-        //         order.changeOrderState(OrderState.PURCHASED);
-        //         orderRepository.save(order);
-        //         return ResponseEntity.ok("구매확정이 완료되었습니다.");
-        //     }
+                // 끊겼던 구매확정 최종 저장 및 응답 로직 처리 마감
+                order.changeOrderState(OrderState.PURCHASED);
+                orderRepository.save(order);
+                return ResponseEntity.ok("구매확정이 완료되었습니다.");
+            }
 
         
 
@@ -388,7 +388,7 @@ import com.cmyk.threeh.enums.OrderState;
         //     return ResponseEntity.ok("주문 취소가 완료되었습니다.");
         // }
 
-                /**
+        /**
          * 2. 반품/교환 접수 처리 API
          * 리액트의 handleRefund 및 handleExchange 함수가 공동 요청하는 주소 매핑
          */

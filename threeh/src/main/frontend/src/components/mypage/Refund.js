@@ -289,7 +289,7 @@ const RefundPage = () => {
                             // 🚨 [잠금 해제 핵심 마침표]: 
                             // 1. 이미 취소완료(CANCEL) 되었거나, 완전히 정산 마감된 구매확정(PURCHASED) 주문만 '철저하게 잠금(true)' 처리합니다.
                             // 2. 질문자님 기획대로 배송 완료(COMPLETED) 상태이거나 웨이팅/주문 상태인 정상 주문 건은 무조건 잠금이 해제(false)되므로 라디오 버튼이 정상 클릭됩니다!
-                            disabled={order.orderState === 'CANCEL' || order.orderState === 'PURCHASED'}
+                            disabled={order.orderState === 'CANCEL'}
                             onChange={() => setSelectedOrder(order)}
                         />
                     </div>

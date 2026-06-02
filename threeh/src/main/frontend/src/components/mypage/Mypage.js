@@ -214,7 +214,7 @@ const Mypage = () => {
         params.append('orderId', targetId);
 
         // 🚨 [404 완전 완치]: 반품 성공 대문자 'Member' + 마이페이지 성공 확장자 '.do' 최종 결합 저격!
-        const response = await axios.post("http://localhost:8080/Member/purchase/confirm.do", params, { withCredentials: true });
+        const response = await axios.post("http://localhost:8080/Member/purchase/confirm", params, { withCredentials: true });
         
         // [object Object] 방지 처리 마감
         const successMsg = typeof response.data === 'object' ? (response.data.message || "구매가 확정되었습니다.") : response.data;
