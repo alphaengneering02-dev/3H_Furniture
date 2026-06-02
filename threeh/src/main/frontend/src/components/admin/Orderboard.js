@@ -105,7 +105,7 @@ const Orderboard = ({
 
     const specialOrders = normalizedOrders.filter(o => {
         const totalCount = o.orderitems?.reduce((sum, item) => sum + (item.count || 0), 0) || 0;
-        return totalCount === 6 || totalCount === 8;
+        return totalCount >= 2;
     });
 
     const downloadCSV = () => {

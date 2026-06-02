@@ -52,7 +52,60 @@ const Signup_site = () => {
     const formatInput = (name, value) => {
         let cleanValue = ""
 
-        //1) 사이트 주소
+        //1. 전화번호 또는 사업장 전화번호
+        if(name==='phone') {
+            cleanValue = value.replace(/[^0-9]/g, "")
+
+            //11자리 제한 (XXX-XXXX-XXXX)
+            if (cleanValue.length > 11) {
+                cleanValue = cleanValue.substring(0, 11)
+            }
+
+            //지역번호-XXX-XXXX 형식
+            if(cleanValue.length < 11) {
+                // 서울 지역번호로 시작 (02)
+                if (cleanValue.startsWith("02")) {
+                    if(cleanValue.length <= 9) {  //02-XXX-XXXX
+                        cleanValue = cleanValue.replace(/^(\d{2})(\d{0,3})(\d{0,4})$/g, (input, p1, p2, p3) => {
+                            if (p3) return `${p1}-${p2}-${p3}`;
+                            if (p2) return `${p1}-${p2}`;
+                            return p1;
+                        });
+                    } else if(cleanValue.length===10) {  //02-XXXX-XXXX
+                        cleanValue = cleanValue.replace(/^(\d{2})(\d{0,4})(\d{0,4})$/g, (input, p1, p2, p3) => {
+                            if (p3) return `${p1}-${p2}-${p3}`;
+                            if (p2) return `${p1}-${p2}`;
+                            return p1;
+                        });
+                    }
+
+                // 나머지 지역번호로 시작 (033 등)
+                } else {
+                    // return `${cleanValue.substring(0, 3)}-${cleanValue.substring(3, 6)}-${cleanValue.substring(6)}`;
+
+                    cleanValue = cleanValue.replace(/^(\d{3})(\d{0,3})(\d{0,4})$/g, (input, p1, p2, p3) => {
+                        if (p3) return `${p1}-${p2}-${p3}`;
+                        if (p2) return `${p1}-${p2}`;
+                        return p1;
+                    });
+                }
+
+            //XXX-XXXX-XXXX 형식
+            } else if(cleanValue.length===11) {
+                // return `${cleanValue.substring(0, 3)}-${cleanValue.substring(3, 7)}-${cleanValue.substring(7)}`;
+
+                cleanValue = cleanValue.replace(/^(\d{3})(\d{0,4})(\d{0,4})$/g, (input, p1, p2, p3) => {
+                    if (p3) return `${p1}-${p2}-${p3}`;
+                    if (p2) return `${p1}-${p2}`;
+                    return p1;
+                });
+            }
+
+            return cleanValue;
+        }
+
+
+        //2. 이메일 사이트 주소
         if(name==='emailSite') {
             //영문만 남기기
             cleanValue = value.replace(/[^a-zA-Z.]/g, "")
@@ -60,7 +113,7 @@ const Signup_site = () => {
         }
 
 
-        //2) 주민등록번호 (XXXXXX-XXXXXXX 형식)
+        //3. 주민등록번호 (XXXXXX-XXXXXXX 형식)
         if(name==='regNo') {
             //숫자만 남기기
             cleanValue = value.replace(/[^0-9]/g, "")
@@ -199,6 +252,10 @@ const Signup_site = () => {
                             {...register('phone')} 
                             placeholder='📞 전화번호 또는 사업장 전화번호' 
                             className="signup-input-field"
+                            onChange={(evt) => {
+                                const formattedValue = formatInput('phone', evt.target.value)  //1. 입력된 값을 포맷팅 함수에 통과시킴
+                                setValue('phone', formattedValue)  //2. 포맷팅된 값을 react-hook-form 상태와 input value에 덮어씌움
+                            }}
                         />
                         {errors.phone && <p className="signup-error-msg">{errors.phone.message}</p>}
                     </div>

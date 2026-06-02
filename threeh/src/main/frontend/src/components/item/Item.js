@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import '../../css/itemPageCss/itemPage.css';
@@ -25,7 +25,7 @@ function Item() {
   const [selectedItems, setSelectedItems] = useState([]);
 
   //관리자 체크박스 선택한 상품 목록
-  const [selectedAdminItemIds,setSelectedAdminItemIds] = useState([]);
+  const [selectedAdminItemIds, setSelectedAdminItemIds] = useState([]);
 
   //북마크 상태 저장([201,223,230])
   const [bookmarkedItems, setBookmarkedItems] = useState([]);
@@ -34,11 +34,13 @@ function Item() {
   const SELECTED_ITEMS_KEY = "selectedItems";
 
   //상품별 리뷰 요약 저장
-  const [reviewSummaryMap,setReviewSummaryMap] = useState({});
+  const [reviewSummaryMap, setReviewSummaryMap] = useState({});
+
   //정렬기준
   const [sortType, setSortType] = useState("");
+
   //판매상태 필터
-  const [sellStatusFilter,setSellStatusFilter] = useState("");
+  const [sellStatusFilter, setSellStatusFilter] = useState("");
 
   //조회버튼 눌렀을 때, 필터 적용
   const [searchSortType, setSearchSortType] = useState("");
@@ -47,13 +49,13 @@ function Item() {
   //메인페이지랑 연결되는 필터링
   const [searchParams, setSearchParams] = useSearchParams();
   const categoryParam = searchParams.get("category") || "";
-  const [categoryFilter,setCategoryFilter] = useState(categoryParam);
+  const [categoryFilter, setCategoryFilter] = useState(categoryParam);
 
   //페이징
   const [currentPage, setCurrentPage] = useState(1);
 
   //한 페이지에 보여줄 상품 개수
-  const ITEMS_PER_PAGE =8;
+  const ITEMS_PER_PAGE = 8;
 
   //페이지 번호를 5개씩 보여주기
   const PAGE_BLOCK_SIZE = 5;
@@ -140,10 +142,10 @@ function Item() {
 
 
   //메인에서 사용할 카테고리 필터 함수
-  useEffect(()=>{
+  useEffect(() => {
     setCategoryFilter(categoryParam);
     setCurrentPage(1);
-  },[categoryParam]);
+  }, [categoryParam]);
 
   //상품 최종 가격 계산
   //백엔드에서 itemFinalPrice가 오면 그 값을 사용
@@ -164,69 +166,75 @@ function Item() {
 
   //상품 선택 가능 여부 확인
   //재고가 없거나 판매 상태가 SELL이 아니면 선택 불가
- const getSellStatusInfo = (item)=>{
-    if(!item){
-      return{
-        text:"-",
-        selectable:false,
-        message:"상품 정보가 없습니다.",
-      };
-    }
-    if(Number(item.itemStock||0)<=0){
-      return{
-        text:"품절",
-        selectable:false,
-        message:"품절된 상품입니다.",
-      };
-    }
-    if(item.itemSellStatus === "SELL"){
-      return{
-        text:"판매중",
-        selectable:true,
-        message:"",
-      };
-    }
-    if(item.itemSellStatus==="STOP"){
-      return{
-        text:"판매중지",
-        selectable:false,
-        message:"판매중지된 상품입니다.",
-      };
-    }
-    if(item.itemSellStatus==="SOLD_OUT"){
-      return{
-        text:"품절",
-        selectable:false,
-        message:"품절된 상품입니다."
-      };
-    }
-    if(item.itemSellStatus==="COMING_SOON"){
-      return{
-        text:"판매예정",
-        selectable:false,
-        message:"판매예정 상품입니다.",
+  const getSellStatusInfo = (item) => {
+    if (!item) {
+      return {
+        text: "-",
+        selectable: false,
+        message: "상품 정보가 없습니다.",
       };
     }
 
-    return{
-      text:item.itemSellStatus || "-",
+    if (Number(item.itemStock || 0) <= 0) {
+      return {
+        text: "품절",
+        selectable: false,
+        message: "품절된 상품입니다.",
+      };
+    }
+
+    if (item.itemSellStatus === "SELL") {
+      return {
+        text: "판매중",
+        selectable: true,
+        message: "",
+      };
+    }
+
+    if (item.itemSellStatus === "STOP") {
+      return {
+        text: "판매중지",
+        selectable: false,
+        message: "판매중지된 상품입니다.",
+      };
+    }
+
+    if (item.itemSellStatus === "SOLD_OUT") {
+      return {
+        text: "품절",
+        selectable: false,
+        message: "품절된 상품입니다."
+      };
+    }
+
+    if (item.itemSellStatus === "COMING_SOON") {
+      return {
+        text: "판매예정",
+        selectable: false,
+        message: "판매예정 상품입니다.",
+      };
+    }
+
+    return {
+      text: item.itemSellStatus || "-",
       selectable: false,
       message: "판매중인 상품만 선택 가능합니다.",
-    }
- };
+    };
+  };
 
- //선택할 수 있는 아이템
- const canSellectItem = (item,showAlert =false)=>{
+  //선택할 수 있는 아이템
+  const canSellectItem = (item, showAlert = false) => {
     const sellStatusInfo = getSellStatusInfo(item);
 
-    if(!sellStatusInfo.selectable){
-      if(showAlert){
+    if (!sellStatusInfo.selectable) {
+      if (showAlert) {
         toast.warning(sellStatusInfo.message);
       }
       return false;
     }
+
     return true;
- };
+  };
 
   //백엔드에서 전체 상품 목록 가져오기
   const getItems = async () => {
@@ -246,17 +254,18 @@ function Item() {
   };
 
   //상품 평점
-  const getAllReviewSummaries = async()=>{
-    try{
+  const getAllReviewSummaries = async () => {
+    try {
       const response = await axios.get(
         "http://localhost:8080/api/reviews/summary/all",
         {
-          withCredentials:true,
+          withCredentials: true,
         }
       );
-      setReviewSummaryMap(response.data||{});
-    }catch(error){
-      console.error("전체 리뷰 요약 조회 실패",error);
+
+      setReviewSummaryMap(response.data || {});
+    } catch (error) {
+      console.error("전체 리뷰 요약 조회 실패", error);
       setReviewSummaryMap({});
     }
   };
@@ -319,28 +328,29 @@ function Item() {
   const handleSelectItem = (item) => {
     const loginUser = getLoginUser();
 
-      if (!loginUser) {
-        alert("로그인이 필요합니다.");
-        navigate("/login");
-        return;
-      }
+    if (!loginUser) {
+      alert("로그인이 필요합니다.");
+      navigate("/login");
+      return;
+    }
 
-      if (!isUserRole(loginUser)) {
-        toast.warning("일반 회원만 상품을 선택할 수 있습니다.");
-        return;
-      }
+    if (!isUserRole(loginUser)) {
+      toast.warning("일반 회원만 상품을 선택할 수 있습니다.");
+      return;
+    }
 
-      //재고,판매상태 확인
-      if (!canSellectItem(item, true)) {
-        return;
-      }
-      //이미 선택된 상품이면 선택 해제
-      if (isSelected(item.itemId)) {
-        setSelectedItems(
-          selectedItems.filter((selected) => selected.itemId !== item.itemId)
-        );
-        return;
-      }
+    //재고,판매상태 확인
+    if (!canSellectItem(item, true)) {
+      return;
+    }
+
+    //이미 선택된 상품이면 선택 해제
+    if (isSelected(item.itemId)) {
+      setSelectedItems(
+        selectedItems.filter((selected) => selected.itemId !== item.itemId)
+      );
+      return;
+    }
 
     //선택되지 않은 상품이면 selecteItems에 추가
     setSelectedItems([
@@ -403,6 +413,7 @@ function Item() {
           if (prev.includes(itemId)) {
             return prev;
           }
+
           return [...prev, itemId];
         });
       } else {
@@ -709,13 +720,15 @@ function Item() {
     .filter((item) => {
 
       //메인페이지에서 /item?category로 넘어온 경우
-      if(categoryFilter && item.itemCategory !== categoryFilter){
+      if (categoryFilter && item.itemCategory !== categoryFilter) {
         return false;
       }
+
       //판매상태 필터
-      if(sellStatusFilter && item.itemSellStatus !== sellStatusFilter){
+      if (sellStatusFilter && item.itemSellStatus !== sellStatusFilter) {
         return false;
       }
+
       return true;
     })
     .sort((a, b) => {
@@ -724,11 +737,11 @@ function Item() {
       const aIsSell = a.itemSellStatus === "SELL";
       const bIsSell = b.itemSellStatus === "SELL";
 
-      if(aIsSell && !bIsSell){
+      if (aIsSell && !bIsSell) {
         return -1;
       }
 
-      if(!aIsSell && bIsSell){
+      if (!aIsSell && bIsSell) {
         return 1;
       }
 
@@ -738,7 +751,6 @@ function Item() {
 
       const aRating = Number(reviewSummaryMap[a.itemId]?.averageScore || 0);
       const bRating = Number(reviewSummaryMap[b.itemId]?.averageScore || 0);
-
 
       if (sortType === "priceHigh") {
         return bFinalPrice - aFinalPrice;
@@ -760,57 +772,96 @@ function Item() {
     });
 
   //조회버튼 눌렀을 때, 필터링 적용
-  const handleSearchFilter = () =>{
+  const handleSearchFilter = () => {
     setSortType(searchSortType);
     setSellStatusFilter(searchSellStatusFilter);
     setCurrentPage(1);
   };
 
 
- //관리자 상품 선택 여부 확인
- const isSelectedAdminItem =(itemId)=>{
-  return selectedAdminItemIds.includes(Number(itemId));
- };
+  //관리자 상품 선택 여부 확인
+  const isSelectedAdminItem = (itemId) => {
+    return selectedAdminItemIds.includes(Number(itemId));
+  };
 
- //관리자 상품 개별 선택/선택해제 처리
- const handleSelectAdminItem = (itemId)=>{
-  const numberItemId = Number(itemId);
+  //관리자 상품 개별 선택/선택해제 처리
+  const handleSelectAdminItem = (itemId) => {
+    const numberItemId = Number(itemId);
 
-  if(selectedAdminItemIds.includes(numberItemId)){
-    setSelectedAdminItemIds(
-      selectedAdminItemIds.filter((id)=>id !== numberItemId)
+    setSelectedAdminItemIds((prevIds) => {
+      if (prevIds.includes(numberItemId)) {
+        return prevIds.filter((id) => id !== numberItemId);
+      }
+
+      return [...prevIds, numberItemId];
+    });
+  };
+
+  //관리자 선택 상품 목록에서 개별 상품 선택 해제
+  const handleRemoveSelectedAdminItem = (itemId) => {
+    const numberItemId = Number(itemId);
+
+    setSelectedAdminItemIds((prevIds) =>
+      prevIds.filter((id) => id !== numberItemId)
     );
-    return;
-  }
-  setSelectedAdminItemIds([...selectedAdminItemIds,numberItemId]);
- };
+  };
 
-//관리자가 선택한 상품 여러 개 삭제 
-const handleAdminDeleteSelectedItems = async ()=>{
-  const loginUser = getLoginUser();
+  //관리자 선택 상품 목록 전체 비우기
+  const handleClearSelectedAdminItems = () => {
+    if (selectedAdminItemIds.length === 0) {
+      toast.warning("선택된 상품이 없습니다.");
+      return;
+    }
 
-  if(!loginUser){
-    toast.error("로그인이 필요합니다.");
-    navigate("/login");
-    return;
-  }
-  if(!isAdminRole(loginUser)){
-    toast.warning("관리자만 상품을 삭제할 수 있습니다.");
-    return;
-  }
-  
-  if(selectedAdminItemIds.length===0){
-    toast.warning("삭제할 상품을 선택해주세요.");
-    return;
-  }
+    const confirmClear = window.confirm(
+      "선택한 상품 목록을 모두 비우시겠습니까?"
+    );
 
-  const confirmDelete = window.confirm(
-    `선택한 상품 ${selectedAdminItemIds.length}개를 삭제하시겠습니다?`
-  );
+    if (!confirmClear) {
+      return;
+    }
 
-  if(!confirmDelete){
-    return;
-  }
+    setSelectedAdminItemIds([]);
+  };
+
+  //관리자가 선택한 상품 ID 목록을 실제 상품 객체 목록으로 변환
+  //필터/페이지가 바뀌어도 selectedAdminItemIds는 유지되므로,
+  //관리자가 선택한 상품을 아래에서 계속 확인할 수 있음
+  const selectedAdminItems = useMemo(() => {
+    return selectedAdminItemIds
+      .map((itemId) =>
+        items.find((item) => Number(item.itemId) === Number(itemId))
+      )
+      .filter(Boolean);
+  }, [selectedAdminItemIds, items]);
+
+  //관리자가 선택한 상품 여러 개 삭제 
+  const handleAdminDeleteSelectedItems = async () => {
+    const loginUser = getLoginUser();
+
+    if (!loginUser) {
+      toast.error("로그인이 필요합니다.");
+      navigate("/login");
+      return;
+    }
+
+    if (!isAdminRole(loginUser)) {
+      toast.warning("관리자만 상품을 삭제할 수 있습니다.");
+      return;
+    }
+
+    if (selectedAdminItemIds.length === 0) {
+      toast.warning("삭제할 상품을 선택해주세요.");
+      return;
+    }
+
+    const confirmDelete = window.confirm(
+      `선택한 상품 ${selectedAdminItemIds.length}개를 삭제하시겠습니다?`
+    );
+
+    if (!confirmDelete) {
+      return;
+    }
 
     const deletedItemIds = [];
     const notDeletableItemIds = [];
@@ -901,203 +952,213 @@ const handleAdminDeleteSelectedItems = async ()=>{
   const startPage = currentPageBlock * PAGE_BLOCK_SIZE + 1;
   const endPage = Math.min(startPage + PAGE_BLOCK_SIZE - 1, totalPages);
 
-    const pageNumbers = Array.from(
-      { length: endPage - startPage + 1 },
-      (_, index) => startPage + index
-    );
+  const pageNumbers = Array.from(
+    { length: endPage - startPage + 1 },
+    (_, index) => startPage + index
+  );
 
-    const handlePgeChange = (page) => {
-      if (page < 1 || page > totalPages) {
-        return;
-      }
+  const handlePgeChange = (page) => {
+    if (page < 1 || page > totalPages) {
+      return;
+    }
 
     setCurrentPage(page);
-    window.scrollTo({top:0,behavior:"smooth"});
-  }
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
 
   //JSX부분^__________^===================================================
 
   return (
-  <div>
-    {/* 실제 헤더 영역 */}
-    <Header />
-    
-        <ToastContainer
-      position="top-center"
-      autoClose={1800}
-      hideProgressBar={false}
-      newestOnTop={true}
-      closeOnClick
-      pauseOnHover
-      theme="light"
-    />
+    <div>
+      {/* 실제 헤더 영역 */}
+      <Header />
 
-    <div className="item-page">
-      {/*상품 목록 페이지 제목 */}
-      <h1 className="item-title">상품 목록</h1>
-      {categoryFilter&& (
-        <p className="item-current-category">
-          현재 카테고리: <strong>{categoryFilter}</strong>
-        </p>
-      )}
+      <ToastContainer
+        position="top-center"
+        autoClose={1800}
+        hideProgressBar={false}
+        newestOnTop={true}
+        closeOnClick
+        pauseOnHover
+        theme="light"
+      />
 
-      {/*등록된 상품 개수 표시 */}
-      <div className="item-filter-top-area">
-      <div className="item-count-box">
-        <span className="item-count-text">
-            총 등록 상품: {items.length}개
-        </span>
-        <span className="item-count-text">
-          현재 조건 상품: {sortedItems.length}개
-        </span>
-      </div>
+      <div className="item-page">
+        {/*상품 목록 페이지 제목 */}
+        <h1 className="item-title">상품 목록</h1>
+
+        {categoryFilter && (
+          <p className="item-current-category">
+            현재 카테고리: <strong>{categoryFilter}</strong>
+          </p>
+        )}
+
+        {/*등록된 상품 개수 표시 */}
+        <div className="item-filter-top-area">
+          <div className="item-count-box">
+            <span className="item-count-text">
+              총 등록 상품: {items.length}개
+            </span>
+
+            <span className="item-count-text">
+              현재 조건 상품: {sortedItems.length}개
+            </span>
+          </div>
 
           {/*상품정렬/필터 영역 */}
-      <div className="item-sort-area">
-        <select
-          className="item-sort-select"
-          value={searchSortType}
-          onChange={(e) => {
-            setSearchSortType(e.target.value);
-          }}
-        >
-          <option value="">기본순</option>
-          <option value="ratingHigh">평점 높은 순</option>
-          <option value="ratingLow">평점 낮은 순</option>
-          <option value="priceHigh">가격 높은 순</option>
-          <option value="priceLow">가격 낮은 순</option>
-        </select>
+          <div className="item-sort-area">
+            <select
+              className="item-sort-select"
+              value={searchSortType}
+              onChange={(e) => {
+                setSearchSortType(e.target.value);
+              }}
+            >
+              <option value="">기본순</option>
+              <option value="ratingHigh">평점 높은 순</option>
+              <option value="ratingLow">평점 낮은 순</option>
+              <option value="priceHigh">가격 높은 순</option>
+              <option value="priceLow">가격 낮은 순</option>
+            </select>
 
-        <select
-          className="item-sort-select"
-          value={searchSellStatusFilter}
-          onChange={(e) => {
-            setSearchSellStatusFilter(e.target.value);
-          }}
-        >
-          <option value="">판매상태 전체</option>
-          <option value="SELL">판매중</option>
-          <option value="SOLD_OUT">품절</option>
-          <option value="STOP">판매중지</option>
-          <option value="COMING_SOON">판매예정</option>
-        </select>
+            <select
+              className="item-sort-select"
+              value={searchSellStatusFilter}
+              onChange={(e) => {
+                setSearchSellStatusFilter(e.target.value);
+              }}
+            >
+              <option value="">판매상태 전체</option>
+              <option value="SELL">판매중</option>
+              <option value="SOLD_OUT">품절</option>
+              <option value="STOP">판매중지</option>
+              <option value="COMING_SOON">판매예정</option>
+            </select>
 
-        <button type="button" onClick={handleSearchFilter}>
-          필터조회하기
-        </button>
+            <button type="button" onClick={handleSearchFilter}>
+              필터조회하기
+            </button>
 
-                <button type="button" onClick={()=>{
-          setSearchSortType("");
-          setSearchSellStatusFilter("");
+            <button
+              type="button"
+              onClick={() => {
+                setSearchSortType("");
+                setSearchSellStatusFilter("");
 
-          setSortType("");
-          setSellStatusFilter("");
+                setSortType("");
+                setSellStatusFilter("");
 
-          setCurrentPage(1);
-        }}>
-          필터초기화
-        </button>
-      </div>
-    </div>
-
-      {/*관리자 로그인 시에만 관리자 상품/리뷰 관리 페이지 이동 버튼 표시 */}
-      {isAdmin && (
-        <div className="item-action-area">
-          <button type="button" onClick={() => navigate("/admin/item")}>
-            관리자 상품/리뷰 관리
-          </button>
-          {/* 관리자가 상품 목록에서 여러 개 선택 삭제 */}
-        <button
-          type="button"
-          className="item-admin-delete-button"
-          onClick={handleAdminDeleteSelectedItems}
-          disabled={selectedAdminItemIds.length === 0}
-        >
-          선택 삭제 {selectedAdminItemIds.length > 0 ? `(${selectedAdminItemIds.length})` : ""}
-        </button>
+                setCurrentPage(1);
+              }}
+            >
+              필터초기화
+            </button>
+          </div>
         </div>
-      )}
 
-      {/*상품 목록 표시 영역 */}
-      <div className="item-list">
-        {sortedItems.length === 0 ? (
-          <p className="item-empty-text">상품이 없습니다.</p>
-        ) : (
-          pagedItems.map((item) => {
-            const selectable = canSellectItem(item, false);
+        {/*관리자 로그인 시에만 관리자 상품/리뷰 관리 페이지 이동 버튼 표시 */}
+        {isAdmin && (
+          <div className="item-action-area">
+            <button type="button" onClick={() => navigate("/admin/item")}>
+              관리자 상품/리뷰 관리
+            </button>
 
-            return (
-              <div key={item.itemId} className="item-card">
-                {/*기존은 !isAdmin이였는데 일반 유저면 보이게 바꿈*/}
-                {isUser && (
-                  <input
-                    className="item-checkbox"
-                    type="checkbox"
-                    checked={isSelected(item.itemId)}
-                    disabled={!selectable}
-                    onChange={() => handleSelectItem(item)}
-                  />
-                )}
-                {/* 관리자가 상품 목록에서 여러 개 선택 삭제 */}
-                {isAdmin && (
-                  <input
-                    className="item-checkbox item-admin-checkbox"
-                    type="checkbox"
-                    checked={isSelectedAdminItem(item.itemId)}
-                    onChange={() => handleSelectAdminItem(item.itemId)}
-                  />
-                )}
+            {/* 관리자가 상품 목록에서 여러 개 선택 삭제 */}
+            <button
+              type="button"
+              className="item-admin-delete-button"
+              onClick={handleAdminDeleteSelectedItems}
+              disabled={selectedAdminItemIds.length === 0}
+            >
+              선택 삭제 {selectedAdminItemIds.length > 0 ? `(${selectedAdminItemIds.length})` : ""}
+            </button>
+          </div>
+        )}
 
-                <div className="item-image-box">
-                  {item.itemImgUrl ? (
-                    <img
-                      className="item-image"
-                      src={`http://localhost:8080${item.itemImgUrl}`}
-                      alt={item.itemName}
+        {/*상품 목록 표시 영역 */}
+        <div className="item-list">
+          {sortedItems.length === 0 ? (
+            <p className="item-empty-text">상품이 없습니다.</p>
+          ) : (
+            pagedItems.map((item) => {
+              const selectable = canSellectItem(item, false);
+
+              return (
+                <div key={item.itemId} className="item-card">
+                  {/*기존은 !isAdmin이였는데 일반 유저면 보이게 바꿈*/}
+                  {isUser && (
+                    <input
+                      className="item-checkbox"
+                      type="checkbox"
+                      checked={isSelected(item.itemId)}
+                      disabled={!selectable}
+                      onChange={() => handleSelectItem(item)}
                     />
-                  ) : (
-                    <p className="item-no-image">이미지 없음</p>
                   )}
-                </div>
 
-                <div className="item-info">
-                  <Link className="item-link" to={`/item/${item.itemId}`}>
-                    <h2 className="item-name">{item.itemName}</h2>
-                  </Link>
-                  <p className="item-rating-text">
-                    평점:{Number(reviewSummaryMap[item.itemId]?.averageScore||0).toFixed(1)}
-                    /5({reviewSummaryMap[item.itemId]?.reviewCount||0})
-                  </p>
+                  {/* 관리자가 상품 목록에서 여러 개 선택 삭제 */}
+                  {isAdmin && (
+                    <input
+                      className="item-checkbox item-admin-checkbox"
+                      type="checkbox"
+                      checked={isSelectedAdminItem(item.itemId)}
+                      onChange={() => handleSelectAdminItem(item.itemId)}
+                    />
+                  )}
 
-                  {/*<p className="item-text">카테고리: {item.itemCategory}</p>*/}
-                  {/*<p className="item-text">상품 설명: {item.itemDetail}</p>*/}
-                  {/*<p className="item-text">상품 색상: {item.itemColor}</p>*/}
+                  <div className="item-image-box">
+                    {item.itemImgUrl ? (
+                      <img
+                        className="item-image"
+                        src={`http://localhost:8080${item.itemImgUrl}`}
+                        alt={item.itemName}
+                      />
+                    ) : (
+                      <p className="item-no-image">이미지 없음</p>
+                    )}
+                  </div>
 
-                  <p className="item-text item-price">
-                    상품 가격: {formatPrice(getFinalPrice(item))}원
-                  </p>
-                  <p className="item-text">상품 재고: {item.itemStock}</p>
-                  <p className="item-text">
-                    판매 상태: {getSellStatusInfo(item).text}
-                  </p>
+                  <div className="item-info">
+                    <Link className="item-link" to={`/item/${item.itemId}`}>
+                      <h2 className="item-name">{item.itemName}</h2>
+                    </Link>
 
-                  {/*판매 상태가 sell이 아니면 구매 또는 장바구니 담기 안됌. */}
-                  <p className="item-text">
-                    {/*{getSellStatusInfo(item).message}*/}
-                  </p>
-
-                  {!selectable && (
-                    <p className="item-warning">
-                      {getSellStatusInfo(item).message}
+                    <p className="item-rating-text">
+                      평점:{Number(reviewSummaryMap[item.itemId]?.averageScore || 0).toFixed(1)}
+                      /5({reviewSummaryMap[item.itemId]?.reviewCount || 0})
                     </p>
-                  )}
+
+                    {/*<p className="item-text">카테고리: {item.itemCategory}</p>*/}
+                    {/*<p className="item-text">상품 설명: {item.itemDetail}</p>*/}
+                    {/*<p className="item-text">상품 색상: {item.itemColor}</p>*/}
+
+                    <p className="item-text item-price">
+                      상품 가격: {formatPrice(getFinalPrice(item))}원
+                    </p>
+
+                    <p className="item-text">상품 재고: {item.itemStock}</p>
+
+                    <p className="item-text">
+                      판매 상태: {getSellStatusInfo(item).text}
+                    </p>
+
+                    {/*판매 상태가 sell이 아니면 구매 또는 장바구니 담기 안됌. */}
+                    <p className="item-text">
+                      {/*{getSellStatusInfo(item).message}*/}
+                    </p>
+
+                    {!selectable && (
+                      <p className="item-warning">
+                        {getSellStatusInfo(item).message}
+                      </p>
+                    )}
+
+                    {/*기존은 !isAdmin이였는데 일반 유저면 보이게 바꿈*/}
+                  </div>
 
                   {/*기존은 !isAdmin이였는데 일반 유저면 보이게 바꿈*/}
-                </div>
-
-                {/*기존은 !isAdmin이였는데 일반 유저면 보이게 바꿈*/}
-                {isUser && (
+                  {isUser && (
                     <div className="item-card-icon-area">
                       <IconButton
                         type="button"
@@ -1123,146 +1184,233 @@ const handleAdminDeleteSelectedItems = async ()=>{
                       </IconButton>
                     </div>
                   )}
+                </div>
+              );
+            })
+          )}
+        </div>
+
+        {sortedItems.length > ITEMS_PER_PAGE && (
+          <div className="item-pagination">
+            <button
+              type="button"
+              className="item-page-button"
+              disabled={startPage === 1}
+              onClick={() => handlePgeChange(startPage - 1)}
+            >
+              &lt;
+            </button>
+
+            {pageNumbers.map((page) => (
+              <button
+                key={page}
+                type="button"
+                className={`item-page-button ${
+                  currentPage === page ? "item-page-button-active" : ""
+                }`}
+                onClick={() => handlePgeChange(page)}
+              >
+                {page}
+              </button>
+            ))}
+
+            <button
+              type="button"
+              className="item-page-button"
+              disabled={endPage === totalPages}
+              onClick={() => handlePgeChange(endPage + 1)}
+            >
+              &gt;
+            </button>
+          </div>
+        )}
+
+        {/*관리자 로그인 시 선택한 상품 목록 표시 */}
+        {isAdmin && (
+          <div className="item-selected-box">
+            <div className="item-admin-selected-header">
+              <h2 className="item-section-title">
+                관리자가 선택한 상품
+                {selectedAdminItems.length > 0 ? ` (${selectedAdminItems.length}개)` : ""}
+              </h2>
+
+              <div className="item-selected-button-area">
+                <button
+                  type="button"
+                  onClick={handleAdminDeleteSelectedItems}
+                  className="item-button item-danger-button"
+                  disabled={selectedAdminItems.length === 0}
+                >
+                  선택 삭제
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleClearSelectedAdminItems}
+                  className="item-button item-sub-button"
+                  disabled={selectedAdminItems.length === 0}
+                >
+                  선택 비우기
+                </button>
               </div>
-            );
-          })
+            </div>
+
+            {selectedAdminItems.length === 0 ? (
+              <p className="item-empty-text">
+                선택한 상품이 없습니다.
+              </p>
+            ) : (
+              <table className="item-table">
+                <thead>
+                  <tr>
+                    <th>상품ID</th>
+                    <th>상품명</th>
+                    <th>카테고리</th>
+                    <th>가격</th>
+                    <th>재고</th>
+                    <th>판매상태</th>
+                    <th>관리</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {selectedAdminItems.map((item) => (
+                    <tr key={item.itemId}>
+                      <td>{item.itemId}</td>
+
+                      <td>
+                        <Link
+                          className="item-table-link"
+                          to={`/item/${item.itemId}`}
+                        >
+                          {item.itemName}
+                        </Link>
+                      </td>
+
+                      <td>{item.itemCategory}</td>
+
+                      <td>{formatPrice(getFinalPrice(item))}원</td>
+
+                      <td>{item.itemStock}</td>
+
+                      <td>{getSellStatusInfo(item).text}</td>
+
+                      <td>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveSelectedAdminItem(item.itemId)}
+                        >
+                          선택 해제
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+        )}
+
+        {/*기존은 !isAdmin이였는데 일반 유저면 보이게 바꿈*/}
+        {isUser && selectedItems.length > 0 && (
+          <div className="item-selected-box">
+            <h2 className="item-section-title">선택한 상품</h2>
+
+            <table className="item-table">
+              <thead>
+                <tr>
+                  <th>상품명</th>
+                  <th>가격</th>
+                  <th>수량</th>
+                  <th>소계</th>
+                  <th>삭제</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {selectedItems.map((item) => (
+                  <tr key={item.itemId}>
+                    <td>
+                      <Link
+                        className="item-table-link"
+                        to={`/item/${item.itemId}`}
+                      >
+                        {item.itemName}
+                      </Link>
+                    </td>
+
+                    <td>{formatPrice(item.itemFinalPrice)}</td>
+
+                    <td>
+                      <input
+                        className="item-count-input"
+                        type="number"
+                        min="1"
+                        max={item.itemStock}
+                        value={item.count}
+                        onChange={(e) =>
+                          handleCountChange(item.itemId, e.target.value)
+                        }
+                      />
+
+                      <span className="item-stock-text">
+                        {" "}
+                        / 재고 {item.itemStock}
+                      </span>
+                    </td>
+
+                    <td>{formatPrice(item.itemFinalPrice * item.count)}원</td>
+
+                    <td>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveSelectedItem(item.itemId)}
+                      >
+                        삭제
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            <h3 className="item-total-price">
+              총 가격: {formatPrice(getTotalPrice())}원
+            </h3>
+
+            <div className="item-selected-button-area">
+              <button
+                type="button"
+                onClick={handleClearSelectedItems}
+                className="item-button item-danger-button"
+              >
+                선택 상품 전체 삭제
+              </button>
+
+              <button
+                type="button"
+                onClick={handleAddSelectedCart}
+                className="item-button"
+              >
+                선택 상품 장바구니 담기
+              </button>
+
+              <button
+                type="button"
+                className="item-button item-sub-button"
+                onClick={handleBuySelectedItems}
+              >
+                선택 상품 구매하기
+              </button>
+            </div>
+          </div>
         )}
       </div>
 
-      {sortedItems.length > ITEMS_PER_PAGE && (
-        <div className="item-pagination">
-          <button
-            type="button"
-            className="item-page-button"
-            disabled={startPage === 1}
-            onClick={() => handlePgeChange(startPage - 1)}
-          >
-            &lt;
-          </button>
-
-          {pageNumbers.map((page) => (
-            <button
-              key={page}
-              type="button"
-              className={`item-page-button ${
-                currentPage === page ? "item-page-button-active" : ""
-              }`}
-              onClick={() => handlePgeChange(page)}
-            >
-              {page}
-            </button>
-          ))}
-
-          <button
-            type="button"
-            className="item-page-button"
-            disabled={endPage === totalPages}
-            onClick={() => handlePgeChange(endPage + 1)}
-          >
-            &gt;
-          </button>
-        </div>
-      )}
-
-      {/*기존은 !isAdmin이였는데 일반 유저면 보이게 바꿈*/}
-      {isUser && selectedItems.length > 0 && (
-        <div className="item-selected-box">
-          <h2 className="item-section-title">선택한 상품</h2>
-
-          <table className="item-table">
-            <thead>
-              <tr>
-                <th>상품명</th>
-                <th>가격</th>
-                <th>수량</th>
-                <th>소계</th>
-                <th>삭제</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {selectedItems.map((item) => (
-                <tr key={item.itemId}>
-                  <td>
-                    <Link
-                      className="item-table-link"
-                      to={`/item/${item.itemId}`}
-                    >
-                      {item.itemName}
-                    </Link>
-                  </td>
-
-                  <td>{formatPrice(item.itemFinalPrice)}</td>
-
-                  <td>
-                    <input
-                      className="item-count-input"
-                      type="number"
-                      min="1"
-                      max={item.itemStock}
-                      value={item.count}
-                      onChange={(e) =>
-                        handleCountChange(item.itemId, e.target.value)
-                      }
-                    />
-                    <span className="item-stock-text">
-                      {" "}
-                      / 재고 {item.itemStock}
-                    </span>
-                  </td>
-
-                  <td>{formatPrice(item.itemFinalPrice * item.count)}원</td>
-
-                  <td>
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveSelectedItem(item.itemId)}
-                    >
-                      삭제
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-
-          <h3 className="item-total-price">
-            총 가격: {formatPrice(getTotalPrice())}원
-          </h3>
-
-          <div className="item-selected-button-area">
-            <button
-              type="button"
-              onClick={handleClearSelectedItems}
-              className="item-button item-danger-button"
-            >
-              선택 상품 전체 삭제
-            </button>
-
-            <button
-              type="button"
-              onClick={handleAddSelectedCart}
-              className="item-button"
-            >
-              선택 상품 장바구니 담기
-            </button>
-
-            <button
-              type="button"
-              className="item-button item-sub-button"
-              onClick={handleBuySelectedItems}
-            >
-              선택 상품 구매하기
-            </button>
-          </div>
-        </div>
-      )}
+      {/* 실제 푸터 영역 */}
+      <Footer />
     </div>
-
-    {/* 실제 푸터 영역 */}
-    <Footer />
-  </div>
-);
+  );
 }
 
 export default Item;
