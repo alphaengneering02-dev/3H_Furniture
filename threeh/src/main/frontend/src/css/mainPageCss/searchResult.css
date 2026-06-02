@@ -269,14 +269,14 @@
     color: #1F1813;
 }
 
-/* 빈 결과 화면 */
+
+/* empty text */
 .search-result-empty-result {
     text-align: center;
     padding: 100px 0;
-    color: #8A7A6C;
+    font-size: 15px; font-weight: bold; color: var(--main-light-gray);
+    border: 1px solid #E8D9C8; border-radius: 18px;
     background-color: #FFFCF7;
-    border: 1px solid #E8D9C8;
-    border-radius: 18px;
 }
 
 

@@ -63,16 +63,37 @@ const Main_itemList = ({ totalItemList }) => {
     const isUser = isUserRole(user);
 
 
-    const VISIBLE_COUNT = 4; // 화면에 노출될 카드 개수
+    // ==========================================
+    // 💡 [반응형 무한 슬라이드 핵심] 화면 크기별 노출 개수 동적 설정
+    // ==========================================
+    const [visibleCount, setVisibleCount] = useState(4); // 기본 PC: 4개
+
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth <= 600) {
+                setVisibleCount(2); //모바일: 2개
+            } else if (window.innerWidth <= 900) {
+                setVisibleCount(3); //태블릿: 3개
+            } else {
+                setVisibleCount(4); //PC: 4개
+            }
+        };
+
+        handleResize(); //초기 실행
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+
     const [itemList, setItemList] = useState([]); // 원본 8개 데이터
     const [displayList, setDisplayList] = useState([]); // 앞뒤로 복제본이 추가된 전체 데이터
-    
-    // 시작 인덱스는 0이 아니라 앞쪽 복제본(4개)을 건너뛴 진짜 1번 카드 위치인 VISIBLE_COUNT로 설정
-    const [currentIndex, setCurrentIndex] = useState(VISIBLE_COUNT); 
+    const [currentIndex, setCurrentIndex] = useState(visibleCount);  // 시작 인덱스는 0이 아니라, 앞쪽 복제본을 건너뛰고 visibleCount와 연동
     const [isTransition, setIsTransition] = useState(true); // 눈속임 이동 시 애니메이션을 끄기 위한 상태
     const [isClickable, setIsClickable] = useState(true);  // 광클 방지를 위한 클릭 잠금 상태
 
-    //무한 슬라이드(Infinite Carousel) 적용
+
+    //[무한 슬라이드(Infinite Carousel) 적용]
+    //1. 데이터가 세팅되거나 visibleCount가 바뀔 때 복제 배열 재계산
     useEffect(() => {
         try {
             if (totalItemList && totalItemList.length > 0) {
@@ -84,33 +105,38 @@ const Main_itemList = ({ totalItemList }) => {
                 console.log("[메인 상품목록 데이터]\n", sellItems)
                 setItemList(sellItems);
                 
-                // [무한 슬라이드 핵심 1] 앞뒤로 카드 복제본 붙이기
-                const head = sellItems.slice(-VISIBLE_COUNT); // 끝부분 4개 (5, 6, 7, 8)
-                const tail = sellItems.slice(0, VISIBLE_COUNT); // 앞부분 4개 (1, 2, 3, 4)
+                //[무한 슬라이드 핵심 1] 앞뒤로 카드 복제본 붙이기
+                //가변적인 visibleCount를 기준으로 앞뒤 복제 실행
+                const head = sellItems.slice(-visibleCount);  //끝부분 4개 (5, 6, 7, 8)
+                const tail = sellItems.slice(0, visibleCount);  //앞부분 4개 (1, 2, 3, 4)
                 setDisplayList([...head, ...sellItems, ...tail]);
+
+                //화면 크기가 바뀔 때 인덱스 위치가 어긋나지 않도록 가이드라인 보정
+                setCurrentIndex(visibleCount);
             }
         } catch (error) {
             console.error("[ITEM LIST 영역에 상품 추가 실패]\n", error);
         }
-    }, [totalItemList]);
+    }, [totalItemList, visibleCount]);
 
-    // [무한 슬라이드 핵심 2] 끝에 도달했을 때 눈속임으로 제자리 찾아가기
+
+    //2. 슬라이드 끝에 도달했을 때, 눈속임으로 제자리 찾아가기
     useEffect(() => {
         if (itemList.length === 0) return;
 
         // CSS의 transition 시간(0.8s)과 동일하게 800ms 대기 후 실행
         const transitionTime = 800; 
 
-        // 1. 오른쪽으로 끝까지 갔을 때 (뒤쪽 복제본 1번 위치)
-        if (currentIndex === itemList.length + VISIBLE_COUNT) {
+        //1) 오른쪽으로 끝까지 갔을 때 (뒤쪽 복제본 1번 위치)
+        if (currentIndex === itemList.length+visibleCount) {
             const timeout = setTimeout(() => {
                 setIsTransition(false); // 스르륵 넘어가는 애니메이션 끄기
-                setCurrentIndex(VISIBLE_COUNT); // 진짜 1번 위치로 순간이동!
+                setCurrentIndex(visibleCount); // 진짜 1번 위치로 순간이동!
             }, transitionTime);
             return () => clearTimeout(timeout);
         }
         
-        // 2. 왼쪽으로 끝까지 갔을 때 (앞쪽 복제본 8번 위치)
+        //2) 왼쪽으로 끝까지 갔을 때 (앞쪽 복제본 8번 위치)
         if (currentIndex === 0) {
             const timeout = setTimeout(() => {
                 setIsTransition(false); // 애니메이션 끄기
@@ -118,9 +144,10 @@ const Main_itemList = ({ totalItemList }) => {
             }, transitionTime);
             return () => clearTimeout(timeout);
         }
-    }, [currentIndex, itemList.length]);
+    }, [currentIndex, itemList.length, visibleCount]);
 
-    // 1. 페이지 로딩 시 자동 슬라이드
+
+    //페이지 로딩 시 자동 슬라이드 시작
     useEffect(() => {
         if (displayList.length === 0) return;
 
@@ -132,7 +159,10 @@ const Main_itemList = ({ totalItemList }) => {
         return () => clearInterval(autoSlide);
     }, [displayList]);
 
-    // 2. 좌우 버튼 조작
+
+
+    //[버튼 영역]
+    //1. 좌우 버튼 조작
     const handlePrev = () => {
         if (!isClickable) return; // 🌟 잠겨있으면 아무것도 안 하고 함수 종료 (광클 방지)
         setIsClickable(false);    // 버튼 잠금
@@ -152,27 +182,23 @@ const Main_itemList = ({ totalItemList }) => {
         setTimeout(() => setIsClickable(true), 800);
     };
 
-    // 3. 인디케이터 클릭 시 이동
+    //2. 인디케이터 클릭 시 이동
     const handleSelect = (index) => {
         if (!isClickable) return;
         setIsClickable(false);
         setIsTransition(true);
-        setCurrentIndex(index + VISIBLE_COUNT);  // 인디케이터는 원본 8개 기준(0~7)이므로, 화면 인덱스는 +VISIBLE_COUNT 해줌
+        setCurrentIndex(index + visibleCount);  // 인디케이터는 원본 8개 기준(0~7)이므로, 화면 인덱스는 +visibleCount 해줌
 
         setTimeout(() => setIsClickable(true), 800);
-
-        setIsTransition(true);
-        
-        setCurrentIndex(index + VISIBLE_COUNT); 
     };
 
 
     // 아이템 컨테이너 넓이 및 비율 계산 (복제본이 포함된 displayList 기준)
-    const containerWidth = displayList.length > 0 ? `${(displayList.length / VISIBLE_COUNT) * 100}%` : '100%';
-    const slidePercentage = displayList.length > 0 ? (100 / displayList.length) : 0;
+    const containerWidth = displayList.length > 0 ? `${(displayList.length / visibleCount) * 100}%` : '100%';  //아이템 컨테이너 넓이
+    const slidePercentage = displayList.length > 0 ? (100 / displayList.length) : 0;  //아이템 컨테이너 비율
 
-    // 현재 활성화된 진짜 인덱스 계산 (인디케이터에 불 들어오게 하기 위함)
-    let activeIndicator = currentIndex - VISIBLE_COUNT;
+    //현재 활성화된 진짜 인덱스 계산 (인디케이터에 불 들어오게 하기 위함)
+    let activeIndicator = currentIndex - visibleCount;
     if (activeIndicator < 0) activeIndicator += itemList.length;
     if (activeIndicator >= itemList.length) activeIndicator -= itemList.length;
 
@@ -310,9 +336,10 @@ const Main_itemList = ({ totalItemList }) => {
                             >
                                 {displayList.map((item, idx) => (
                                     <div 
-                                        // 복제된 카드가 있으므로 itemId만 쓰면 중복 에러가 남. idx를 붙여서 고유하게!
+                                        // 복제된 카드가 있으므로 itemId만 쓰면 중복 에러가 남. idx를 붙여서 고유하게 호출
                                         key={`${item.itemId}-${idx}`} 
                                         style={{ width: `${100 / displayList.length}%`, flexShrink: 0 }}
+                                        className="main-slider-item-wrapper"
                                     >
                                         <Main_itemList_item item={item} getLoginUser={getLoginUser} isUserRole={isUserRole} isUser={isUser} handleToggleBookmark={handleToggleBookmark} isBookmarked={isBookmarked}/>
                                     </div>
