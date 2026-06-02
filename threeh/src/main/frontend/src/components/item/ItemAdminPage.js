@@ -43,7 +43,8 @@ const ItemAdminPage = () => {
     const [reviewProductFilter, setReviewProductFilter] = useState("hasReview");
 
     // 필터가 바로 적용되지 않고, 조회하기 버튼을 눌러야 적용
-    const [searchReviewProductFilter, setSearchReviewProductFilter] = useState("hasReview");
+    const [searchReviewProductFilter, setSearchReviewProductFilter] =
+        useState("hasReview");
 
     //조회버튼 눌러야 필터링 적용(state값을 두개로 나눠서)
     //select에서 선택중인 값
@@ -189,14 +190,40 @@ const ItemAdminPage = () => {
     const handleSelectAdminItem = (itemId) => {
         const numberItemId = Number(itemId);
 
-        if (selectedItemIds.includes(numberItemId)) {
-            setSelectedItemIds(
-                selectedItemIds.filter((id) => id !== numberItemId)
-            );
+        setSelectedItemIds((prevIds) => {
+            if (prevIds.includes(numberItemId)) {
+                return prevIds.filter((id) => id !== numberItemId);
+            }
+
+            return [...prevIds, numberItemId];
+        });
+    };
+
+    //선택 상품 목록에서 개별 상품 선택 해제
+    const handleRemoveSelectedAdminItem = (itemId) => {
+        const numberItemId = Number(itemId);
+
+        setSelectedItemIds((prevIds) =>
+            prevIds.filter((id) => id !== numberItemId)
+        );
+    };
+
+    //선택한 상품 목록 전체 비우기
+    const handleClearSelectedAdminItems = () => {
+        if (selectedItemIds.length === 0) {
+            toast.warning("선택된 상품이 없습니다.");
             return;
         }
 
-        setSelectedItemIds([...selectedItemIds, numberItemId]);
+        const confirmClear = window.confirm(
+            "선택한 상품 목록을 모두 비우시겠습니까?"
+        );
+
+        if (!confirmClear) {
+            return;
+        }
+
+        setSelectedItemIds([]);
     };
 
     //현재 페이지 상품 전체 선택/선택헤제도...우와...신기해.
@@ -218,6 +245,7 @@ const ItemAdminPage = () => {
         const mergedIds = Array.from(
             new Set([...selectedItemIds, ...pagedItemIds])
         );
+
         setSelectedItemIds(mergedIds);
     };
 
@@ -637,6 +665,17 @@ const ItemAdminPage = () => {
         return filteredItems.slice(startIndex, endIndex);
     }, [filteredItems, currentPage]);
 
+    //선택한 상품 ID목록을 실제 상품 객체 목록으로 변환
+    //필터/페이지가 바뀌어도 selectedItemIds는 유지되므로,
+    //관리자가 선택한 상품을 아래에서 계속 확인할 수 있음
+    const selectedAdminItems = useMemo(() => {
+        return selectedItemIds
+            .map((itemId) =>
+                items.find((item) => Number(item.itemId) === Number(itemId))
+            )
+            .filter(Boolean);
+    }, [selectedItemIds, items]);
+
     // 5개 단위 페이지 블록 계산
     const currentPageBlock = Math.floor((currentPage - 1) / PAGE_BLOCK_SIZE);
     const startPage = currentPageBlock * PAGE_BLOCK_SIZE + 1;
@@ -761,7 +800,9 @@ const ItemAdminPage = () => {
                         disabled={selectedItemIds.length === 0}
                     >
                         선택 삭제
-                        {selectedItemIds.length > 0 ? `(${selectedItemIds.length})` : ""}
+                        {selectedItemIds.length > 0
+                            ? `(${selectedItemIds.length})`
+                            : ""}
                     </button>
                 </div>
 
@@ -789,7 +830,9 @@ const ItemAdminPage = () => {
                                 <select
                                     className="itemAdmin-select"
                                     value={searchCategoryFilter}
-                                    onChange={(e) => setSearchCategoryFilter(e.target.value)}
+                                    onChange={(e) =>
+                                        setSearchCategoryFilter(e.target.value)
+                                    }
                                 >
                                     <option value="">전체</option>
                                     <option value="주방">주방</option>
@@ -805,7 +848,9 @@ const ItemAdminPage = () => {
                                 <select
                                     className="itemAdmin-select"
                                     value={searchSellStatusFilter}
-                                    onChange={(e) => setSearchSellStatusFilter(e.target.value)}
+                                    onChange={(e) =>
+                                        setSearchSellStatusFilter(e.target.value)
+                                    }
                                 >
                                     <option value="">전체</option>
                                     <option value="SELL">SELL</option>
@@ -821,7 +866,9 @@ const ItemAdminPage = () => {
                                 <select
                                     className="itemAdmin-select"
                                     value={searchStockSort}
-                                    onChange={(e) => setSearchStockSort(e.target.value)}
+                                    onChange={(e) =>
+                                        setSearchStockSort(e.target.value)
+                                    }
                                 >
                                     <option value="">기본순</option>
                                     <option value="stockAsc">재고 적은순</option>
@@ -871,7 +918,9 @@ const ItemAdminPage = () => {
                                                     checked={
                                                         pagedItems.length > 0 &&
                                                         pagedItems.every((item) =>
-                                                            selectedItemIds.includes(Number(item.itemId))
+                                                            selectedItemIds.includes(
+                                                                Number(item.itemId)
+                                                            )
                                                         )
                                                     }
                                                     onChange={handleSelectAllPagedItems}
@@ -938,7 +987,9 @@ const ItemAdminPage = () => {
                                                         </button>
 
                                                         <span className="itemAdmin-reviewCount">
-                                                            {reviewCounts[item.itemId]?.reviewCount ?? 0}개
+                                                            {reviewCounts[item.itemId]?.reviewCount ??
+                                                                0}
+                                                            개
                                                         </span>
                                                     </div>
                                                 </td>
@@ -949,7 +1000,9 @@ const ItemAdminPage = () => {
                                                             type="button"
                                                             className="itemAdmin-tableButton"
                                                             onClick={() =>
-                                                                navigate(`/item/update/${item.itemId}`)
+                                                                navigate(
+                                                                    `/item/update/${item.itemId}`
+                                                                )
                                                             }
                                                         >
                                                             수정
@@ -1008,6 +1061,75 @@ const ItemAdminPage = () => {
                                         </button>
                                     </div>
                                 )}
+
+                                {/*선택한 상품 목록 표시 영역 */}
+                                <div className="itemAdmin-selectedBox">
+                                    <div className="itemAdmin-selectedHeader">
+                                        <h3 className="itemAdmin-selectedTitle">
+                                            선택한 상품
+                                            <span className="itemAdmin-selectedCount">
+                                                {selectedAdminItems.length}개
+                                            </span>
+                                        </h3>
+
+                                        <div className="itemAdmin-selectedButtonArea">
+                                            <button
+                                                type="button"
+                                                className="itemAdmin-button itemAdmin-dangerButton"
+                                                onClick={handleAdminDeleteSelectedItems}
+                                                disabled={selectedAdminItems.length === 0}
+                                            >
+                                                선택 삭제
+                                            </button>
+
+                                            <button
+                                                type="button"
+                                                className="itemAdmin-button itemAdmin-subButton"
+                                                onClick={handleClearSelectedAdminItems}
+                                                disabled={selectedAdminItems.length === 0}
+                                            >
+                                                선택 비우기
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    {selectedAdminItems.length === 0 ? (
+                                        <p className="itemAdmin-emptyText">
+                                            선택한 상품이 없습니다.
+                                        </p>
+                                    ) : (
+                                        <div className="itemAdmin-selectedList">
+                                            {selectedAdminItems.map((item) => (
+                                                <div
+                                                    key={item.itemId}
+                                                    className="itemAdmin-selectedCard"
+                                                >
+                                                    <div>
+                                                        <p className="itemAdmin-selectedName">
+                                                            {item.itemName}
+                                                        </p>
+
+                                                        <p className="itemAdmin-selectedInfo">
+                                                            ID {item.itemId} · {item.itemCategory} ·{" "}
+                                                            {formatPrice(item.itemPrice)}원 · 재고{" "}
+                                                            {item.itemStock}개 · {item.itemSellStatus}
+                                                        </p>
+                                                    </div>
+
+                                                    <button
+                                                        type="button"
+                                                        className="itemAdmin-tableButton itemAdmin-tableDangerButton"
+                                                        onClick={() =>
+                                                            handleRemoveSelectedAdminItem(item.itemId)
+                                                        }
+                                                    >
+                                                        선택 해제
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         )}
                     </div>
@@ -1025,7 +1147,9 @@ const ItemAdminPage = () => {
                             <select
                                 className="itemAdmin-select"
                                 value={searchReviewProductFilter}
-                                onChange={(e) => setSearchReviewProductFilter(e.target.value)}
+                                onChange={(e) =>
+                                    setSearchReviewProductFilter(e.target.value)
+                                }
                             >
                                 <option value="hasReview">리뷰 있는 상품</option>
                                 <option value="lowScore">낮은 평점 상품</option>
@@ -1036,7 +1160,9 @@ const ItemAdminPage = () => {
                             <button
                                 type="button"
                                 className="itemAdmin-button"
-                                onClick={() => setReviewProductFilter(searchReviewProductFilter)}
+                                onClick={() =>
+                                    setReviewProductFilter(searchReviewProductFilter)
+                                }
                             >
                                 조회하기
                             </button>

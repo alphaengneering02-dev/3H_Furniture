@@ -609,3 +609,73 @@
         padding: 18px;
     }
 }
+
+/* ================================
+   선택한 상품 목록
+================================ */
+
+.itemAdmin-selectedBox {
+    margin-top: 28px;
+    padding: 24px;
+    border: 1px solid #E3DCD0;
+    border-radius: 16px;
+    background-color: #FFFFFF;
+    box-shadow: 0 12px 32px rgba(46, 42, 36, 0.05);
+}
+
+.itemAdmin-selectedHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 18px;
+}
+
+.itemAdmin-selectedTitle {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: #2E2A24;
+}
+
+.itemAdmin-selectedCount {
+    margin-left: 10px;
+    color: #5F6F52;
+    font-size: 15px;
+}
+
+.itemAdmin-selectedButtonArea {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.itemAdmin-selectedList {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.itemAdmin-selectedCard {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 18px;
+    border: 1px solid #EAE4DA;
+    border-radius: 12px;
+    background-color: #FAFBF7;
+}
+
+.itemAdmin-selectedName {
+    margin: 0 0 6px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #2E2A24;
+}
+
+.itemAdmin-selectedInfo {
+    margin: 0;
+    font-size: 13px;
+    color: #6E695F;
+}
