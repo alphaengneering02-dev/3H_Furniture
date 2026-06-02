@@ -16,12 +16,11 @@ const AdminDashboard = () => {
     const navigate = useNavigate();
     const [selectedDrivers, setSelectedDrivers] = useState({});
     const [adminId, setAdminId] = useState('관리자');
-
     const [orders, setOrders] = useState([]);
-    // 💡 원래 items였던 기사 리스트 상태명을 'drivers'로 명확하게 변경합니다.
-    const [drivers, setDrivers] = useState([]); 
+    const [drivers, setDrivers] = useState([]);
+    const [items, setItems] = useState([]);
+    const [searchResults, setSearchResults] = useState([]);
 
-    // 상품 번호를 입력받아 검증 후 상세 페이지로 이동하는 함수
     const handleEditItemDetail = () => {
         navigate('/item'); 
     };
@@ -60,7 +59,24 @@ const AdminDashboard = () => {
         
         fetchDeliveries();
         fetchOrders();
+        fetchItems();
     }, [navigate]);
+
+    const fetchItems = async () => {
+        try {
+            const response = await axios.get('http://localhost:8080/api/main/searchResult', {
+                params: { searchValue: "" }, // 빈 값 주면 전체 조회되도록 백엔드가 설계되어 있다면 활용
+                withCredentials: true
+            });
+            setItems(response.data);
+        } catch (error) {
+            console.error("❌ 상품 리스트 로드 실패:", error);
+        }
+    };
+
+    const handleSearchResults = (data) => {
+        setSearchResults(data);        
+    };
 
     const handleDriverSelect = (orderId, deliveryId) => {
         setSelectedDrivers(prev => ({
@@ -160,7 +176,7 @@ const AdminDashboard = () => {
                 <hr className="admin-sidebar-divider" />
 
                 {/* 전체 검색 컴포넌트에도 드라이버 데이터를 바인딩 */}
-                <AdminSearch items={drivers} />
+                <AdminSearch items={items} onSearch={handleSearchResults} />
                 <hr className="admin-sidebar-divider" />
 
                 <div className="admin-control-panel">  
@@ -195,7 +211,7 @@ const AdminDashboard = () => {
                 <h1>Admin Dashboard</h1>
 
                 {orders && orders.length > 0 && drivers && drivers.length > 0 ? (
-                    <Ranking orders={orders} items={drivers} />
+                    <Ranking orders={orders} drivers={drivers} />
                 ) : (
                     <div className="admin-ranking-card-box">
                         📊 실시간 대시보드 랭킹 데이터를 집계하고 있습니다...
@@ -209,7 +225,7 @@ const AdminDashboard = () => {
                 </div>
 
                 {/* AllOrderboard 컴포넌트 */}
-                <AllOrderboard 
+                <AllOrderboard
                     items={drivers}
                     handleDriverSelect={handleDriverSelect}
                     handleAssignDriver={handleAssignDriver}
@@ -266,9 +282,10 @@ const AdminDashboard = () => {
                     </div>
                 </div>
 
-                {/* 💡 꼬여있던 Props 전달 수정: orders 배열과 drivers 배열을 명확하게 분리해서 전달합니다. */}
-                <Orderboard  
-                    orders={orders}
+                <Orderboard 
+                orders={orders?.filter(order => 
+                    order.deliveryStatus === "배송완료" && order.orderState === "구매확정"
+                    )}  
                     drivers={drivers} 
                     selectedDrivers={selectedDrivers}
                     handleDriverSelect={handleDriverSelect}
