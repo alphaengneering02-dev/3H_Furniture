@@ -32,7 +32,6 @@ const DriverPage = () => {
         }
     }, []);
 
-    // 💡 백엔드 DB 상태 문자열 구조에 맞춰 정확히 필터링
     const fetchDriverOrders = async (deliveryId) => {
         try {
             const orderRes = await axios.get(`/admin/driver/${deliveryId}/orders`);
@@ -40,22 +39,18 @@ const DriverPage = () => {
 
             console.log('DB에서 받아온 실시간 데이터:', dbOrders);
             
-            // 1. 신규 배정
             const newOrders = dbOrders.filter(o => 
                 o.orderState === '배송 준비중' && o.deliveryStatus === '수락'
             );
             
-            // 2. 수락된 주문
             const accepted = dbOrders.filter(o => 
                 o.orderState === '배송 준비중' && o.deliveryStatus === '대기중'
             );
 
-            // 3. 배송중 필터링 (출발 이후 상태)
             const shipping = dbOrders.filter(o => 
                 o.deliveryStatus === '배송중' && o.orderState !== '주문취소'
             );
 
-            // 4. 교환/반품 필터링
             const pickups = dbOrders.filter(o => 
                 o.deliveryStatus === '수거' && (o.orderState === '교환또는환불' || o.orderState === '주문취소')
             );
@@ -64,6 +59,11 @@ const DriverPage = () => {
             setAcceptedOrders(accepted);
             setShippingOrders(shipping);
             setPickupOrders(pickups);
+
+            // 데이터 새로고침 시 기존에 선택되어 있던 체크박스 초기화
+            setSelectedOrders([]);
+            setShippingCheckeds([]);
+            setPickupCheckeds([]);
 
         } catch (err) {
             console.error("주문 목록 로드 실패", err);
@@ -139,26 +139,56 @@ const DriverPage = () => {
         toast.error("로그아웃 되었습니다.");
     };
 
-    // 신규 배정 체크박스 토글
+    // ─── [추가] 개별 및 전체 체크박스 제어 토글 함수들 ───
+
+    // 1. 신규 배정 체크박스 토글
     const toggleSelect = (id) => {
         setSelectedOrders(prev =>
             prev.includes(id) ? prev.filter(v => v !== id) : [...prev, id]
         );
     };
 
-    // 🚚 배송 중 목록 체크박스 토글
+    // 1-2. 신규 배정 전체 선택/해제
+    const toggleSelectAllOrders = () => {
+        if (selectedOrders.length === orders.length) {
+            setSelectedOrders([]); // 이미 모두 선택되어 있으면 전체 해제
+        } else {
+            setSelectedOrders(orders.map(o => o.orderId)); // 전체 선택
+        }
+    };
+
+    // 3. 배송 중 목록 체크박스 토글
     const toggleShippingSelect = (id) => {
         setShippingCheckeds(prev =>
             prev.includes(id) ? prev.filter(v => v !== id) : [...prev, id]
         );
     };
 
-    // 🔄 회수 목록 체크박스 토글 함수
+    // 3-2. 배송 중 목록 전체 선택/해제
+    const toggleSelectAllShipping = () => {
+        if (shippingCheckeds.length === shippingOrders.length) {
+            setShippingCheckeds([]);
+        } else {
+            setShippingCheckeds(shippingOrders.map(o => o.orderId));
+        }
+    };
+
+    // 4. 회수 목록 체크박스 토글 함수
     const togglePickupSelect = (id) => {
         setPickupCheckeds(prev =>
             prev.includes(id) ? prev.filter(v => v !== id) : [...prev, id]
         );
     };
+
+    // 4-2. 회수 목록 전체 선택/해제
+    const toggleSelectAllPickup = () => {
+        if (pickupCheckeds.length === pickupOrders.length) {
+            setPickupCheckeds([]);
+        } else {
+            setPickupCheckeds(pickupOrders.map(o => o.orderId));
+        }
+    };
+
 
     // 선택 수락
     const handleAccept = async () => {
@@ -173,7 +203,6 @@ const DriverPage = () => {
                 )
             );
 
-            // 💡 프론트 UI 즉시 반영 시 상태 값을 백엔드 기준('WAITING')으로 가공하여 이동시킵니다.
             const accepted = orders
                 .filter(o => selectedOrders.includes(o.orderId))
                 .map(o => ({ ...o, deliveryStatus: '대기중' }));
@@ -183,7 +212,6 @@ const DriverPage = () => {
             setSelectedOrders([]);
             toast.success("선택한 주문을 수락했습니다. (출발 대기 목록으로 이동)");
 
-            // 안전하게 데이터를 한 번 더 새로고침해 줍니다.
             fetchDriverOrders(driver.deliveryId);
 
         } catch (err) {
@@ -388,7 +416,21 @@ const DriverPage = () => {
 
             <div className="driver-container">
                 {/* 1. 신규 배정 섹션 */}
-                <h2 className="driver-headline">📌 신규 배정 (수락 대기 목록)</h2>
+                <div className="driver-section-header" style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                    <h2 className="driver-headline" style={{ margin: 0 }}>📌 신규 배정 (수락 대기 목록)</h2>
+                    {orders.length > 0 && (
+                        <label style={{ cursor: 'pointer', fontSize: '15px', fontWeight: 'bold' }}>
+                            <input 
+                                type="checkbox" 
+                                style={{ transform: 'scale(1.2)', marginRight: '6px' }}
+                                checked={orders.length > 0 && selectedOrders.length === orders.length}
+                                onChange={toggleSelectAllOrders}
+                            />
+                            전체 선택 ({selectedOrders.length}/{orders.length}건)
+                        </label>
+                    )}
+                </div>
+
                 {orders.length === 0 ? (
                     <p className="driver-empty-msg">새로운 배정 요청이 없습니다.</p>
                 ) : (
@@ -466,7 +508,21 @@ const DriverPage = () => {
                 )}
 
                 {/* 3. 배송 중 리스트 섹션 */}
-                <h2 className="driver-headline">🚚 배달중 (현재 실시간 배송 진행)</h2>
+                <div className="driver-section-header" style={{ display: 'flex', alignItems: 'center', gap: '15px', marginTop: '20px' }}>
+                    <h2 className="driver-headline" style={{ margin: 0 }}>🚚 배달중 (현재 실시간 배송 진행)</h2>
+                    {shippingOrders.length > 0 && (
+                        <label style={{ cursor: 'pointer', fontSize: '15px', fontWeight: 'bold' }}>
+                            <input 
+                                type="checkbox" 
+                                style={{ transform: 'scale(1.2)', marginRight: '6px' }}
+                                checked={shippingOrders.length > 0 && shippingCheckeds.length === shippingOrders.length}
+                                onChange={toggleSelectAllShipping}
+                            />
+                            전체 선택 ({shippingCheckeds.length}/{shippingOrders.length}건)
+                        </label>
+                    )}
+                </div>
+
                 {shippingOrders.length === 0 ? (
                     <p className="driver-empty-msg">현재 진행 중인 배송 임무가 없습니다.</p>
                 ) : (
@@ -499,7 +555,21 @@ const DriverPage = () => {
                 )}
 
                 {/* 4. 회수 목록 섹션 */}
-                <h2 className="driver-headline driver-headline-pickup">🔄 회수 (교환 및 반품 수거 목록)</h2>
+                <div className="driver-section-header" style={{ display: 'flex', alignItems: 'center', gap: '15px', marginTop: '20px' }}>
+                    <h2 className="driver-headline driver-headline-pickup" style={{ margin: 0 }}>🔄 회수 (교환 및 반품 수거 목록)</h2>
+                    {pickupOrders.length > 0 && (
+                        <label style={{ cursor: 'pointer', fontSize: '15px', fontWeight: 'bold' }}>
+                            <input 
+                                type="checkbox" 
+                                style={{ transform: 'scale(1.2)', marginRight: '6px' }}
+                                checked={pickupOrders.length > 0 && pickupCheckeds.length === pickupOrders.length}
+                                onChange={toggleSelectAllPickup}
+                            />
+                            전체 선택 ({pickupCheckeds.length}/{pickupOrders.length}건)
+                        </label>
+                    )}
+                </div>
+
                 {pickupOrders.length === 0 ? (
                     <p className="driver-empty-msg">현재 예정된 교환/반품 회수 건이 없습니다.</p>
                 ) : (

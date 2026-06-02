@@ -268,18 +268,15 @@ const AllOrderboard = ({
                                     checked={currentSelectableOrders.length > 0 && currentSelectableOrders.every(o => selectedOrderIds.includes(o.orderId))}
                                 />
                             </th>
-                            <th>주문 번호</th><th>주문자</th><th>상품</th><th>수량</th><th>주문 타입</th><th>주소</th><th>주문 상태</th><th>배송 상태</th><th>주문일</th>
+                            <th>주문 번호</th><th>주문자</th><th>상품</th><th>수량</th><th>주문 타입</th><th>주소</th><th>주문 상태</th><th>배송 상태</th><th>주문일</th><th>주문신청일</th>
                         </tr>
                     </thead>
                     <tbody>
                         {pagedOrders.map(order => {
-                            // 💡 여기서 selectable 여부를 판단합니다.
                             const selectable = isSelectable(order);
-
                             return (
                                 <tr key={order.orderId} style={!selectable ? { opacity: 0.6 } : {}}>
                                     <td>
-                                        {/* 💡 핵심: ORDER나 주문이 아니면 무조건 비활성화 처리 */}
                                         <input 
                                             type="checkbox" 
                                             disabled={!selectable}
@@ -296,6 +293,7 @@ const AllOrderboard = ({
                                     <td><span>{order.orderState}</span></td>
                                     <td><span>{order.deliveryStatus || '-'}</span></td>
                                     <td>{order.orderDate?.split('T')[0]}</td>
+                                    <td>{order.delivery_date}</td>
                                 </tr>
                             );
                         })}

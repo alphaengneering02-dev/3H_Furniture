@@ -439,3 +439,31 @@
 .driver-btn-gray-sm:hover {
     background-color: #5c534c;
 }
+
+/* 3. 💡 [배송 파트너 레이아웃] 기사 전용 상단 정보 바 - 매혹적인 '딥 체러키 버건디' + 그림자 */
+.driver-top-info-bar {
+  background-color: #702A24 !important; /* 💡 명품 마호가니빛 딥 체러키 주입 */
+  border-top: 1px solid #8B3E37 !important;          
+  border-bottom: 1px solid #531D19 !important;     
+  
+  /* 💡 버건디 바 아래 영역으로 부드럽고 우아하게 밀려내려오는 입체적 그림자 그라데이션 */
+  position: relative;
+  z-index: 20;
+  box-shadow: 0 10px 30px rgba(112, 42, 36, 0.15), 
+              0 3px 12px rgba(112, 42, 36, 0.08) !important; 
+}
+
+/* 딥 체러키 정보 바 내부의 기사 정보 텍스트 및 강조 폰트 - 선명한 순백색 마감 */
+.driver-info-text,
+.driver-info-text strong {
+  color: #FFFFFF !important; 
+  font-weight: 600 !important;
+  letter-spacing: 0.3px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* 정보 바 우측 관리자 메인 및 로그아웃 버튼 호버 효과 - 리넨 베이지빛 폰트로 피드백 */
+.driver-top-btn-group button:hover {
+  color: #F5EBE6 !important; /* 호버 시 리넨 베이지빛 코드가 들어가도록 설정 */
+  border-color: #F5EBE6 !important;
+}

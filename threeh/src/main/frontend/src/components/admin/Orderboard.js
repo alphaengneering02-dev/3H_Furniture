@@ -6,7 +6,7 @@ import '../../css/adminCss/AdminDashboard.css';
 
 const Orderboard = ({
     orders = [],
-    drivers = [], // 💡 상품 아이템이 아니라 기사 정보임을 명시적으로 받음
+    drivers = [], 
     selectedDrivers = {},
     handleDriverSelect,
     handleAssignDriver,
@@ -37,11 +37,28 @@ const Orderboard = ({
         if (state === '주문') state = 'ORDER';
         if (state === '배송 준비중') state = 'READY';
 
+        // -------------------------------------------------------------
+        // ✨ [여기 수정!] 배송 상태값 전처리 로직 추가
+        // -------------------------------------------------------------
+        let dStatus = o.deliveryStatus || o.DELIVERY_STATUS || '';
+        
+        // 문자열 앞뒤 공백을 제거하고 비교합니다.
+        const trimmedStatus = dStatus.toString().trim();
+        
+        if (
+            trimmedStatus === '배송중' || 
+            trimmedStatus === '배송 진행중' || 
+            trimmedStatus.toUpperCase() === 'SHIPPING'
+        ) {
+            dStatus = 'SHIPPING'; // 내부적으로 사용할 상태값으로 통일
+        }
+        // -------------------------------------------------------------
+
         return {
             ...o,
             orderId: o.orderId || o.ORDER_ID,
             orderState: state,
-            deliveryStatus: o.deliveryStatus || o.DELIVERY_STATUS,
+            deliveryStatus: dStatus, // 👈 정제된 배송 상태값 대입!
             deliveryId: o.deliveryId || o.DELIVERY_ID,
             deliveryAddr: o.deliveryAddr || o.DELIVERY_ADDR,
             deliveryAddrDetail: o.deliveryAddrDetail || o.DELIVERY_ADDR_DETAIL,
@@ -62,7 +79,6 @@ const Orderboard = ({
                 return sum + ((item.orderPrice || 0) * (item.count || 0));
             }, 0) || 0;
 
-            // 💡 items가 아닌 drivers 배열에서 찾도록 수정됨
             const driverName = drivers.find(d => d.deliveryId === Number(order.deliveryId))?.deliveryName || "담당 기사";
 
             return {
@@ -137,6 +153,7 @@ const Orderboard = ({
         return isReady && isDeliveryNullOrRejectedOrAccepted;
     });
 
+    // 💡 위에서 전처리를 마쳤기 때문에 기존 'SHIPPING' 필터 조건으로 한글 데이터도 완벽히 잡아냅니다!
     const shippingOrders = normalizedOrders.filter(o => o.deliveryStatus === 'SHIPPING');
     
     const pickupOrders = normalizedOrders.filter(o => {
@@ -149,17 +166,16 @@ const Orderboard = ({
     });
     
     const completedOrders = normalizedOrders.filter(o => {
-    const isCompleted = o.deliveryStatus === 'COMPLETED' || o.deliveryStatus === '배송완료';
-    
-    
-    const isValidState = 
-        o.orderState === 'EXCHANGEorREFUND' || 
-        o.orderState === '교환또는환불' || 
-        o.orderState === 'PURCHASED' || 
-        o.orderState === '구매확정';
+        const isCompleted = o.deliveryStatus === 'COMPLETED' || o.deliveryStatus === '배송완료';
+        
+        const isValidState = 
+            o.orderState === 'EXCHANGEorREFUND' || 
+            o.orderState === '교환또는환불' || 
+            o.orderState === 'PURCHASED' || 
+            o.orderState === '구매확정';
 
-    return isCompleted && isValidState;
-});
+        return isCompleted && isValidState;
+    });
 
     const pagedAssigned = assignedOrders.slice((page2 - 1) * perPage2, page2 * perPage2);
     const pagedUnassigned = unassignedOrders.slice((page3 - 1) * perPage3, page3 * perPage3);
@@ -394,6 +410,7 @@ const Orderboard = ({
                     </table>
                 </div>
             </div>
+            <ToastContainer />
         </div>
     );
 };
