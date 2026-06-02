@@ -50,7 +50,7 @@ function AdrdressInput({ address, setAddress, zipCode, setZipcode, detailedAddre
         <Button 
           variant="contained" 
           onClick={toggleHandler}
-          sx={{ height: '40px', backgroundColor: 'var(--color-charcoal)', color: '#000', '&:hover': { backgroundColor: '#000000', color: "#fff" } }}
+          sx={{ height: '40px', color: '#000', '&:hover': { backgroundColor: '#000000', color: "#fff" } }}
         >
           주소 찾기
         </Button>
