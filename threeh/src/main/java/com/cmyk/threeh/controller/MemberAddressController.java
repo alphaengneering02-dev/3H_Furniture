@@ -47,7 +47,7 @@ import com.cmyk.threeh.enums.OrderState;
         }
 
 
-            // =========================================================================
+        // =========================================================================
         // 🚀 [인호 백엔드 진짜 최종 완결]: findByMemberId 규격 일치화 및 DB 강제 반영
         // =========================================================================
         @PostMapping("/order/cancel")
@@ -294,42 +294,44 @@ import com.cmyk.threeh.enums.OrderState;
             return ResponseEntity.ok(refundList);
         }
 
-        //구매확정_코딩추가
-        @PostMapping("/purchase/confirm")
-        @Transactional
-        public ResponseEntity<String> confResponseEntity(
-            @RequestParam("orderId") Long orderId, Principal principal) 
-            {
-                String loginId = getLoginIdOrNull(principal);
+        // //구매확정_코딩추가
+        // @PostMapping("/purchase/confirm")
+        // @Transactional
+        // public ResponseEntity<String> confResponseEntity(
+        //     @RequestParam("orderId") Long orderId, Principal principal) 
+        //     {
+        //         String loginId = getLoginIdOrNull(principal);
 
-                if (loginId == null) {
-                    return ResponseEntity.status(401).body("로그인이 필요합니다.");
-                }
+        //         if (loginId == null) {
+        //             return ResponseEntity.status(401).body("로그인이 필요합니다.");
+        //         }
 
-                Orders order = orderRepository.findById(orderId)
-                        .orElseThrow(() -> new IllegalArgumentException("주문을 찾을 수 없습니다."));
+        //         Orders order = orderRepository.findById(orderId)
+        //                 .orElseThrow(() -> new IllegalArgumentException("주문을 찾을 수 없습니다."));
                 
-                if(order.getOrderState() == OrderState.CANCEL){
-                    return ResponseEntity.badRequest().body("취소된 주문은 구매확정할 수 없습니다.");
-                }
+        //         if(order.getOrderState() == OrderState.CANCEL){
+        //             return ResponseEntity.badRequest().body("취소된 주문은 구매확정할 수 없습니다.");
+        //         }
 
-                if(order.getOrderState() == OrderState.PURCHASED){
-                    return ResponseEntity.badRequest().body("이미 구매확정된 주문입니다.");
-                }
+        //         if(order.getOrderState() == OrderState.PURCHASED){
+        //             return ResponseEntity.badRequest().body("이미 구매확정된 주문입니다.");
+        //         }
 
-                if(order.getOrderState() != OrderState.SHIPPING && order.getDeliveryStatus() != DeliveryStatus.COMPLETED){
-                    return ResponseEntity.badRequest().body("배송 완료 상태의 주문만 구매확정 할 수 있습니다.");
-                }
+        //         if(order.getOrderState() != OrderState.SHIPPING && order.getDeliveryStatus() != DeliveryStatus.COMPLETED){
+        //             return ResponseEntity.badRequest().body("배송 완료 상태의 주문만 구매확정 할 수 있습니다.");
+        //         }
 
-                if(order.getDeliveryStatus()==null|| !"COMPLETED".equals(order.getDeliveryStatus().name())){
-                    return ResponseEntity.badRequest().body("배송완료된 주문만 구매확정 할 수 있습니다.");
-                }
+        //         if(order.getDeliveryStatus()==null|| !"COMPLETED".equals(order.getDeliveryStatus().name())){
+        //             return ResponseEntity.badRequest().body("배송완료된 주문만 구매확정 할 수 있습니다.");
+        //         }
 
-                // 끊겼던 구매확정 최종 저장 및 응답 로직 처리 마감
-                order.changeOrderState(OrderState.PURCHASED);
-                orderRepository.save(order);
-                return ResponseEntity.ok("구매확정이 완료되었습니다.");
-            }
+        //         // 끊겼던 구매확정 최종 저장 및 응답 로직 처리 마감
+        //         order.changeOrderState(OrderState.PURCHASED);
+        //         orderRepository.save(order);
+        //         return ResponseEntity.ok("구매확정이 완료되었습니다.");
+        //     }
+
+        
 
         /**
          * 교환 신청 처리 API
@@ -357,33 +359,83 @@ import com.cmyk.threeh.enums.OrderState;
             return ResponseEntity.ok("교환 접수가 완료되었습니다.");
         }
 
-        /**
-         * 2반품 접수(구매 취소) 처리 API
-         * 리액트의 handleRefund 함수가 요청하는 '@PostMapping("/Member/refund/process")' 주소 매핑
+        // /**
+        //  * 2반품 접수(구매 취소) 처리 API
+        //  * 리액트의 handleRefund 함수가 요청하는 '@PostMapping("/Member/refund/process")' 주소 매핑
+        //  */
+        // @PostMapping("/refund/process")
+        // @Transactional
+        // public ResponseEntity<String> processRefund(
+        //         @RequestParam("orderId") Long orderId, Principal principal) {
+
+        //     //order state 검증 코드
+            
+
+        //     String loginId = getLoginIdOrNull(principal);
+        //     if (loginId == null) return ResponseEntity.status(401).body("로그인이 필요합니다.");
+
+        //     Orders order = orderRepository.findById(orderId)
+        //             .orElseThrow(() -> new IllegalArgumentException("주문을 찾을 수 없습니다."));
+
+        //     // 고유 CANCEL 스펙
+        //     order.changeOrderState(OrderState.CANCEL);
+            
+        //     orderRepository.save(order);
+            
+        //     // [핵심 해결 키포인트]: 메모리 들러붙음 현상을 깨부수고 DB 디스크로 데이터 다이렉트 투과!
+        //     orderRepository.flush(); 
+
+        //     return ResponseEntity.ok("주문 취소가 완료되었습니다.");
+        // }
+
+                /**
+         * 2. 반품/교환 접수 처리 API
+         * 리액트의 handleRefund 및 handleExchange 함수가 공동 요청하는 주소 매핑
          */
         @PostMapping("/refund/process")
         @Transactional
         public ResponseEntity<String> processRefund(
-                @RequestParam("orderId") Long orderId, Principal principal) {
+                @RequestParam("orderId") Long orderId, 
+                @RequestParam(value = "itemId", required = false) Long itemId, // 리액트가 던지는 itemId 수령 완수
+                Principal principal) {
 
-            //order state 검증 코드
-            
             String loginId = getLoginIdOrNull(principal);
             if (loginId == null) return ResponseEntity.status(401).body("로그인이 필요합니다.");
 
             Orders order = orderRepository.findById(orderId)
                     .orElseThrow(() -> new IllegalArgumentException("주문을 찾을 수 없습니다."));
 
-            // 고유 CANCEL 스펙
-            order.changeOrderState(OrderState.CANCEL);
-            
-            orderRepository.save(order);
-            
-            // [핵심 해결 키포인트]: 메모리 들러붙음 현상을 깨부수고 DB 디스크로 데이터 다이렉트 투과!
-            orderRepository.flush(); 
+            OrderState currentState = order.getOrderState();
+            DeliveryStatus deliveryState = order.getDeliveryStatus();
 
-            return ResponseEntity.ok("주문 취소가 완료되었습니다.");
+            // 1. [기획 안전 가드]: 이미 취소되었거나 정산 마감된 구매확정(PURCHASED) 주문은 반품 신청 원천 차단!
+            if (currentState == OrderState.CANCEL || currentState == OrderState.PURCHASED) {
+                return ResponseEntity.badRequest().body("취소 완료되었거나 구매확정된 주문은 반품/교환 신청이 불가능합니다.");
+            }
+            if (currentState == OrderState.EXCHANGEorREFUND) {
+                return ResponseEntity.badRequest().body("이미 반품/교환 접수가 진행 중인 주문입니다.");
+            }
+
+            // 2. [질문자님 정석 기획 실장 마침표]: 
+            // 취소 로직 다 걷어내고! 오직 기사님이 배송완료(COMPLETED) 처리를 완료한 주문일 때만 
+            // 정석대로 영문 EXCHANGEorREFUND(반품/교환 접수완료) 상태로 전환을 승인합니다!
+            if (deliveryState == DeliveryStatus.COMPLETED) {
+                order.changeOrderState(OrderState.EXCHANGEorREFUND); 
+                
+                orderRepository.save(order);
+                // 🌟 메모리 락을 깨부수고 DB 디스크로 데이터를 즉시 연동 투과시키는 플러시 장착 완료
+                orderRepository.flush(); 
+                
+                return ResponseEntity.ok("반품/교환 접수가 완료되었습니다. 수거를 위해 기사님이 방문할 예정입니다.");
+            }
+
+            // 3. 만약 배송 완료가 안 되었는데 이 방으로 반품 요청이 들어왔을 때 튕겨내는 가드
+            return ResponseEntity.badRequest().body("배송 완료(COMPLETED) 상태의 상품만 반품/교환 신청이 가능합니다.");
         }
+
+
+
+
 
         /**
          * 탭 1용 API : 신청 가능한 주문 내역만 필터링 조회 (단가, 수량 완벽 결합)

@@ -5,10 +5,10 @@ import '../../css/adminCss/AdminRanking.css';
 const SAMPLE_ORDERS = [];
 const SAMPLE_DRIVERS = [];
 
-const Ranking = ({ orders = [], items = [] }) => {
+const Ranking = ({ orders = [], drivers = [] }) => {
 
     const finalOrders = orders && orders.length > 0 ? orders : SAMPLE_ORDERS;
-    const finalItems = items && items.length > 0 ? items : SAMPLE_DRIVERS;
+    const finalItems = drivers && drivers.length > 0 ? drivers : SAMPLE_DRIVERS;
 
     // ==========================================
     // 👑 1. VIP 고객 랭킹 연산 및 추적
@@ -264,13 +264,13 @@ const Ranking = ({ orders = [], items = [] }) => {
                 {/* 🚚 우수 배송 기사 랭킹 카드 */}
                 <div className="admin-ranking-card-box">
                     <div className="admin-ranking-card-header">
-                        <h3>🚚 우수 배송 기사 랭킹 (완료 기준)</h3>
+                        <h3>🚚 우수 배송 파트너 랭킹 (완료 기준)</h3>
                     </div>
                     <table className="admin-ranking-table">
                         <thead>
                             <tr>
                                 <th>순위</th>
-                                <th>기사명</th>
+                                <th>배송 파트너명</th>
                                 <th>완료 건수</th>
                             </tr>
                         </thead>
