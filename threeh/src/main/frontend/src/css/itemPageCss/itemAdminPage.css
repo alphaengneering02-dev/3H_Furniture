@@ -628,7 +628,7 @@
     justify-content: space-between;
     align-items: center;
     gap: 14px;
-    margin-bottom: 18px;
+    margin-bottom: 32px;
 }
 
 .itemAdmin-selectedTitle {
@@ -650,10 +650,19 @@
     flex-wrap: wrap;
 }
 
+.itemAdmin-selectedBox .itemAdmin-emptyText {
+    margin-top: 0;
+    padding: 64px 0;
+    border: 1px dashed #D8CEC2;
+    border-radius: 14px;
+    background-color: #FFFFFF;
+}
+
 .itemAdmin-selectedList {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    margin-top: 0;
 }
 
 .itemAdmin-selectedCard {
