@@ -132,7 +132,7 @@ const SearchResult_filter = () => {
                     <div className='search-result-slider-wrapper'>
                         <Slider
                             aria-label="가격대 범위 설정"
-                            min={0} max={500}
+                            min={price_options[0].value} max={price_options[price_options.length-1].value}
                             value={searchKey.price}
                             onChange={changePrice}
                             marks={price_options}

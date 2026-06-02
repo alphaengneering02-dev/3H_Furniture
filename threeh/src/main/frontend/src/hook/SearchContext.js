@@ -62,9 +62,15 @@ export const SearchProvider = ({ children }) => {
         }
 
         Object.keys(searchKey).forEach(key => {  //parameter - 다중 검색 조건(searchKey)을 순회하며 파라미터에 추가
-            const value = searchKey[key];  //검색조건 배열
-            if (value.length > 0) {  //유효한 값들만 params에 쉼표(,)로 연결해 추가 (예: ["거실", "주방"])
-                params.append(key, value.join(','))
+            const values = searchKey[key];  //검색조건 배열
+
+            //★ 현재 키가 'price'이고, 값이 [0, 0]인지 검사함
+            const isPriceZero = 
+                key==='price' && values[0]===0 && values[1]===0;
+
+            // 유효한 값이 있고, [0, 0]이 아닐 때만 파라미터에 추가 (쉼표로 연결)
+            if (values.length>0 && !isPriceZero) {
+                params.append(key, values.join(','))
             }
         })
 

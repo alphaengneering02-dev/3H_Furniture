@@ -274,6 +274,37 @@ const ItemDetail = () => {
         }
     };
 
+    //상품 공유하기
+    const handleShareItem = async()=>{
+        const shareUrl = window.location.href;
+        const shareTitle = item?.itemName ||"상품 상세";
+        const shareText = `&{shareTitle}상품을 확인해보세요.`;
+
+        try{
+            if(navigator.share){
+                await navigator.share({
+                    title: shareTitle,
+                    text: shareText,
+                    url:shareUrl,
+                });
+                toast.success("상품 공유가 완료되었습니다.");
+                return;
+            }
+            await navigator.clipboard.writeText(shareUrl);
+            toast.success("상품 링크가 복사되었습니다.");
+        }catch(error){
+            console.error("상품 공유 실패", error);
+
+            try{
+                await navigator.clipboard.writeText(shareUrl);
+                toast.success("상품 링크가 복사되었습니다.");
+            }catch(copyError){
+                console.error("상품 링크 복사 실패", copyError);
+                toast.error("상품 공유에 실패했습니다.");
+            }
+        }
+    };
+
     //장바구니 담기
     const handleAddCart = async () => {
         const user = getLoginUser();
@@ -650,6 +681,7 @@ const ItemDetail = () => {
                                 <IconButton
                                     type="button"
                                     className="itemDetail-iconButton"
+                                    onClick={handleShareItem}
                                     aria-label="공유"
                                 >
                                     <ShareOutlinedIcon />

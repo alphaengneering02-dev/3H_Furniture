@@ -1197,7 +1197,7 @@ const handleAdminDeleteSelectedItems = async ()=>{
                     </Link>
                   </td>
 
-                  <td>{item.itemFinalPrice}</td>
+                  <td>{formatPrice(item.itemFinalPrice)}</td>
 
                   <td>
                     <input
@@ -1216,7 +1216,7 @@ const handleAdminDeleteSelectedItems = async ()=>{
                     </span>
                   </td>
 
-                  <td>{item.itemFinalPrice * item.count}</td>
+                  <td>{formatPrice(item.itemFinalPrice * item.count)}원</td>
 
                   <td>
                     <button

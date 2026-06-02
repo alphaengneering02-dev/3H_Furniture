@@ -331,22 +331,69 @@ const ItemUpdate = () => {
                 </div>
                 <hr className="itemUpdate-divider" />
 
-                <h3 className="itemUpdate-sectionTitle">기존 이미지</h3>
+                <h3 className="itemUpdate-sectionTitle">기존 대표 이미지</h3>
 
-                {itemImgs.map((img) => (
-                    <div className="itemUpdate-imageList" key={img.itemImgId}>
-                        <img className="itemUpdate-image" src={`http://localhost:8080${img.itemImgUrl}`}
-                            alt={img.itemImgName} width="120" />
-                        <span className="itemUpdate-imageBadge">
-                            {img.thumbnailYn === "Y" ? "대표 이미지" : "서브 이미지"}
-                        </span>
+                <div className="itemUpdate-mainImageList">
+                    {itemImgs
+                        .filter((img) => img.thumbnailYn === "Y")
+                        .map((img) => (
+                            <div className="itemUpdate-imageItem itemUpdate-mainImageItem" key={img.itemImgId}>
+                                <img
+                                    className="itemUpdate-image itemUpdate-mainImage"
+                                    src={`http://localhost:8080${img.itemImgUrl}`}
+                                    alt={img.itemImgName}
+                                />
 
-                        <label className="itemUpdate-checkLabel">
-                            <input className="itemUpdate-checkbox" type="checkbox" checked={deleteImgIds.includes(img.itemImgId)} onChange={() => toggleDeleteImg(img.itemImgId)} />
-                            삭제
-                        </label>
+                                <div className="itemUpdate-imageInfo">
+                                    <span className="itemUpdate-imageBadge itemUpdate-mainImageBadge">
+                                        대표 이미지
+                                    </span>
+
+                                    <label className="itemUpdate-checkLabel">
+                                        <input
+                                            className="itemUpdate-checkbox"
+                                            type="checkbox"
+                                            checked={deleteImgIds.includes(img.itemImgId)}
+                                            onChange={() => toggleDeleteImg(img.itemImgId)}
+                                        />
+                                        삭제
+                                    </label>
+                                </div>
+                            </div>
+                        ))}
+                </div>
+
+                    <h3 className="itemUpdate-sectionTitle">기존 서브 이미지</h3>
+
+                    <div className="itemUpdate-imageList">
+                        {itemImgs
+                            .filter((img) => img.thumbnailYn === "N")
+                            .map((img) => (
+                                <div className="itemUpdate-imageItem" key={img.itemImgId}>
+                                    <img
+                                        className="itemUpdate-image"
+                                        src={`http://localhost:8080${img.itemImgUrl}`}
+                                        alt={img.itemImgName}
+                                    />
+
+                                    <div className="itemUpdate-imageInfo">
+                                        <span className="itemUpdate-imageBadge">
+                                            서브 이미지
+                                        </span>
+
+                                        <label className="itemUpdate-checkLabel">
+                                            <input
+                                                className="itemUpdate-checkbox"
+                                                type="checkbox"
+                                                checked={deleteImgIds.includes(img.itemImgId)}
+                                                onChange={() => toggleDeleteImg(img.itemImgId)}
+                                            />
+                                            삭제
+                                        </label>
+                                    </div>
+                                </div>
+                            ))}
                     </div>
-                ))}
 
                 <hr className="itemUpdate-divider" />
 

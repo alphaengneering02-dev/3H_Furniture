@@ -69,9 +69,9 @@ const SearchResult = () => {
         setSearchValue(urlSearchValue);
         setCurrentSearchValue(searchParams.get("searchValue") || "전체");
         setSearchKey({
-            category: urlCategory ? urlCategory.split(',') : category_options,
-            color: urlColor ? urlColor.split(',') : color_options,
-            price: urlPrice ? urlPrice.split(',').map(Number) : [0, 500]
+            category: urlCategory ? urlCategory.split(',') : [],
+            color: urlColor ? urlColor.split(',') : [],
+            price: urlPrice ? urlPrice.split(',').map(Number) : [0, 0]
         })
 
         // 4. URL 파라미터 값으로 데이터 가져오기
