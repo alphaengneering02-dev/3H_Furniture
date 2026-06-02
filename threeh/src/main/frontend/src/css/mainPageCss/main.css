@@ -504,17 +504,22 @@
 
 /* 카드 - 상품 이미지 */
 .best-card-list .best-card .best-img-box {
+  position: relative;
   text-align: center;
 }
 .best-card-list .best-card .best-img-box img {
   width: 100%;
   max-width: 170px;
-  height: auto;
-  object-fit: cover;
+  height: 150px;
+  object-fit: ceter /cover;
+  margin-bottom: 10%;
 }
 /* 카드 - 상품 텍스트 */
 .best-card-list .best-card .best-info p {
-  width: 100%;
+  position: absolute; bottom: 0; left: 6%;
+  width: 88%;
+  padding-bottom: 3%;
+  /* border: 1px solid red; */
 
   /* 멀티라인 말줄임표 처리 
   display: -webkit-box;
@@ -524,9 +529,9 @@
   text-overflow: ellipsis;*/
 
   /* 말줄임표 3단 콤보 */
-  white-space: nowrap; /* 줄바꿈 금지 (한 줄로만 표시) */
-  overflow: hidden;    /* 넘어가는 텍스트 숨김 */
-  text-overflow: ellipsis; /* 잘린 부분에 ... 표시 */
+  /* white-space: nowrap; 줄바꿈 금지 (한 줄로만 표시) */
+  /* overflow: hidden;    넘어가는 텍스트 숨김 */
+  /* text-overflow: ellipsis; 잘린 부분에 ... 표시 */
 }
 .best-card-list .best-card .best-info p.best-name {
   font-size: 16px; font-weight: bold;
