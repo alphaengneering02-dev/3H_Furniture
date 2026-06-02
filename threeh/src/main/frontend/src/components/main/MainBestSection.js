@@ -36,7 +36,6 @@ function MainBestSection({ bestItems }) {
                                 </div>
                                 <div className="best-info">
                                     <p className="best-name" title={item.name}>{item.name}</p>
-                                    <p className="best-sales">판매 <strong>{item.sales}개</strong></p>
                                 </div>
                             </Link>
                         </div>

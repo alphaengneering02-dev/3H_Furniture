@@ -599,6 +599,29 @@
   letter-spacing: -0.04em;
 }
 
+/* 관리자 선택 상품 영역 헤더
+   제목/버튼과 아래 목록 사이 간격 조정 */
+.item-admin-selected-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin-bottom: 34px;
+}
+
+.item-admin-selected-header .item-section-title {
+  margin-bottom: 0;
+}
+
+.item-selected-box > .item-empty-text {
+  margin-top: 0;
+}
+
+.item-selected-box > .item-table {
+  margin-top: 0;
+}
+
 .item-table {
   width: 100%;
   overflow: hidden;
@@ -822,6 +845,10 @@
     padding: 24px 18px;
   }
 
+  .item-admin-selected-header {
+    margin-bottom: 28px;
+  }
+
   .item-table {
     display: block;
     overflow-x: auto;
@@ -894,6 +921,12 @@
     margin-top: 42px;
   }
 
+  .item-admin-selected-header {
+    flex-direction: column;
+    align-items: stretch;
+    margin-bottom: 26px;
+  }
+
   .item-selected-button-area {
     flex-direction: column;
     align-items: stretch;
@@ -934,5 +967,9 @@
   .item-selected-box {
     margin-top: 44px;
     padding: 20px 14px;
+  }
+
+  .item-admin-selected-header {
+    margin-bottom: 24px;
   }
 }
