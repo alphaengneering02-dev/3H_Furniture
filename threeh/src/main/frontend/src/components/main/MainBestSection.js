@@ -11,7 +11,7 @@ function MainBestSection({ bestItems }) {
         <div className="best-section">
             <div className="best-section-header">
                 <h2 className="best-section-title">베스트 상품</h2>
-                <p className="best-section-sub">가장 많이 선택받은 인기 상품을 만나보세요</p>
+                <p className="best-section-sub">가장 많이 판매된 인기 상품을 만나보세요</p>
             </div>
 
             <div className="best-card-list">
