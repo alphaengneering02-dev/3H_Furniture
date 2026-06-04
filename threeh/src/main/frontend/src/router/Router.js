@@ -28,16 +28,16 @@ import Layout from '../global/Layout';
 import AdminDashboard from '../components/admin/AdminDashboard';
 import AddDelivery from '../components/admin/AddDelivery';
 import EditDelivery from '../components/admin/EditDelivery';
-import Refund from '../components/mypage/Refund'; 
-import MemberAddressUpdate from '../components/mypage/MemberAddressUpdate';
 import DriverPage from '../components/admin/DriverPage';
+import ProtectedRoute from '../components/admin/ProtectedRoute';
 
 //김인호
 import Mypage from '../components/mypage/Mypage';
 import Cart from '../components/mypage/Cart';
 import PaymentFail from '../components/payment/PaymentFail';
 import Schedule from '../components/mypage/Schedule';
-
+import Refund from '../components/mypage/Refund'; 
+import MemberAddressUpdate from '../components/mypage/MemberAddressUpdate';
 
 
 
@@ -78,7 +78,7 @@ const Router = () => {
             
             
                 
-                    <Route path="/admin" element={<AdminDashboard/>} />
+                    <Route path="/admin" element={<ProtectedRoute><AdminDashboard/></ProtectedRoute>} />
                     <Route path="/admin/delivery" element={<AddDelivery/>} />
                     <Route path="/admin/delivery/:deliveryId" element={<EditDelivery/>} />
                     <Route path="/admin/driver" element={<DriverPage/>} />

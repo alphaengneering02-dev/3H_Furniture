@@ -182,9 +182,24 @@ const shippingOrders = normalizedOrders.filter(o => o.deliveryStatus === 'SHIPPI
 
 // ✨ 픽업 필터
 const pickupOrders = normalizedOrders.filter(o => {
-    const currentState = String(o.orderState).trim().toUpperCase();
-    return currentState === 'EXCHANGEORREFUND' || currentState === '교환또는환불';
-});
+        const currentState = String(o.orderState).trim().toUpperCase();
+        const isPickupOrder = currentState === 'EXCHANGEORREFUND' || currentState === '교환또는환불';
+        
+        if (!isPickupOrder) return false;
+
+        const currentDeliveryStatus = String(o.deliveryStatus || '').trim().toUpperCase();
+
+        // 드롭다운 선택값에 따른 필터링 분기
+        if (pickupFilter === 'COMPLETED') {
+            // 빈 값이거나 공백일 때 기본 COMPLETED 취급인 경우도 감안하여 체크
+            return currentDeliveryStatus === 'COMPLETED' || currentDeliveryStatus === '배송완료' || currentDeliveryStatus === '';
+        } else if (pickupFilter === 'RECOVERED') {
+            return currentDeliveryStatus === 'RECOVERED' || currentDeliveryStatus === '수거완료';
+        }
+        
+        // ALL(전체보기)일 경우 조건 없이 반환
+        return true;
+    });
 
 // 최종 배송 완료 필터
 const completedOrders = normalizedOrders.filter(o => {
@@ -458,9 +473,6 @@ const pagedCompleted = completedOrders.slice((page6 - 1) * perPage6, page6 * per
     <div className="admin-order-top-row">
         <h3>🔄 반품/교환 픽업 신청 목록</h3>
                 </div>
-                <div className="admin-action-button-group" style={{ marginBottom: '10px' }}>
-                    <button className="admin-move-page-btn" onClick={() => setPickupFilter('ALL')}>전체 보기</button>
-                </div>
                 <div className="admin-table-scroll">
                     <table className="admin-table-style">
                         <thead>
@@ -469,8 +481,21 @@ const pagedCompleted = completedOrders.slice((page6 - 1) * perPage6, page6 * per
                                 <th>주문ID</th>
                                 <th>상품</th>
                                 <th>주문 상태</th>
-                                <th>현재 배송 상태</th>
-                                <th>픽업 기사 배정</th> {/* 💡 버튼 배정을 위한 헤더 추가 */}
+                             <th>
+            <div className="col-mainstatus-filter">
+                <select
+                className="admin-mainstatus-select"
+                    value={pickupFilter} 
+                    onChange={(e) => setPickupFilter(e.target.value)}
+                    style={{ padding: '2px 4px', fontSize: '12px', cursor: 'pointer' }}
+                >
+                    <option value="ALL">현재 배송 상태</option>
+                    <option value="COMPLETED">배송완료 (COMPLETED)</option>
+                    <option value="RECOVERED">수거완료 (RECOVERED)</option>
+                </select>
+            </div>
+        </th>   
+                                <th>픽업 기사 배정</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -493,20 +518,21 @@ const pagedCompleted = completedOrders.slice((page6 - 1) * perPage6, page6 * per
                                                 )}
                                             </td>
                                             <td>
-                                                {/* 💡 deliveryStatus가 아직 PICKUP이 아니라면 배정 선택창과 버튼을 보여줍니다. */}
+                                                
                                                 {order.deliveryStatus !== 'PICKUP' ? (
-        <div className="driver-select-box" style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+        <div className="admin-pickup-assign-container">
             
-            {/* ✨ [추가] 배송 완료했던 기사 정보 안내 (ID와 이름 함께 표시) */}
-            <div style={{ fontSize: '11px', color: '#7f8c8d', marginBottom: '2px' }}>
+            {/* ✨ 기존 배송 기사 안내 (텍스트 중앙 정렬) */}
+            <div className="admin-old-driver-info">
                 📦 기존 배송 기사: {order.deliveryId ? `[ID: ${order.deliveryId}] ${currentDriver || '확인 불가'}` : '기록 없음'}
             </div>
 
-            <div style={{ display: 'flex', gap: '5px' }}>
+            {/* ✨ select 박스와 버튼 그룹 (가로축 중앙 정렬) */}
+            <div className="admin-pickup-input-row">
                 <select 
+                    className="admin-status-select" /* 이전 단계에서 만든 공용 클래스 재활용 */
                     value={selectedPickupDrivers[order.orderId] || ""} 
                     onChange={(e) => handlePickupDriverSelect(order.orderId, e.target.value)}
-                    style={{ padding: '4px', fontSize: '13px' }}
                 >
                     <option value="">픽업 기사 선택</option>
                     {drivers.map(driver => (
@@ -515,9 +541,10 @@ const pagedCompleted = completedOrders.slice((page6 - 1) * perPage6, page6 * per
                         </option>
                     ))}
                 </select>
+                
                 <button 
                     type='button' 
-                    style={{ backgroundColor: '#e67e22', color: '#fff', border: 'none', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer' }} 
+                    className="admin-pickup-submit-btn"
                     onClick={() => handleAssignPickup(order.orderId)}
                 >
                     픽업 배정

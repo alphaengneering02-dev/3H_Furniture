@@ -219,6 +219,40 @@ html,
     border-bottom: none;
 }
 
+.admin-status-select {
+    background-color: #ffffff;
+    color: #2B2118;               /* 기존 td 텍스트 색상과 통일 */
+    border: 1px solid #E8D9C8;    /* 기존 content-box 보더색과 통일 */
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(74, 51, 36, 0.05);
+}
+
+/* 셀렉트 박스에 마우스를 올리거나 클릭했을 때 효과 */
+.admin-status-select:hover {
+    border-color: #8A4F25;        /* 버튼 호버 색상과 매칭 */
+    background-color: #FFFCF7;    /* content-box 배경색과 매칭 */
+}
+
+.admin-status-select:focus {
+    border-color: #702a24;        /* 메인 시그니처 버건디 색상 */
+    box-shadow: 0 0 0 2px rgba(112, 42, 36, 0.1);
+}
+
+/* 테이블 헤더 내부 배치용 컨테이너 */
+.admin-th-select-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
 /* 수정/삭제 버튼 */
 .admin-table-action-btn {
     border: none;
@@ -1431,4 +1465,47 @@ html,
 .admin-modal-close-btn:hover {
     background: #531d19;
     box-shadow: 0 6px 14px rgba(83, 29, 25, 0.3);
+}
+
+
+/* 픽업 기사 배정 셀 (td) 내부 중앙 정렬 컨테이너 */
+.admin-pickup-assign-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;    /* 가로축 중앙 정렬 */
+    justify-content: center; /* 세로축 중앙 정렬 */
+    gap: 6px;
+    width: 100%;
+}
+
+/* 기존 기사 정보 텍스트 */
+.admin-old-driver-info {
+    font-size: 11px;
+    color: #7f8c8d;
+    text-align: center;
+}
+
+/* 셀렉트 박스와 버튼을 담는 가로 행 */
+.admin-pickup-input-row {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 픽업 전용 배정 버튼 */
+.admin-pickup-submit-btn {
+    background-color: #e67e22; /* 기존 오렌지 포인트 유지 */
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.admin-pickup-submit-btn:hover {
+    background-color: #d35400; /* 호버 시 약간 더 짙은 오렌지 */
 }
