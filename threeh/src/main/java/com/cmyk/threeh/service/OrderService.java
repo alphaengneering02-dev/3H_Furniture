@@ -12,7 +12,6 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import com.cmyk.threeh.domain.Adress;
-import com.cmyk.threeh.domain.Delivery;
 import com.cmyk.threeh.domain.Item;
 import com.cmyk.threeh.domain.Member;
 import com.cmyk.threeh.domain.OrderItem;
@@ -41,6 +40,9 @@ public class OrderService {
     private final ItemRepository itemRepository;
     private final PaymentRepository paymentRepository;
 
+    // 오현옥 코딩추가: 주문 완료 후 장바구니 정리를 위해 CartItemService 주입
+    private final CartItemService cartItemService;
+
     /*
      * 주문 저장
      * 
@@ -50,8 +52,10 @@ public class OrderService {
      */
 
     @Transactional
-    public Long order(Long memberId, List<OrderRequestDTO.OrderItemDTO> orderItems, String city, String street,
-            String zipCode, OrderType orderType) throws Exception{
+    public Long order(Long memberId, List<OrderRequestDTO.OrderItemDTO> orderItems,
+            String city, String street, String zipCode, OrderType orderType,
+            boolean cartOrder, boolean allCartOrder, List<Long> cartItemIds)
+            throws Exception {
 
         // 엔티티 조회
         Member member = memberRepository.findById(memberId)
@@ -59,12 +63,12 @@ public class OrderService {
 
         String memberName = member.getName();
         Adress address = new Adress(city, street, zipCode);
-        
 
         List<OrderItem> oderitemList = orderItems.stream()
                 .map(dto -> {
                     Item item = itemRepository.findById(dto.getItemId())
                             .orElseThrow(() -> new CustomException(ErrorCode.ITEM_NOT_FOUND));
+
                     return OrderItem.creaOrderItem(item, item.getItemPrice(), dto.getCount());
                 })
                 .collect(Collectors.toList());
@@ -81,8 +85,25 @@ public class OrderService {
 
         orderRepository.save(order);
 
-        return order.getOrderId();
+        // 오현옥 코딩추가: 장바구니 주문 완료 후 장바구니 정리
+        // cartOrder == true  : 장바구니에서 넘어온 주문
+        // allCartOrder == true : 장바구니 전체 선택 주문
+        // allCartOrder == false: 장바구니 일부 선택 주문
+        if (cartOrder) {
+            if (allCartOrder) {
+                // 전체 선택 주문이면 해당 회원의 장바구니 전체 삭제
+                cartItemService.clearCartByMemberId(memberId);
+            } else {
+                // 일부 선택 주문이면 선택된 cartItemId만 삭제
+                if (cartItemIds == null || cartItemIds.isEmpty()) {
+                    throw new IllegalArgumentException("선택 주문인데 삭제할 장바구니 아이템 ID가 없습니다.");
+                }
 
+                cartItemService.deleteOrderedCartItems(cartItemIds);
+            }
+        }
+
+        return order.getOrderId();
     }
 
     @Transactional
@@ -149,12 +170,11 @@ public class OrderService {
                     .findFirst()
                     .orElseThrow(() -> new CustomException(ErrorCode.ITEM_NOT_FOUND));
 
-            
-            //order.getOrderItems().remove(orderItem);
+            // order.getOrderItems().remove(orderItem);
         });
 
         if (order.getOrderItems().isEmpty()) {
-           
+
             order.cancel();
         }
 
@@ -186,11 +206,11 @@ public class OrderService {
      */
     @Transactional
     public List<OrderResponseDTO> findAllOrders() {
-    List<Orders> orders = orderRepository.findAll();
-    
-    return orders.stream()
-            .map(OrderResponseDTO::from)
-            .collect(Collectors.toList());
-}
+        List<Orders> orders = orderRepository.findAll();
+
+        return orders.stream()
+                .map(OrderResponseDTO::from)
+                .collect(Collectors.toList());
+    }
 
 }

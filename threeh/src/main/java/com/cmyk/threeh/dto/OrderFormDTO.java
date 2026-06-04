@@ -23,6 +23,7 @@ public class OrderFormDTO {
     private String defaultAddrDetail;
     private String defaultZipCode;
     private String isDefault;
+    
 
 
      @Data
@@ -34,5 +35,6 @@ public class OrderFormDTO {
         private Integer price;
         private int count;
         private String itemImage;
+        private Long cartItemId;
     }
 }

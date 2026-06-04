@@ -1,5 +1,7 @@
 package com.cmyk.threeh.service;
 
+import java.util.List;
+
 import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -7,7 +9,6 @@ import com.cmyk.threeh.domain.Cart;
 import com.cmyk.threeh.domain.CartItem;
 import com.cmyk.threeh.domain.Item;
 import com.cmyk.threeh.domain.Member;
-import com.cmyk.threeh.dto.SessionMember;
 import com.cmyk.threeh.form.CartItemForm;
 import com.cmyk.threeh.repository.CartItemRepository;
 import com.cmyk.threeh.repository.CartRepository;
@@ -36,7 +37,7 @@ public class CartItemService {
        // Cart cart = cartRepository.findBymember_memberId(member.getMemberId()).orElse(null);
        // if (cart == null) {
        // throw new IllegalArgumentException("장바구니가 없습니다.");
-       Cart cart = cartRepository.findBymember_memberId(member.getMemberId())
+       Cart cart = cartRepository.findByMember_MemberId(member.getMemberId())
         .orElseGet(()->{
             Cart newCart = new Cart();
             newCart.setMember(member);
@@ -65,4 +66,22 @@ public class CartItemService {
             cartItemRepository.save(cartItem);
         }
     }
+      //코드추가_오현옥 주문 완료 후 선택된 장바구니 상품 삭제
+
+        @Transactional
+        public void deleteOrderedCartItems(List<Long> cartItemIds){
+            if(cartItemIds == null || cartItemIds.isEmpty()){
+                return;
+            }
+            cartItemRepository.deleteByCartItemIdIn(cartItemIds);
+        }
+
+        //주문완료 후 회원 장바구니 전체 비우기_오현옥 코딩 추가
+        @Transactional
+        public void clearCartByMemberId(Long memberId){
+            Cart cart = cartRepository.findByMember_MemberId(memberId)
+            .orElseThrow(()->new IllegalArgumentException("장바구니가 존재하지 않습니다."));
+
+            cartItemRepository.deleteByCart_CartId(cart.getCartId());
+        }
 }

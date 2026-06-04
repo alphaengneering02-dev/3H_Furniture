@@ -17,5 +17,12 @@ public interface CartItemRepository extends JpaRepository<CartItem, Long>{
     //장바구니 아이템의 고유 번호(PK)로 데이터를 조회하며, null 방지를 위합 옵셔널 사용
     Optional<CartItem> findByCartItemId(Long cartitemid);
 
+    //장바구니 아이템 목록 조회
     List<CartItem> findByCart_CartId(Long cartId);
+
+    //오현옥_코딩추가(장바구니 전체 비우기)
+    void deleteByCart_CartId(Long cartId);
+
+    //오현옥_코딩추가 선택된 cartItemId 여러 개 삭제(즉, 사용자가 선택한 상품만 주문할 때 삭제)
+    void deleteByCartItemIdIn(List<Long> cartItemIds);
 }
