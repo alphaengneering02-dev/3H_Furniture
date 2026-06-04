@@ -65,15 +65,15 @@ const AdminDashboard = () => {
     const fetchItems = async () => {
         try {
             const response = await axios.get('http://localhost:8080/api/main/searchResult', {
-                params: { searchValue: "" }, // 빈 값 주면 전체 조회되도록 백엔드가 설계되어 있다면 활용
+                params: { searchValue: "" },
                 withCredentials: true
             });
             setItems(response.data);
         } catch (error) {
+            // 403 에러가 나더라도 alert 창을 띄우거나 메인으로 쫓아내지 않고 로그만 찍습니다.
             console.error("❌ 상품 리스트 로드 실패:", error);
         }
     };
-
     const handleSearchResults = (data) => {
         setSearchResults(data);        
     };
@@ -125,7 +125,7 @@ const AdminDashboard = () => {
             const response = await axios.get('/admin/orders');
             setOrders(response.data);
         } catch(err) {
-            console.error("어드민 데이터 로드 에러:", err);
+            console.error("❌ 주문 데이터(랭킹용) 로드 실패:", err);
         }
     };
 
@@ -163,6 +163,12 @@ const AdminDashboard = () => {
             
             setDrivers(sortedDrivers); 
         } catch (error) {
+        
+            if (error.response && error.response.status === 403) {
+                alert("접근 권한이 없습니다!");
+                navigate("/"); 
+                return;
+            }
             console.error("❌ 기사 리스트 로드 실패 상세 원인:", error);
         }
     };

@@ -59,9 +59,11 @@ public class SecurityConfig {
 			.antMatchers("/api/item/**").permitAll()
 			.antMatchers("/api/itemImgs/**").permitAll()
 			.antMatchers("/api/admin/**").permitAll()
+			.antMatchers("/admin/orders").permitAll()
+            .antMatchers("/admin/list").permitAll()
 			.antMatchers("/upload/**").permitAll()  
-            .antMatchers("/**").permitAll()  
-			//.antMatchers("/admin/**").hasRole("ADMIN")
+            .antMatchers("/admin/**").hasRole("ADMIN")
+			.antMatchers("/**").permitAll()  
             //.antMatchers("/api/v1/**").hasRole("USER")  ///api/v1로 시작하는 모든 API 요청은 ROLE_USER (일반 고객)만 접속 가능
 			// 모든 인증되지 않은 접속 요청을 허락함
 		.and()
