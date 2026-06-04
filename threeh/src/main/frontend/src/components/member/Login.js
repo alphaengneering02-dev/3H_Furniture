@@ -94,6 +94,7 @@ const Login = () => {
 
                 // 세션 만료시간 타이머(30분): 세션 삭제+로그인 페이지로 이동
                 setTimeout(() => {
+                    alert("세션이 만료되었습니다. 다시 로그인해주세요.");
                     err("세션이 만료되었습니다. 다시 로그인해주세요.");
                     sessionStorage.removeItem("user"); //세션 삭제
                     navigate('/login'); //로그인 페이지로 이동
@@ -213,7 +214,7 @@ const Login = () => {
                 </form>
 
 
-                {/* 아이디 / 비밀번호 찾기 */}
+                {/* 아이디 / 비밀번호 재설정 */}
                 <article className="login-utility-box">
                     <p className='staying'> 
                         <input className='check' type='checkbox' checked={isChecked} onChange={changeChecked}/>
@@ -222,7 +223,7 @@ const Login = () => {
                     <p className='finding'> 
                         <span className="link" onClick={() => navigate("/findId")}>아이디 찾기</span>
                         <span className="divider">|</span>
-                        <span className="link" onClick={() => navigate("/changePw")}>비밀번호 찾기</span>
+                        <span className="link" onClick={() => navigate("/changePw")}>비밀번호 재설정</span>
                     </p>
                 </article>
 
