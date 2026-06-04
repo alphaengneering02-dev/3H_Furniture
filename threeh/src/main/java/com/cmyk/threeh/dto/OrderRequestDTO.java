@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
+@Setter
 @NoArgsConstructor
 
 public class OrderRequestDTO {
@@ -29,12 +30,17 @@ public class OrderRequestDTO {
     private LocalTime requestTime;
     private String requestMessage;
 
+    //코드 추가_오현옥(장바구니 주문여부,주문완료 후 삭제할 장바구니 아이템 id목록)
+    private boolean cartOrder;
+    private boolean allCartOrder;
+    private List<Long>cartItemIds;
+
     @Getter
     @NoArgsConstructor
     @Setter
     public static class OrderItemDTO {
         private Long itemId;
-        private String ItemName;
+        private String itemName;
         private int count;
     }
 }

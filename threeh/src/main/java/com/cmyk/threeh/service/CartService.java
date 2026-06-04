@@ -50,7 +50,7 @@ public class CartService {
         Member member = memberService.getUser(userid);
 
         //회원의 장바구니 찾기(없으면 새로 생성)
-        Cart cart = cartRepository.findBymember_memberId(member.getMemberId()).orElse(null);
+        Cart cart = cartRepository.findByMember_MemberId(member.getMemberId()).orElse(null);
 
         if(cart == null) {
             cart = createCart(member);
@@ -116,7 +116,7 @@ public class CartService {
     public void addCart(String loginUserId, CartItemDTO cartItemDTO) {
         Member member = memberService.getUser(loginUserId);
 
-        Cart cart = cartRepository.findBymember_memberId(member.getMemberId())
+        Cart cart = cartRepository.findByMember_MemberId(member.getMemberId())
             .orElseGet(() -> createCart(member));
 
         // 들어온 매개변수명(cartItemDTO)과 변수 선언(itemRepository) 싱크 완벽 조율
@@ -182,5 +182,12 @@ public class CartService {
             }
         }
         return resultList;
+    }
+    //코딩추가_오현옥 주문완료 후 회원 장바구니 전체 비우기
+    @Transactional
+    public void clearCartByMemberId(Long memberId){
+        Cart cart = cartRepository.findByMember_MemberId(memberId)
+        .orElseThrow(()->new IllegalArgumentException("장바구니가 존재하지 않습니다."));
+        cartItemRepository.deleteByCart_CartId(cart.getCartId());
     }
 }

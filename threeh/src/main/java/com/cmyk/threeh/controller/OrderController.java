@@ -4,8 +4,6 @@ import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -51,14 +49,11 @@ public class OrderController {
     @PostMapping("/items")
     public ResponseEntity getOrderForm(@RequestBody List<Long> cartItemIds, Principal principal) {
 
-        
-
         String loginId = GetLoginId.getloginId(principal);
 
-        if(loginId == null){
+        if (loginId == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
-        } 
-
+        }
 
         Member member = memberService.getUser(loginId);
         MemberAddressDTO defaultAddress = memberAddressService.getDefaultAddressForOrder(member.getId());
@@ -69,12 +64,15 @@ public class OrderController {
                             .orElseThrow(() -> new CustomException(ErrorCode.ITEM_NOT_FOUND));
 
                     if (cartItem.getItem().getItemStock() < cartItem.getCount()) {
-                        throw new CustomException(ErrorCode.OUT_OF_STOCK); 
+                        throw new CustomException(ErrorCode.OUT_OF_STOCK);
                     }
 
                     ItemImgResponseDTO itemImage = itemImgService.getMainImg(cartItem.getItem().getItemId());
 
                     return OrderFormDTO.OrderItemInfo.builder()
+                            // 오현옥_코딩추가
+                            // 주문 완료 후 선택한 장바구니 상품만 삭제하기 위해 cartItemId를 프론트로 넘김
+                            .cartItemId(cartItem.getCartItemId())
                             .itemId(cartItem.getItem().getItemId())
                             .itemName(cartItem.getItem().getItemName())
                             .itemDetail(cartItem.getItem().getItemDetail())
@@ -103,18 +101,16 @@ public class OrderController {
     @GetMapping("/{itemId}")
     public ResponseEntity getOrder(@PathVariable Long itemId, Principal principal) {
 
-        
         ItemResponseDTO item = itemService.getItem(itemId);
         ItemImgResponseDTO itemImage = itemImgService.getMainImg(itemId);
 
         String loginId = GetLoginId.getloginId(principal);
 
-        if(loginId == null){
+        if (loginId == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
-        } 
+        }
 
-
-            Member member = memberService.getUser(loginId);
+        Member member = memberService.getUser(loginId);
 
         try {
             itemImage = itemImgService.getMainImg(itemId);
@@ -153,7 +149,6 @@ public class OrderController {
         List<OrderRequestDTO.OrderItemDTO> orderItems = dto.getOrderItems();
 
         // 주문생성
-
         try {
             Long orderId = orderService.order(
                     dto.getMemberId(),
@@ -161,7 +156,20 @@ public class OrderController {
                     dto.getDeliveryAddr(),
                     dto.getDeliveryAddrDetail(),
                     dto.getZipCode(),
-                    dto.getOrderType());
+                    dto.getOrderType(),
+
+                    // 오현옥_코딩추가
+                    // 장바구니 주문인지 여부
+                    dto.isCartOrder(),
+
+                    // 오현옥_코딩추가
+                    // 전체 선택 주문인지 여부
+                    dto.isAllCartOrder(),
+
+                    // 오현옥_코딩추가
+                    // 선택 주문일 경우 삭제할 cartItemId 목록
+                    dto.getCartItemIds()
+            );
 
             return ResponseEntity.ok().body(orderId);
 

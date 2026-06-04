@@ -109,6 +109,10 @@ function OrderItemInfo( { orderData, orderType, zipCode, address, deliveryDate, 
                     count : 1
                 }]
 
+                //코드 추가_장바구니 아이템id_오현옥
+                const cartItemIds = isActuallyCart
+                    ?orderData.items.map(item=>item.cartItemId):[];
+                    
                 sessionStorage.setItem("pendingOrder", JSON.stringify({
                     memberId: user.memberId,
                     memberName: user.name,
@@ -116,7 +120,10 @@ function OrderItemInfo( { orderData, orderType, zipCode, address, deliveryDate, 
                     deliveryAddr: address,
                     deliveryAddrDetail: detailedAddress,
                     zipCode: zipCode,
-                    orderType: orderType
+                    orderType: orderType,
+                    //코드 추가_오현옥
+                    cartOrder: isActuallyCart,
+                    cartItemIds:cartItemIds
                 }));
 
                 
