@@ -111,8 +111,6 @@ const AddDelivery = () => {
     }
 };
 
-
-
     return (
 <div className="delivery-page">
         <ToastContainer position="top-right" autoClose={3000} />

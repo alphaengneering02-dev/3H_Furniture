@@ -165,7 +165,6 @@ html,
 .admin-save-btn:hover,
 .admin-dday-submit-btn:hover,
 .admin-excel-upload-submit-btn:hover {
-    background: #8A4F25;
     transform: translateY(-1px);
 }
 
@@ -531,20 +530,14 @@ html,
 /* 파일선택 버튼 */
 .admin-excel-file-label {
     height: 42px;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     background: #702a24;
-
     border-radius: 10px;
-
     cursor: pointer;
-
     font-size: 13px;
     font-weight: 600;
-
     color: #fff;
 }
 
@@ -557,7 +550,6 @@ html,
 }
 
 .admin-excel-filename-display:hover {
-
     color: #FF5E84;
 
 }
@@ -569,7 +561,7 @@ html,
     border: none;
     border-radius: 10px;
 
-    background: #702a24;
+    background-color: #000000;
     color: white;
 
     font-size: 13px;
@@ -578,9 +570,11 @@ html,
     cursor: pointer;
 }
 
-.admin-excel-upload-submit-btn:hover {
-    background: #FF5E84;
+.admin-excel-file-label:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(112, 42, 36, 0.25);
 }
+
 
 .admin-excel-upload-submit-btn:disabled {
     opacity: 0.5;
@@ -809,15 +803,13 @@ html,
 .admin-driver-right Link button,
 .admin-driver-right a button,
 .admin-add-driver-btn {
-    background-color: #8B002A !important; /* 👈 여기에 사용하시던 정확한 딥 체리색 코드(#번호)를 넣어주세요! */
-    color: #ffffff !important;            /* 글자색 (필요시 수정) */
+    color: #ffffff !important;         
 }
 
 /* 2. 배송 페이지 이동 버튼 */
 .admin-driver-left Link button,
 .admin-driver-left a button,
 .admin-move-page-btn {
-    background-color: #8B002A !important; /* 👈 마찬가지로 기존 딥 체리색 코드를 넣어줍니다. */
     color: #ffffff !important;
 }
 
@@ -1262,7 +1254,7 @@ html,
     height: 40px;
     border: 2px solid #a39284;
     border-radius: 8px;
-    padding: 0 10px;
+    padding: 0 5px;
     font-size: 13.5px;
     font-weight: 600;
     color: #2b1f16;
