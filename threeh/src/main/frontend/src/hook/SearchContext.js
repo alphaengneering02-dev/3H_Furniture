@@ -10,8 +10,8 @@ export const SearchProvider = ({ children }) => {
     const navigate = useNavigate();
 
     // 옵션 리스트 정의
-    const category_options = ['거실', '침실', '욕실', '주방'];
-    const color_options = ['White', 'Black', 'Gray', 'DarkGray', 'Red', 'Blue', 'Green', 'Yellow', 'Orange',  'Beige', 'Brown', 'Pink', 'Wood', 'Mix', 'Silver', 'Gold', 'Glass'];
+    const category_options = ['거실', '침실', '주방', '욕실'];
+    const color_options = ['White', 'Black', 'Gray', 'DarkGray', 'Red', 'Blue', 'Green', 'Yellow', 'Orange',  'Beige', 'LightBeige', 'Brown', 'Pink', 'Wood', 'Mix', 'Silver', 'Gold', 'Glass'];
     const price_options = [
         {value: 0, label: '0원'},
         {value: 100, label: '100만원'},

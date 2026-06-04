@@ -24,22 +24,17 @@ const SearchResult = () => {
     const [searchResult, setSearchResult] = useState([])
     const [currentSearchValue, setCurrentSearchValue] = useState("전체")
 
-    const memoSearchKey =  useMemo(() => {return searchKey},[searchKey])
-    const categoryKey = useMemo(() => {return memoSearchKey.category},[memoSearchKey.category])
-    const colorKey = useMemo(() => {return memoSearchKey.color},[memoSearchKey.color])
-    const priceKey = useMemo(() => {return memoSearchKey.price},[memoSearchKey.price])
 
-
-    //검색된 데이터를 가져오는 함수
-    const getSearchResult = async() => {
+    //검색된 데이터를 가져오는 함수 (**URL 파라미터 기반)
+    const getSearchResult = async(urlSearchValue, parsedCategory, parsedColor, parsedPrice) => {
         try {
             //1. 백엔드(Spring Boot) API에서 데이터 가져오기
             const res = await axios.get("http://localhost:8080/api/main/searchResult", {
                 params: {
-                    searchValue: searchValue,
-                    category: categoryKey.join(','),  // 배열을 "침실,거실" 형태의 문자열로 변환
-                    color: colorKey.join(','),        // "White,Black"
-                    price: priceKey.join(','),        // "0,500"
+                    searchValue: urlSearchValue,
+                    category: parsedCategory.join(','),  // 배열을 "침실,거실" 형태의 문자열로 변환
+                    color: parsedColor.join(','),        // "White,Black"
+                    price: parsedPrice.join(','),        // "0,500"
                 }
             })
 
@@ -65,17 +60,22 @@ const SearchResult = () => {
         const urlColor = searchParams.get("color");             // "White,Black"
         const urlPrice = searchParams.get("price");             // "200,300"
 
-        // 2. 읽어온 URL 파라미터를 Context 상태(UI)에 반영 (UI 동기화의 핵심)
-        setSearchValue(urlSearchValue);
-        setCurrentSearchValue(searchParams.get("searchValue") || "전체");
-        setSearchKey({
-            category: urlCategory ? urlCategory.split(',') : [],
-            color: urlColor ? urlColor.split(',') : [],
-            price: urlPrice ? urlPrice.split(',').map(Number) : [0, 0]
-        })
+        // 2. URL 파라미터를 배열 형태로 파싱
+        const parsedCategory = urlCategory ? urlCategory.split(',') : [];
+        const parsedColor = urlColor ? urlColor.split(',') : [];
+        const parsedPrice = urlPrice ? urlPrice.split(',').map(Number) : [0, 0];
 
-        // 4. URL 파라미터 값으로 데이터 가져오기
-        getSearchResult()
+        // 3. UI 동기화를 위해 Context 상태 업데이트 (비동기 처리됨)
+        setSearchValue(urlSearchValue);
+        setCurrentSearchValue(urlSearchValue || "전체");
+        setSearchKey({
+            category: parsedCategory,
+            color: parsedColor,
+            price: parsedPrice
+        });
+
+        // 4. 파싱한 '최신 값'을 인자로 직접 넘겨서 데이터 가져오기
+        getSearchResult(urlSearchValue, parsedCategory, parsedColor, parsedPrice);
     }, [searchParams])  //searchParams가 바뀔 때마다(새로 검색할 때마다) 다시 실행
 
 
