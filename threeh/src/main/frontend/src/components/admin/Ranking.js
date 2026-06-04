@@ -204,7 +204,7 @@ const Ranking = ({ orders = [], drivers = [] }) => {
                             <strong>{vipRanking[1].totalSpent.toLocaleString()}원</strong>
                         </div>
                     </div>
-                ) : <div className="vip-side-card empty">2위 데이터 없음</div>}
+                ) : <div className="vip-side-card empty">실시간 집계중 잠시만 기다려주세요</div>}
 
                 {vipRanking[0] ? (
                     <div className="vip-center-card">
@@ -219,7 +219,7 @@ const Ranking = ({ orders = [], drivers = [] }) => {
                             {vipRanking[0].totalSpent.toLocaleString()}원
                         </div>
                     </div>
-                ) : <div className="vip-center-card empty">1위 데이터 없음</div>}
+                ) : <div className="vip-center-card empty">실시간 집계중 잠시만 기다려주세요</div>}
 
                 {vipRanking[2] ? (
                     <div className="vip-side-card right">
@@ -234,7 +234,7 @@ const Ranking = ({ orders = [], drivers = [] }) => {
                             <strong>{vipRanking[2].totalSpent.toLocaleString()}원</strong>
                         </div>
                     </div>
-                ) : <div className="vip-side-card empty">3위 데이터 없음</div>}
+                ) : <div className="vip-side-card empty">실시간 집계중 잠시만 기다려주세요</div>}
             </div>
 
             <div className="admin-tables-row">
@@ -271,7 +271,7 @@ const Ranking = ({ orders = [], drivers = [] }) => {
                             ))}
                             {itemRanking.length === 0 && (
                                 <tr>
-                                    <td colSpan="3" className="admin-ranking-empty-row">⚠️ 판매된 상품 내역이 없습니다.</td>
+                                    <td colSpan="3" className="admin-ranking-empty-row">⚠️ 실시간 집계중 잠시만 기다려주세요</td>
                                 </tr>
                             )}
                         </tbody>
@@ -301,7 +301,7 @@ const Ranking = ({ orders = [], drivers = [] }) => {
                             ))}
                             {driverRanking.length === 0 && (
                                 <tr>
-                                    <td colSpan="4" className="admin-ranking-empty-row">⚠️ 조건에 맞는 배송 데이터가 없습니다.</td>
+                                    <td colSpan="4" className="admin-ranking-empty-row">⚠️ 실시간 집계중 잠시만 기다려주세요</td>
                                 </tr>
                             )}
                         </tbody>
