@@ -278,7 +278,22 @@ const Review = ({ itemId, isAdmin }) => {
 
           <p>{reviewText.length} / 255</p>
 
-          <button type="button" onClick={handleSubmitReview}>
+          <button 
+            type="button" 
+            onClick={handleSubmitReview}
+            style={{
+                backgroundColor: '#702A24', // 💡 약속된 딥체리 색상 강제 주입
+                color: '#ffffff',              // 글자색 흰색
+                padding: '10px 20px',       // 누르기 편한 황금 비율 여백
+                border: 'none',             // 투박한 회색 테두리 제거
+                borderRadius: '4px',        // 고급스러운 라운딩
+                cursor: 'pointer',          // 마우스 올리면 손가락 표시
+                fontWeight: 'bold',         // 글자 두껍게 강조
+                fontSize: '14px',           // 보기 좋은 크기
+                marginTop: '10px',          // 글자 수 배지와의 정갈한 간격
+                display: 'block'            // 스크린샷처럼 글자 수 밑에 예쁘게 정렬
+            }}
+          >
             리뷰 등록
           </button>
         </div>

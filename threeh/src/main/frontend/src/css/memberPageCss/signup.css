@@ -77,7 +77,7 @@
     font-size: 15px;
     font-weight: 500;
     color: var(--signup-bg-white);
-    background-color: var(--signup-dark-beige);
+    background-color: #702A24; /* 💡 기존 베이지 -> 약속된 딥체리 색상으로 완벽 변경 */
     border: none; border-radius: 6px;
     cursor: pointer;
     transition: background-color 0.3s, color 0.3s;
@@ -86,8 +86,9 @@
     align-self: stretch;
 }
 
+/* 💡 마우스 올렸을 때 효과 (로그인 버튼과 똑같이 묵직한 다크 체리로 고급스럽게 톤 다운) */
 .signup-btn-site:hover {
-    background-color: var(--signup-light-gray);
+    background-color: #531D19; /* 💡 기존 라이트 그레이 -> 묵직한 다크 체리로 변경 */
 }
 
 

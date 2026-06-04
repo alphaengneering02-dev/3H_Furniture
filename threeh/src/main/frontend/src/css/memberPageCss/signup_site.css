@@ -186,24 +186,28 @@
 }
 
 
-/* 취소 버튼 (화이트) */
+/* 취소 버튼 (화이트 -> 딥체리 라인 스타일) */
 .signup-btn-cancel {
-    color: var(--signup-site-black);
-    background-color: var(--signup-site-bg-white);
+    color: #702A24;                 /* 💡 기존 검은색 -> 딥체리 글자색 변경 */
+    background-color: #ffffff;      /* 깔끔한 흰색 배경 상주 */
+    border: 1px solid #702A24;      /* 💡 딥체리 테두리 선 장착 */
 }
 .signup-btn-cancel:hover {
-    background-color: var(--signup-site-light-beige);
+    background-color: #fafafa;      /* 마우스 올리면 아주 살짝 은은한 그레이 백그라운드 */
+    color: #531D19;                 /* 호버 시 글자색 다크 체리로 고급스럽게 톤 다운 */
+    border-color: #531D19;
 }
 
-/* 가입하기 버튼 (블랙) */
+/* 가입하기 버튼 (블랙 -> 꽉 찬 딥체리 스타일) */
 .signup-btn-submit {
-    color: var(--signup-site-bg-white);
-    background-color: var(--signup-site-dark-beige);
+    color: #ffffff;                 /* 글자색 흰색으로 선명하게 고정 */
+    background-color: #702A24;      /* 💡 기존 베이지 -> 약속된 딥체리 배경색 완벽 변경 */
+    border: 1px solid #702A24;
 }
 .signup-btn-submit:hover {
-    background-color: var(--signup-site-light-gray);
-    border-color: var(--signup-site-light-gray);
-    color: var(--signup-site-charcoal);
+    background-color: #531D19;      /* 💡 마우스 올리면 한 톤 다운된 묵직한 다크 체리로 변경 */
+    border-color: #531D19;
+    color: #ffffff;                 /* 글자색 흰색 그대로 상주 보존 */
 }
 
 

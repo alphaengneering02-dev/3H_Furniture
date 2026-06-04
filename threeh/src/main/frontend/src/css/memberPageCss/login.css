@@ -153,7 +153,7 @@
     font-size: 16px;
     font-weight: 500;
     color: var(--login-bg-white);
-    background-color: var(--login-dark-beige);
+    background-color: #702A24; /* 💡 기존 베이지 -> 약속된 딥체리 색상으로 완벽 변경 */
     border: none; border-radius: 6px;
     cursor: pointer;
     margin-bottom: 65px;
@@ -161,9 +161,11 @@
     align-self: stretch;
 }
 
+/* 💡 마우스 올렸을 때 효과 (기존 인호님 카트 테마색인 묵직한 다크 체리로 고급스럽게 톤 다운) */
 .login-submit-btn:hover {
-    background-color: var(--login-middle-gray);
+    background-color: #531D19; /* 💡 기존 미들 그레이 -> 묵직한 다크 체리로 변경 */
 }
+
 
 
 
@@ -247,10 +249,17 @@
     align-items: center;
     font-size: 14px;
     font-weight: 700;
-    color: var(--login-black);
+    color: #702A24; /* 💡 기존 검은색 -> 인호님의 고급스러운 딥체리 색상으로 정밀 교체 */
     background: none;
     border: none;
     cursor: pointer;
+    transition: color 0.2s, text-decoration 0.2s; /* 💡 부드러운 전환 효과 추가 */
+}
+
+/* 💡 마우스 올렸을 때 효과 (밋밋하지 않게 밑줄과 함께 인호님 카트 테마색으로 은은하게 변환) */
+.login-signup-link-btn:hover {
+    color: #531D19; /* 💡 마우스 올리면 한 톤 다운된 묵직한 다크 체리로 변경 */
+    text-decoration: underline; /* 💡 '가입하러 가기' 느낌이 팍 나도록 밑줄 장착 */
 }
 
 .login-signup-link-btn .right-arrow {

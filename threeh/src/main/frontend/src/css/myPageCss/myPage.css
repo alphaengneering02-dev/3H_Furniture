@@ -186,9 +186,14 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-bottom: 2px solid #531D19 !important; /* ⚡ 에스프레소 브라운 선 */
+    
+    /* 💡 [인호 최종 마감] 갈색 선이 좌우 외곽 박스 테두리선 밖으로 절대 삐져나가지 않게 묶어줍니다 */
+    border-bottom: 2px solid #531D19 !important; /* ⚡ 에스프레소 브라운 선 상주 */
     padding-bottom: 10px;
+    width: 100% !important;                    /* ⚡ 박스 가로 전체 너비를 꽉 채우도록 설정 */
+    box-sizing: border-box !important;         /* ⚡ [가장 중요] 갈색 선이 1픽셀도 상자 밖으로 넘치지 못하게 강제 고정 */
 }
+
 .mypage-info-section-title::after {
     content: "3H PREMIUM FURNITURE";
     font-family: 'Playfair Display', serif;
@@ -444,12 +449,23 @@ button:disabled {
     align-items: flex-start !important; /* 왼쪽 정렬 */
     gap: 15px !important; /* 제목과 버튼 사이 간격 제공 */
     margin-top: 40px !important;
+    
+    /* 💡 [인호 최종 마감] 리뷰 관리 라인과 소름 돋게 똑같이 선 길이를 100% 전체 너비로 늘려줍니다 */
+    border-bottom: 2px solid #B8783E !important; /* ⚡ 뚝 끊겨있던 갈색 밑줄을 박스 끝까지 강제로 새로 생성 */
+    padding-bottom: 10px !important;           /* 리뷰 라인과 아래쪽 여백 간격 완전히 일치시킴 */
+    width: 100% !important;                    /* ⚡ [가장 중요] 선의 길이를 우측 끝 테두리까지 100% 꽉 채움 */
+    box-sizing: border-box !important;         /* 선이 바깥쪽 큰 상자 테두리를 벗어나지 않게 제어 */
 }
 
 /* 제목 라벨을 헤더 박스 내에서 첫 번째로 배치 */
 .mypage-address-section-header > h3 {
     order: 1 !important;
     width: 100% !important;
+    margin: 0 !important; /* 조원 기본 마진 초기화로 정렬 싱크 결합 */
+    
+    /* 💡 기존에 조원분이 h3 태그 자체에 개별로 걸어두어서 라인을 짧게 만들던 범인 수식들을 완전히 무력화합니다 */
+    border-bottom: none !important; 
+    padding-bottom: 0px !important;
 }
 
 /* [+ 새 배송지 검색] 버튼 박스를 제목 아래인 두 번째로 강제 배치 */
@@ -1731,3 +1747,5 @@ button.slider-arrow-btn:hover,
     white-space: nowrap !important;
     display: inline-block !important;
 }
+
+

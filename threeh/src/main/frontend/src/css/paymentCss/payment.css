@@ -80,7 +80,7 @@ payment-checklogo {
     align-items: center;     
     justify-content: center;   
     
-    background-color: #B8783E;
+    background-color: #702A24;
     color: #fff;
     font-size: 14px;
     font-weight: 500;
@@ -99,6 +99,6 @@ payment-checklogo {
 
 /* 버튼 호버 효과 */
 .payment-btn:hover {
-    background-color: #a56b36;
+    background-color: #702A24;
     transform: translateY(-1px);
 }
