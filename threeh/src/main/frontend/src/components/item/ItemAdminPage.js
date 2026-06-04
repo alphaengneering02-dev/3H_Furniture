@@ -60,8 +60,14 @@ const ItemAdminPage = () => {
     //현재 페이지
     const [currentPage, setCurrentPage] = useState(1);
 
+    //리뷰 관리 페이지
+    const [reviewCurrentPage, setReviewCurrentPage] = useState(1);
+
     //한페이지에 보여줄 상품 개수
     const ITEMS_PER_PAGE = 10;
+
+    //리뷰관리 한 페이지에 보여줄 상품 개수
+    const REVIEWS_PER_PAGE = 10;
 
     //페이지 번호를 5개씩 보여주기
     const PAGE_BLOCK_SIZE = 5;
@@ -730,13 +736,57 @@ const ItemAdminPage = () => {
         return result;
     }, [items, reviewCounts, reviewProductFilter]);
 
+    //리뷰 관리 전체페이지 수
+    const reviewTotalPages = Math.max(
+        1,
+        Math.ceil(reviewProductItems.length / REVIEWS_PER_PAGE)
+    );
+
+    useEffect(() => {
+        if (reviewCurrentPage > reviewTotalPages) {
+            setReviewCurrentPage(reviewTotalPages);
+        }
+    }, [reviewCurrentPage, reviewTotalPages]);
+
+    const pagedReviewProductItems = useMemo(() => {
+        const startIndex = (reviewCurrentPage - 1) * REVIEWS_PER_PAGE;
+        const endIndex = startIndex + REVIEWS_PER_PAGE;
+
+        return reviewProductItems.slice(startIndex, endIndex);
+    }, [reviewProductItems, reviewCurrentPage]);
+
+    // 리뷰 관리 5개 단위 페이지 블록 계산
+    const reviewCurrentPageBlock = Math.floor(
+        (reviewCurrentPage - 1) / PAGE_BLOCK_SIZE
+    );
+
+    const reviewStartPage = reviewCurrentPageBlock * PAGE_BLOCK_SIZE + 1;
+    const reviewEndPage = Math.min(
+        reviewStartPage + PAGE_BLOCK_SIZE - 1,
+        reviewTotalPages
+    );
+
+    const reviewPageNumbers = Array.from(
+        { length: reviewEndPage - reviewStartPage + 1 },
+        (_, index) => reviewStartPage + index
+    );
+
+    // 리뷰 관리 페이지 이동
+    const goReviewPage = (page) => {
+        if (page < 1 || page > reviewTotalPages) {
+            return;
+        }
+
+        setReviewCurrentPage(page);
+    };
+
     //============================================================//
 
     return (
         <div>
             <div className="main-header">
-            {/* 헤더 영역 */}
-            <Header />
+                {/* 헤더 영역 */}
+                <Header />
             </div>
 
             <div className="itemAdmin-page">
@@ -790,6 +840,7 @@ const ItemAdminPage = () => {
                             setReviews([]);
                             setReviewSummary(null);
                             setSearchReviewProductFilter(reviewProductFilter);
+                            setReviewCurrentPage(1);
                         }}
                     >
                         리뷰 관리목록
@@ -1162,9 +1213,10 @@ const ItemAdminPage = () => {
                             <button
                                 type="button"
                                 className="itemAdmin-button"
-                                onClick={() =>
-                                    setReviewProductFilter(searchReviewProductFilter)
-                                }
+                                onClick={() => {
+                                    setReviewProductFilter(searchReviewProductFilter);
+                                    setReviewCurrentPage(1);
+                                }}
                             >
                                 조회하기
                             </button>
@@ -1183,6 +1235,7 @@ const ItemAdminPage = () => {
                             <table className="itemAdmin-table">
                                 <thead>
                                     <tr>
+                                        <th>번호</th>
                                         <th>상품ID</th>
                                         <th>상품명</th>
                                         <th>카테고리</th>
@@ -1196,13 +1249,20 @@ const ItemAdminPage = () => {
                                 <tbody>
                                     {reviewProductItems.length === 0 ? (
                                         <tr>
-                                            <td colSpan="7" className="itemAdmin-emptyText">
+                                            <td colSpan="8" className="itemAdmin-emptyText">
                                                 조건에 맞는 리뷰 상품이 없습니다.
                                             </td>
                                         </tr>
                                     ) : (
-                                        reviewProductItems.map((item) => (
+                                        pagedReviewProductItems.map((item, index) => (
                                             <tr key={item.itemId}>
+                                                <td>
+                                                    {(reviewCurrentPage - 1) *
+                                                        REVIEWS_PER_PAGE +
+                                                        index +
+                                                        1}
+                                                </td>
+
                                                 <td>{item.itemId}</td>
 
                                                 <td className="itemAdmin-tableTextLeft">
@@ -1239,6 +1299,44 @@ const ItemAdminPage = () => {
                                     )}
                                 </tbody>
                             </table>
+
+                            {/* 리뷰 관리 페이지네이션 */}
+                            {reviewProductItems.length > REVIEWS_PER_PAGE && (
+                                <div className="itemAdmin-pagination">
+                                    <button
+                                        type="button"
+                                        className="itemAdmin-pageButton"
+                                        onClick={() => goReviewPage(reviewStartPage - 1)}
+                                        disabled={reviewStartPage === 1}
+                                    >
+                                        &lt;
+                                    </button>
+
+                                    {reviewPageNumbers.map((page) => (
+                                        <button
+                                            key={page}
+                                            type="button"
+                                            className={
+                                                reviewCurrentPage === page
+                                                    ? "itemAdmin-pageButton itemAdmin-pageButtonActive"
+                                                    : "itemAdmin-pageButton"
+                                            }
+                                            onClick={() => goReviewPage(page)}
+                                        >
+                                            {page}
+                                        </button>
+                                    ))}
+
+                                    <button
+                                        type="button"
+                                        className="itemAdmin-pageButton"
+                                        onClick={() => goReviewPage(reviewEndPage + 1)}
+                                        disabled={reviewEndPage === reviewTotalPages}
+                                    >
+                                        &gt;
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     </div>
                 )}
@@ -1246,7 +1344,7 @@ const ItemAdminPage = () => {
 
             {/* 푸터 영역 */}
             <div className="main-mypage-footer">
-            <Footer />
+                <Footer />
             </div>
         </div>
     );

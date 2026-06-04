@@ -66,15 +66,18 @@ const AddCompany = ({ onSuccess }) => {
                     XLSX.writeFile(failedWorkbook, `등록_실패_목록_${Date.now()}.xlsx`);
 
                 } else {
-                    // 그 외 진짜 서버 에러나 권한 에러 처리 (403 등)
-                    const errorMsg = typeof error.response?.data === 'string' 
-                        ? error.response.data 
-                        : "등록 중 오류가 발생했습니다.";
-                    toast.error(errorMsg);
-                }
-            } finally {
-                setLoading(false);
-            }
+        
+        const backendError = error.response?.data;
+        
+        const errorMsg = backendError && backendError.message 
+            ? backendError.message 
+            : "등록 중 오류가 발생했습니다.";
+            
+        toast.error(errorMsg);
+    }
+} finally {
+    setLoading(false);
+}
         };
 
         reader.readAsArrayBuffer(selectedFile);

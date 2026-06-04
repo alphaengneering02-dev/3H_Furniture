@@ -180,28 +180,40 @@ const Orderboard = ({
         if (totalPages <= 1) return null;
 
         return (
-            <div className="admin-pagination" style={{ display: 'flex', justifyContent: 'center', gap: '5px', marginTop: '15px', marginBottom: '15px' }}>
+            <div className="admin-pagination-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '5px', marginTop: '15px' }}>
+                {/* << 맨 처음 페이지로 이동 */}
+                <button 
+                    disabled={currentPage === 1} 
+                    onClick={() => setPage(1)}
+                    className="admin-page-btn"
+                    title="첫 페이지로"
+                >
+                    &lt;&lt;
+                </button>
+                
+                {/* < 이전 페이지로 이동 */}
                 <button 
                     disabled={currentPage === 1} 
                     onClick={() => setPage(prev => Math.max(prev - 1, 1))}
                     className="admin-page-btn"
+                    title="이전"
                 >
-                    이전
+                    &lt;
                 </button>
                 
+                {/* 1 2 3 ... 숫자가 표시되는 구간 */}
                 {[...Array(totalPages)].map((_, idx) => {
                     const pageNum = idx + 1;
+                    const isActive = currentPage === pageNum;
                     return (
                         <button
                             key={pageNum}
                             onClick={() => setPage(pageNum)}
-                            className={`admin-page-btn ${currentPage === pageNum ? 'active' : ''}`}
+                            className={`admin-page-btn ${isActive ? 'admin-active-page' : ''}`}
                             style={{
-                                fontWeight: currentPage === pageNum ? 'bold' : 'normal',
-                                backgroundColor: currentPage === pageNum ? '#ddd' : '#fff',
-                                border: '1px solid #ccc',
-                                padding: '5px 10px',
-                                cursor: 'pointer'
+                                fontWeight: isActive ? 'bold' : 'normal',
+                                backgroundColor: isActive ? '#007bff' : '',
+                                color: isActive ? '#fff' : ''
                             }}
                         >
                             {pageNum}
@@ -209,12 +221,24 @@ const Orderboard = ({
                     );
                 })}
 
+                {/* > 다음 페이지로 이동 */}
                 <button 
                     disabled={currentPage === totalPages} 
                     onClick={() => setPage(prev => Math.min(prev + 1, totalPages))}
                     className="admin-page-btn"
+                    title="다음"
                 >
-                    다음
+                    &gt;
+                </button>
+
+                {/* >> 맨 마지막 페이지로 이동 */}
+                <button 
+                    disabled={currentPage === totalPages} 
+                    onClick={() => setPage(totalPages)}
+                    className="admin-page-btn"
+                    title="끝 페이지로"
+                >
+                    &gt;&gt;
                 </button>
             </div>
         );
@@ -512,7 +536,7 @@ const Orderboard = ({
 
             {/* [반품/교환 픽업 신청 목록] */}
             <div className="admin-content-box">
-                <div className="admin-order-top-row">
+                <div className="admin-order-headerM">
                     <h3>🔄 반품/교환 픽업 신청 목록</h3>
                 </div>
                 <div className="admin-table-scroll">
