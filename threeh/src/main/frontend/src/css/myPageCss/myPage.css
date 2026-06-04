@@ -1749,3 +1749,43 @@ button.slider-arrow-btn:hover,
 }
 
 
+/* =========================================================================
+   🔥 [인호 전용 리뷰 수정 창 버튼 100% 강제 각인] - 프로필 오염 0% 최종 종결
+   ========================================================================= */
+
+/* 💡 1. [수정완료] 버튼 - 꽉 찬 딥체리 스타일 강제 주입 */
+.mypage-main-content div > button.mypage-action-btn[style*="marginRight"],
+.mypage-main-content div > button.mypage-action-btn:first-of-type {
+    background-color: #702A24 !important; /* ⚡ 약속된 딥체리 색상 주입 */
+    border: 1px solid #702A24 !important;
+    color: #ffffff !important;             /* 글자색 흰색 고정 */
+    padding: 8px 16px !important;
+    border-radius: 4px !important;
+    cursor: pointer !important;
+    font-weight: bold !important;
+}
+
+/* 💡 2. [수정완료] 호버 효과 (다크 체리 톤 다운) */
+.mypage-main-content div > button.mypage-action-btn[style*="marginRight"]:hover,
+.mypage-main-content div > button.mypage-action-btn:first-of-type:hover {
+    background-color: #531D19 !important; /* 묵직한 다크 체리 */
+    border-color: #531D19 !important;
+}
+
+/* 💡 3. [취소] 버튼 - 흰색 바탕에 고급스러운 딥체리 라인 테두리 스타일 */
+.mypage-main-content div > button.mypage-action-btn:not([style*="marginRight"]):not(.sidebar-btn):last-of-type {
+    background-color: #ffffff !important;  /* 깔끔한 흰색 바탕 */
+    border: 1px solid #702A24 !important; /* ⚡ 딥체리 라인 테두리 선 생성 */
+    color: #702A24 !important;            /* ⚡ 딥체리 텍스트 컬러 주입 */
+    padding: 8px 16px !important;
+    border-radius: 4px !important;
+    cursor: pointer !important;
+    font-weight: bold !important;
+}
+
+/* 💡 4. [취소] 호버 효과 (은은한 다크체리 변환) */
+.mypage-main-content div > button.mypage-action-btn:not([style*="marginRight"]):not(.sidebar-btn):last-of-type:hover {
+    background-color: #FDFBF7 !important;  /* 소프트베이지 배경 */
+    border-color: #531D19 !important;     /* 테두리와 글자를 다크 체리로 조율 */
+    color: #531D19 !important;
+}
