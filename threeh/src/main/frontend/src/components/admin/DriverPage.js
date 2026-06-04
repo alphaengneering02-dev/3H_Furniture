@@ -437,7 +437,7 @@ const DriverPage = () => {
                     <p className="driver-info-text">
                         배송 파트너: <strong>{driver.deliveryName}</strong> 기사님 ({driver.deliveryCarNo})
                         
-                        {/* ─── [추가] 상태 표시 배지 구역 ─── */}
+                        {/* ─── [추가] 상태 표시 배지 구역 ─── 
                         <span className={`driver-status-badge ${driver.status?.toLowerCase()}`} style={{
                             marginLeft: '10px',
                             padding: '4px 10px',
@@ -455,7 +455,7 @@ const DriverPage = () => {
                             {driver.status === 'COMPLETED' && '● 업무 완료'}
                             {!['WAITING', 'SHIPPING', 'COMPLETED'].includes(driver.status) && driver.status}
                         </span>
-                        {/* ────────────────────────────────── */}
+                       */}
                     </p>
                     <div className="driver-top-btn-group">
                         <Link to="/admin">
