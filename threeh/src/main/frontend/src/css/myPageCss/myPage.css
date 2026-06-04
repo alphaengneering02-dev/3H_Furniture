@@ -187,21 +187,21 @@ body {
     align-items: center;
     justify-content: space-between;
     
-    /* 💡 [인호 최종 마감] 갈색 선이 좌우 외곽 박스 테두리선 밖으로 절대 삐져나가지 않게 묶어줍니다 */
-    border-bottom: 2px solid #531D19 !important; /* ⚡ 에스프레소 브라운 선 상주 */
+    /* [인호 최종 마감] 갈색 선이 좌우 외곽 박스 테두리선 밖으로 절대 삐져나가지 않게 묶어줍니다 */
+    border-bottom: 2px solid #531D19 !important; /* 에스프레소 브라운 선 상주 */
     padding-bottom: 10px;
-    width: 100% !important;                    /* ⚡ 박스 가로 전체 너비를 꽉 채우도록 설정 */
-    box-sizing: border-box !important;         /* ⚡ [가장 중요] 갈색 선이 1픽셀도 상자 밖으로 넘치지 못하게 강제 고정 */
+    width: 100% !important;                    /* 박스 가로 전체 너비를 꽉 채우도록 설정 */
+    box-sizing: border-box !important;         /* [가장 중요] 갈색 선이 1픽셀도 상자 밖으로 넘치지 못하게 강제 고정 */
 }
 
-.mypage-info-section-title::after {
+/* .mypage-info-section-title::after {
     content: "3H PREMIUM FURNITURE";
     font-family: 'Playfair Display', serif;
     font-size: 11px;
     color: #dfd1c0;
     font-weight: 700;
     letter-spacing: 2px;
-}
+} */
 
 /* 회원정보 및 공통 데이터 블록 디자인 */
 .mypage-info-data-block {
