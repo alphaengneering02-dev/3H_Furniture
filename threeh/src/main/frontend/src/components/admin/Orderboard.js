@@ -23,6 +23,7 @@ const Orderboard = ({
     const [pickupFilter, setPickupFilter] = useState('ALL');
     const [showSpecialList, setShowSpecialList] = useState(false);
     const [selectedPickupDrivers, setSelectedPickupDrivers] = useState({});
+
     const handlePickupDriverSelect = (orderId, driverId) => {
         setSelectedPickupDrivers(prev => ({
             ...prev,
@@ -38,12 +39,9 @@ const Orderboard = ({
         }
 
         try {
-            // 프로젝트 설정에 따라 필요시 URL 앞에 '/admin' 이나 '/api'를 붙이세요.
             const response = await fetch(`/admin/orders/${orderId}/assign-pickup`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ deliveryId: deliveryId.toString() }),
             });
 
@@ -51,14 +49,13 @@ const Orderboard = ({
 
             if (response.ok) {
                 toast.success("🚚 픽업 기사 배정 및 PICKUP 전환 완료!");
-                // 데이터 갱신을 위해 브라우저 새로고침 (또는 부모 갱신 함수 호출 권장)
                 setTimeout(() => window.location.reload(), 1500);
             } else {
                 toast.error(`배정 실패: ${resultText}`);
             }
         } catch (error) {
             console.error("픽업 배정 중 오류 발생:", error);
-            toast.error("서ver 통신 중 오류가 발생했습니다.");
+            toast.error("서버 통신 중 오류가 발생했습니다.");
         }
     };
 
@@ -69,36 +66,161 @@ const Orderboard = ({
         return extraCount > 0 ? `${firstName} 외 ${extraCount}개 상품` : firstName;
     };
 
+    // 1. 데이터 정규화 및 정렬
     const normalizedOrders = [...orders].map(o => {
-    let rawState = o.orderState || o.ORDER_STATE || '';
-    let state = rawState.toString().trim(); 
+        let rawState = o.orderState || o.ORDER_STATE || '';
+        let state = rawState.toString().trim(); 
 
-    let dStatus = o.deliveryStatus || o.DELIVERY_STATUS || '';
-    const trimmedStatus = dStatus.toString().trim();
-    
-    if (
-        trimmedStatus === '배송중' || 
-        trimmedStatus === '배송 진행중' || 
-        trimmedStatus.toUpperCase() === 'SHIPPING'
-    ) {
-        dStatus = 'SHIPPING';
-    }
+        let dStatus = o.deliveryStatus || o.DELIVERY_STATUS || '';
+        const trimmedStatus = dStatus.toString().trim();
+        
+        if (
+            trimmedStatus === '배송중' || 
+            trimmedStatus === '배송 진행중' || 
+            trimmedStatus.toUpperCase() === 'SHIPPING'
+        ) {
+            dStatus = 'SHIPPING';
+        }
 
-    return {
-        ...o,
-        orderId: o.orderId || o.ORDER_ID,
-        orderState: state,
-        deliveryStatus: dStatus,
-        deliveryId: o.deliveryId || o.DELIVERY_ID,
-        deliveryAddr: o.deliveryAddr || o.DELIVERY_ADDR,
-        deliveryAddrDetail: o.deliveryAddrDetail || o.DELIVERY_ADDR_DETAIL,
-        orderDate: o.orderDate || o.ORDER_DATE,
-        orderitems: o.orderitems || o.orderItems || o.ITEMS || [],
-        memberName: o.memberName || o.MEMBER_NAME
+        return {
+            ...o,
+            orderId: o.orderId || o.ORDER_ID,
+            orderState: state,
+            deliveryStatus: dStatus,
+            deliveryId: o.deliveryId || o.DELIVERY_ID,
+            deliveryAddr: o.deliveryAddr || o.DELIVERY_ADDR,
+            deliveryAddrDetail: o.deliveryAddrDetail || o.DELIVERY_ADDR_DETAIL,
+            orderDate: o.orderDate || o.ORDER_DATE,
+            orderitems: o.orderitems || o.orderItems || o.ITEMS || [],
+            memberName: o.memberName || o.MEMBER_NAME
+        };
+    }).sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
+
+    // 2. 대량 주문 필터링
+    const specialOrders = normalizedOrders.filter(o => {
+        const totalCount = o.orderitems?.reduce((sum, item) => sum + (item.count || 0), 0) || 0;
+        return totalCount >= 2;
+    });
+
+    // 3. 상태별 분류 (기존 선언 위치 뒤틀림 해결)
+    const assignedOrders = normalizedOrders.filter(o => o.deliveryId && o.deliveryStatus === 'WAITING');
+
+    const unassignedOrders = normalizedOrders.filter(o => { 
+        const isReady = o.orderState === 'READY' || o.orderState === '배송 준비중'; 
+        const currentStatus = o.deliveryStatus;
+        return isReady && (!currentStatus || currentStatus === '수락' || currentStatus === 'ACCEPTED');
+    });
+
+    const shippingOrders = normalizedOrders.filter(o => o.deliveryStatus === 'SHIPPING');
+
+    // ✨ 픽업 신청 목록 필터링
+    const pickupOrders = normalizedOrders.filter(o => {
+        const currentState = String(o.orderState).trim().toUpperCase();
+        const isPickupOrder = currentState === 'EXCHANGEORREFUND' || currentState === '교환또는환불';
+        
+        if (!isPickupOrder) return false;
+
+        const currentDeliveryStatus = String(o.deliveryStatus || '').trim().toUpperCase();
+
+        if (pickupFilter === 'COMPLETED') {
+            return currentDeliveryStatus === 'COMPLETED' || currentDeliveryStatus === '배송완료' || currentDeliveryStatus === '';
+        } else if (pickupFilter === 'RECOVERED') {
+            return currentDeliveryStatus === 'RECOVERED' || currentDeliveryStatus === '수거완료';
+        }
+        
+        return true;
+    });
+
+    // ✨ 최종 배송 완료 필터링
+    const completedOrders = normalizedOrders.filter(o => {
+        const currentState = String(o.orderState).trim().toUpperCase();
+        const currentDeliveryStatus = String(o.deliveryStatus).trim().toUpperCase();
+
+        const isNormalSuccess = 
+            (currentState === 'PURCHASED' || currentState === '구매확정') && 
+            (currentDeliveryStatus === 'COMPLETED' || currentDeliveryStatus === '배송완료');
+
+        const isRefundRecovered = 
+            (currentState === 'EXCHANGEORREFUND' || currentState === '교환또는환불') && 
+            (currentDeliveryStatus === 'RECOVERED' || currentDeliveryStatus === '수거완료');
+
+        const isRefundPurchased = 
+            (currentState === 'PURCHASED' || currentState === '구매확정') && 
+            (currentDeliveryStatus === 'RECOVERED' || currentDeliveryStatus === '수거완료');
+
+        return isNormalSuccess || isRefundRecovered || isRefundPurchased;
+    });
+
+    // 4. 안전한 페이지네이션 상한선 보정
+    const maxPage2 = Math.ceil(assignedOrders.length / perPage2) || 1;
+    if (page2 > maxPage2) setPage2(maxPage2);
+
+    const maxPage3 = Math.ceil(unassignedOrders.length / perPage3) || 1;
+    if (page3 > maxPage3) setPage3(maxPage3);
+
+    const maxPage4 = Math.ceil(shippingOrders.length / perPage4) || 1;
+    if (page4 > maxPage4) setPage4(maxPage4);
+
+    const maxPage5 = Math.ceil(pickupOrders.length / perPage5) || 1;
+    if (page5 > maxPage5) setPage5(maxPage5);
+
+    const maxPage6 = Math.ceil(completedOrders.length / perPage6) || 1;
+    if (page6 > maxPage6) setPage6(maxPage6);
+
+    // 5. 페이지네이션 슬라이스 구간
+    const pagedAssigned = assignedOrders.slice((page2 - 1) * perPage2, page2 * perPage2);
+    const pagedUnassigned = unassignedOrders.slice((page3 - 1) * perPage3, page3 * perPage3);
+    const pagedShipping = shippingOrders.slice((page4 - 1) * perPage4, page4 * perPage4);
+    const pagedPickup = pickupOrders.slice((page5 - 1) * perPage5, page5 * perPage5);
+    const pagedCompleted = completedOrders.slice((page6 - 1) * perPage6, page6 * perPage6);
+
+    // 6. 공용 페이지네이션 버튼 렌더러 함수
+    const renderPagination = (currentPage, totalItems, perPage, setPage) => {
+        const totalPages = Math.ceil(totalItems / perPage) || 1;
+        if (totalPages <= 1) return null;
+
+        return (
+            <div className="admin-pagination" style={{ display: 'flex', justifyContent: 'center', gap: '5px', marginTop: '15px', marginBottom: '15px' }}>
+                <button 
+                    disabled={currentPage === 1} 
+                    onClick={() => setPage(prev => Math.max(prev - 1, 1))}
+                    className="admin-page-btn"
+                >
+                    이전
+                </button>
+                
+                {[...Array(totalPages)].map((_, idx) => {
+                    const pageNum = idx + 1;
+                    return (
+                        <button
+                            key={pageNum}
+                            onClick={() => setPage(pageNum)}
+                            className={`admin-page-btn ${currentPage === pageNum ? 'active' : ''}`}
+                            style={{
+                                fontWeight: currentPage === pageNum ? 'bold' : 'normal',
+                                backgroundColor: currentPage === pageNum ? '#ddd' : '#fff',
+                                border: '1px solid #ccc',
+                                padding: '5px 10px',
+                                cursor: 'pointer'
+                            }}
+                        >
+                            {pageNum}
+                        </button>
+                    );
+                })}
+
+                <button 
+                    disabled={currentPage === totalPages} 
+                    onClick={() => setPage(prev => Math.min(prev + 1, totalPages))}
+                    className="admin-page-btn"
+                >
+                    다음
+                </button>
+            </div>
+        );
     };
-}).sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
 
-    // 💡 엑셀 다운로드 함수
+    // 💡 엑셀 및 CSV 다운로드 함수들
     const downloadCompletedOrdersExcel = () => {
         if (completedOrders.length === 0) {
             toast.error("다운로드할 배송 완료 주문이 없습니다.");
@@ -135,11 +257,6 @@ const Orderboard = ({
         XLSX.writeFile(workbook, `최종_배송_완료_목록_${new Date().toISOString().split('T')[0]}.xlsx`);
     };
 
-    const specialOrders = normalizedOrders.filter(o => {
-        const totalCount = o.orderitems?.reduce((sum, item) => sum + (item.count || 0), 0) || 0;
-        return totalCount >= 2;
-    });
-
     const downloadCSV = () => {
         if (specialOrders.length === 0) {
             toast.error("다운로드할 데이터가 없습니다.");
@@ -170,89 +287,12 @@ const Orderboard = ({
         document.body.removeChild(link);
     };
 
-    const assignedOrders = normalizedOrders.filter(o => o.deliveryId && o.deliveryStatus === 'WAITING');
-
-const unassignedOrders = normalizedOrders.filter(o => { 
-    const isReady = o.orderState === 'READY' || o.orderState === '배송 준비중'; 
-    const currentStatus = o.deliveryStatus;
-    return isReady && (!currentStatus || currentStatus === '수락' || currentStatus === 'ACCEPTED');
-});
-
-const shippingOrders = normalizedOrders.filter(o => o.deliveryStatus === 'SHIPPING');
-
-// ✨ 픽업 필터
-const pickupOrders = normalizedOrders.filter(o => {
-        const currentState = String(o.orderState).trim().toUpperCase();
-        const isPickupOrder = currentState === 'EXCHANGEORREFUND' || currentState === '교환또는환불';
-        
-        if (!isPickupOrder) return false;
-
-        const currentDeliveryStatus = String(o.deliveryStatus || '').trim().toUpperCase();
-
-        // 드롭다운 선택값에 따른 필터링 분기
-        if (pickupFilter === 'COMPLETED') {
-            // 빈 값이거나 공백일 때 기본 COMPLETED 취급인 경우도 감안하여 체크
-            return currentDeliveryStatus === 'COMPLETED' || currentDeliveryStatus === '배송완료' || currentDeliveryStatus === '';
-        } else if (pickupFilter === 'RECOVERED') {
-            return currentDeliveryStatus === 'RECOVERED' || currentDeliveryStatus === '수거완료';
-        }
-        
-        // ALL(전체보기)일 경우 조건 없이 반환
-        return true;
-    });
-
-// 최종 배송 완료 필터
-const completedOrders = normalizedOrders.filter(o => {
-    const currentState = String(o.orderState).trim().toUpperCase();
-    const currentDeliveryStatus = String(o.deliveryStatus).trim().toUpperCase();
-
-    // 조건 1: 일반 구매확정 건 (PURCHASED + COMPLETED)
-    const isNormalSuccess = 
-        (currentState === 'PURCHASED' || currentState === '구매확정') && 
-        (currentDeliveryStatus === 'COMPLETED' || currentDeliveryStatus === '배송완료');
-
-    // 조건 2: 교환/환불 수거완료 건 (EXCHANGEorREFUND + RECOVERED)
-    const isRefundRecovered = 
-        (currentState === 'EXCHANGEORREFUND' || currentState === '교환또는환불') && 
-        (currentDeliveryStatus === 'RECOVERED' || currentDeliveryStatus === '수거완료');
-
-    // 조건 3: 교환/환불 완료 후 최종 구매확정 건 (PURCHASED + RECOVERED) ✨새로 추가!
-    const isRefundPurchased = 
-        (currentState === 'PURCHASED' || currentState === '구매확정') && 
-        (currentDeliveryStatus === 'RECOVERED' || currentDeliveryStatus === '수거완료');
-
-    // 세 조건 중 하나라도 만족하면 목록에 포함시킵니다.
-    return isNormalSuccess || isRefundRecovered || isRefundPurchased;
-});
-
-// 3. 페이지네이션 슬라이스 구간 (변동되는 데이터 개수에 즉각 유기적으로 대응)
-const pagedAssigned = assignedOrders.slice((page2 - 1) * perPage2, page2 * perPage2);
-const pagedUnassigned = unassignedOrders.slice((page3 - 1) * perPage3, page3 * perPage3);
-const pagedShipping = shippingOrders.slice((page4 - 1) * perPage4, page4 * perPage4);
-const pagedPickup = pickupOrders.slice((page5 - 1) * perPage5, page5 * perPage5);
-const pagedCompleted = completedOrders.slice((page6 - 1) * perPage6, page6 * perPage6);
-
     React.useEffect(() => {
-    console.log("================ [주문 데이터 디버깅] ================");
-    console.log("1. 전체 orders 원본 개수:", orders?.length);
-    
-    if (orders && orders.length > 0) {
-        console.log("2. 현재 들어온 모든 주문들의 실제 orderState 목록:");
-        orders.forEach((o, i) => {
-            console.log(`   [주문 ${i+1}] ID: ${o.orderId || o.ORDER_ID} | 상태값(원본): "${o.orderState || o.ORDER_STATE}"`);
-        });
-        
-        console.log("3. normalizedOrders 변환 후 상태값 목록:");
-        normalizedOrders.forEach((o, i) => {
-            console.log(`   [변환 후 ${i+1}] ID: ${o.orderId} | 상태값: "${o.orderState}"`);
-        });
-    } else {
-        console.warn("⚠️ 부모 컴포넌트로부터 orders 배열이 빈 값([])으로 넘어왔습니다.");
-    }
-    
-    console.log("4. 필터링된 pickupOrders 결과:", pickupOrders);
-    console.log("=====================================================");
-}, [orders]);
+        console.log("================ [주문 데이터 디버깅] ================");
+        console.log("1. 전체 orders 원본 개수:", orders?.length);
+        console.log("4. 필터링된 pickupOrders 결과:", pickupOrders.length, "건");
+        console.log("=====================================================");
+    }, [orders, pickupFilter]);
 
     return (
         <div>
@@ -296,6 +336,7 @@ const pagedCompleted = completedOrders.slice((page6 - 1) * perPage6, page6 * per
                         </tbody>
                     </table>
                 </div>
+                {renderPagination(page3, unassignedOrders.length, perPage3, setPage3)}
             </div>
             
             {/* [배송 배정 완료 목록] */}
@@ -323,6 +364,7 @@ const pagedCompleted = completedOrders.slice((page6 - 1) * perPage6, page6 * per
                         </tbody>
                     </table>
                 </div>
+                {renderPagination(page2, assignedOrders.length, perPage2, setPage2)}
             </div>
 
             {/* [배송 진행 중 목록] */}
@@ -351,6 +393,7 @@ const pagedCompleted = completedOrders.slice((page6 - 1) * perPage6, page6 * per
                         </tbody>
                     </table>
                 </div>
+                {renderPagination(page4, shippingOrders.length, perPage4, setPage4)}
             </div>
 
             {/* [대량 주문 조회] */}
@@ -430,22 +473,19 @@ const pagedCompleted = completedOrders.slice((page6 - 1) * perPage6, page6 * per
                                         <td><strong>{totalOrderPrice.toLocaleString()}원</strong></td>
                                         <td><span>{order.memberName}</span></td>
                                         <td>
-    {(() => {
-        const dStatus = String(order.deliveryStatus).toUpperCase();
-        const oState = String(order.orderState).toUpperCase();
+                                            {(() => {
+                                                const dStatus = String(order.deliveryStatus).toUpperCase();
+                                                const oState = String(order.orderState).toUpperCase();
 
-        if (dStatus === 'RECOVERED' || dStatus === '수거완료') {
-            if (oState === 'EXCHANGEORREFUND' || oState === '교환또는환불') {
-                return <span style={{ color: '#e67e22', fontWeight: 'bold' }}>🔄 수거완료</span>;
-            }
-            // 수거 완료 후 최종 구매확정까지 끝난 상태
-            return <span style={{ color: '#9b59b6', fontWeight: 'bold' }}>🎉 환불/교환확정</span>;
-        } 
-        
-        // 일반 배송 완료 및 구매 확정
-        return <span style={{ color: '#2ecc71', fontWeight: 'bold' }}>✅ 배송완료</span>;
-    })()}
-</td>
+                                                if (dStatus === 'RECOVERED' || dStatus === '수거완료') {
+                                                    if (oState === 'EXCHANGEORREFUND' || oState === '교환또는환불') {
+                                                        return <span style={{ color: '#e67e22', fontWeight: 'bold' }}>🔄 수거완료</span>;
+                                                    }
+                                                    return <span style={{ color: '#9b59b6', fontWeight: 'bold' }}>🎉 환불/교환확정</span>;
+                                                } 
+                                                return <span style={{ color: '#2ecc71', fontWeight: 'bold' }}>✅ 배송완료</span>;
+                                            })()}
+                                        </td>
                                         <td>{order.orderDate?.split('T')[0]}</td>
                                     </tr>
                                 );
@@ -466,12 +506,14 @@ const pagedCompleted = completedOrders.slice((page6 - 1) * perPage6, page6 * per
                         </div>
                     )}
                 </div>
+                {/* ✨ 최종 배송 완료 테이블 번호이동 컴포넌트 추가 */}
+                {renderPagination(page6, completedOrders.length, perPage6, setPage6)}
             </div>
 
             {/* [반품/교환 픽업 신청 목록] */}
-<div className="admin-content-box">
-    <div className="admin-order-top-row">
-        <h3>🔄 반품/교환 픽업 신청 목록</h3>
+            <div className="admin-content-box">
+                <div className="admin-order-top-row">
+                    <h3>🔄 반품/교환 픽업 신청 목록</h3>
                 </div>
                 <div className="admin-table-scroll">
                     <table className="admin-table-style">
@@ -481,29 +523,27 @@ const pagedCompleted = completedOrders.slice((page6 - 1) * perPage6, page6 * per
                                 <th>주문ID</th>
                                 <th>상품</th>
                                 <th>주문 상태</th>
-                             <th>
-            <div className="col-mainstatus-filter">
-                <select
-                className="admin-mainstatus-select"
-                    value={pickupFilter} 
-                    onChange={(e) => setPickupFilter(e.target.value)}
-                    style={{ padding: '2px 4px', fontSize: '12px', cursor: 'pointer' }}
-                >
-                    <option value="ALL">현재 배송 상태</option>
-                    <option value="COMPLETED">배송완료 (COMPLETED)</option>
-                    <option value="RECOVERED">수거완료 (RECOVERED)</option>
-                </select>
-            </div>
-        </th>   
+                                <th>
+                                    <div className="col-mainstatus-filter">
+                                        <select
+                                            className="admin-mainstatus-select"
+                                            value={pickupFilter} 
+                                            onChange={(e) => { setPickupFilter(e.target.value); setPage5(1); }}
+                                            style={{ padding: '2px 4px', fontSize: '12px', cursor: 'pointer' }}
+                                        >
+                                            <option value="ALL">현재 배송 상태</option>
+                                            <option value="COMPLETED">배송완료 (COMPLETED)</option>
+                                            <option value="RECOVERED">수거완료 (RECOVERED)</option>
+                                        </select>
+                                    </div>
+                                </th>   
                                 <th>픽업 기사 배정</th>
                             </tr>
                         </thead>
                         <tbody>
                             {pagedPickup.length > 0 ? (
                                 pagedPickup.map((order, index) => {
-                                    // 이 주문에 지정된 기사명이 있는지 확인
                                     const currentDriver = drivers.find(d => d.deliveryId === Number(order.deliveryId))?.deliveryName;
-
                                     return (
                                         <tr key={order.orderId}>
                                             <td>{(page5 - 1) * perPage5 + index + 1}</td>
@@ -518,57 +558,51 @@ const pagedCompleted = completedOrders.slice((page6 - 1) * perPage6, page6 * per
                                                 )}
                                             </td>
                                             <td>
-                                                
                                                 {order.deliveryStatus !== 'PICKUP' ? (
-        <div className="admin-pickup-assign-container">
-            
-            {/* ✨ 기존 배송 기사 안내 (텍스트 중앙 정렬) */}
-            <div className="admin-old-driver-info">
-                📦 기존 배송 기사: {order.deliveryId ? `[ID: ${order.deliveryId}] ${currentDriver || '확인 불가'}` : '기록 없음'}
-            </div>
-
-            {/* ✨ select 박스와 버튼 그룹 (가로축 중앙 정렬) */}
-            <div className="admin-pickup-input-row">
-                <select 
-                    className="admin-status-select" /* 이전 단계에서 만든 공용 클래스 재활용 */
-                    value={selectedPickupDrivers[order.orderId] || ""} 
-                    onChange={(e) => handlePickupDriverSelect(order.orderId, e.target.value)}
-                >
-                    <option value="">픽업 기사 선택</option>
-                    {drivers.map(driver => (
-                        <option key={driver.deliveryId} value={driver.deliveryId}>
-                            [{driver.deliveryId}] {driver.deliveryName}
-                        </option>
-                    ))}
-                </select>
-                
-                <button 
-                    type='button' 
-                    className="admin-pickup-submit-btn"
-                    onClick={() => handleAssignPickup(order.orderId)}
-                >
-                    픽업 배정
-                </button>
-            </div>
-        </div>
-    ) : (
-        <div className="status-waiting-box">
-            <strong>{currentDriver || "담당 기사"} {order.deliveryId && `(ID: ${order.deliveryId})`} </strong>
-            <span style={{ color: '#e67e22', marginLeft: '4px' }}>수거 진행 중</span>
-        </div> 
+                                                    <div className="admin-pickup-assign-container">
+                                                        <div className="admin-old-driver-info">
+                                                            📦 기존 배송 기사: {order.deliveryId ? `[ID: ${order.deliveryId}] ${currentDriver || '확인 불가'}` : '기록 없음'}
+                                                        </div>
+                                                        <div className="admin-pickup-input-row">
+                                                            <select 
+                                                                className="admin-status-select"
+                                                                value={selectedPickupDrivers[order.orderId] || ""} 
+                                                                onChange={(e) => handlePickupDriverSelect(order.orderId, e.target.value)}
+                                                            >
+                                                                <option value="">픽업 기사 선택</option>
+                                                                {drivers.map(driver => (
+                                                                    <option key={driver.deliveryId} value={driver.deliveryId}>
+                                                                        [{driver.deliveryId}] {driver.deliveryName}
+                                                                    </option>
+                                                                ))}
+                                                            </select>
+                                                            <button 
+                                                                type='button' 
+                                                                className="admin-pickup-submit-btn"
+                                                                onClick={() => handleAssignPickup(order.orderId)}
+                                                            >
+                                                                픽업 배정
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                ) : (
+                                                    <div className="status-waiting-box">
+                                                        <strong>{currentDriver || "담당 기사"} {order.deliveryId && `(ID: ${order.deliveryId})`} </strong>
+                                                        <span style={{ color: '#e67e22', marginLeft: '4px' }}>수거 진행 중</span>
+                                                    </div> 
                                                 )}
                                             </td>
                                         </tr>
                                     );
                                 })
                             ) : (
-                                <tr>
-                                    <td colSpan="6">반품/교환 신청 목록이 없습니다.</td>
-                                </tr>
+                                <tr><td colSpan="6">반품/교환 신청 목록이 없습니다.</td></tr>
                             )}
                         </tbody>
                     </table>
                 </div>
+                {/* ✨ 반품/교환 테이블 번호이동 컴포넌트 추가 */}
+                {renderPagination(page5, pickupOrders.length, perPage5, setPage5)}
             </div>
             <ToastContainer />
         </div>

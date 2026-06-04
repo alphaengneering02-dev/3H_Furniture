@@ -266,41 +266,53 @@ const DriverPage = () => {
 
     // 배송 시작
     const handleStartDelivery = async () => {
-        try {
-            if (orders.length > 0) {
-                const rejectConfirm = window.confirm("수락하지 않은 신규 배정 주문들이 있습니다. 모두 거절 처리하고 배송을 출발하시겠습니까?");
-                
-                if (rejectConfirm) {
-                    await Promise.all(
-                        orders.map(o =>
-                            axios.patch(`/admin/driver/orders/${o.orderId}/response`, {
-                                action: 'REJECT'
-                            })
-                        )
-                    );
-                } else {
-                    return; 
-                }
+    try {
+        if (orders.length > 0) {
+            const rejectConfirm = window.confirm("수락하지 않은 신규 배정 주문들이 있습니다. 모두 거절 처리하고 배송을 출발하시겠습니까?");
+            
+            if (rejectConfirm) {
+                await Promise.all(
+                    orders.map(o =>
+                        axios.patch(`/admin/driver/orders/${o.orderId}/response`, {
+                            action: 'REJECT'
+                        })
+                    )
+                );
+            } else {
+                return; 
             }
-
-            await Promise.all(
-                acceptedOrders.map(o =>
-                    axios.post(`/admin/orders/${o.orderId}/start`) 
-                )
-            );
-
-            toast.success("배송 출발 처리가 완료되었습니다!");
-            if (driver && driver.deliveryId) {
-                await fetchDriverOrders(driver.deliveryId);
-            }
-            setAcceptedOrders([]);
-            setSelectedOrders([]); 
-
-        } catch (err) {
-            console.error("배송 출발 처리 중 에러 발생:", err);
-            toast.error("배송 출발 처리 중 오류가 발생했습니다.");
         }
-    };
+
+        // 1. 배송 출발 API 호출
+        await Promise.all(
+            acceptedOrders.map(o =>
+                axios.post(`/admin/orders/${o.orderId}/start`) 
+            )
+        );
+
+        toast.success("배송 출발 처리가 완료되었습니다!");
+
+        if (driver && driver.deliveryId) {
+            // 2. 주문 목록 새로고침
+            await fetchDriverOrders(driver.deliveryId);
+
+            // ⭐ [추가] 기사 최신 정보(상태 포함) 서버에서 다시 조회하여 동기화
+            const driverRes = await axios.get(`/admin/driver/${driver.deliveryId}`);
+            if (driverRes.data) {
+                console.log('배송 출발 후 갱신된 기사 정보:', driverRes.data);
+                setDriver(driverRes.data); // 화면 업데이트
+                localStorage.setItem('driverInfo', JSON.stringify(driverRes.data)); // 로컬스토리지 저장
+            }
+        }
+
+        setAcceptedOrders([]);
+        setSelectedOrders([]); 
+
+    } catch (err) {
+        console.error("배송 출발 처리 중 에러 발생:", err);
+        toast.error("배송 출발 처리 중 오류가 발생했습니다.");
+    }
+};
 
     // 대기 상태 전환
     const handleResetToWaiting = async () => {

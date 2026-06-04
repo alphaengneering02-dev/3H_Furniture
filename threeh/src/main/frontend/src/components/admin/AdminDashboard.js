@@ -258,7 +258,7 @@ const AdminDashboard = () => {
                     </div>
 
                     <div className="admin-driver-table-wrapper">
-                        <table className="admin-table-style">
+                        <table className="admin-dtable-style">
                             <thead>
                                 <tr>
                                     <th>회사</th><th>기사명</th><th>기사 ID</th><th>연락처</th><th>상태</th><th>관리</th>

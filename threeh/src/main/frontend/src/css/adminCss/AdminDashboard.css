@@ -185,9 +185,41 @@ html,
 /* TABLE */
 
 .admin-driver-table-wrapper {
-    max-height: 330px;
+    max-height: 300px;
     overflow-y: auto;
     border-bottom: 1px solid #ddd;
+}
+
+.admin-dtable-style th,
+.admin-dtable-style td {
+    text-align: center;
+    vertical-align: middle; /* 높낮이도 가운데로 맞춤 */
+}
+
+
+
+.admin-dtable-style {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.admin-dtable-style th {
+    background: #702a24;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 14px 10px;
+    border-bottom: 1px solid #E8D9C8;
+}
+
+.admin-dtable-style td {
+    padding: 14px 10px;
+    font-size: 13px;
+    color: #2B2118;
+    border-bottom: 1px solid #F0E4D7;
 }
 
 .admin-table-style {
@@ -217,6 +249,12 @@ html,
 .admin-table-style tr:last-child td {
     border-bottom: none;
 }
+
+.admin-dtable-style tr:last-child td {
+    border-bottom: none;
+}
+
+
 
 .admin-status-select {
     background-color: #ffffff;
