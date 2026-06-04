@@ -118,7 +118,7 @@ const AddDelivery = () => {
         <ToastContainer position="top-right" autoClose={3000} />
         
         <div className="delivery-container">
-            <h1 className="delivery-title">배송 기사 등록</h1>
+            <h1 className="delivery-title">배송 파트너 등록</h1>
 
             <form onSubmit={handleSubmit} className="delivery-form">
                 

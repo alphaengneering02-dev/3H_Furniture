@@ -187,15 +187,11 @@ public ResponseEntity<?> assignOrderToDelivery(
  @PostMapping("/login")
 public ResponseEntity<?> login(
         @RequestBody AdminLoginDTO dto,
-        HttpServletRequest request) { // HttpSession 대신 HttpServletRequest 사용 권장
-
+        HttpServletRequest request) { 
     Admins admin = adminsService.login(dto.getLoginId(), dto.getPassword());
-
     if (admin == null) {
         return ResponseEntity.badRequest().body("아이디 또는 비밀번호가 틀렸습니다.");
     }
-
-    // 기존 세션이 있다면 무효화하고 새로 생성 (보안 및 꼬임 방지)
     HttpSession session = request.getSession(true); 
     session.setAttribute("sessionMember", new SessionMember(admin));
 
@@ -403,8 +399,7 @@ public ResponseEntity<?> getDriverOrders(@PathVariable Long deliveryId) {
     return ResponseEntity.ok(result);
 }
 
-
- // 3. 기사의 수락/거절 응답 처리(waiting 유지)
+// 3. 기사의 수락/거절 응답 처리
 @PatchMapping("/driver/orders/{orderId}/response")
 public ResponseEntity<?> handleDriverResponse(
         @PathVariable Long orderId,
@@ -418,10 +413,11 @@ public ResponseEntity<?> handleDriverResponse(
         order.changeDeliveryStatus(DeliveryStatus.WAITING); 
         
     } else if ("REJECT".equals(action)) {
-        // 기사가 거절했을 때의 처리
-        order.setDelivery(null); // 배정되었던 기사 연결 해제
-        order.changeOrderState(OrderState.READY); // 주문은 다시 '배송 준비중'으로 변경
-        order.changeDeliveryStatus(DeliveryStatus.REJECTED); // 💡 가지고 계신 REJECTED 활용!
+        order.setDelivery(null);       
+        order.changeOrderState(OrderState.READY);
+        order.changeDeliveryStatus(DeliveryStatus.ACCEPTED);
+        
+        System.out.println("❌ 기사가 거절을 눌러 주문 ID [" + orderId + "]의 기사 배정(deliveryId)만 null로 처리했습니다. (주문상태: READY, 배송상태: ACCEPTED)");
     }
     
     orderRepository.save(order);
@@ -503,35 +499,38 @@ public ResponseEntity<?> completeDelivery(@PathVariable Long orderId) {
     OrderState currentOrderState = order.getOrderState();
 
     // =============================================================
-    // 🔄 [수정] 반품/교환/취소 건의 '수거 완료(PICKUP 상태에서 완료)'인 경우
+    // 🔄 [수정] 반품/교환/취소 건의 '수거 완료'인 경우 (PICKUP -> RECOVERED)
     // =============================================================
-    if (currentDeliveryStatus == DeliveryStatus.PICKUP) {
-        System.out.println("📦 [회수 완료 처리] PICKUP -> COMPLETED 전환 (주문 상태 " + currentOrderState + " 유지)");
+    if (currentDeliveryStatus == DeliveryStatus.PICKUP || currentDeliveryStatus == DeliveryStatus.COMPLETED) {
+        System.out.println("📦 [회수 완료 처리] " + currentDeliveryStatus + " -> RECOVERED 전환 (주문 상태 " + currentOrderState + " 유지)");
         
-        // 기사와 주문의 배송 상태는 완료(COMPLETED)로 바꾸되
-        order.getDelivery().setStatus(DeliveryStatus.COMPLETED);
-        order.changeDeliveryStatus(DeliveryStatus.COMPLETED);
+        // 💡 기사와 주문의 배송 상태를 RECOVERED(수거완료)로 변경합니다.
+        order.getDelivery().setStatus(DeliveryStatus.RECOVERED);
+        order.changeDeliveryStatus(DeliveryStatus.RECOVERED);
         
-        // 🔥 핵심: 기존의 EXCHANGEorREFUND 또는 CANCEL 상태가 변하지 않도록 강제로 다시 한번 세팅하거나 보존합니다.
+        // 기존의 EXCHANGEorREFUND 또는 CANCEL 상태가 변하지 않도록 보존
         order.changeOrderState(currentOrderState); 
-    } 
+        
+        orderRepository.save(order);
+        return ResponseEntity.ok("수거 완료(RECOVERED) 처리되었습니다.");
+    }
     // =============================================================
-    // 🚚 [기본] 일반 배송 건의 '배송 완료'인 경우
+    // 🚚 [기본] 일반 배송 건의 '배송 완료'인 경우 (SHIPPING -> COMPLETED)
     // =============================================================
     else {
         System.out.println("🚚 [일반 배송 완료 처리] SHIPPING -> COMPLETED 전환");
+        
+        // 기존 규칙대로 COMPLETED(배송완료)로 변경합니다.
         order.getDelivery().setStatus(DeliveryStatus.COMPLETED);
         order.changeDeliveryStatus(DeliveryStatus.COMPLETED);
         
-        // 일반 배송 완료 시 주문 상태를 유지하거나 비즈니스 규칙에 맞게 세팅 (필요시 추가)
         if (currentOrderState == OrderState.ORDER) {
-            // 필요하다면 배송완료 후의 특정 OrderState로 변경 가능 (ex: order.changeOrderState(OrderState.COMPLETE);)
             order.changeOrderState(currentOrderState);
         }
+        
+        orderRepository.save(order);
+        return ResponseEntity.ok("배송 완료(COMPLETED) 처리되었습니다.");
     }
-
-    orderRepository.save(order);
-    return ResponseEntity.ok("완료 처리되었습니다.");
 }
 
 //기사님 복귀(complete -> waiting)

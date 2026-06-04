@@ -39,7 +39,7 @@ const Orderboard = ({
 
         try {
             // 프로젝트 설정에 따라 필요시 URL 앞에 '/admin' 이나 '/api'를 붙이세요.
-            const response = await fetch(`/orders/${orderId}/assign-pickup`, {
+            const response = await fetch(`/admin/orders/${orderId}/assign-pickup`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -93,7 +93,8 @@ const Orderboard = ({
         deliveryAddr: o.deliveryAddr || o.DELIVERY_ADDR,
         deliveryAddrDetail: o.deliveryAddrDetail || o.DELIVERY_ADDR_DETAIL,
         orderDate: o.orderDate || o.ORDER_DATE,
-        orderitems: o.orderitems || o.orderItems || o.ITEMS || []
+        orderitems: o.orderitems || o.orderItems || o.ITEMS || [],
+        memberName: o.memberName || o.MEMBER_NAME
     };
 }).sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
 
@@ -114,6 +115,7 @@ const Orderboard = ({
             return {
                 "번호": index + 1,
                 "주문ID": order.orderId,
+                "구매자": order.memberName,
                 "상품명": renderItemName(order.orderitems),
                 "총 수량": (order.orderitems?.reduce((sum, item) => sum + item.count, 0) || 0) + "개",
                 "판매 금액": totalOrderPrice.toLocaleString() + "원",
@@ -162,7 +164,7 @@ const Orderboard = ({
         const url = URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.setAttribute("href", url);
-        link.setAttribute("download", `특수주문목록_6개_8개_${new Date().toISOString().split('T')[0]}.csv`);
+        link.setAttribute("download", `대량주문목록${new Date().toISOString().split('T')[0]}.csv`);
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -173,20 +175,39 @@ const Orderboard = ({
 const unassignedOrders = normalizedOrders.filter(o => { 
     const isReady = o.orderState === 'READY' || o.orderState === '배송 준비중'; 
     const currentStatus = o.deliveryStatus;
-    return isReady && (!currentStatus || currentStatus === '거절' || currentStatus === '수락' || currentStatus === 'REJECTED' || currentStatus === 'ACCEPTED');
+    return isReady && (!currentStatus || currentStatus === '수락' || currentStatus === 'ACCEPTED');
 });
 
 const shippingOrders = normalizedOrders.filter(o => o.deliveryStatus === 'SHIPPING');
 
-// ✨ 데이터 유입 누수 방지를 위한 정밀 필터링 구조
+// ✨ 픽업 필터
 const pickupOrders = normalizedOrders.filter(o => {
-    const currentState = String(o.orderState).trim();
-    return currentState === 'EXCHANGEorREFUND' || currentState === '교환또는환불';
+    const currentState = String(o.orderState).trim().toUpperCase();
+    return currentState === 'EXCHANGEORREFUND' || currentState === '교환또는환불';
 });
 
+// 최종 배송 완료 필터
 const completedOrders = normalizedOrders.filter(o => {
-    const currentState = String(o.orderState).trim();
-    return currentState === 'PURCHASED' || currentState === '구매확정';
+    const currentState = String(o.orderState).trim().toUpperCase();
+    const currentDeliveryStatus = String(o.deliveryStatus).trim().toUpperCase();
+
+    // 조건 1: 일반 구매확정 건 (PURCHASED + COMPLETED)
+    const isNormalSuccess = 
+        (currentState === 'PURCHASED' || currentState === '구매확정') && 
+        (currentDeliveryStatus === 'COMPLETED' || currentDeliveryStatus === '배송완료');
+
+    // 조건 2: 교환/환불 수거완료 건 (EXCHANGEorREFUND + RECOVERED)
+    const isRefundRecovered = 
+        (currentState === 'EXCHANGEORREFUND' || currentState === '교환또는환불') && 
+        (currentDeliveryStatus === 'RECOVERED' || currentDeliveryStatus === '수거완료');
+
+    // 조건 3: 교환/환불 완료 후 최종 구매확정 건 (PURCHASED + RECOVERED) ✨새로 추가!
+    const isRefundPurchased = 
+        (currentState === 'PURCHASED' || currentState === '구매확정') && 
+        (currentDeliveryStatus === 'RECOVERED' || currentDeliveryStatus === '수거완료');
+
+    // 세 조건 중 하나라도 만족하면 목록에 포함시킵니다.
+    return isNormalSuccess || isRefundRecovered || isRefundPurchased;
 });
 
 // 3. 페이지네이션 슬라이스 구간 (변동되는 데이터 개수에 즉각 유기적으로 대응)
@@ -249,7 +270,7 @@ const pagedCompleted = completedOrders.slice((page6 - 1) * perPage6, page6 * per
                                                         <option value="">기사 선택</option>
                                                         {drivers.map(driver => <option key={driver.deliveryId} value={driver.deliveryId}>{driver.deliveryName}</option>)}
                                                     </select>
-                                                    <button type='button' onClick={() => handleAssignDriver(order.orderId)}>{order.deliveryStatus === 'REJECTED' ? '재배정' : '배정'}</button>
+                                                    <button type='button' onClick={() => handleAssignDriver(order.orderId)}>배정</button>
                                                 </div>
                                             )}
                                         </td>
@@ -381,7 +402,7 @@ const pagedCompleted = completedOrders.slice((page6 - 1) * perPage6, page6 * per
                 <div className="admin-table-scroll">
                     <table className="admin-table-style">
                         <thead>
-                            <tr><th>번호</th><th>상품</th><th>수량</th><th>판매 금액</th><th>담당 기사</th><th>상태</th><th>주문일</th></tr>
+                            <tr><th>번호</th><th>상품</th><th>수량</th><th>판매 금액</th><th>주문자</th><th>상태</th><th>주문일</th></tr>
                         </thead>
                         <tbody>
                             {pagedCompleted.map((order, index) => {
@@ -392,8 +413,24 @@ const pagedCompleted = completedOrders.slice((page6 - 1) * perPage6, page6 * per
                                         <td>{renderItemName(order.orderitems)}</td>
                                         <td>{order.orderitems?.reduce((sum, item) => sum + item.count, 0) || 0}개</td>
                                         <td><strong>{totalOrderPrice.toLocaleString()}원</strong></td>
-                                        <td><span>{drivers.find(d => d.deliveryId === Number(order.deliveryId))?.deliveryName || "담당 기사"}</span></td>
-                                        <td><span>{order.orderState}</span></td> 
+                                        <td><span>{order.memberName}</span></td>
+                                        <td>
+    {(() => {
+        const dStatus = String(order.deliveryStatus).toUpperCase();
+        const oState = String(order.orderState).toUpperCase();
+
+        if (dStatus === 'RECOVERED' || dStatus === '수거완료') {
+            if (oState === 'EXCHANGEORREFUND' || oState === '교환또는환불') {
+                return <span style={{ color: '#e67e22', fontWeight: 'bold' }}>🔄 수거완료</span>;
+            }
+            // 수거 완료 후 최종 구매확정까지 끝난 상태
+            return <span style={{ color: '#9b59b6', fontWeight: 'bold' }}>🎉 환불/교환확정</span>;
+        } 
+        
+        // 일반 배송 완료 및 구매 확정
+        return <span style={{ color: '#2ecc71', fontWeight: 'bold' }}>✅ 배송완료</span>;
+    })()}
+</td>
                                         <td>{order.orderDate?.split('T')[0]}</td>
                                     </tr>
                                 );
@@ -458,31 +495,40 @@ const pagedCompleted = completedOrders.slice((page6 - 1) * perPage6, page6 * per
                                             <td>
                                                 {/* 💡 deliveryStatus가 아직 PICKUP이 아니라면 배정 선택창과 버튼을 보여줍니다. */}
                                                 {order.deliveryStatus !== 'PICKUP' ? (
-                                                    <div className="driver-select-box">
-                                                        <select 
-                                                            value={selectedPickupDrivers[order.orderId] || ""} 
-                                                            onChange={(e) => handlePickupDriverSelect(order.orderId, e.target.value)}
-                                                        >
-                                                            <option value="">기사 선택</option>
-                                                            {drivers.map(driver => (
-                                                                <option key={driver.deliveryId} value={driver.deliveryId}>
-                                                                    {driver.deliveryName}
-                                                                </option>
-                                                            ))}
-                                                        </select>
-                                                        <button 
-                                                            type='button' 
-                                                            style={{ backgroundColor: '#e67e22', color: '#fff' }} 
-                                                            onClick={() => handleAssignPickup(order.orderId)}
-                                                        >
-                                                            픽업 배정
-                                                        </button>
-                                                    </div>
-                                                ) : (
-                                                    <div className="status-waiting-box">
-                                                        <strong>{currentDriver || "담당 기사"} </strong>
-                                                        <span>수거 진행 중</span>
-                                                    </div>
+        <div className="driver-select-box" style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+            
+            {/* ✨ [추가] 배송 완료했던 기사 정보 안내 (ID와 이름 함께 표시) */}
+            <div style={{ fontSize: '11px', color: '#7f8c8d', marginBottom: '2px' }}>
+                📦 기존 배송 기사: {order.deliveryId ? `[ID: ${order.deliveryId}] ${currentDriver || '확인 불가'}` : '기록 없음'}
+            </div>
+
+            <div style={{ display: 'flex', gap: '5px' }}>
+                <select 
+                    value={selectedPickupDrivers[order.orderId] || ""} 
+                    onChange={(e) => handlePickupDriverSelect(order.orderId, e.target.value)}
+                    style={{ padding: '4px', fontSize: '13px' }}
+                >
+                    <option value="">픽업 기사 선택</option>
+                    {drivers.map(driver => (
+                        <option key={driver.deliveryId} value={driver.deliveryId}>
+                            [{driver.deliveryId}] {driver.deliveryName}
+                        </option>
+                    ))}
+                </select>
+                <button 
+                    type='button' 
+                    style={{ backgroundColor: '#e67e22', color: '#fff', border: 'none', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer' }} 
+                    onClick={() => handleAssignPickup(order.orderId)}
+                >
+                    픽업 배정
+                </button>
+            </div>
+        </div>
+    ) : (
+        <div className="status-waiting-box">
+            <strong>{currentDriver || "담당 기사"} {order.deliveryId && `(ID: ${order.deliveryId})`} </strong>
+            <span style={{ color: '#e67e22', marginLeft: '4px' }}>수거 진행 중</span>
+        </div> 
                                                 )}
                                             </td>
                                         </tr>

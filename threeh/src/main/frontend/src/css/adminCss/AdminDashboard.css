@@ -756,6 +756,7 @@ html,
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 20px;
 }
 
 /* 왼쪽: 제목 + 이동버튼 */
@@ -769,6 +770,29 @@ html,
 .admin-driver-right {
     display: flex;
     align-items: center;
+}
+
+.admin-driver-right Link button,
+.admin-driver-right a button,
+.admin-add-driver-btn {
+    background-color: #8B002A !important; /* 👈 여기에 사용하시던 정확한 딥 체리색 코드(#번호)를 넣어주세요! */
+    color: #ffffff !important;            /* 글자색 (필요시 수정) */
+}
+
+/* 2. 배송 페이지 이동 버튼 */
+.admin-driver-left Link button,
+.admin-driver-left a button,
+.admin-move-page-btn {
+    background-color: #8B002A !important; /* 👈 마찬가지로 기존 딥 체리색 코드를 넣어줍니다. */
+    color: #ffffff !important;
+}
+
+/* 3. 마우스 올렸을 때(Hover) 스타일이 먹통이 되는 것도 방지 */
+.admin-add-driver-btn:hover,
+.admin-move-page-btn:hover,
+.admin-driver-header a:hover button {
+    opacity: 0.9; /* 살짝 흐려지게 하거나 원래 쓰던 hover 효과 적용 */
+    cursor: pointer;
 }
 
 /* =========================

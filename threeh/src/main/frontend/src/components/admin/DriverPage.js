@@ -26,44 +26,69 @@ const DriverPage = () => {
         const savedDriver = localStorage.getItem('driverInfo');
         if (savedDriver) {
             const driverData = JSON.parse(savedDriver);
+            
             setDriver(driverData);
             setIsLoggedIn(true);
+
+            axios.get(`/admin/driver/${driverData.deliveryId}`)
+                .then(res => {
+                    if (res.data) {
+                        console.log('서버에서 동기화된 최신 기사 정보:', res.data);
+                        setDriver(res.data);
+                        
+                        localStorage.setItem('driverInfo', JSON.stringify(res.data));
+                    }
+                })
+                .catch(err => {
+                    console.error("최신 기사 정보 동기화 실패:", err);
+                });
             fetchDriverOrders(driverData.deliveryId);
         }
     }, []);
 
     const fetchDriverOrders = async (deliveryId) => {
-        try {
-            const orderRes = await axios.get(`/admin/driver/${deliveryId}/orders`);
-            const dbOrders = orderRes.data; 
+    try {
+        const orderRes = await axios.get(`/admin/driver/${deliveryId}/orders`);
+        const dbOrders = orderRes.data; 
 
-            console.log('DB에서 받아온 실시간 데이터:', dbOrders);
-            
-            const newOrders = dbOrders.filter(o => 
-                o.orderState === '배송 준비중' && o.deliveryStatus === '수락'
-            );
-            
-            const accepted = dbOrders.filter(o => 
-                o.orderState === '배송 준비중' && o.deliveryStatus === '대기중'
-            );
+        console.log('DB에서 받아온 실시간 데이터:', dbOrders);
+        
+        // 1. 신규 배정 목록
+        const newOrders = dbOrders.filter(o => 
+            o.orderState === '배송 준비중' && o.deliveryStatus === '수락'
+        );
+        
+        // 2. 수락된 주문 목록
+        const accepted = dbOrders.filter(o => 
+            o.orderState === '배송 준비중' && o.deliveryStatus === '대기중'
+        );
 
-            const shipping = dbOrders.filter(o => 
-                o.deliveryStatus === '배송중' && o.orderState !== '주문취소'
-            );
+        // 3. 배송중 목록
+        const shipping = dbOrders.filter(o => 
+            o.deliveryStatus === '배송중' && o.orderState !== '주문취소'
+        );
 
-            const pickups = dbOrders.filter(o => 
-                o.deliveryStatus === '수거' && (o.orderState === '교환또는환불' || o.orderState === '주문취소')
-            );
+        const pickups = dbOrders.filter(o => {
+            const state = String(o.orderState).trim().toUpperCase();
+            const status = String(o.deliveryStatus).trim().toUpperCase();
 
-            setOrders(newOrders);
-            setAcceptedOrders(accepted);
-            setShippingOrders(shipping);
-            setPickupOrders(pickups);
+            // 주문 상태 조건: EXCHANGEORREFUND 또는 교환또는환불
+            const isExchangeOrRefund = state === 'EXCHANGEORREFUND' || state === '교환또는환불';
 
-            // 데이터 새로고침 시 기존에 선택되어 있던 체크박스 초기화
-            setSelectedOrders([]);
-            setShippingCheckeds([]);
-            setPickupCheckeds([]);
+            // 배송 상태 조건: COMPLETED(배송완료 상태에서 회수요청 들어옴) 또는 PICKUP(기사수거중/수거)
+            const isValidStatus = status === 'COMPLETED' || status === '배송완료' || status === 'PICKUP' || status === '수거';
+
+            return isExchangeOrRefund && isValidStatus;
+        });
+
+        setOrders(newOrders);
+        setAcceptedOrders(accepted);
+        setShippingOrders(shipping);
+        setPickupOrders(pickups);
+
+        setSelectedOrders([]);
+        setShippingCheckeds([]);
+        setPickupCheckeds([]);
 
         } catch (err) {
             console.error("주문 목록 로드 실패", err);
@@ -139,7 +164,6 @@ const DriverPage = () => {
         toast.error("로그아웃 되었습니다.");
     };
 
-    // ─── [추가] 개별 및 전체 체크박스 제어 토글 함수들 ───
 
     // 1. 신규 배정 체크박스 토글
     const toggleSelect = (id) => {
@@ -400,6 +424,26 @@ const DriverPage = () => {
                 <div className="driver-top-info-list">
                     <p className="driver-info-text">
                         배송 파트너: <strong>{driver.deliveryName}</strong> 기사님 ({driver.deliveryCarNo})
+                        
+                        {/* ─── [추가] 상태 표시 배지 구역 ─── */}
+                        <span className={`driver-status-badge ${driver.status?.toLowerCase()}`} style={{
+                            marginLeft: '10px',
+                            padding: '4px 10px',
+                            borderRadius: '20px',
+                            fontSize: '13px',
+                            fontWeight: 'bold',
+                            color: '#fff',
+                            backgroundColor: 
+                                driver.status === 'WAITING' ? '#28a745' : // 대기중 - 초록
+                                driver.status === 'SHIPPING' ? '#007bff' : // 배송중 - 파랑
+                                driver.status === 'COMPLETED' ? '#6c757d' : '#17a2b8' // 완료 - 회색 / 기타 - 청록
+                        }}>
+                            {driver.status === 'WAITING' && '● 대기 중'}
+                            {driver.status === 'SHIPPING' && '● 배송 진행 중'}
+                            {driver.status === 'COMPLETED' && '● 업무 완료'}
+                            {!['WAITING', 'SHIPPING', 'COMPLETED'].includes(driver.status) && driver.status}
+                        </span>
+                        {/* ────────────────────────────────── */}
                     </p>
                     <div className="driver-top-btn-group">
                         <Link to="/admin">
@@ -588,8 +632,10 @@ const DriverPage = () => {
                                             />
                                             <span className="driver-order-id driver-id-pickup">NO. {order.orderId}</span>
                                             <span className="driver-badge driver-badge-pickup">
-                                                {order.orderState === 'EXCHANGEorREFUND' ? '교환회수' : '반품회수'}
-                                            </span>
+    {String(order.orderState).toUpperCase() === 'EXCHANGEORREFUND' || order.orderState === '교환또는환불' 
+        ? '교환회수' 
+        : '반품회수'}
+</span>
                                         </div>
                                         <div className="driver-card-body">
                                             <p className="driver-order-name"><strong>요청자:</strong> {order.memberName || '비회원'}</p>

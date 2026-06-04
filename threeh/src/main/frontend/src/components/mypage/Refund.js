@@ -172,6 +172,22 @@ const RefundPage = () => {
 
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+
+    //김태양 반품/교환처리 현황은 CANCEL("주문취소"),EXCHANGEorREFUND("교환또는환불") 일때만 보여 주는거 추천
+    //
+
+/* 
+const filteredOrders = orders.filter(order => {
+    if (activeTab === 1) {
+        // 1번 탭: 신청 가능한 정상 주문 목록 (취소 완료, 반품 완료, 교환/반품 진행중인 건 제외)
+        return order.orderState !== 'CANCEL' && order.orderState !== 'EXCHANGEorREFUND';
+    }
+    // 2번 탭: [조건 변경 반영] 오직 'CANCEL' 이거나 'EXCHANGEorREFUND'인 건들만 모아서 노출합니다.
+    return order.orderState === 'CANCEL' || order.orderState === 'EXCHANGEorREFUND';
+});
+1번 탭에 && order.orderState !== 'REFUND' 지우기,
+2번 탭에 'REFUND''PURCHASED''READY' 지우면 좋을꺼 같아요
+*/
     
     // [통합 필터링 매커니즘]: READY, PURCHASED 상태 트래킹 연동 완료
     const filteredOrders = orders.filter(order => {
@@ -256,6 +272,8 @@ const RefundPage = () => {
                                 <div className="refund-th-count">수량</div>
                                 <div className="refund-th-subtotal">소계금액</div>
                                 <div className="refund-th-status">주문현황</div>
+                                 {/* 김태양 배송 현황 추가 */}
+                                <div className="refund-th-status">배송현황</div>
                             </div>
 
 {/* ========================================================= */}
@@ -353,6 +371,13 @@ const RefundPage = () => {
                                                         <span>신청 가능</span>
                                                     )}
                                                 </div>
+                                                {/* 김태양 배송 현황 추가 */}
+                                                <div className="refund-td-status">
+    {order.deliveryStatus === 'RECOVERED' && <span>재배송 완료</span>}
+    {order.deliveryStatus === 'COMPLETED' && <span style={{ color: '#137333', fontWeight: 'bold' }}>배송완료</span>}
+    {order.deliveryStatus === 'PICKUP' && <span style={{ color: '#801a24' }}>수거중</span>}
+    {!order.deliveryStatus && <span>정보 없음</span>} 
+</div>
                                             </div>
                                         );
                                     })

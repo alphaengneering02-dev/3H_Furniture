@@ -157,8 +157,11 @@ const AdminDashboard = () => {
     const fetchDeliveries = async () => {
         try {
             const response = await axios.get('/admin/list');
-            // 💡 데이터가 기사 리스트이므로 setDrivers에 채워넣습니다.
-            setDrivers(response.data); 
+            
+            
+            const sortedDrivers = response.data.sort((a, b) => b.deliveryId - a.deliveryId);
+            
+            setDrivers(sortedDrivers); 
         } catch (error) {
             console.error("❌ 기사 리스트 로드 실패 상세 원인:", error);
         }
@@ -249,7 +252,7 @@ const AdminDashboard = () => {
                     </div>
 
                     <div className="admin-driver-table-wrapper">
-                        <table className="admindr-table-style">
+                        <table className="admin-table-style">
                             <thead>
                                 <tr>
                                     <th>회사</th><th>기사명</th><th>기사 ID</th><th>연락처</th><th>상태</th><th>관리</th>

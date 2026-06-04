@@ -269,7 +269,8 @@ const AllOrderboard = ({
                          <div className="admin-mainaction-button-group">
                             <button onClick={handleBulkReady}>선택 주문 준비 완료 처리 ({selectedOrderIds.length}건)</button>
                             <button onClick={handleManualAssign} className="admin-mainbtn-manual">선택 주문 선택 배정 ({selectedOrderIds.length}건)</button>
-                            <button onClick={handleRoundRobinAssign} className="admin-mainbtn-auto">선택 주문 자동 배정 ({selectedOrderIds.length}건)</button>
+                            {/*
+                            <button onClick={handleRoundRobinAssign} className="admin-mainbtn-auto">선택 주문 자동 배정 ({selectedOrderIds.length}건)</button>*/}
                         </div>
 
                         <select

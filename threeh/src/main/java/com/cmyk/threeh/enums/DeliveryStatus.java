@@ -9,7 +9,7 @@ public enum DeliveryStatus {
     SHIPPING("배송중"),   //배송중
     COMPLETED("배송완료"),   //배송완료
     PICKUP("수거"),     //수거(교환 및 환불시)RETURNING
-    REJECTED("거절");    //기사거절
+    RECOVERED("수거완료");//수거  완료시
 
     private final String message;
 
