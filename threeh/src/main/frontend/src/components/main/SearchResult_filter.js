@@ -65,9 +65,14 @@ const SearchResult_filter = () => {
             {/* 검색 조건 헤더 영역 */}
             <article className='search-result-filter-header'>
                 <h3>검색 조건</h3>
-                <button type='button' className='deleteAll' onClick={deleteSearchKey}>
-                    전체 삭제
-                </button>
+                <div className='selectionBox'>
+                    <button type='button' className='selectAll' onClick={resetSearchKey}>
+                        전체 선택
+                    </button>
+                    <button type='button' className='deleteAll' onClick={deleteSearchKey}>
+                        전체 해제
+                    </button>
+                </div>
             </article>
 
             {/* 필터 본문 영역 */}

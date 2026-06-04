@@ -52,7 +52,10 @@
     color: var(--main-black);
 }
 
-.search-result-filter-header .deleteAll {
+.search-result-filter-header .selectionBox {
+  display: flex; flex-direction: inherit; gap: 18px;
+}
+.search-result-filter-header .selectionBox .selectAll {
     background: none;
     border: none;
     font-size: 14px;
@@ -60,7 +63,15 @@
     text-decoration: underline;
     cursor: pointer;
 }
-.search-result-filter-header .deleteAll:hover {
+.search-result-filter-header .selectionBox .deleteAll {
+    background: none;
+    border: none;
+    font-size: 14px;
+    color: var(--main-dark-beige);
+    text-decoration: underline;
+    cursor: pointer;
+}
+.search-result-filter-header .selectionBox .deleteAll:hover {
     color: var(--brown);
 }
 
