@@ -62,7 +62,10 @@ const Header_searchCondition = () => {
             {/* 조건창 상단바 */}
             <article className='main-header-searchCondition-title'>
                 <h3>검색 조건</h3>
-                <button className='deleteAll' type='button' onClick={deleteSearchKey}>전체 삭제</button>
+                <div className='selectionBox'>
+                    <button className='selectAll' type='button' onClick={resetSearchKey}>전체 선택</button>
+                    <button className='deleteAll' type='button' onClick={deleteSearchKey}>전체 해제</button>
+                </div>
             </article>
 
 

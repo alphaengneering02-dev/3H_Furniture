@@ -329,7 +329,10 @@ a {
   margin: 0;
   color: var(--main-black);
 }
-.main-header-searchCondition .deleteAll {
+.main-header-searchCondition .selectionBox {
+  display: flex; flex-direction: inherit; gap: 10px;
+}
+.main-header-searchCondition .selectionBox .selectAll {
   background: none;
   border: none;
   font-size: 12px;
@@ -337,7 +340,15 @@ a {
   text-decoration: underline;
   cursor: pointer;
 }
-.main-header-searchCondition .deleteAll:hover {
+.main-header-searchCondition .selectionBox .deleteAll {
+  background: none;
+  border: none;
+  font-size: 12px;
+  color: var(--main-dark-beige);
+  text-decoration: underline;
+  cursor: pointer;
+}
+.main-header-searchCondition .selectionBox .deleteAll:hover {
   color: var(--brown);
 }
 
