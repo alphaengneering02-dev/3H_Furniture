@@ -91,11 +91,12 @@ const AllOrderboard = ({
         deliveryAddr: o.deliveryAddr || o.DELIVERY_ADDR,
         deliveryAddrDetail: o.deliveryAddrDetail || o.DELIVERY_ADDR_DETAIL,
         memberName: o.memberName || o.MEMBER_ID,
-        deliveryName: o.deliveryName || o.DELIVERY_NAME || o.driverName || '이름없음',
-        orderitems: o.orderitems || o.orderItems || o.ITEMS || []
-    })).sort((a, b) => {
-        return new Date(b.orderDate) - new Date(a.orderDate);
-    });
+        memberPhone: o.memberPhone || o.MEMBER_PHONE || o.phone || o.hp || '', 
+    deliveryName: o.deliveryName || o.DELIVERY_NAME || o.driverName || '이름없음',
+    orderitems: o.orderitems || o.orderItems || o.ITEMS || []
+})).sort((a, b) => {
+    return new Date(b.orderDate) - new Date(a.orderDate);
+});
 
     // 2. 주문자 이름 필터링 거치기
     const filteredByBuyerOrders = masterOrders.filter(o => {
@@ -238,7 +239,7 @@ const AllOrderboard = ({
             <div className="admin-maincontent-box">
                 <div className="admin-mainorder-header">
                     <div className="admin-mainorder-top-row">
-                        <h3>주문 목록 (전체 접수 건) - 현재 화면 노출: {filteredByBuyerOrders.length}건</h3>
+                        <h3>주문 목록 <br/>(총 주문 건수: {filteredByBuyerOrders.length}건)</h3>
                         <div className="admin-mainbuyer-search-wrapper">
                             <label htmlFor="buyerInput">👤 주문자 검색:</label>
                             <div className="admin-mainbuyer-search-input-container">

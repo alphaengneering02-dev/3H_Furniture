@@ -815,7 +815,7 @@ const ItemAdminPage = () => {
 
                     <button
                         type="button"
-                        className="itemAdmin-button"
+                        className="itemAdmin-button itemAdmin-subButton"
                         onClick={() => navigate("/item/create")}
                     >
                         상품 등록하기

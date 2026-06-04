@@ -31,7 +31,7 @@ const AdminDashboard = () => {
         try {
             await axios.delete(`/admin/delivery-companies/${deliveryId}`);
             toast.error("삭제되었습니다.");
-            fetchDeliveries(); // 리스트 새로고침
+            fetchDeliveries();
         } catch (error) {
             console.error("삭제 실패:", error);
             toast.error("삭제 중 오류가 발생했습니다.");
@@ -70,7 +70,6 @@ const AdminDashboard = () => {
             });
             setItems(response.data);
         } catch (error) {
-            // 403 에러가 나더라도 alert 창을 띄우거나 메인으로 쫓아내지 않고 로그만 찍습니다.
             console.error("❌ 상품 리스트 로드 실패:", error);
         }
     };
@@ -106,7 +105,7 @@ const AdminDashboard = () => {
             );
 
             setSelectedDrivers(prev => ({ ...prev, [orderId]: "" }));
-            toast.error("기사 배정 완료");
+            toast.success("기사 배정 완료");
         } catch (error) {
             console.error("배정 실패 상세:", error.response?.data);
             toast.error(`배정 실패: ${error.response?.data || "서버 오류"}`);

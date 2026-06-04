@@ -501,19 +501,21 @@ public ResponseEntity<?> completeDelivery(@PathVariable Long orderId) {
     // =============================================================
     // 🔄 [수정] 반품/교환/취소 건의 '수거 완료'인 경우 (PICKUP -> RECOVERED)
     // =============================================================
-    if (currentDeliveryStatus == DeliveryStatus.PICKUP || currentDeliveryStatus == DeliveryStatus.COMPLETED) {
-        System.out.println("📦 [회수 완료 처리] " + currentDeliveryStatus + " -> RECOVERED 전환 (주문 상태 " + currentOrderState + " 유지)");
-        
-        // 💡 기사와 주문의 배송 상태를 RECOVERED(수거완료)로 변경합니다.
-        order.getDelivery().setStatus(DeliveryStatus.RECOVERED);
-        order.changeDeliveryStatus(DeliveryStatus.RECOVERED);
-        
-        // 기존의 EXCHANGEorREFUND 또는 CANCEL 상태가 변하지 않도록 보존
-        order.changeOrderState(currentOrderState); 
-        
-        orderRepository.save(order);
-        return ResponseEntity.ok("수거 완료(RECOVERED) 처리되었습니다.");
-    }
+   if (currentDeliveryStatus == DeliveryStatus.PICKUP || currentDeliveryStatus == DeliveryStatus.COMPLETED) {
+    System.out.println("📦 [회수 완료 처리] " + currentDeliveryStatus + " -> RECOVERED 전환 (기사는 COMPLETED 처리)");
+    
+    // 💡 [변경] 기사의 상태는 RECOVERED 대신 COMPLETED로 저장합니다!
+    order.getDelivery().setStatus(DeliveryStatus.COMPLETED);
+    
+    // 💡 주문의 배송 상태는 기존대로 RECOVERED를 유지하여 수거된 상품임을 표시합니다.
+    order.changeDeliveryStatus(DeliveryStatus.RECOVERED);
+    
+    // 기존의 EXCHANGEorREFUND 또는 CANCEL 상태가 변하지 않도록 보존
+    order.changeOrderState(currentOrderState); 
+    
+    orderRepository.save(order);
+    return ResponseEntity.ok("수거 완료 처리되었습니다. (기사 상태: COMPLETED)");
+}
     // =============================================================
     // 🚚 [기본] 일반 배송 건의 '배송 완료'인 경우 (SHIPPING -> COMPLETED)
     // =============================================================
