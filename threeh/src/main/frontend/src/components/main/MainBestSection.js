@@ -3,7 +3,9 @@ import { getUrl } from '../../utils/BackendPath';
 import { Link } from 'react-router-dom';
 //import '../../css/mainPageCss/mainBestSection.css';
 
-function MainBestSection({ bestItems }) {
+
+{/*렌더링 에러 수정_오현옥 기존:function MainBestSection({ bestItems }) */}
+function MainBestSection({ bestItems=[] }) {
     
     // console.log(bestItems);  //유소은_주석처리
 
@@ -13,29 +15,31 @@ function MainBestSection({ bestItems }) {
                 <h2 className="best-section-title">베스트 상품</h2>
                 <p className="best-section-sub">가장 많이 판매된 인기 상품을 만나보세요</p>
             </div>
-
+        {/*코드수정_오현옥 기존:  <div className="best-card" key={item.rank}> */}
             <div className="best-card-list">
                 {bestItems.length === 0 ? (
                     <p className="best-empty">베스트 상품 데이터를 불러오는 중입니다...</p>
                 ) : (
                     bestItems.map((item) => (
-                        <div className="best-card" key={item.rank}>
+                        
+                        <div className="best-card" key={item.itemId || item.rank}>
                             <Link
                                 className='best-card-item-link'
                                 to={`/item/${item.itemId}`}
                             >
-                                {/* <div className="best-medal">{item.rank}</div> */}  {/* 임시 주석처리 유소은 */}
+                                {/* <div className="best-medal">{item.rank}</div> */} 
+                                 {/* 임시 주석처리 유소은 */}
                                 {/*코딩 수정 오현옥 */}
                                 <div className="best-img-box">
                                     {item.image || item.itemImgUrl ?(
                                         <img src={getUrl(item.image || item.itemImgUrl)}
-                                        alt={item.itemName || item.name} className='best-img'/>
+                                        alt={item.itemName || item.name || '상품 이미지'} className='best-img'/>
                                     ):(
                                         <div className="best-img-placeholder">^___^</div>
                                     )}
                                 </div>
                                 <div className="best-info">
-                                    <p className="best-name" title={item.name}>{item.name}</p>
+                                    <p className="best-name" title={item.itemName || item.name}>{item.itemName||item.name}</p>
                                 </div>
                             </Link>
                         </div>

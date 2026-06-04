@@ -6,9 +6,25 @@ const SAMPLE_ORDERS = [];
 const SAMPLE_DRIVERS = [];
 
 const Ranking = ({ orders = [], drivers = [] }) => {
+    //코드 추가_오현옥
+    //기존 코드_주석처리 오현옥
+    //const finalOrders = orders && orders.length > 0 ? orders : SAMPLE_ORDERS;
+    //const finalItems = drivers && drivers.length > 0 ? drivers : SAMPLE_DRIVERS;
 
-    const finalOrders = orders && orders.length > 0 ? orders : SAMPLE_ORDERS;
-    const finalItems = drivers && drivers.length > 0 ? drivers : SAMPLE_DRIVERS;
+    const finalOrders = useMemo(()=>{
+        const safeOrders = Array.isArray(orders)?orders:[];
+        return safeOrders.length > 0 ? safeOrders : SAMPLE_ORDERS;
+    },[orders]);
+    
+    const finalItems = useMemo(()=>{
+        const safeDrivers = Array.isArray(drivers) ? drivers : [];
+        return safeDrivers.length > 0 ? safeDrivers : SAMPLE_DRIVERS;
+    },[drivers]);
+    //숫자 변환
+    const toNumber = (value,fallback = 0)=>{
+        const num = Number(String(value??'').replaceAll(',',''));
+        return Number.isFinite(num)?num:fallback;
+    };
 
     // ==========================================
     // 👑 1. VIP 고객 랭킹 연산 및 추적
@@ -238,7 +254,8 @@ const Ranking = ({ orders = [], drivers = [] }) => {
                         </thead>
                         <tbody>
                             {itemRanking.map((item) => (
-                                <tr key={item.rank}>
+                                 
+                                <tr key={item.id||item.name||item.rank}>
                                     <td className="admin-rank-display admin-item-number">{item.rank}</td>
                                     <td className="admin-text-bold admin-item-name-ellipsis" title={item.name}>
                                         {item.id ? (
@@ -276,7 +293,7 @@ const Ranking = ({ orders = [], drivers = [] }) => {
                         </thead>
                         <tbody>
                             {driverRanking.map((driver, index) => (
-                                <tr key={driver.driverId}>
+                                <tr key={driver.driverId||`${driver.name}-${index}`}>
                                     <td className="admin-rank-display admin-driver-number">{index + 1}</td>
                                     <td className="admin-text-bold">{driver.name} 기사님</td>
                                     <td className="admin-text-count-blue">{driver.count}건</td>
