@@ -173,29 +173,24 @@ const RefundPage = () => {
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
-    //김태양 반품/교환처리 현황은 CANCEL("주문취소"),EXCHANGEorREFUND("교환또는환불") 일때만 보여 주는거 추천
-    //
 
-/* 
 const filteredOrders = orders.filter(order => {
-    if (activeTab === 1) {
-        // 1번 탭: 신청 가능한 정상 주문 목록 (취소 완료, 반품 완료, 교환/반품 진행중인 건 제외)
-        return order.orderState !== 'CANCEL' && order.orderState !== 'EXCHANGEorREFUND';
-    }
-    // 2번 탭: [조건 변경 반영] 오직 'CANCEL' 이거나 'EXCHANGEorREFUND'인 건들만 모아서 노출합니다.
-    return order.orderState === 'CANCEL' || order.orderState === 'EXCHANGEorREFUND';
-});
-1번 탭에 && order.orderState !== 'REFUND' 지우기,
-2번 탭에 'REFUND''PURCHASED''READY' 지우면 좋을꺼 같아요
-*/
+        if (activeTab === 1) {
+            return order.orderState !== 'CANCEL' && order.orderState !== 'PURCHASED' && order.orderState !== 'EXCHANGEorREFUND';
+        }
+         return order.orderState === 'CANCEL' || order.orderState === 'EXCHANGEorREFUND';
+    });
+// 1번 탭에 && order.orderState !== 'REFUND' 지우기,
+// 2번 탭에 'REFUND''PURCHASED''READY' 지우면 좋을꺼 같아요
+
     
     // [통합 필터링 매커니즘]: READY, PURCHASED 상태 트래킹 연동 완료
-    const filteredOrders = orders.filter(order => {
-        if (activeTab === 1) {
-            return order.orderState !== 'CANCEL' && order.orderState !== 'REFUND' && order.orderState !== 'EXCHANGEorREFUND';
-        }
-        return order.orderState === 'CANCEL' || order.orderState === 'REFUND' || order.orderState === 'EXCHANGEorREFUND' || order.orderState === 'PURCHASED' || order.orderState === 'READY';
-    });
+    // const filteredOrders = orders.filter(order => {
+    //     if (activeTab === 1) {
+    //         return order.orderState !== 'CANCEL' && order.orderState !== 'REFUND' && order.orderState !== 'EXCHANGEorREFUND';
+    //     }
+    //     return order.orderState === 'CANCEL' || order.orderState === 'REFUND' || order.orderState === 'EXCHANGEorREFUND' || order.orderState === 'PURCHASED' || order.orderState === 'READY';
+    // });
 
     const currentOrders = filteredOrders.slice(indexOfFirstItem, indexOfLastItem);
     const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
