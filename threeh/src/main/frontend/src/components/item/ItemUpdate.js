@@ -235,7 +235,9 @@ const ItemUpdate = () => {
 
     return (
         <div>
+            <div className="main-header">
             <Header/>
+            </div>
         <div className="itemUpdate-page">
             <ToastContainer
                 position="top-center"
@@ -446,7 +448,9 @@ const ItemUpdate = () => {
                 </div>
             </form>
         </div>
+        <div className="main-mypage-footer">
         <Footer/>
+        </div>
     </div>
     );
 };

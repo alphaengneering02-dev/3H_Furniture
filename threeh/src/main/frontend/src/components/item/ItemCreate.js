@@ -215,8 +215,10 @@ const ItemCreate = () => {
 
     return (
         <div>
-            {/*헤더영역 메이에서 가져옴 */}
-            <Header/>
+            <div className="main-header">
+            {/* 헤더 영역 */}
+            <Header />
+            </div>
         <div className="itemCreate-page">
             <ToastContainer
                 position="top-center"
@@ -356,7 +358,9 @@ const ItemCreate = () => {
             </form>
         </div>
         {/*푸터영역*/}
+        <div className="main-mypage-footer">
         <Footer/>
+        </div>
     </div>
     );
 };

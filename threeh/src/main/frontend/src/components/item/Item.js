@@ -971,9 +971,10 @@ function Item() {
 
   return (
     <div>
+      <div className="main-header">
       {/* 실제 헤더 영역 */}
       <Header />
-
+      </div>
       <ToastContainer
         position="top-center"
         autoClose={1800}
@@ -1408,7 +1409,9 @@ function Item() {
       </div>
 
       {/* 실제 푸터 영역 */}
+      <div className="main-mypage-footer">
       <Footer />
+      </div>
     </div>
   );
 }

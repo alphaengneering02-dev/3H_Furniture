@@ -585,7 +585,9 @@ const ItemDetail = () => {
 
     return (
         <div>
+            <div className="main-header">
             <Header />
+            </div>
 
             <main className="itemDetail-page">
                 <ToastContainer
@@ -835,8 +837,9 @@ const ItemDetail = () => {
                     <Review itemId={itemId} isAdmin={isAdmin} />
                 </div>
             </main>
-
+            <div className="main-mypage-footer">
             <Footer />
+            </div>
         </div>
     );
 };

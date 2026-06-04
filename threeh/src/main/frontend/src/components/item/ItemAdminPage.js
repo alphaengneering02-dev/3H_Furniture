@@ -734,8 +734,10 @@ const ItemAdminPage = () => {
 
     return (
         <div>
+            <div className="main-header">
             {/* 헤더 영역 */}
             <Header />
+            </div>
 
             <div className="itemAdmin-page">
                 <ToastContainer
@@ -1243,7 +1245,9 @@ const ItemAdminPage = () => {
             </div>
 
             {/* 푸터 영역 */}
+            <div className="main-mypage-footer">
             <Footer />
+            </div>
         </div>
     );
 };
