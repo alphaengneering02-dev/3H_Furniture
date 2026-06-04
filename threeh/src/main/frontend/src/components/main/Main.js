@@ -272,7 +272,7 @@ const Main = () => {
 
                     {/*이게 랭킹.._ */}
                     <h2 className="best-Ranking-title">이달의 랭킹</h2>
-                    <Ranking orders={orders} items={drivers} />
+                    <Ranking orders={orders} drivers={drivers} />
                 </div>
             </div>
 
