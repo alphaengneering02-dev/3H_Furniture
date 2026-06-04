@@ -194,14 +194,14 @@ body {
     box-sizing: border-box !important;         /* ⚡ [가장 중요] 갈색 선이 1픽셀도 상자 밖으로 넘치지 못하게 강제 고정 */
 }
 
-.mypage-info-section-title::after {
+/* .mypage-info-section-title::after {
     content: "3H PREMIUM FURNITURE";
     font-family: 'Playfair Display', serif;
     font-size: 11px;
     color: #dfd1c0;
     font-weight: 700;
     letter-spacing: 2px;
-}
+} */
 
 /* 회원정보 및 공통 데이터 블록 디자인 */
 .mypage-info-data-block {
