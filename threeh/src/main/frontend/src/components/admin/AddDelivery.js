@@ -4,6 +4,8 @@ import '../../css/adminCss/DeliveryAE.css';
 import axios from 'axios';
 import { ToastContainer, toast } from "react-toastify"; 
 import "react-toastify/dist/ReactToastify.css";
+import Header from '../main/Header';
+import Footer from '../main/Footer';
 
 const AddDelivery = () => {
     const navigate = useNavigate();    
@@ -112,6 +114,13 @@ const AddDelivery = () => {
 };
 
     return (
+        <div>
+        {/* Header 영역 */}
+        <div className="main-header">
+            <Header />
+        </div>
+
+
 <div className="delivery-page">
         <ToastContainer position="top-right" autoClose={3000} />
         
@@ -284,6 +293,13 @@ const AddDelivery = () => {
                 </div>
             </form>
         </div>
+    </div>
+
+
+    {/* Footer 영역 */}
+            <div className="main-mypage-footer">
+                <Footer />
+            </div>
     </div>
 );
 };

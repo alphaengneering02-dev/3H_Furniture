@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 import { ToastContainer, toast } from "react-toastify"; 
 import "react-toastify/dist/ReactToastify.css";
 import '../../css/adminCss/driverPage.css';
+import Header from '../main/Header';
+import Footer from '../main/Footer';
 
 const DriverPage = () => {
     const [driver, setDriver] = useState(null);
@@ -386,293 +388,321 @@ const DriverPage = () => {
 
     if (!isLoggedIn) {
         return (
-            <div className="driver-body-wrapper">
-                <ToastContainer position="top-right" autoClose={2000} />
-                <div className="driver-login-section"> 
-                    <h2 className="driver-login-title">기사 로그인</h2>
-                    <input className="driver-login-input"
-                        type="text"
-                        inputMode="numeric"
-                        maxLength={11}
-                        placeholder="전화번호(01000000000)"
-                        value={loginInfo.phone}
-                        onChange={e => {
-                            const onlyNums = e.target.value.replace(/[^0-9]/g, '');
-                            setLoginInfo({ ...loginInfo, phone: onlyNums });
-                        }} 
-                    />
-                    <input 
-                        className="driver-login-input"
-                        type="text"
-                        inputMode="numeric"
-                        maxLength={4}
-                        placeholder="차량번호 뒤 4자리"
-                        value={loginInfo.carSuffix}
-                        onChange={e => {
-                            const onlyNums = e.target.value.replace(/[^0-9]/g, '');
-                            setLoginInfo({ ...loginInfo, carSuffix: onlyNums });
-                        }} 
-                    />
-                    <div className="driver-login-btn-row">
-                        <button className="driver-btn driver-btn-primary driver-login-submit" onClick={handleLogin}>
-                            로그인
-                        </button>
-                        <Link to="/admin" className="driver-link-flex">
-                            <button className="driver-btn driver-btn-gray driver-login-admin">
-                                관리자 메인 페이지
-                            </button>
-                        </Link>
-                    </div>
+            <div>
+                {/* Header 영역 */}
+                <div className="main-header">
+                    <Header />
                 </div>
-            </div> 
+
+
+                <div className="driver-body-wrapper">
+                    <ToastContainer position="top-right" autoClose={2000} />
+                    <div className="driver-login-section"> 
+                        <h2 className="driver-login-title">기사 로그인</h2>
+                        <input className="driver-login-input"
+                            type="text"
+                            inputMode="numeric"
+                            maxLength={11}
+                            placeholder="전화번호(01000000000)"
+                            value={loginInfo.phone}
+                            onChange={e => {
+                                const onlyNums = e.target.value.replace(/[^0-9]/g, '');
+                                setLoginInfo({ ...loginInfo, phone: onlyNums });
+                            }} 
+                        />
+                        <input 
+                            className="driver-login-input"
+                            type="text"
+                            inputMode="numeric"
+                            maxLength={4}
+                            placeholder="차량번호 뒤 4자리"
+                            value={loginInfo.carSuffix}
+                            onChange={e => {
+                                const onlyNums = e.target.value.replace(/[^0-9]/g, '');
+                                setLoginInfo({ ...loginInfo, carSuffix: onlyNums });
+                            }} 
+                        />
+                        <div className="driver-login-btn-row">
+                            <button className="driver-btn driver-btn-primary driver-login-submit" onClick={handleLogin}>
+                                로그인
+                            </button>
+                            <Link to="/admin" className="driver-link-flex">
+                                <button className="driver-btn driver-btn-gray driver-login-admin">
+                                    관리자 메인 페이지
+                                </button>
+                            </Link>
+                        </div>
+                    </div>
+                </div> 
+
+
+                {/* Footer 영역 */}
+                <div className="main-mypage-footer">
+                    <Footer />
+                </div>
+            </div>
         );
     }
 
     return (
-        <div className="driver-body-wrapper">
-            <ToastContainer position="top-right" autoClose={2000} />
-            
-            <div className="driver-top-info-bar">
-                <div className="driver-top-info-list">
-                    <p className="driver-info-text">
-                        배송 파트너: <strong>{driver.deliveryName}</strong> 기사님 ({driver.deliveryCarNo})
-                        
-                        {/* ─── [추가] 상태 표시 배지 구역 ─── 
-                        <span className={`driver-status-badge ${driver.status?.toLowerCase()}`} style={{
-                            marginLeft: '10px',
-                            padding: '4px 10px',
-                            borderRadius: '20px',
-                            fontSize: '13px',
-                            fontWeight: 'bold',
-                            color: '#fff',
-                            backgroundColor: 
-                                driver.status === 'WAITING' ? '#28a745' : // 대기중 - 초록
-                                driver.status === 'SHIPPING' ? '#007bff' : // 배송중 - 파랑
-                                driver.status === 'COMPLETED' ? '#6c757d' : '#17a2b8' // 완료 - 회색 / 기타 - 청록
-                        }}>
-                            {driver.status === 'WAITING' && '● 대기 중'}
-                            {driver.status === 'SHIPPING' && '● 배송 진행 중'}
-                            {driver.status === 'COMPLETED' && '● 업무 완료'}
-                            {!['WAITING', 'SHIPPING', 'COMPLETED'].includes(driver.status) && driver.status}
-                        </span>
-                       */}
-                    </p>
-                    <div className="driver-top-btn-group">
-                        <Link to="/admin">
-                            <button className="driver-btn driver-btn-gray-sm">
-                                관리자 메인
+        <div>
+            {/* Header 영역 */}
+            <div className="main-header">
+                <Header />
+            </div>
+
+
+            <div className="driver-body-wrapper">
+                <ToastContainer position="top-right" autoClose={2000} />
+                
+                <div className="driver-top-info-bar">
+                    <div className="driver-top-info-list">
+                        <p className="driver-info-text">
+                            배송 파트너: <strong>{driver.deliveryName}</strong> 기사님 ({driver.deliveryCarNo})
+                            
+                            {/* ─── [추가] 상태 표시 배지 구역 ─── 
+                            <span className={`driver-status-badge ${driver.status?.toLowerCase()}`} style={{
+                                marginLeft: '10px',
+                                padding: '4px 10px',
+                                borderRadius: '20px',
+                                fontSize: '13px',
+                                fontWeight: 'bold',
+                                color: '#fff',
+                                backgroundColor: 
+                                    driver.status === 'WAITING' ? '#28a745' : // 대기중 - 초록
+                                    driver.status === 'SHIPPING' ? '#007bff' : // 배송중 - 파랑
+                                    driver.status === 'COMPLETED' ? '#6c757d' : '#17a2b8' // 완료 - 회색 / 기타 - 청록
+                            }}>
+                                {driver.status === 'WAITING' && '● 대기 중'}
+                                {driver.status === 'SHIPPING' && '● 배송 진행 중'}
+                                {driver.status === 'COMPLETED' && '● 업무 완료'}
+                                {!['WAITING', 'SHIPPING', 'COMPLETED'].includes(driver.status) && driver.status}
+                            </span>
+                            */}
+                        </p>
+                        <div className="driver-top-btn-group">
+                            <Link to="/admin">
+                                <button className="driver-btn driver-btn-gray-sm">
+                                    관리자 메인
+                                </button>
+                            </Link>
+                            <button className="driver-btn driver-btn-sm" onClick={handleLogout}>
+                                로그아웃
                             </button>
-                        </Link>
-                        <button className="driver-btn driver-btn-sm" onClick={handleLogout}>
-                            로그아웃
-                        </button>
+                        </div>
                     </div>
+                </div>
+
+                <div className="driver-container">
+                    {/* 1. 신규 배정 섹션 */}
+                    <div className="driver-section-header" style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                        <h2 className="driver-headline" style={{ margin: 0 }}>📌 신규 배정 (수락 대기 목록)</h2>
+                        {orders.length > 0 && (
+                            <label style={{ cursor: 'pointer', fontSize: '15px', fontWeight: 'bold' }}>
+                                <input 
+                                    type="checkbox" 
+                                    style={{ transform: 'scale(1.2)', marginRight: '6px' }}
+                                    checked={orders.length > 0 && selectedOrders.length === orders.length}
+                                    onChange={toggleSelectAllOrders}
+                                />
+                                전체 선택 ({selectedOrders.length}/{orders.length}건)
+                            </label>
+                        )}
+                    </div>
+
+                    {orders.length === 0 ? (
+                        <p className="driver-empty-msg">새로운 배정 요청이 없습니다.</p>
+                    ) : (
+                        <>
+                            <div className="driver-order-grid">
+                                {orders.map(order => {
+                                    const isChecked = selectedOrders.includes(order.orderId);
+                                    const currentItems = order.orderitems || order.orderItems || [];
+                                    let itemDisplay = "상품 정보 없음";
+                                    
+                                    if (currentItems && currentItems.length > 0) {
+                                        const firstItemName = currentItems[0].itemName || currentItems[0].ItemName || "이름 없는 상품";
+                                        const firstItemCount = currentItems[0].count || 0;
+
+                                        if (currentItems.length === 1) {
+                                            itemDisplay = `${firstItemName} (${firstItemCount}개)`;
+                                        } else {
+                                            const totalCount = currentItems.reduce((sum, item) => sum + (item.count || 0), 0);
+                                            itemDisplay = `${firstItemName} 외 ${currentItems.length - 1}건 (총 ${totalCount}개)`;
+                                        }
+                                    }
+
+                                    return (
+                                        <div key={order.orderId} className={`driver-order-card ${isChecked ? 'checked' : ''}`}>
+                                            <div className="driver-card-header">
+                                                <input
+                                                    type="checkbox"
+                                                    className="driver-checkbox"
+                                                    checked={isChecked}
+                                                    onChange={() => toggleSelect(order.orderId)}
+                                                />
+                                                <span className="driver-order-id">NO. {order.orderId}</span>
+                                                {order.orderType && (
+                                                    <span className={`driver-badge ${order.orderType.toLowerCase()}`}>
+                                                        {order.orderType === 'DELIVERY_WITH_INSTALLATION' ? '설치배송' : '일반배송'}
+                                                    </span>
+                                                )}
+                                            </div>
+
+                                            <div className="driver-card-body">
+                                                <p className="driver-order-name"><strong>주문자:</strong> {order.memberName || '비회원'}</p>
+                                                <p className="driver-order-phone"><strong>연락처:</strong> <DriverPhoneCell memberId={order.memberId} /></p>
+                                                <p className="driver-order-items"><strong>상품명:</strong> {itemDisplay}</p>
+                                                <p className="driver-order-addr"><strong>주소:</strong> {order.deliveryAddr} {order.deliveryAddrDetail || ''}</p>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                            <div className="driver-btn-group">
+                                <button className="driver-btn" onClick={handleAccept}>선택 주문 수락</button>
+                                <button className="driver-btn driver-btn-danger" onClick={handleReject}>선택 주문 거절</button>
+                            </div>
+                        </>
+                    )}
+
+                    {/* 2. 수락 리스트 섹션 */}
+                    <h2 className="driver-headline">📦 수락된 주문 (상차 및 출발 대기)</h2>
+                    {acceptedOrders.length === 0 ? (
+                        <p className="driver-empty-msg">수락 후 상차 대기 중인 주문이 없습니다.</p>
+                    ) : (
+                        <div className="driver-accepted-wrapper">
+                            {acceptedOrders.map(order => (
+                                <div key={order.orderId} className="driver-list-row">
+                                    <span className="driver-row-id">주문번호: {order.orderId}</span>
+                                    <span className="driver-row-addr">{order.deliveryAddr}</span>
+                                </div>
+                            ))}
+                            <div className="driver-action-area">
+                                <button className="driver-btn-primary" onClick={handleStartDelivery}>
+                                    🚚 수락 목록 일괄 배송 출발 (상차 완료 확인)
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* 3. 배송 중 리스트 섹션 */}
+                    <div className="driver-section-header" style={{ display: 'flex', alignItems: 'center', gap: '15px', marginTop: '20px' }}>
+                        <h2 className="driver-headline" style={{ margin: 0 }}>🚚 배달중 (현재 실시간 배송 진행)</h2>
+                        {shippingOrders.length > 0 && (
+                            <label style={{ cursor: 'pointer', fontSize: '15px', fontWeight: 'bold' }}>
+                                <input 
+                                    type="checkbox" 
+                                    style={{ transform: 'scale(1.2)', marginRight: '6px' }}
+                                    checked={shippingOrders.length > 0 && shippingCheckeds.length === shippingOrders.length}
+                                    onChange={toggleSelectAllShipping}
+                                />
+                                전체 선택 ({shippingCheckeds.length}/{shippingOrders.length}건)
+                            </label>
+                        )}
+                    </div>
+
+                    {shippingOrders.length === 0 ? (
+                        <p className="driver-empty-msg">현재 진행 중인 배송 임무가 없습니다.</p>
+                    ) : (
+                        <>
+                            <div className="driver-order-grid">
+                                {shippingOrders.map(order => {
+                                    const isChecked = shippingCheckeds.includes(order.orderId);
+                                    return (
+                                        <div key={order.orderId} className={`driver-order-card ${isChecked ? 'checked' : ''}`}>
+                                            <div className="driver-card-header">
+                                                <input
+                                                    type="checkbox"
+                                                    className="driver-checkbox"
+                                                    checked={isChecked}
+                                                    onChange={() => toggleShippingSelect(order.orderId)}
+                                                />
+                                                <span className="driver-order-id">NO. {order.orderId}</span>
+                                            </div>
+                                            <div className="driver-card-body">
+                                                <p className="driver-order-addr-only">{order.deliveryAddr}</p>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                            <button className="driver-btn-primary driver-btn-dark-complete" onClick={handlecomplete}>
+                                ✅ 선택 주문 배송 완료 처리
+                            </button>
+                        </>
+                    )}
+
+                    {/* 4. 회수 목록 섹션 */}
+                    <div className="driver-section-header" style={{ display: 'flex', alignItems: 'center', gap: '15px', marginTop: '20px' }}>
+                        <h2 className="driver-headline driver-headline-pickup" style={{ margin: 0 }}>🔄 회수 (교환 및 반품 수거 목록)</h2>
+                        {pickupOrders.length > 0 && (
+                            <label style={{ cursor: 'pointer', fontSize: '15px', fontWeight: 'bold' }}>
+                                <input 
+                                    type="checkbox" 
+                                    style={{ transform: 'scale(1.2)', marginRight: '6px' }}
+                                    checked={pickupOrders.length > 0 && pickupCheckeds.length === pickupOrders.length}
+                                    onChange={toggleSelectAllPickup}
+                                />
+                                전체 선택 ({pickupCheckeds.length}/{pickupOrders.length}건)
+                            </label>
+                        )}
+                    </div>
+
+                    {pickupOrders.length === 0 ? (
+                        <p className="driver-empty-msg">현재 예정된 교환/반품 회수 건이 없습니다.</p>
+                    ) : (
+                        <>
+                            <div className="driver-order-grid">
+                                {pickupOrders.map(order => {
+                                    const isChecked = pickupCheckeds.includes(order.orderId);
+                                    return (
+                                        <div key={order.orderId} className={`driver-order-card ${isChecked ? 'checked' : ''}`}>
+                                            <div className="driver-card-header driver-header-pickup">
+                                                <input
+                                                    type="checkbox"
+                                                    className="driver-checkbox"
+                                                    checked={isChecked}
+                                                    onChange={() => togglePickupSelect(order.orderId)}
+                                                />
+                                                <span className="driver-order-id driver-id-pickup">NO. {order.orderId}</span>
+                                                <span className="driver-badge driver-badge-pickup">
+        {String(order.orderState).toUpperCase() === 'EXCHANGEORREFUND' || order.orderState === '교환또는환불' 
+            ? '교환회수' 
+            : '반품회수'}
+        </span>
+                                            </div>
+                                            <div className="driver-card-body">
+                                                <p className="driver-order-name"><strong>요청자:</strong> {order.memberName || '비회원'}</p>
+                                                <p className="driver-order-phone"><strong>연락처:</strong> <DriverPhoneCell memberId={order.memberId} /></p>
+                                                <p className="driver-order-addr"><strong>회수지:</strong> {order.deliveryAddr} {order.deliveryAddrDetail || ''}</p>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                            <button className="driver-btn-primary" onClick={handlePickupComplete}>
+                                🔄 선택 주문 회수 완료 처리
+                            </button>
+                        </>
+                    )}
+
+                    {/* 다음 배송 받기 대기 전환 상태 구역 */}
+                    {shippingOrders.length === 0 && acceptedOrders.length === 0 && (
+                        <div className="driver-reset-box">
+                            <p className="driver-reset-text">💡 완료되지 않은 진행 중 배송 임무가 없습니다. 다음 업무를 인계받으시겠습니까?</p>
+                            <button className="driver-btn-success" onClick={handleResetToWaiting}>
+                                🔄 다음 배송 받기 (대기 상태 전환)
+                            </button>
+                        </div>
+                    )}
                 </div>
             </div>
 
-            <div className="driver-container">
-                {/* 1. 신규 배정 섹션 */}
-                <div className="driver-section-header" style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                    <h2 className="driver-headline" style={{ margin: 0 }}>📌 신규 배정 (수락 대기 목록)</h2>
-                    {orders.length > 0 && (
-                        <label style={{ cursor: 'pointer', fontSize: '15px', fontWeight: 'bold' }}>
-                            <input 
-                                type="checkbox" 
-                                style={{ transform: 'scale(1.2)', marginRight: '6px' }}
-                                checked={orders.length > 0 && selectedOrders.length === orders.length}
-                                onChange={toggleSelectAllOrders}
-                            />
-                            전체 선택 ({selectedOrders.length}/{orders.length}건)
-                        </label>
-                    )}
-                </div>
 
-                {orders.length === 0 ? (
-                    <p className="driver-empty-msg">새로운 배정 요청이 없습니다.</p>
-                ) : (
-                    <>
-                        <div className="driver-order-grid">
-                            {orders.map(order => {
-                                const isChecked = selectedOrders.includes(order.orderId);
-                                const currentItems = order.orderitems || order.orderItems || [];
-                                let itemDisplay = "상품 정보 없음";
-                                
-                                if (currentItems && currentItems.length > 0) {
-                                    const firstItemName = currentItems[0].itemName || currentItems[0].ItemName || "이름 없는 상품";
-                                    const firstItemCount = currentItems[0].count || 0;
-
-                                    if (currentItems.length === 1) {
-                                        itemDisplay = `${firstItemName} (${firstItemCount}개)`;
-                                    } else {
-                                        const totalCount = currentItems.reduce((sum, item) => sum + (item.count || 0), 0);
-                                        itemDisplay = `${firstItemName} 외 ${currentItems.length - 1}건 (총 ${totalCount}개)`;
-                                    }
-                                }
-
-                                return (
-                                    <div key={order.orderId} className={`driver-order-card ${isChecked ? 'checked' : ''}`}>
-                                        <div className="driver-card-header">
-                                            <input
-                                                type="checkbox"
-                                                className="driver-checkbox"
-                                                checked={isChecked}
-                                                onChange={() => toggleSelect(order.orderId)}
-                                            />
-                                            <span className="driver-order-id">NO. {order.orderId}</span>
-                                            {order.orderType && (
-                                                <span className={`driver-badge ${order.orderType.toLowerCase()}`}>
-                                                    {order.orderType === 'DELIVERY_WITH_INSTALLATION' ? '설치배송' : '일반배송'}
-                                                </span>
-                                            )}
-                                        </div>
-
-                                        <div className="driver-card-body">
-                                            <p className="driver-order-name"><strong>주문자:</strong> {order.memberName || '비회원'}</p>
-                                            <p className="driver-order-phone"><strong>연락처:</strong> <DriverPhoneCell memberId={order.memberId} /></p>
-                                            <p className="driver-order-items"><strong>상품명:</strong> {itemDisplay}</p>
-                                            <p className="driver-order-addr"><strong>주소:</strong> {order.deliveryAddr} {order.deliveryAddrDetail || ''}</p>
-                                        </div>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                        <div className="driver-btn-group">
-                            <button className="driver-btn" onClick={handleAccept}>선택 주문 수락</button>
-                            <button className="driver-btn driver-btn-danger" onClick={handleReject}>선택 주문 거절</button>
-                        </div>
-                    </>
-                )}
-
-                {/* 2. 수락 리스트 섹션 */}
-                <h2 className="driver-headline">📦 수락된 주문 (상차 및 출발 대기)</h2>
-                {acceptedOrders.length === 0 ? (
-                    <p className="driver-empty-msg">수락 후 상차 대기 중인 주문이 없습니다.</p>
-                ) : (
-                    <div className="driver-accepted-wrapper">
-                        {acceptedOrders.map(order => (
-                            <div key={order.orderId} className="driver-list-row">
-                                <span className="driver-row-id">주문번호: {order.orderId}</span>
-                                <span className="driver-row-addr">{order.deliveryAddr}</span>
-                            </div>
-                        ))}
-                        <div className="driver-action-area">
-                            <button className="driver-btn-primary" onClick={handleStartDelivery}>
-                                🚚 수락 목록 일괄 배송 출발 (상차 완료 확인)
-                            </button>
-                        </div>
-                    </div>
-                )}
-
-                {/* 3. 배송 중 리스트 섹션 */}
-                <div className="driver-section-header" style={{ display: 'flex', alignItems: 'center', gap: '15px', marginTop: '20px' }}>
-                    <h2 className="driver-headline" style={{ margin: 0 }}>🚚 배달중 (현재 실시간 배송 진행)</h2>
-                    {shippingOrders.length > 0 && (
-                        <label style={{ cursor: 'pointer', fontSize: '15px', fontWeight: 'bold' }}>
-                            <input 
-                                type="checkbox" 
-                                style={{ transform: 'scale(1.2)', marginRight: '6px' }}
-                                checked={shippingOrders.length > 0 && shippingCheckeds.length === shippingOrders.length}
-                                onChange={toggleSelectAllShipping}
-                            />
-                            전체 선택 ({shippingCheckeds.length}/{shippingOrders.length}건)
-                        </label>
-                    )}
-                </div>
-
-                {shippingOrders.length === 0 ? (
-                    <p className="driver-empty-msg">현재 진행 중인 배송 임무가 없습니다.</p>
-                ) : (
-                    <>
-                        <div className="driver-order-grid">
-                            {shippingOrders.map(order => {
-                                const isChecked = shippingCheckeds.includes(order.orderId);
-                                return (
-                                    <div key={order.orderId} className={`driver-order-card ${isChecked ? 'checked' : ''}`}>
-                                        <div className="driver-card-header">
-                                            <input
-                                                type="checkbox"
-                                                className="driver-checkbox"
-                                                checked={isChecked}
-                                                onChange={() => toggleShippingSelect(order.orderId)}
-                                            />
-                                            <span className="driver-order-id">NO. {order.orderId}</span>
-                                        </div>
-                                        <div className="driver-card-body">
-                                            <p className="driver-order-addr-only">{order.deliveryAddr}</p>
-                                        </div>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                        <button className="driver-btn-primary driver-btn-dark-complete" onClick={handlecomplete}>
-                            ✅ 선택 주문 배송 완료 처리
-                        </button>
-                    </>
-                )}
-
-                {/* 4. 회수 목록 섹션 */}
-                <div className="driver-section-header" style={{ display: 'flex', alignItems: 'center', gap: '15px', marginTop: '20px' }}>
-                    <h2 className="driver-headline driver-headline-pickup" style={{ margin: 0 }}>🔄 회수 (교환 및 반품 수거 목록)</h2>
-                    {pickupOrders.length > 0 && (
-                        <label style={{ cursor: 'pointer', fontSize: '15px', fontWeight: 'bold' }}>
-                            <input 
-                                type="checkbox" 
-                                style={{ transform: 'scale(1.2)', marginRight: '6px' }}
-                                checked={pickupOrders.length > 0 && pickupCheckeds.length === pickupOrders.length}
-                                onChange={toggleSelectAllPickup}
-                            />
-                            전체 선택 ({pickupCheckeds.length}/{pickupOrders.length}건)
-                        </label>
-                    )}
-                </div>
-
-                {pickupOrders.length === 0 ? (
-                    <p className="driver-empty-msg">현재 예정된 교환/반품 회수 건이 없습니다.</p>
-                ) : (
-                    <>
-                        <div className="driver-order-grid">
-                            {pickupOrders.map(order => {
-                                const isChecked = pickupCheckeds.includes(order.orderId);
-                                return (
-                                    <div key={order.orderId} className={`driver-order-card ${isChecked ? 'checked' : ''}`}>
-                                        <div className="driver-card-header driver-header-pickup">
-                                            <input
-                                                type="checkbox"
-                                                className="driver-checkbox"
-                                                checked={isChecked}
-                                                onChange={() => togglePickupSelect(order.orderId)}
-                                            />
-                                            <span className="driver-order-id driver-id-pickup">NO. {order.orderId}</span>
-                                            <span className="driver-badge driver-badge-pickup">
-    {String(order.orderState).toUpperCase() === 'EXCHANGEORREFUND' || order.orderState === '교환또는환불' 
-        ? '교환회수' 
-        : '반품회수'}
-</span>
-                                        </div>
-                                        <div className="driver-card-body">
-                                            <p className="driver-order-name"><strong>요청자:</strong> {order.memberName || '비회원'}</p>
-                                            <p className="driver-order-phone"><strong>연락처:</strong> <DriverPhoneCell memberId={order.memberId} /></p>
-                                            <p className="driver-order-addr"><strong>회수지:</strong> {order.deliveryAddr} {order.deliveryAddrDetail || ''}</p>
-                                        </div>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                        <button className="driver-btn-primary" onClick={handlePickupComplete}>
-                            🔄 선택 주문 회수 완료 처리
-                        </button>
-                    </>
-                )}
-
-                {/* 다음 배송 받기 대기 전환 상태 구역 */}
-                {shippingOrders.length === 0 && acceptedOrders.length === 0 && (
-                    <div className="driver-reset-box">
-                        <p className="driver-reset-text">💡 완료되지 않은 진행 중 배송 임무가 없습니다. 다음 업무를 인계받으시겠습니까?</p>
-                        <button className="driver-btn-success" onClick={handleResetToWaiting}>
-                            🔄 다음 배송 받기 (대기 상태 전환)
-                        </button>
-                    </div>
-                )}
+            {/* Footer 영역 */}
+            <div className="main-mypage-footer">
+                <Footer />
             </div>
         </div>
     );

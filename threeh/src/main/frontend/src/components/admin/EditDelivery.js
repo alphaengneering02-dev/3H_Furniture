@@ -4,6 +4,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from "react-toastify"; 
 import "react-toastify/dist/ReactToastify.css";
 import '../../css/adminCss/DeliveryAE.css';
+import Footer from '../main/Footer';
+import Header from '../main/Header';
 
 const EditDelivery = () => {
     const { deliveryId } = useParams(); 
@@ -135,79 +137,93 @@ const EditDelivery = () => {
     };
 
     return (
-        <div className="delivery-page">
-            <ToastContainer position="top-right" autoClose={3000} />
-            <div className="delivery-container">
-                <h1 className="delivery-title">배송 기사 정보 수정</h1>
+        <div>
+            {/* Header 영역 */}
+            <div className="main-header">
+                <Header />
+            </div>
 
-                <form onSubmit={handleSubmit} className="delivery-form">
-                    
-                    {/* 🔒 업체명 / 기사명 (수정 불가) */}
-                    <div className="delivery-form-card delivery-readonly-section">
-                        <label className="delivery-form-label">업체명 / 기사명 (수정 불가)</label>
-                        <div className="delivery-form-input delivery-readonly-box">
-                            {formData.companyName} / {formData.deliveryName}
+
+            <div className="delivery-page">
+                <ToastContainer position="top-right" autoClose={3000} />
+                <div className="delivery-container">
+                    <h1 className="delivery-title">배송 기사 정보 수정</h1>
+
+                    <form onSubmit={handleSubmit} className="delivery-form">
+                        
+                        {/* 🔒 업체명 / 기사명 (수정 불가) */}
+                        <div className="delivery-form-card delivery-readonly-section">
+                            <label className="delivery-form-label">업체명 / 기사명 (수정 불가)</label>
+                            <div className="delivery-form-input delivery-readonly-box">
+                                {formData.companyName} / {formData.deliveryName}
+                            </div>
                         </div>
-                    </div>
 
-                    {/* 📞 기사 연락처 (수정 가능) */}
-                    <div className="delivery-form-card">
-                        <label className="delivery-form-label">기사 연락처 (수정 가능)</label>
-                        <div className="delivery-phone-group">
-                            <select name="phonePrefix" value={formData.phonePrefix} onChange={handleChange}>
-                                <option value="010">010</option>
-                                <option value="011">011</option>
-                                <option value="070">070</option>
-                            </select>
-                            <span className="delivery-phone-dash">-</span>
-                            <input type="text" name="phoneMiddle" value={formData.phoneMiddle} onChange={handleChange} maxLength={4} className="delivery-phone-input" required />
-                            <span className="delivery-phone-dash">-</span>
-                            <input type="text" name="phoneLast" value={formData.phoneLast} onChange={handleChange} maxLength={4} className="delivery-phone-input" required />
+                        {/* 📞 기사 연락처 (수정 가능) */}
+                        <div className="delivery-form-card">
+                            <label className="delivery-form-label">기사 연락처 (수정 가능)</label>
+                            <div className="delivery-phone-group">
+                                <select name="phonePrefix" value={formData.phonePrefix} onChange={handleChange}>
+                                    <option value="010">010</option>
+                                    <option value="011">011</option>
+                                    <option value="070">070</option>
+                                </select>
+                                <span className="delivery-phone-dash">-</span>
+                                <input type="text" name="phoneMiddle" value={formData.phoneMiddle} onChange={handleChange} maxLength={4} className="delivery-phone-input" required />
+                                <span className="delivery-phone-dash">-</span>
+                                <input type="text" name="phoneLast" value={formData.phoneLast} onChange={handleChange} maxLength={4} className="delivery-phone-input" required />
+                            </div>
                         </div>
-                    </div>
 
-                    {/* 🚗 차량 번호 (수정 가능) */}
-                    <div className="delivery-form-card">
-                        <label className="delivery-form-label">차량 번호 (수정 가능)</label>
-                        <input type="text" name="deliveryCarNo" value={formData.deliveryCarNo} onChange={handleChange} placeholder="12가1234" className="delivery-form-input" required />
-                    </div>
+                        {/* 🚗 차량 번호 (수정 가능) */}
+                        <div className="delivery-form-card">
+                            <label className="delivery-form-label">차량 번호 (수정 가능)</label>
+                            <input type="text" name="deliveryCarNo" value={formData.deliveryCarNo} onChange={handleChange} placeholder="12가1234" className="delivery-form-input" required />
+                        </div>
 
-                    <h3 className="delivery-business-section-title">업체 정보 (수정 불가)</h3>
+                        <h3 className="delivery-business-section-title">업체 정보 (수정 불가)</h3>
 
-                    {/* 🔒 업체 전화번호 (수정 불가) */}
-                    <div className="delivery-form-card delivery-readonly-section">
-                        <label className="delivery-form-label">업체 전화번호</label>
-                        <input 
-                            type="text" 
-                            name="businessPhone" 
-                            value={formData.businessPhone} 
-                            className="delivery-form-input delivery-readonly-box" 
-                            readOnly 
-                        />
-                    </div>
+                        {/* 🔒 업체 전화번호 (수정 불가) */}
+                        <div className="delivery-form-card delivery-readonly-section">
+                            <label className="delivery-form-label">업체 전화번호</label>
+                            <input 
+                                type="text" 
+                                name="businessPhone" 
+                                value={formData.businessPhone} 
+                                className="delivery-form-input delivery-readonly-box" 
+                                readOnly 
+                            />
+                        </div>
 
-                    {/* 🔒 사업자 주소 (수정 불가) */}
-                    <div className="delivery-form-card delivery-readonly-section">
-                        <label className="delivery-form-label">사업자 주소</label>
-                        <input 
-                            type="text" 
-                            name="businessAddr" 
-                            value={formData.businessAddr} 
-                            className="delivery-form-input delivery-readonly-box" 
-                            readOnly 
-                        />
-                    </div>
+                        {/* 🔒 사업자 주소 (수정 불가) */}
+                        <div className="delivery-form-card delivery-readonly-section">
+                            <label className="delivery-form-label">사업자 주소</label>
+                            <input 
+                                type="text" 
+                                name="businessAddr" 
+                                value={formData.businessAddr} 
+                                className="delivery-form-input delivery-readonly-box" 
+                                readOnly 
+                            />
+                        </div>
 
-                    {/* 하단 버튼 제어 바 */}
-                    <div className="delivery-button-group">
-                        <button type="button" onClick={() => navigate(-1)} className="delivery-cancel-btn">
-                            취소
-                        </button>
-                        <button type="submit" className="delivery-submit-btn">
-                            수정 완료
-                        </button>
-                    </div>
-                </form>
+                        {/* 하단 버튼 제어 바 */}
+                        <div className="delivery-button-group">
+                            <button type="button" onClick={() => navigate(-1)} className="delivery-cancel-btn">
+                                취소
+                            </button>
+                            <button type="submit" className="delivery-submit-btn">
+                                수정 완료
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+
+            {/* Footer 영역 */}
+            <div className="main-mypage-footer">
+                <Footer />
             </div>
         </div>
     );
