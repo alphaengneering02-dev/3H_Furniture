@@ -28,19 +28,19 @@ const RefundPage = () => {
         const savedUser = sessionStorage.getItem('user');
         return savedUser ? JSON.parse(savedUser) : null;
     });
-    
-         // [형님 뜻 반영]: Mypage.js의 검증된 원본 창구와 데이터 주입부를 100% 똑같이 이식 완료
+
+    // [형님 뜻 반영]: Mypage.js의 검증된 원본 창구와 데이터 주입부를 100% 똑같이 이식 완료
     const fetchTabData = (tabNumber) => {
         // 1번 탭이든 2번 탭이든, 상품명이 완벽하게 다 들어있는 마이페이지 검증 주소를 똑같이 찌릅니다.
-        const apiUrl = 'http://localhost:8080/Member/mypage.do'; 
+        const apiUrl = 'http://localhost:8080/Member/mypage.do';
 
         axios.get(apiUrl, { withCredentials: true })
             .then(res => {
                 // [핵심]: 마이페이지 메인에서 가구명과 가격을 완벽하게 띄우던 'recentOrders' 원본 배열을 가져옵니다.
                 const allOrders = res.data.recentOrders || [];
-                
+
                 // 마이페이지 메인과 똑같은 날것 그대로의 순수 데이터 상태로 보관함에 주입합니다!
-                setOrders(allOrders); 
+                setOrders(allOrders);
                 setSelectedOrder(null);
                 setCurrentPage(1);
             })
@@ -71,12 +71,12 @@ const RefundPage = () => {
         if (window.confirm(`주문번호 ${orderId}번을 교환 신청 하시겠습니까?`)) {
             const params = new URLSearchParams();
             params.append('orderId', orderId);
-            
+
             axios.post('http://localhost:8080/Member/exchange/process', params, { withCredentials: true })
                 .then(res => {
                     alert(res.data);
-                    
-                    setOrders(prevOrders => 
+
+                    setOrders(prevOrders =>
                         prevOrders.map(order => {
                             const currentId = order.orderId || order.id;
                             return currentId === orderId ? { ...order, orderState: 'EXCHANGEorREFUND' } : order;
@@ -104,8 +104,8 @@ const RefundPage = () => {
             axios.post('http://localhost:8080/Member/refund/process', params, { withCredentials: true })
                 .then(res => {
                     alert(res.data);
-                    
-                    setOrders(prevOrders => 
+
+                    setOrders(prevOrders =>
                         prevOrders.map(order => {
                             const currentId = order.orderId || order.id;
                             return currentId === orderId ? { ...order, orderState: 'EXCHANGEorREFUND' } : order;
@@ -117,14 +117,14 @@ const RefundPage = () => {
         }
     };
 
-        // [주문 취소 로직]: 타입 불일치 버그를 해결하고 진짜 DB 값을 CANCEL로 바꾸는 정석 연동 코드
+    // [주문 취소 로직]: 타입 불일치 버그를 해결하고 진짜 DB 값을 CANCEL로 바꾸는 정석 연동 코드
     const handleCancelOrder = (orderId, itemId) => {
         if (!orderId) {
             alert("목록에서 취소 처리할 주문 건의 라디오 단추를 선택해 주세요.");
             return;
         }
         if (window.confirm(`주문번호 ${orderId}번 주문을 취소하시겠습니까?`)) {
-            
+
             // [400 에러 격파 핵심]: 문자열로 꼬여있던 orderId를 순수 자바 Long 타입과 호환되도록 강제 숫자 변환
             const numericOrderId = Number(orderId);
 
@@ -132,29 +132,29 @@ const RefundPage = () => {
             params.append('orderId', numericOrderId); // 숫자로 포장해서 던집니다.
             params.append('itemId', Number(itemId));
 
-            axios.post('http://localhost:8080/Member/order/cancel', params, { 
+            axios.post('http://localhost:8080/Member/order/cancel', params, {
                 withCredentials: true,
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded' // 스프링 컨트롤러 RequestParam 표준 규격
                 }
             })
-            .then(res => {
-                // 백엔드가 DB 수정을 완벽히 마감하고 성공 응답을 주면 알림창을 띄웁니다.
-                alert(res.data || "주문이 정상적으로 취소되었습니다.");
-                
-                // 실제 DB가 무사히 바뀌었으므로 화면 리액트 상태값도 실시간 일치화
-                setOrders(prevOrders => 
-                    prevOrders.map(order => {
-                        const currentId = Number(order.orderId || order.id); // 비교 대상도 숫자로 통일
-                        return currentId === numericOrderId ? { ...order, orderState: 'CANCEL' } : order;
-                    })
-                );
-                setSelectedOrder(null);
-            })
-            .catch(err => {
-                console.error("취소 에러 발생 로그:", err);
-                alert("주문 취소 중 오류 발생: " + (err.response?.data || err.message));
-            });
+                .then(res => {
+                    // 백엔드가 DB 수정을 완벽히 마감하고 성공 응답을 주면 알림창을 띄웁니다.
+                    alert(res.data || "주문이 정상적으로 취소되었습니다.");
+
+                    // 실제 DB가 무사히 바뀌었으므로 화면 리액트 상태값도 실시간 일치화
+                    setOrders(prevOrders =>
+                        prevOrders.map(order => {
+                            const currentId = Number(order.orderId || order.id); // 비교 대상도 숫자로 통일
+                            return currentId === numericOrderId ? { ...order, orderState: 'CANCEL' } : order;
+                        })
+                    );
+                    setSelectedOrder(null);
+                })
+                .catch(err => {
+                    console.error("취소 에러 발생 로그:", err);
+                    alert("주문 취소 중 오류 발생: " + (err.response?.data || err.message));
+                });
         }
     };
 
@@ -174,16 +174,16 @@ const RefundPage = () => {
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
 
-const filteredOrders = orders.filter(order => {
+    const filteredOrders = orders.filter(order => {
         if (activeTab === 1) {
             return order.orderState !== 'CANCEL' && order.orderState !== 'PURCHASED' && order.orderState !== 'EXCHANGEorREFUND';
         }
-         return order.orderState === 'CANCEL' || order.orderState === 'EXCHANGEorREFUND';
+        return order.orderState === 'CANCEL' || order.orderState === 'EXCHANGEorREFUND';
     });
-// 1번 탭에 && order.orderState !== 'REFUND' 지우기,
-// 2번 탭에 'REFUND''PURCHASED''READY' 지우면 좋을꺼 같아요
+    // 1번 탭에 && order.orderState !== 'REFUND' 지우기,
+    // 2번 탭에 'REFUND''PURCHASED''READY' 지우면 좋을꺼 같아요
 
-    
+
     // [통합 필터링 매커니즘]: READY, PURCHASED 상태 트래킹 연동 완료
     // const filteredOrders = orders.filter(order => {
     //     if (activeTab === 1) {
@@ -195,25 +195,25 @@ const filteredOrders = orders.filter(order => {
     const currentOrders = filteredOrders.slice(indexOfFirstItem, indexOfLastItem);
     const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
 
-        return (
-            <div className="order-page-global-root">
-            
+    return (
+        <div className="order-page-global-root">
+
             {/* 1. 상단 공용 헤더 영역 */}
             <div className='main-header'>
-                <Header/>
+                <Header />
             </div> {/* [종료] main-header */}
-                
-                <ToastContainer
-                    position="top-center"
-                    autoClose={1800}
-                    hideProgressBar={false}
-                    newestOnTop={true}
-                    closeOnClick
-                    pauseOnHover
-                    theme="light"
-                />
-                
-                {/* <div>
+
+            <ToastContainer
+                position="top-center"
+                autoClose={1800}
+                hideProgressBar={false}
+                newestOnTop={true}
+                closeOnClick
+                pauseOnHover
+                theme="light"
+            />
+
+            {/* <div>
                     {member ? (
                         <button className="btn-header-action" onClick={handleLogout} style={{ marginRight: '10px' }}>로그아웃</button>
                     ) : (
@@ -240,10 +240,10 @@ const filteredOrders = orders.filter(order => {
                     {/* [2구역 전체 시작] 우측 메인 양식 및 격자 테이블 쇼룸         */}
                     {/* ========================================================= */}
                     <main className="mypage-main-content" style={{ flex: 1, padding: '20px' }}>
-                        
+
                         {/* 프로필 요약 퀵 컴포넌트 존 */}
                         <div className="mypage-profile-icon-box">
-                            <div className="mypage-profile-avatar-circle">{member.name ? member.name +"님" : "U"}</div>
+                            <div className="mypage-profile-avatar-circle">{member.name ? member.name + "님" : "U"}</div>
                             <button className="mypage-action-btn" onClick={() => navigate('/mypage')}>마이페이지</button>
                         </div>
 
@@ -267,45 +267,45 @@ const filteredOrders = orders.filter(order => {
                                 <div className="refund-th-count">수량</div>
                                 <div className="refund-th-subtotal">소계금액</div>
                                 <div className="refund-th-status">주문현황</div>
-                                 {/* 김태양 배송 현황 추가 */}
+                                {/* 김태양 배송 현황 추가 */}
                                 <div className="refund-th-status">배송현황</div>
                             </div>
 
-{/* ========================================================= */}
-{/* 가로 격자 테이블 바디 아이템 카드 리스트 구역               */}
-{/* ========================================================= */}
-<div className="refund-item-list">
-    {currentOrders && currentOrders.length > 0 ? (
-        currentOrders.map((order, index) => {
-            const orderIdStr = order.orderId || order.id;
-            const isProcessing = order.orderState === 'EXCHANGEorREFUND' || order.orderState === 'REFUND' || order.deliveryStatus === 'PICKUP';
-            
-            // [라디오 체크 연동 완수]: 주문번호가 같으면서 + (상품아이디가 정확히 일치하거나, 새 주문이라서 itemId가 둘 다 없을 때도) 체크를 정상 유지합니다!
-            const isChecked = selectedOrder && 
-                (selectedOrder.orderId || selectedOrder.id) === (order.orderId || order.id) && 
-                (selectedOrder.itemId === order.itemId || (!selectedOrder.itemId && !order.itemId));
+                            {/* ========================================================= */}
+                            {/* 가로 격자 테이블 바디 아이템 카드 리스트 구역               */}
+                            {/* ========================================================= */}
+                            <div className="refund-item-list">
+                                {currentOrders && currentOrders.length > 0 ? (
+                                    currentOrders.map((order, index) => {
+                                        const orderIdStr = order.orderId || order.id;
+                                        const isProcessing = order.orderState === 'EXCHANGEorREFUND' || order.orderState === 'REFUND' || order.deliveryStatus === 'PICKUP';
 
-            // [최종 해결 마감]: 형님이 보여주신 Mypage.js 구조와 100% 동일하게 1층 변수명 이름표로 direct 매핑 완수!
-            const targetItemName = order.itemName || order.productName || "상품 정보 없음";
-            const targetPrice = Number(order.orderPrice || order.itemPrice || order.price || 0);
-            const targetCount = Number(order.count || 0);
-            const itemSubtotal = targetPrice * targetCount;
+                                        // [라디오 체크 연동 완수]: 주문번호가 같으면서 + (상품아이디가 정확히 일치하거나, 새 주문이라서 itemId가 둘 다 없을 때도) 체크를 정상 유지합니다!
+                                        const isChecked = selectedOrder &&
+                                            (selectedOrder.orderId || selectedOrder.id) === (order.orderId || order.id) &&
+                                            (selectedOrder.itemId === order.itemId || (!selectedOrder.itemId && !order.itemId));
 
-            return (
-                <div key={`${orderIdStr}-${index}`} className="refund-item-card">
-                    {/* 라디오 버튼 선택 셀 */}
-                    <div className="refund-td-select">
-                        <input 
-                            type="radio" 
-                            name="refund-select-item"
-                            checked={!!isChecked}
-                            // [잠금 해제 핵심 마침표]: 
-                            // 1. 이미 취소완료(CANCEL) 되었거나, 완전히 정산 마감된 구매확정(PURCHASED) 주문만 '철저하게 잠금(true)' 처리합니다.
-                            // 2. 질문자님 기획대로 배송 완료(COMPLETED) 상태이거나 웨이팅/주문 상태인 정상 주문 건은 무조건 잠금이 해제(false)되므로 라디오 버튼이 정상 클릭됩니다!
-                            disabled={order.orderState === 'CANCEL'}
-                            onChange={() => setSelectedOrder(order)}
-                        />
-                    </div>
+                                        // [최종 해결 마감]: 형님이 보여주신 Mypage.js 구조와 100% 동일하게 1층 변수명 이름표로 direct 매핑 완수!
+                                        const targetItemName = order.itemName || order.productName || "상품 정보 없음";
+                                        const targetPrice = Number(order.orderPrice || order.itemPrice || order.price || 0);
+                                        const targetCount = Number(order.count || 0);
+                                        const itemSubtotal = targetPrice * targetCount;
+
+                                        return (
+                                            <div key={`${orderIdStr}-${index}`} className="refund-item-card">
+                                                {/* 라디오 버튼 선택 셀 */}
+                                                <div className="refund-td-select">
+                                                    <input
+                                                        type="radio"
+                                                        name="refund-select-item"
+                                                        checked={!!isChecked}
+                                                        // [잠금 해제 핵심 마침표]: 
+                                                        // 1. 이미 취소완료(CANCEL) 되었거나, 완전히 정산 마감된 구매확정(PURCHASED) 주문만 '철저하게 잠금(true)' 처리합니다.
+                                                        // 2. 질문자님 기획대로 배송 완료(COMPLETED) 상태이거나 웨이팅/주문 상태인 정상 주문 건은 무조건 잠금이 해제(false)되므로 라디오 버튼이 정상 클릭됩니다!
+                                                        disabled={order.orderState === 'CANCEL'}
+                                                        onChange={() => setSelectedOrder(order)}
+                                                    />
+                                                </div>
 
 
                                                 {/* 주문번호 셀 */}
@@ -324,13 +324,13 @@ const filteredOrders = orders.filter(order => {
 
                                                 {/* 4. 판매단가 셀 */}
                                                 <div className="refund-td-price">{targetPrice.toLocaleString()}원</div>
-                                                
+
                                                 {/* 5. 수량 셀 */}
                                                 <div className="refund-td-count">{targetCount}개</div>
-                                                
+
                                                 {/* 6. 소계금액 셀 */}
                                                 <div className="refund-td-subtotal">{itemSubtotal.toLocaleString()}원</div>
-                                                
+
                                                 {/* 7. 주문현황 및 시인성 배지 가이드 클러스터 */}
                                                 <div className="refund-td-status" style={{ display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'center' }}>
                                                     {order.orderState === 'CANCEL' ? (
@@ -368,11 +368,11 @@ const filteredOrders = orders.filter(order => {
                                                 </div>
                                                 {/* 김태양 배송 현황 추가 */}
                                                 <div className="refund-td-status">
-    {order.deliveryStatus === 'RECOVERED' && <span>재배송 완료</span>}
-    {order.deliveryStatus === 'COMPLETED' && <span style={{ color: '#137333', fontWeight: 'bold' }}>배송완료</span>}
-    {order.deliveryStatus === 'PICKUP' && <span style={{ color: '#801a24' }}>수거중</span>}
-    {!order.deliveryStatus && <span>정보 없음</span>} 
-</div>
+                                                    {order.deliveryStatus === 'RECOVERED' && <span>재배송 완료</span>}
+                                                    {order.deliveryStatus === 'COMPLETED' && <span style={{ color: '#137333', fontWeight: 'bold' }}>배송완료</span>}
+                                                    {order.deliveryStatus === 'PICKUP' && <span style={{ color: '#801a24' }}>수거중</span>}
+                                                    {!order.deliveryStatus && <span>정보 없음</span>}
+                                                </div>
                                             </div>
                                         );
                                     })
@@ -400,46 +400,46 @@ const filteredOrders = orders.filter(order => {
                             {/* 최하단 제출 버튼 존: 복잡한 연산 가드를 파괴하고 직관적인 배송전 규칙으로 완전 마감 */}
                             {activeTab === 1 && (
                                 <div className="refund-action-submit-zone">
-                                    
+
                                     {/* 1. 주문취소 버튼: 기사님이 출발하기 전(WAITING 또는 배송상태 없음)이면서 완료된 주문(CANCEL, PURCHASED, EXCHANGEorREFUND)이 아니면 무조건 오픈! */}
-                                    <button 
-                                        type="button" 
+                                    <button
+                                        type="button"
                                         className="refund-btn"
-                                        style={{ 
-                                            borderColor: (selectedOrder && 
-                                                (!selectedOrder.deliveryStatus || selectedOrder.deliveryStatus === 'WAITING') && 
-                                                selectedOrder.orderState !== 'CANCEL' && 
-                                                selectedOrder.orderState !== 'PURCHASED' && 
-                                                selectedOrder.orderState !== 'EXCHANGEorREFUND') ? '#a82525' : '#ccc', 
-                                            color: (selectedOrder && 
-                                                (!selectedOrder.deliveryStatus || selectedOrder.deliveryStatus === 'WAITING') && 
-                                                selectedOrder.orderState !== 'CANCEL' && 
-                                                selectedOrder.orderState !== 'PURCHASED' && 
+                                        style={{
+                                            borderColor: (selectedOrder &&
+                                                (!selectedOrder.deliveryStatus || selectedOrder.deliveryStatus === 'WAITING') &&
+                                                selectedOrder.orderState !== 'CANCEL' &&
+                                                selectedOrder.orderState !== 'PURCHASED' &&
+                                                selectedOrder.orderState !== 'EXCHANGEorREFUND') ? '#a82525' : '#ccc',
+                                            color: (selectedOrder &&
+                                                (!selectedOrder.deliveryStatus || selectedOrder.deliveryStatus === 'WAITING') &&
+                                                selectedOrder.orderState !== 'CANCEL' &&
+                                                selectedOrder.orderState !== 'PURCHASED' &&
                                                 selectedOrder.orderState !== 'EXCHANGEorREFUND') ? '#a82525' : '#999',
-                                            cursor: (selectedOrder && 
-                                                (!selectedOrder.deliveryStatus || selectedOrder.deliveryStatus === 'WAITING') && 
-                                                selectedOrder.orderState !== 'CANCEL' && 
-                                                selectedOrder.orderState !== 'PURCHASED' && 
+                                            cursor: (selectedOrder &&
+                                                (!selectedOrder.deliveryStatus || selectedOrder.deliveryStatus === 'WAITING') &&
+                                                selectedOrder.orderState !== 'CANCEL' &&
+                                                selectedOrder.orderState !== 'PURCHASED' &&
                                                 selectedOrder.orderState !== 'EXCHANGEorREFUND') ? 'pointer' : 'not-allowed'
                                         }}
                                         onClick={() => {
                                             if (!selectedOrder) return;
                                             handleCancelOrder(selectedOrder.orderId || selectedOrder.id, selectedOrder.itemId);
                                         }}
-                                        // 🚨 [오류 완치]: 이미 종료된 상태(취소/구매확정/반품)가 아니고 + 배송전(WAITING 또는 null) 상태라면 READY(배송 준비중)든 ORDER든 100% 취소 가능!
-                                        disabled={!selectedOrder || 
-                                            (selectedOrder.deliveryStatus && selectedOrder.deliveryStatus !== 'WAITING') || 
-                                            selectedOrder.orderState === 'CANCEL' || 
-                                            selectedOrder.orderState === 'PURCHASED' || 
+                                        // [오류 완치]: 이미 종료된 상태(취소/구매확정/반품)가 아니고 + 배송전(WAITING 또는 null) 상태라면 READY(배송 준비중)든 ORDER든 100% 취소 가능!
+                                        disabled={!selectedOrder ||
+                                            (selectedOrder.deliveryStatus && selectedOrder.deliveryStatus !== 'WAITING') ||
+                                            selectedOrder.orderState === 'CANCEL' ||
+                                            selectedOrder.orderState === 'PURCHASED' ||
                                             selectedOrder.orderState === 'EXCHANGEorREFUND'}
                                     >
                                         주문취소 (배송전)
                                     </button>
 
                                     {/* 2. 교환 신청 버튼: 오직 배송완료(COMPLETED) 상태이고, 아직 구매확정(PURCHASED) 전일 때만 활성화 */}
-                                    <button 
+                                    <button
                                         type="button"
-                                        className="refund-btn refund-btn-exchange" 
+                                        className="refund-btn refund-btn-exchange"
                                         style={{
                                             borderColor: (selectedOrder && selectedOrder.deliveryStatus === 'COMPLETED' && selectedOrder.orderState !== 'PURCHASED') ? '#111' : '#ccc',
                                             color: (selectedOrder && selectedOrder.deliveryStatus === 'COMPLETED' && selectedOrder.orderState !== 'PURCHASED') ? '#111' : '#999',
@@ -455,9 +455,9 @@ const filteredOrders = orders.filter(order => {
                                     </button>
 
                                     {/* 3. 반품 신청 버튼: 오직 배송완료(COMPLETED) 상태이고, 아직 구매확정(PURCHASED) 전일 때만 활성화 */}
-                                    <button 
+                                    <button
                                         type="button"
-                                        className="refund-btn refund-btn-return" 
+                                        className="refund-btn refund-btn-return"
                                         style={{
                                             borderColor: (selectedOrder && selectedOrder.deliveryStatus === 'COMPLETED' && selectedOrder.orderState !== 'PURCHASED') ? '#111' : '#ccc',
                                             color: (selectedOrder && selectedOrder.deliveryStatus === 'COMPLETED' && selectedOrder.orderState !== 'PURCHASED') ? '#111' : '#999',
@@ -479,8 +479,8 @@ const filteredOrders = orders.filter(order => {
             )}
 
             <div className="main-mypage-footer">
-                <Footer/>
-            </div> 
+                <Footer />
+            </div>
 
         </div>
     );

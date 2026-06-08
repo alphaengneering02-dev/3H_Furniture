@@ -79,7 +79,7 @@ const Schedule = () => {
                 {/* [구조 개혁 핵심] 상자들을 세로로 쌓지 않고, 가로(row) 방향으로 나란히 정렬시키는 가로 흐름 플렉스 트랙 가동 */}
                 <div className='mypage-schedule-lis' style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: '20px', width: '100%', boxSizing: 'border-box' }}>
                     {orders
-                        // 🚨 [하이브리드 필터 가드]: 데이터가 영어('PURCHASED') 또는 한글('구매확정') 어떤 이름표로 오든 누락 없이 100% 잡아냅니다!
+                        // [하이브리드 필터 가드]: 데이터가 영어('PURCHASED') 또는 한글('구매확정') 어떤 이름표로 오든 누락 없이 100% 잡아냅니다!
                         .filter(order => order.orderState === 'PURCHASED' || order.orderState === '구매확정')
                         .map(order => (
                         
@@ -91,7 +91,7 @@ const Schedule = () => {
                                 </div>
                                 <div className='mypage-schedule-card-body' style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                     
-                                    {/* 🚨 [원본 100% 싱크 복원]: orderItems[0] 인덱스 참조 기법 복귀 완료! */}
+                                    {/* [원본 100% 싱크 복원]: orderItems[0] 인덱스 참조 기법 복귀 완료! */}
                                     <div className='schedule-row' style={{ display: 'flex', justifyContent: 'space-between' }}>
                                         <p className='mypage-schedule-label' style={{ margin: '0', color: '#888888', fontSize: '13px' }}>상품명</p>
                                         <span className='mypage-schedule-value' style={{ fontWeight: '700', color: 'var(--black-brown)', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', maxWidth: '160px' }}>

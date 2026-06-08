@@ -125,7 +125,7 @@ const MemberAddressUpdate = () => {
                 theme="light"
             />
 
-            {/* 🖥️ 정보수정 룸 단독형 명품 레이아웃 뷰포트 배치 */}
+            {/* 정보수정 룸 단독형 명품 레이아웃 뷰포트 배치 */}
             <div className="update-form-viewport">
                 <div className="update-form-card">
                     <h2>회원 정보 수정</h2>
