@@ -18,7 +18,20 @@ const ItemAdminPage = () => {
 
     // items: 상품 관리 화면
     // reviews: 리뷰 관리 화면
+    // articles: 상담 관리 화면
     const [activeTab, setActiveTab] = useState("items");
+
+    //상담 문의 목록
+    const [articles, setArticles] = useState([]);
+
+    //상담 답변 입력값 저장
+    const [articleAnswerInputs, setArticleAnswerInputs] = useState({});
+
+    //상담 관리 페이지
+    const [articleCurrentPage, setArticleCurrentPage] = useState(1);
+
+    //상담 한 페이지에 보여줄 개수
+    const ARTICLES_PER_PAGE = 6;
 
     // 리뷰 관리 화면 모드
     // 실무형 구조에서는 리뷰 상세는 상품 상세페이지에서 관리하므로 list만 사용
@@ -140,6 +153,128 @@ const ItemAdminPage = () => {
         } catch (error) {
             console.error("상품 목록 조회 실패", error);
             toast.error("상품 목록을 불러오지 못했습니다.");
+        }
+    };
+
+    //상담 문의 목록 불러오기
+    const getArticles = async () => {
+        try {
+            const response = await axios.get("http://localhost:8080/api/articles", {
+                withCredentials: true,
+            });
+
+            setArticles(response.data || []);
+        } catch (error) {
+            console.error("상담 문의 목록 조회 실패", error);
+
+            if (error.response?.status === 401 || error.response?.status === 403) {
+                toast.error("관리자 로그인 세션이 만료되었습니다. 다시 로그인해주세요.");
+                sessionStorage.removeItem("user");
+
+                setTimeout(() => {
+                    navigate("/login");
+                }, 1000);
+
+                return;
+            }
+
+            toast.error("상담 문의 목록을 불러오지 못했습니다.");
+        }
+    };
+
+    // 상담 답변 입력값 변경
+    const handleChangeArticleAnswer = (articleId, value) => {
+        setArticleAnswerInputs((prev) => ({
+            ...prev,
+            [articleId]: value,
+        }));
+    };
+
+    // 상담 답변 저장
+    const handleSubmitArticleAnswer = async (articleId) => {
+        const answer = articleAnswerInputs[articleId];
+
+        if (!answer || !answer.trim()) {
+            toast.warning("답변 내용을 입력해주세요.");
+            return;
+        }
+
+        try {
+            await axios.put(
+                `http://localhost:8080/api/articles/${articleId}/answer`,
+                {
+                    articleAnswer: answer,
+                },
+                {
+                    withCredentials: true,
+                }
+            );
+
+            toast.success("상담 답변이 등록되었습니다.");
+
+            setArticleAnswerInputs((prev) => ({
+                ...prev,
+                [articleId]: "",
+            }));
+
+            getArticles();
+        } catch (error) {
+            console.error("상담 답변 등록 실패", error);
+
+            if (error.response?.status === 401 || error.response?.status === 403) {
+                toast.error("관리자 로그인 세션이 만료되었습니다. 다시 로그인해주세요.");
+                sessionStorage.removeItem("user");
+
+                setTimeout(() => {
+                    navigate("/login");
+                }, 1000);
+
+                return;
+            }
+
+            toast.error("상담 답변 등록에 실패했습니다.");
+        }
+    };
+
+    // 상담 문의 삭제
+    const handleDeleteArticle = async (articleId) => {
+        const confirmDelete = window.confirm(
+            "이 상담 문의를 삭제하시겠습니까?\n삭제된 문의와 답변은 복구할 수 없습니다."
+        );
+
+        if (!confirmDelete) {
+            return;
+        }
+
+        try {
+            await axios.delete(`http://localhost:8080/api/articles/${articleId}`, {
+                withCredentials: true,
+            });
+
+            toast.success("상담 문의가 삭제되었습니다.");
+
+            setArticleAnswerInputs((prev) => {
+                const copiedInputs = { ...prev };
+                delete copiedInputs[articleId];
+                return copiedInputs;
+            });
+
+            getArticles();
+        } catch (error) {
+            console.error("상담 문의 삭제 실패", error);
+
+            if (error.response?.status === 401 || error.response?.status === 403) {
+                toast.error("관리자 로그인 세션이 만료되었습니다. 다시 로그인해주세요.");
+                sessionStorage.removeItem("user");
+
+                setTimeout(() => {
+                    navigate("/login");
+                }, 1000);
+
+                return;
+            }
+
+            toast.error("상담 문의 삭제에 실패했습니다.");
         }
     };
 
@@ -287,28 +422,6 @@ const ItemAdminPage = () => {
 
             toast.success("상품이 삭제되었습니다.");
 
-            // 삭제 가능한 상품이면, 상품이미지가 상품아이디를 FK하고 있어서, 이미지 먼저 지워야 됌.
-            /*
-            const itemImgs = await getItemImgs(itemId);
-
-            // 상품에 연결된 이미지 먼저 삭제
-            for (const img of itemImgs) {
-                await axios.delete(
-                    `http://localhost:8080/api/itemImgs/${img.itemImgId}`,
-                    {
-                        withCredentials: true,
-                    }
-                );
-            }
-
-            // 이미지 삭제 후 상품 삭제
-            await axios.delete(`http://localhost:8080/api/admin/item/${itemId}`, {
-                withCredentials: true,
-            });
-
-            alert("상품이 삭제되었습니다.");
-            */
-
             // 삭제 후 상품 목록 다시 불러오기
             getItems();
 
@@ -452,148 +565,22 @@ const ItemAdminPage = () => {
         }
     };
 
-    // 리뷰 관리_관리자
-    // 기존 함수는 남겨둠.
-    // 다만 실무형 구조에서는 리뷰 상세 관리를 상품 상세페이지 Review 컴포넌트에서 처리하므로,
-    // 현재 버튼들은 handleGoItemReviewDetail()을 사용함.
-    const handleAdminSelectReviewItem = async (itemId, itemName = "") => {
-        // 상품 선택을 해제한 경우 리뷰 관련 state 초기화
-        if (!itemId) {
-            setSelectedItemId("");
-            setSelectedReviewItemName("");
-            setReviews([]);
-            setReviewSummary(null);
-            setReviewViewMode("list");
-            return;
-        }
-
-        // 선택한 상품 ID 저장
-        setSelectedItemId(itemId);
-
-        setSelectedReviewItemName(itemName);
-
-        // 리뷰보기 클릭 시 리뷰 관리 화면으로 이동
-        setActiveTab("reviews");
-
-        //특정 상품 리뷰보기는 상세 페이지로 이동
-        setReviewViewMode("detail");
-
-        try {
-            // 선택한 상품의 리뷰 목록 조회
-            const reviewResponse = await axios.get(
-                `http://localhost:8080/api/reviews/item/${itemId}`,
-                {
-                    withCredentials: true,
-                }
-            );
-
-            // 리뷰평점 평균
-            const summaryResponse = await axios.get(
-                `http://localhost:8080/api/reviews/summary/${itemId}`,
-                {
-                    withCredentials: true,
-                }
-            );
-
-            setReviews(reviewResponse.data || []);
-            setReviewSummary(summaryResponse.data);
-
-            // 리뷰보기 클릭 시 해당 상품의 리뷰 수만 갱신
-            setReviewCounts((prevCounts) => ({
-                ...prevCounts,
-                [itemId]: {
-                    itemId: Number(itemId),
-                    averageScore: summaryResponse.data?.averageScore || 0,
-                    reviewCount: summaryResponse.data?.reviewCount || 0,
-                },
-            }));
-        } catch (error) {
-            console.error("리뷰 조회 실패", error);
-
-            if (error.response) {
-                console.log("리뷰 조회 상태코드:", error.response.status);
-                console.log("리뷰 조회 응답:", error.response.data);
-            }
-
-            if (error.response?.status === 401 || error.response?.status === 403) {
-                toast.error("관리자 로그인 세션이 만료되었습니다. 다시 로그인해주세요.");
-                sessionStorage.removeItem("user");
-
-                setTimeout(() => {
-                    navigate("/login");
-                }, 1000);
-
-                return;
-            }
-
-            toast.error("리뷰 목록을 불러오지 못했습니다.");
-        }
-    };
-
-    // 리뷰 삭제하기
-    // 현재 관리자 페이지 안에서는 직접 사용하지 않고,
-    // 상품 상세페이지의 Review 컴포넌트에서 관리자 리뷰 삭제를 처리함.
-    const handleAdminDeleteReview = async (reviewId) => {
-        const confirmDelete = window.confirm("이 리뷰를 삭제하시겠습니까?");
-
-        if (!confirmDelete) {
-            return;
-        }
-
-        try {
-            await axios.delete(
-                `http://localhost:8080/api/reviews/admin/${reviewId}`,
-                {
-                    withCredentials: true,
-                }
-            );
-
-            toast.success("리뷰가 삭제되었습니다.");
-
-            // 현재 선택된 상품이 있으면 해당 상품 리뷰 목록 다시 불러오기
-            if (selectedItemId) {
-                handleAdminSelectReviewItem(selectedItemId, selectedReviewItemName);
-            }
-
-            // 추가: 리뷰 삭제 후 상품 목록의 리뷰 개수도 다시 갱신
-            // 상품 개수만큼 리뷰 요약 API가 반복 호출되지 않도록 전체 상품 목록 재조회만 실행
-            getItems();
-        } catch (error) {
-            console.error("관리자 리뷰 삭제 실패", error);
-
-            if (error.response) {
-                console.log("리뷰 삭제 상태 코드:", error.response.status);
-                console.log("리뷰 삭제 응답:", error.response.data);
-            }
-
-            if (error.response?.status === 401 || error.response?.status === 403) {
-                toast.error("관리자 로그인 세션이 만료되었습니다. 다시 로그인해주세요.");
-                sessionStorage.removeItem("user");
-
-                setTimeout(() => {
-                    navigate("/login");
-                }, 1000);
-
-                return;
-            }
-
-            toast.error(
-                error.response?.data?.message ||
-                    error.response?.data ||
-                    "리뷰 삭제 실패"
-            );
-        }
-    };
-
     // 가격 정형화
     const formatPrice = (price) => {
         return Number(price || 0).toLocaleString();
     };
 
-    // 리뷰 평가
-    const renderStars = (score) => {
-        const safeScore = Math.max(0, Math.min(5, Number(score || 0)));
-        return "★".repeat(safeScore) + "☆".repeat(5 - safeScore);
+    // 날짜 정형화
+    const formatDate = (dateValue) => {
+        if (!dateValue) return "-";
+
+        const date = new Date(dateValue);
+
+        if (Number.isNaN(date.getTime())) {
+            return dateValue;
+        }
+
+        return date.toLocaleString("ko-KR");
     };
 
     //관리자 리뷰보기: 상품 상세 페이지의 리뷰 영역가기
@@ -601,12 +588,37 @@ const ItemAdminPage = () => {
         navigate(`/item/${itemId}?adminReview=true`);
     };
 
-    //필터 실시간 말고 조회 버튼 눌러야 가능하게 해야하니까.....^___^
+    //필터 실시간 말고 조회 버튼 눌러야 가능하게 해야하니까.....^___________^
     const handleSearchFilter = () => {
         setCategoryFilter(searchCategoryFilter);
         setSellStatusFilter(searchSellStatusFilter);
         setStockSort(searchStockSort);
         setCurrentPage(1);
+    };
+
+    // 관리자 탭 변경
+    const handleChangeAdminTab = (tabName) => {
+        setActiveTab(tabName);
+
+        if (tabName === "items") {
+            return;
+        }
+
+        if (tabName === "reviews") {
+            setReviewViewMode("list");
+            setSelectedItemId("");
+            setSelectedReviewItemName("");
+            setReviews([]);
+            setReviewSummary(null);
+            setSearchReviewProductFilter(reviewProductFilter);
+            setReviewCurrentPage(1);
+            return;
+        }
+
+        if (tabName === "articles") {
+            setArticleCurrentPage(1);
+            getArticles();
+        }
     };
 
     // 상품 목록 필터링 / 정렬 처리
@@ -701,6 +713,48 @@ const ItemAdminPage = () => {
         setCurrentPage(page);
     };
 
+    //상담 페이지네이션 계산
+    const articleTotalPages = Math.max(
+        1,
+        Math.ceil(articles.length / ARTICLES_PER_PAGE)
+    );
+
+    useEffect(() => {
+        if (articleCurrentPage > articleTotalPages) {
+            setArticleCurrentPage(articleTotalPages);
+        }
+    }, [articleCurrentPage, articleTotalPages]);
+
+    const pagedArticles = useMemo(() => {
+        const startIndex = (articleCurrentPage - 1) * ARTICLES_PER_PAGE;
+        const endIndex = startIndex + ARTICLES_PER_PAGE;
+
+        return articles.slice(startIndex, endIndex);
+    }, [articles, articleCurrentPage]);
+
+    const articleCurrentPageBlock = Math.floor(
+        (articleCurrentPage - 1) / PAGE_BLOCK_SIZE
+    );
+
+    const articleStartPage = articleCurrentPageBlock * PAGE_BLOCK_SIZE + 1;
+    const articleEndPage = Math.min(
+        articleStartPage + PAGE_BLOCK_SIZE - 1,
+        articleTotalPages
+    );
+
+    const articlePageNumbers = Array.from(
+        { length: articleEndPage - articleStartPage + 1 },
+        (_, index) => articleStartPage + index
+    );
+
+    const goArticlePage = (page) => {
+        if (page < 1 || page > articleTotalPages) {
+            return;
+        }
+
+        setArticleCurrentPage(page);
+    };
+
     // 리뷰가 달린 상품 목록
     // 리뷰 관리 탭에서는 리뷰가 있는 상품만 보여주고,
     // 필터는 조회하기 버튼을 눌렀을 때 reviewProductFilter 값으로 적용됨.
@@ -780,6 +834,15 @@ const ItemAdminPage = () => {
         setReviewCurrentPage(page);
     };
 
+    //관리자 요약 정보
+    const waitingArticleCount = articles.filter(
+        (article) => article.articleStatus !== "ANSWERED"
+    ).length;
+
+    const answeredArticleCount = articles.filter(
+        (article) => article.articleStatus === "ANSWERED"
+    ).length;
+
     //============================================================//
 
     return (
@@ -801,68 +864,122 @@ const ItemAdminPage = () => {
                 />
 
                 {/* 관리자 페이지 제목 */}
-                <h1 className="itemAdmin-title">관리자 상품/ 리뷰관리</h1>
+                <div className="itemAdmin-topHeader">
+                    <div>
+                        <p className="itemAdmin-kicker">ADMIN CONSOLE</p>
+                        <h1 className="itemAdmin-title">관리자 통합 관리</h1>
+                    </div>
 
-                {/* 상단 관리자 버튼 영역 */}
-                <div className="itemAdmin-adminActionArea">
                     <button
                         type="button"
                         className="itemAdmin-button itemAdmin-subButton"
                         onClick={() => navigate("/item")}
                     >
-                        상품목록으로
+                        쇼핑몰 상품목록으로
+                    </button>
+                </div>
+
+                {/* 관리자 요약 카드 */}
+                <div className="itemAdmin-summaryGrid">
+                    <div className="itemAdmin-summaryCard">
+                        <span className="itemAdmin-summaryLabel">전체 상품</span>
+                        <strong className="itemAdmin-summaryValue">{items.length}</strong>
+                    </div>
+
+                    <div className="itemAdmin-summaryCard">
+                        <span className="itemAdmin-summaryLabel">리뷰 상품</span>
+                        <strong className="itemAdmin-summaryValue">
+                            {reviewProductItems.length}
+                        </strong>
+                    </div>
+
+                    <div className="itemAdmin-summaryCard">
+                        <span className="itemAdmin-summaryLabel">상담 대기</span>
+                        <strong className="itemAdmin-summaryValue">
+                            {waitingArticleCount}
+                        </strong>
+                    </div>
+
+                    <div className="itemAdmin-summaryCard">
+                        <span className="itemAdmin-summaryLabel">답변 완료</span>
+                        <strong className="itemAdmin-summaryValue">
+                            {answeredArticleCount}
+                        </strong>
+                    </div>
+                </div>
+
+                {/* 상단 관리자 탭 영역 */}
+                <div className="itemAdmin-tabArea">
+                    <button
+                        type="button"
+                        className={
+                            activeTab === "items"
+                                ? "itemAdmin-tabButton itemAdmin-tabButtonActive"
+                                : "itemAdmin-tabButton"
+                        }
+                        onClick={() => handleChangeAdminTab("items")}
+                    >
+                        상품 관리
                     </button>
 
                     <button
                         type="button"
-                        className="itemAdmin-button itemAdmin-subButton"
-                        onClick={() => navigate("/item/create")}
+                        className={
+                            activeTab === "reviews"
+                                ? "itemAdmin-tabButton itemAdmin-tabButtonActive"
+                                : "itemAdmin-tabButton"
+                        }
+                        onClick={() => handleChangeAdminTab("reviews")}
                     >
-                        상품 등록하기
+                        리뷰 관리
                     </button>
 
                     <button
                         type="button"
-                        className="itemAdmin-button itemAdmin-subButton"
-                        onClick={() => setActiveTab("items")}
+                        className={
+                            activeTab === "articles"
+                                ? "itemAdmin-tabButton itemAdmin-tabButtonActive"
+                                : "itemAdmin-tabButton"
+                        }
+                        onClick={() => handleChangeAdminTab("articles")}
                     >
-                        상품 관리목록
-                    </button>
-
-                    <button
-                        type="button"
-                        className="itemAdmin-button itemAdmin-subButton"
-                        onClick={() => {
-                            setActiveTab("reviews");
-                            setReviewViewMode("list");
-                            setSelectedItemId("");
-                            setSelectedReviewItemName("");
-                            setReviews([]);
-                            setReviewSummary(null);
-                            setSearchReviewProductFilter(reviewProductFilter);
-                            setReviewCurrentPage(1);
-                        }}
-                    >
-                        리뷰 관리목록
-                    </button>
-
-                    <button
-                        type="button"
-                        className="itemAdmin-button itemAdmin-dangerButton"
-                        onClick={handleAdminDeleteSelectedItems}
-                        disabled={selectedItemIds.length === 0}
-                    >
-                        선택 삭제
-                        {selectedItemIds.length > 0
-                            ? `(${selectedItemIds.length})`
-                            : ""}
+                        상담 관리
                     </button>
                 </div>
 
                 {/* 상품 관리 화면 */}
                 {activeTab === "items" && (
                     <div className="itemAdmin-section">
-                        <h2 className="itemAdmin-sectionTitle">상품 관리</h2>
+                        <div className="itemAdmin-sectionHeader">
+                            <div>
+                                <h2 className="itemAdmin-sectionTitle">상품 관리</h2>
+                                <p className="itemAdmin-sectionDesc">
+                                    등록된 상품을 조회하고 수정, 삭제할 수 있습니다.
+                                </p>
+                            </div>
+
+                            <div className="itemAdmin-sectionActions">
+                                <button
+                                    type="button"
+                                    className="itemAdmin-button"
+                                    onClick={() => navigate("/item/create")}
+                                >
+                                    상품 등록
+                                </button>
+
+                                <button
+                                    type="button"
+                                    className="itemAdmin-button itemAdmin-dangerButton"
+                                    onClick={handleAdminDeleteSelectedItems}
+                                    disabled={selectedItemIds.length === 0}
+                                >
+                                    선택 삭제
+                                    {selectedItemIds.length > 0
+                                        ? ` (${selectedItemIds.length})`
+                                        : ""}
+                                </button>
+                            </div>
+                        </div>
 
                         {/* 등록 상품 개수 */}
                         <div className="itemAdmin-countBox">
@@ -934,7 +1051,7 @@ const ItemAdminPage = () => {
                                 className="itemAdmin-button"
                                 onClick={handleSearchFilter}
                             >
-                                필터조회하기
+                                필터 조회
                             </button>
 
                             <button
@@ -952,7 +1069,7 @@ const ItemAdminPage = () => {
                                     setCurrentPage(1);
                                 }}
                             >
-                                필터 초기화
+                                초기화
                             </button>
                         </div>
 
@@ -1191,11 +1308,18 @@ const ItemAdminPage = () => {
                 {/* 리뷰 관리 화면 */}
                 {activeTab === "reviews" && (
                     <div className="itemAdmin-section">
-                        <h2 className="itemAdmin-sectionTitle">리뷰 관리</h2>
+                        <div className="itemAdmin-sectionHeader">
+                            <div>
+                                <h2 className="itemAdmin-sectionTitle">리뷰 관리</h2>
+                                <p className="itemAdmin-sectionDesc">
+                                    리뷰가 등록된 상품을 기준으로 리뷰 현황을 확인합니다.
+                                </p>
+                            </div>
+                        </div>
 
                         {/* 리뷰 상품 필터 영역 */}
                         <div className="itemAdmin-reviewSelectArea">
-                            <label className="itemAdmin-label">리뷰 상품 필터:</label>
+                            <label className="itemAdmin-label">리뷰 상품 필터</label>
 
                             <select
                                 className="itemAdmin-select"
@@ -1218,15 +1342,7 @@ const ItemAdminPage = () => {
                                     setReviewCurrentPage(1);
                                 }}
                             >
-                                조회하기
-                            </button>
-
-                            <button
-                                type="button"
-                                className="itemAdmin-button itemAdmin-subButton"
-                                onClick={() => setActiveTab("items")}
-                            >
-                                상품 관리로 돌아가기
+                                조회
                             </button>
                         </div>
 
@@ -1338,6 +1454,202 @@ const ItemAdminPage = () => {
                                 </div>
                             )}
                         </div>
+                    </div>
+                )}
+
+                {/* 상담 관리 화면 */}
+                {activeTab === "articles" && (
+                    <div className="itemAdmin-section">
+                        <div className="itemAdmin-sectionHeader">
+                            <div>
+                                <h2 className="itemAdmin-sectionTitle">상담 관리</h2>
+                                <p className="itemAdmin-sectionDesc">
+                                    고객 문의를 확인하고 관리자 답변을 등록합니다.
+                                </p>
+                            </div>
+
+                            <button
+                                type="button"
+                                className="itemAdmin-button"
+                                onClick={getArticles}
+                            >
+                                새로고침
+                            </button>
+                        </div>
+
+                        <div className="itemAdmin-countBox">
+                            <span className="itemAdmin-countText">
+                                총 상담 문의: {articles.length}개
+                            </span>
+
+                            <span className="itemAdmin-countText">
+                                답변 대기: {waitingArticleCount}개
+                            </span>
+
+                            <span className="itemAdmin-countText">
+                                답변 완료: {answeredArticleCount}개
+                            </span>
+                        </div>
+
+                        {articles.length === 0 ? (
+                            <p className="itemAdmin-emptyText">
+                                등록된 상담 문의가 없습니다.
+                            </p>
+                        ) : (
+                            <>
+                                <div className="itemAdmin-articleGrid">
+                                    {pagedArticles.map((article) => (
+                                        <div
+                                            key={article.articleId}
+                                            className="itemAdmin-articleCard"
+                                        >
+                                            <div className="itemAdmin-articleCardHeader">
+                                                <div>
+                                                    <span
+                                                        className={
+                                                            article.articleStatus === "ANSWERED"
+                                                                ? "itemAdmin-statusBadge itemAdmin-statusAnswered"
+                                                                : "itemAdmin-statusBadge itemAdmin-statusWaiting"
+                                                        }
+                                                    >
+                                                        {article.articleStatus === "ANSWERED"
+                                                            ? "답변완료"
+                                                            : "답변대기"}
+                                                    </span>
+
+                                                    <h3 className="itemAdmin-articleTitle">
+                                                        {article.articleTitle}
+                                                    </h3>
+                                                </div>
+
+                                                <div className="itemAdmin-articleHeaderActions">
+                                                    <span className="itemAdmin-articleId">
+                                                        #{article.articleId}
+                                                    </span>
+
+                                                    <button
+                                                        type="button"
+                                                        className="itemAdmin-articleDeleteButton"
+                                                        onClick={() =>
+                                                            handleDeleteArticle(article.articleId)
+                                                        }
+                                                    >
+                                                        삭제
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            <div className="itemAdmin-articleMeta">
+                                                <span>
+                                                    구분: {article.memberId ? "회원" : "비회원"}
+                                                </span>
+                                                <span>회원ID: {article.memberId || "-"}</span>
+                                                <span>상품ID: {article.itemId || "-"}</span>
+                                                <span>작성일: {formatDate(article.createdAt)}</span>
+                                            </div>
+
+                                            <div className="itemAdmin-articleContentBox">
+                                                <p className="itemAdmin-articleLabel">문의 내용</p>
+                                                <pre className="itemAdmin-articleContent">
+                                                    {article.articleContent}
+                                                </pre>
+                                            </div>
+
+                                            <div className="itemAdmin-articleContentBox">
+                                                <p className="itemAdmin-articleLabel">현재 답변</p>
+
+                                                {article.articleAnswer ? (
+                                                    <pre className="itemAdmin-articleAnswer">
+                                                        {article.articleAnswer}
+                                                    </pre>
+                                                ) : (
+                                                    <p className="itemAdmin-noAnswer">
+                                                        아직 등록된 답변이 없습니다.
+                                                    </p>
+                                                )}
+                                            </div>
+
+                                            <div className="itemAdmin-answerBox">
+                                                <label className="itemAdmin-label">
+                                                    관리자 답변 작성
+                                                </label>
+
+                                                <textarea
+                                                    className="itemAdmin-answerTextarea"
+                                                    value={
+                                                        articleAnswerInputs[article.articleId] || ""
+                                                    }
+                                                    onChange={(e) =>
+                                                        handleChangeArticleAnswer(
+                                                            article.articleId,
+                                                            e.target.value
+                                                        )
+                                                    }
+                                                    placeholder={
+                                                        article.articleAnswer
+                                                            ? "답변을 수정하려면 새 답변을 입력하세요."
+                                                            : "고객에게 보낼 답변을 입력하세요."
+                                                    }
+                                                />
+
+                                                <button
+                                                    type="button"
+                                                    className="itemAdmin-button"
+                                                    onClick={() =>
+                                                        handleSubmitArticleAnswer(article.articleId)
+                                                    }
+                                                >
+                                                    {article.articleAnswer
+                                                        ? "답변 수정"
+                                                        : "답변 등록"}
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                {articles.length > ARTICLES_PER_PAGE && (
+                                    <div className="itemAdmin-pagination">
+                                        <button
+                                            type="button"
+                                            className="itemAdmin-pageButton"
+                                            onClick={() =>
+                                                goArticlePage(articleStartPage - 1)
+                                            }
+                                            disabled={articleStartPage === 1}
+                                        >
+                                            &lt;
+                                        </button>
+
+                                        {articlePageNumbers.map((page) => (
+                                            <button
+                                                key={page}
+                                                type="button"
+                                                className={
+                                                    articleCurrentPage === page
+                                                        ? "itemAdmin-pageButton itemAdmin-pageButtonActive"
+                                                        : "itemAdmin-pageButton"
+                                                }
+                                                onClick={() => goArticlePage(page)}
+                                            >
+                                                {page}
+                                            </button>
+                                        ))}
+
+                                        <button
+                                            type="button"
+                                            className="itemAdmin-pageButton"
+                                            onClick={() =>
+                                                goArticlePage(articleEndPage + 1)
+                                            }
+                                            disabled={articleEndPage === articleTotalPages}
+                                        >
+                                            &gt;
+                                        </button>
+                                    </div>
+                                )}
+                            </>
+                        )}
                     </div>
                 )}
             </div>

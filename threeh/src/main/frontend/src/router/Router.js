@@ -18,6 +18,7 @@ import ItemDetail from '../components/item/ItemDetail';
 import ItemCreate from '../components/item/ItemCreate';
 import ItemUpdate from '../components/item/ItemUpdate';
 import ItemAdminPage from '../components/item/ItemAdminPage';
+import ArticlePage from '../components/item/ArticlePage';
 
 //김승우
 import Order from '../components/Order/Order';
@@ -64,6 +65,7 @@ const Router = () => {
                     <Route path="/item/create" element={<ItemCreate/>} />
                     <Route path="/item/update/:itemId" element={<ItemUpdate/>} />
                     <Route path="/admin/item" element={<ItemAdminPage/>} />
+                    
 
                     <Route path="/mypage" element={<Mypage/>} />
                     <Route path='/cart' element={<Cart/>}/>
@@ -85,6 +87,7 @@ const Router = () => {
                 </Route>
                 
             </Routes>
+                <ArticlePage/>
             </SearchProvider>
         </BrowserRouter>
     );

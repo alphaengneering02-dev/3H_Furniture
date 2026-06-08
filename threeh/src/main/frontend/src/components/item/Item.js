@@ -1062,7 +1062,7 @@ function Item() {
         {isAdmin && (
           <div className="item-action-area">
             <button type="button" onClick={() => navigate("/admin/item")}>
-              관리자 상품/리뷰 관리
+              관리자 페이지
             </button>
 
             {/* 관리자가 상품 목록에서 여러 개 선택 삭제 */}
