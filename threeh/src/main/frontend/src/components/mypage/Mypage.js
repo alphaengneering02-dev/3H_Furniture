@@ -213,7 +213,7 @@ const Mypage = () => {
         const targetId = (typeof orderId === 'object') ? (orderId.orderId || orderId.id) : orderId;
         params.append('orderId', targetId);
 
-        // 🚨 [404 완전 완치]: 반품 성공 대문자 'Member' + 마이페이지 성공 확장자 '.do' 최종 결합 저격!
+        // 반품 성공 대문자 'Member' + 마이페이지 성공 확장자 '.do' 최종 결합 저격!
         const response = await axios.post("http://localhost:8080/Member/purchase/confirm", params, { withCredentials: true });
         
         // [object Object] 방지 처리 마감
@@ -577,14 +577,14 @@ const Mypage = () => {
                                                             {/* [주문상태 이늄 컬러 완전 싱크 마감] */}
                                                             <p style={{
                                                                 fontSize: '12px', margin: '0 0 2px 0', fontWeight: '700',
-                                                                // 🚨 [영문 스펙 동기화 완수]: 한글을 백엔드 진짜 영문 이늄 명칭으로 정밀 매칭 교체!
+                                                                // [영문 스펙 동기화 완수]: 한글을 백엔드 진짜 영문 이늄 명칭으로 정밀 매칭 교체!
                                                                 color: order.orderState === 'ORDER' ? '#5e4431' :                 // 주문
                                                                     order.orderState === 'READY' ? '#c45a00' :                 // 배송 준비중
                                                                         order.orderState === 'PURCHASED' ? '#0a5c36' :             // 구매확정
                                                                             order.orderState === 'CANCEL' ? '#a82525' :                // 주문취소
                                                                                 order.orderState === 'EXCHANGEorREFUND' ? '#323e4f' : '#111111' // 교환또는환불
                                                             }}>
-                                                                {/* 🌟 [출력 텍스트 한글 번역 마감]: 데이터는 영어로 판별하되, 사용자 눈에는 친절한 한글로 보이게 가공 */}
+                                                                {/* [출력 텍스트 한글 번역 마감]: 데이터는 영어로 판별하되, 사용자 눈에는 친절한 한글로 보이게 가공 */}
                                                                 <strong>상태:</strong> {
                                                                     order.orderState === 'ORDER' ? '주문 완료' :
                                                                         order.orderState === 'READY' ? '배송 준비중' :
@@ -610,7 +610,7 @@ const Mypage = () => {
                                                         </div>
 
                                                         <div style={{ marginTop: '10px' }}>
-                                                            {/* 1. 🌟 [질문자님 엔티티 스펙 싱크]: order.itemId가 단독으로 오거나 item 객체 내부에 숨어있어도 모두 추적 완수! */}
+                                                            {/* [엔티티 스펙 싱크]: order.itemId가 단독으로 오거나 item 객체 내부에 숨어있어도 모두 추적 완수! */}
                                                             {order.orderState === 'PURCHASED' ? (
                                                                 hasWrittenReview(order.itemId || order.item?.itemId) ? (
                                                                     <span>리뷰 작성 완료</span>
@@ -625,7 +625,7 @@ const Mypage = () => {
                                                                 <span style={{ color: "#64748b", fontSize: "11px", display: "block", textAlign: "center" }}>배송완료 후 확정 가능</span>
                                                             )}
                                                         </div>
-                                                        {/* 🚨 [질문자님 원본 복원 마감]: map 닫는 괄호 정위치 매칭 */}
+                                                        {/* [원본 복원 마감]: map 닫는 괄호 정위치 매칭 */}
                                                     </div>
                                                 ))
                                         ) : (

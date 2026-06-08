@@ -247,7 +247,7 @@ const Cart = () => {
 
         {!member ? (
             <main style={{ textAlign: 'center', padding: '100px 20px' }}>
-                <h2>로그인이 필요한 service입니다.</h2>
+                <h2>로그인이 필요한 서비스 입니다.</h2>
             </main>
         ) : (
             <div style={{ display: 'flex' }}>
@@ -265,7 +265,7 @@ const Cart = () => {
                         <button className="mypage-action-btn" onClick={() => navigate('/mypage')}>마이페이지</button>
                     </div>
 
-                    {/* 🛒 인호님 오리지널 장바구니 전용 전체 감싸는 상자 박스 */}
+                    {/* 오리지널 장바구니 전용 전체 감싸는 상자 박스 */}
                     <div className="cart-container">
                         <h1>{member?.name || member?.id || '고객'}님의 장바구니</h1>
                         
@@ -299,7 +299,7 @@ const Cart = () => {
                         </div>
 
 
-                        {/* 인호님 오리지널 장바구니 데이터 행 루프 구역 */}
+                        {/* 오리지널 장바구니 데이터 행 루프 구역 */}
                         <div className="cart-item-list-group">
                             {cartItems.length === 0 ? (
                                 <p style={{ textAlign: 'center', padding: '30px 0', color: '#8c7a6b' }}>장바구니가 비어 있습니다.</p>
