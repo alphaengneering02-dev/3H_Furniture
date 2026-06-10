@@ -51,6 +51,10 @@ const ArticlePage = () => {
   // 로그인 여부
   const articlePageIsLogin = !!articlePageUser;
 
+  //관리자면 상담창 가리게, 관리자 여부확인
+  const articlePageIsAdmin = articlePageIsLogin && articlePageUser.role ==="ADMIN"&&
+  !!articlePageUser.adminId;
+
   // 회원번호 찾기.
   // 프로젝트마다 memberId 이름이 다를 수 있어서 여러 후보를 같이 확인함.
   const articlePageMemberId = articlePageIsLogin
@@ -150,11 +154,11 @@ const ArticlePage = () => {
     const articlePageFinalContent = articlePageIsLogin
       ? articlePageContent
       : `[비회원 문의]
-이름: ${articlePageGuestName}
-연락처: ${articlePageGuestPhone}
+      이름: ${articlePageGuestName}
+      연락처: ${articlePageGuestPhone}
 
-문의내용:
-${articlePageContent}`;
+      문의내용:
+      ${articlePageContent}`;
 
     try {
       await axios.post(
@@ -227,6 +231,10 @@ ${articlePageContent}`;
       alert("상담 내역 삭제에 실패했습니다.");
     }
   };
+
+  //관리자로 로그인한 경우 상담창을 노출하지 않기.
+  if(articlePageIsAdmin){return null;}
+
 
   return (
     <>

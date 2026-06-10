@@ -531,86 +531,6 @@
 }
 
 /* ================================
-   반응형
-================================ */
-
-/* 태블릿 이하 화면 대응 */
-@media (max-width: 768px) {
-    /* 페이지 좌우 여백 축소 */
-    .itemAdmin-page {
-        padding: 34px 18px 64px;
-    }
-
-    /* 제목 크기 축소 */
-    .itemAdmin-title {
-        font-size: 32px;
-    }
-
-    /* 섹션 제목 크기 축소 */
-    .itemAdmin-sectionTitle {
-        font-size: 23px;
-    }
-
-    /* 상단 버튼, 탭 버튼, 테이블 버튼을 세로 정렬 */
-    .itemAdmin-topArea,
-    .itemAdmin-tabArea,
-    .itemAdmin-tableButtonArea {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    /* 모바일에서는 버튼을 가로 전체 너비로 */
-    .itemAdmin-button,
-    .itemAdmin-tableButton {
-        width: 100%;
-    }
-
-    /* 리뷰 상품 선택 영역 세로 정렬 */
-    .itemAdmin-reviewSelectArea {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    /* select도 모바일에서 전체 너비 */
-    .itemAdmin-select {
-        width: 100%;
-        min-width: 0;
-    }
-
-    /* 작은 화면에서 테이블 셀 여백과 글자 크기 축소 */
-    .itemAdmin-table th,
-    .itemAdmin-table td {
-        padding: 11px 9px;
-        font-size: 13px;
-    }
-
-    .itemAdmin-countBox {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 7px;
-    }
-}
-
-/* 모바일 작은 화면 대응 */
-@media (max-width: 480px) {
-    /* 메인 제목 더 축소 */
-    .itemAdmin-title {
-        font-size: 28px;
-    }
-
-    /* 섹션 제목 더 축소 */
-    .itemAdmin-sectionTitle {
-        font-size: 21px;
-    }
-
-    /* 박스 내부 여백 축소 */
-    .itemAdmin-summaryBox,
-    .itemAdmin-reviewSelectArea {
-        padding: 18px;
-    }
-}
-
-/* ================================
    선택한 상품 목록
 ================================ */
 
@@ -688,38 +608,11 @@
     font-size: 13px;
     color: #6E695F;
 }
-.itemAdmin-articleContent {
-    max-width: 420px;
-    max-height: 130px;
-    overflow-y: auto;
-    margin: 0;
-    white-space: pre-wrap;
-    text-align: left;
-    font-family: inherit;
-    font-size: 13px;
-    line-height: 1.5;
-    color: #333;
-}
 
-.itemAdmin-answerTextarea {
-    width: 220px;
-    height: 70px;
-    resize: none;
-    padding: 8px;
-    box-sizing: border-box;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-family: inherit;
-    font-size: 13px;
-    margin-bottom: 6px;
-    outline: none;
-}
+/* ================================
+   관리자 상단 정리 UI
+================================ */
 
-.itemAdmin-answerTextarea:focus {
-    border-color: #702a24;
-}
-
-/* 관리자 상단 정리 UI */
 .itemAdmin-topHeader {
     display: flex;
     justify-content: space-between;
@@ -817,14 +710,24 @@
     color: #777;
 }
 
-/* 상담 관리 카드형 UI */
+/* ================================
+   상담 관리 카드형 UI
+================================ */
+
+/* 상담 카드 목록 영역 */
 .itemAdmin-articleGrid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 18px;
+    align-items: stretch;
 }
 
+/* 상담 카드
+   답변 여부와 상관없이 카드 내부 버튼 위치가 최대한 일정하게 보이도록 flex 구조로 정리 */
 .itemAdmin-articleCard {
+    display: flex;
+    flex-direction: column;
+    min-height: 620px;
     background-color: #fff;
     border: 1px solid #e9e2dc;
     border-radius: 16px;
@@ -832,26 +735,32 @@
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
 }
 
+/* 상담 카드 상단 영역 */
 .itemAdmin-articleCardHeader {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
     gap: 12px;
+    min-height: 76px;
     margin-bottom: 12px;
 }
 
+/* 상담 제목 */
 .itemAdmin-articleTitle {
     margin: 8px 0 0 0;
     font-size: 18px;
     color: #222;
+    line-height: 1.35;
 }
 
+/* 상담 번호 */
 .itemAdmin-articleId {
     color: #999;
     font-size: 13px;
     font-weight: 700;
 }
 
+/* 상담 상태 뱃지 */
 .itemAdmin-statusBadge {
     display: inline-block;
     padding: 5px 9px;
@@ -860,35 +769,44 @@
     font-weight: 800;
 }
 
+/* 답변 대기 상태 */
 .itemAdmin-statusWaiting {
     background-color: #fff2d9;
     color: #9b5a00;
 }
 
+/* 답변 완료 상태 */
 .itemAdmin-statusAnswered {
     background-color: #e8f6ee;
     color: #197145;
 }
 
+/* 상담 메타 정보
+   예: 회원/비회원, 회원ID, 작성일 */
 .itemAdmin-articleMeta {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
+    min-height: 60px;
     margin-bottom: 14px;
     color: #666;
     font-size: 12px;
 }
 
+/* 상담 메타 정보 개별 태그 */
 .itemAdmin-articleMeta span {
+    height: fit-content;
     background-color: #f7f4f1;
     padding: 5px 8px;
     border-radius: 999px;
 }
 
+/* 문의 내용 / 현재 답변을 감싸는 영역 */
 .itemAdmin-articleContentBox {
     margin-bottom: 14px;
 }
 
+/* 문의 내용 / 현재 답변 라벨 */
 .itemAdmin-articleLabel {
     margin: 0 0 6px 0;
     font-size: 13px;
@@ -896,14 +814,17 @@
     color: #702a24;
 }
 
+/* 문의 내용과 현재 답변
+   긴 문의나 답변 때문에 카드 높이가 늘어나지 않도록 내부 스크롤 적용 */
 .itemAdmin-articleContent,
 .itemAdmin-articleAnswer {
+    width: 100%;
+    height: 118px;
     margin: 0;
     padding: 12px;
-    min-height: 54px;
-    max-height: 150px;
     overflow-y: auto;
     white-space: pre-wrap;
+    word-break: break-word;
     background-color: #f8f8f8;
     border-radius: 10px;
     font-family: inherit;
@@ -912,48 +833,74 @@
     color: #333;
 }
 
+/* 현재 답변 영역 */
 .itemAdmin-articleAnswer {
     background-color: #fff7ef;
 }
 
+/* 답변이 아직 없을 때 표시되는 영역
+   답변이 있는 카드와 높이를 맞추기 위해 같은 높이 유지 */
 .itemAdmin-noAnswer {
+    width: 100%;
+    height: 118px;
     margin: 0;
     padding: 12px;
+    overflow-y: auto;
     background-color: #f8f8f8;
     border-radius: 10px;
     color: #888;
     font-size: 13px;
+    line-height: 1.5;
 }
 
+/* 관리자 답변 작성 영역
+   margin-top: auto로 카드 하단에 밀착시켜 버튼 위치를 맞춤 */
 .itemAdmin-answerBox {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    margin-top: 12px;
+    margin-top: auto;
+    padding-top: 12px;
 }
 
+/* 관리자 답변 입력창
+   답변 수정/등록 카드 모두 버튼 위치가 같도록 높이 고정 */
 .itemAdmin-answerTextarea {
     width: 100%;
-    min-height: 88px;
-    resize: vertical;
+    height: 96px;
+    min-height: 96px;
+    max-height: 96px;
+    resize: none;
     padding: 10px;
     box-sizing: border-box;
     border: 1px solid #d8d0ca;
     border-radius: 10px;
     font-family: inherit;
     font-size: 14px;
+    line-height: 1.5;
     outline: none;
 }
 
+/* 관리자 답변 입력창 포커스 */
 .itemAdmin-answerTextarea:focus {
     border-color: #702a24;
 }
+
+/* 상담 카드 하단 버튼
+   답변 등록 / 답변 수정 버튼 너비 통일 */
+.itemAdmin-answerBox .itemAdmin-button {
+    width: 100%;
+}
+
+/* 상담 카드 우측 상단 영역 */
 .itemAdmin-articleHeaderActions {
     display: flex;
     align-items: center;
     gap: 8px;
+    flex-shrink: 0;
 }
 
+/* 상담 삭제 버튼 */
 .itemAdmin-articleDeleteButton {
     border: 1px solid #d9534f;
     background-color: #fff;
@@ -965,12 +912,17 @@
     cursor: pointer;
 }
 
+/* 상담 삭제 버튼 hover */
 .itemAdmin-articleDeleteButton:hover {
     background-color: #d9534f;
     color: #fff;
 }
 
-/* 반응형 */
+/* ================================
+   반응형
+================================ */
+
+/* 900px 이하 화면 대응 */
 @media (max-width: 900px) {
     .itemAdmin-summaryGrid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -980,9 +932,127 @@
         grid-template-columns: 1fr;
     }
 
+    .itemAdmin-articleCard {
+        min-height: auto;
+    }
+
     .itemAdmin-topHeader,
     .itemAdmin-sectionHeader {
         flex-direction: column;
         align-items: stretch;
+    }
+}
+
+/* 태블릿 이하 화면 대응 */
+@media (max-width: 768px) {
+    /* 페이지 좌우 여백 축소 */
+    .itemAdmin-page {
+        padding: 34px 18px 64px;
+    }
+
+    /* 제목 크기 축소 */
+    .itemAdmin-title {
+        font-size: 32px;
+    }
+
+    /* 섹션 제목 크기 축소 */
+    .itemAdmin-sectionTitle {
+        font-size: 23px;
+    }
+
+    /* 상단 버튼, 탭 버튼, 테이블 버튼을 세로 정렬 */
+    .itemAdmin-topArea,
+    .itemAdmin-tabArea,
+    .itemAdmin-tableButtonArea {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    /* 모바일에서는 버튼을 가로 전체 너비로 */
+    .itemAdmin-button,
+    .itemAdmin-tableButton {
+        width: 100%;
+    }
+
+    /* 리뷰 상품 선택 영역 세로 정렬 */
+    .itemAdmin-reviewSelectArea {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    /* select도 모바일에서 전체 너비 */
+    .itemAdmin-select {
+        width: 100%;
+        min-width: 0;
+    }
+
+    /* 작은 화면에서 테이블 셀 여백과 글자 크기 축소 */
+    .itemAdmin-table th,
+    .itemAdmin-table td {
+        padding: 11px 9px;
+        font-size: 13px;
+    }
+
+    .itemAdmin-countBox {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 7px;
+    }
+
+    .itemAdmin-summaryGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .itemAdmin-selectedHeader,
+    .itemAdmin-selectedCard {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .itemAdmin-articleCardHeader {
+        min-height: auto;
+    }
+
+    .itemAdmin-articleMeta {
+        min-height: auto;
+    }
+
+    .itemAdmin-articleContent,
+    .itemAdmin-articleAnswer,
+    .itemAdmin-noAnswer {
+        height: 120px;
+    }
+}
+
+/* 모바일 작은 화면 대응 */
+@media (max-width: 480px) {
+    /* 메인 제목 더 축소 */
+    .itemAdmin-title {
+        font-size: 28px;
+    }
+
+    /* 섹션 제목 더 축소 */
+    .itemAdmin-sectionTitle {
+        font-size: 21px;
+    }
+
+    /* 박스 내부 여백 축소 */
+    .itemAdmin-summaryBox,
+    .itemAdmin-reviewSelectArea {
+        padding: 18px;
+    }
+
+    .itemAdmin-articleCard {
+        padding: 15px;
+        border-radius: 14px;
+    }
+
+    .itemAdmin-articleTitle {
+        font-size: 16px;
+    }
+
+    .itemAdmin-articleHeaderActions {
+        flex-direction: column;
+        align-items: flex-end;
     }
 }

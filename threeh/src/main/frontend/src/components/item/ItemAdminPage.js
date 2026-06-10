@@ -1544,7 +1544,7 @@ const ItemAdminPage = () => {
                                                     구분: {article.memberId ? "회원" : "비회원"}
                                                 </span>
                                                 <span>회원ID: {article.memberId || "-"}</span>
-                                                <span>상품ID: {article.itemId || "-"}</span>
+
                                                 <span>작성일: {formatDate(article.createdAt)}</span>
                                             </div>
 
