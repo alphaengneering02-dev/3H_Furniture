@@ -268,8 +268,6 @@ const ArticlePage = () => {
             {articlePageIsLogin ? (
               <div className="articlePage-userInfo">
                 {articlePageUser.name || articlePageUser.id}님으로 문의합니다.
-                <br />
-                회원번호: {articlePageMemberId || "없음"}
               </div>
             ) : (
               <>
@@ -346,12 +344,29 @@ const ArticlePage = () => {
                       key={article.articleId}
                     >
                       <div className="articlePage-historyItemHeader">
-                        <span className="articlePage-statusText">
-                          {article.articleStatus === "ANSWERED"
-                            ? "답변완료"
-                            : "답변대기"}
-                        </span>
+                     
+                      <div className="articlePage-historyBadges">
+                        {article.itemId ? (
+                          <span className="articlePage-typeText articlePage-productTypeText">
+                            상품 문의
+                          </span>
+                        ) : (
+                          <span className="articlePage-typeText articlePage-generalTypeText">
+                            일반 상담
+                          </span>
+                        )}
+
+                        {article.itemId && (
+                          <span className="articlePage-itemIdText">
+                            상품번호 {article.itemId}
+                          </span>
+                        )}
                       </div>
+
+                      <span className="articlePage-statusText">
+                        {article.articleStatus === "ANSWERED" ? "답변완료" : "답변대기"}
+                      </span>
+                    </div>
 
                       {/* 내가 남긴 상담 내용 */}
                       <div className="articlePage-userMessage">

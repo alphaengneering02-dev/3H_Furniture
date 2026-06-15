@@ -1,243 +1,609 @@
-.articlePage-button {
-  position: fixed;
-  right: 30px;
-  bottom: 30px;
-  padding: 14px 22px;
-  border-radius: 30px;
-  border: none;
-  background-color: #702a24;
-  color: #fff;
-  cursor: pointer;
-  z-index: 9999;
-  font-size: 15px;
-  font-weight: 600;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.22);
-}
+/* ================================
+   ArticlePage 상담창 CSS
+   className 변경 없음
+   - 세련된 플로팅 상담창
+   - 내용 많아지면 messageArea만 스크롤
+   - textarea / 보내기 버튼 하단 고정
+================================ */
 
-.articlePage-button:hover {
-  background-color: #8a3a32;
-}
-
-.articlePage-box {
-  position: fixed;
-  right: 30px;
-  bottom: 90px;
-  width: 350px;
-  height: 520px;
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 14px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-  padding: 16px;
-  z-index: 9999;
+/* 모든 요소 박스 계산 안정화 */
+.articlePage-box,
+.articlePage-box * {
   box-sizing: border-box;
 }
 
-.articlePage-header {
+/* 오른쪽 아래 상담하기 버튼 */
+.articlePage-button {
+  position: fixed;
+  right: 32px;
+  bottom: 32px;
+  z-index: 1000;
+
+  min-width: 108px;
+  height: 48px;
+  padding: 0 20px;
+
+  border: none;
+  border-radius: 999px;
+
+  background: linear-gradient(135deg, #7a332c, #4f1f1b);
+  color: #ffffff;
+
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: -0.2px;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 10px 24px rgba(112, 42, 36, 0.28),
+    0 4px 10px rgba(0, 0, 0, 0.12);
+
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    opacity 0.18s ease;
+}
+
+.articlePage-button:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 14px 30px rgba(112, 42, 36, 0.34),
+    0 6px 14px rgba(0, 0, 0, 0.14);
+}
+
+.articlePage-button:active {
+  transform: translateY(0);
+}
+
+/* 상담창 전체 */
+.articlePage-box {
+  position: fixed;
+  right: 32px;
+  bottom: 92px;
+  z-index: 1001;
+
+  width: 380px;
+  height: 580px;
+  max-height: calc(100vh - 128px);
+
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+
+  overflow: hidden;
+
+  border: 1px solid rgba(230, 222, 210, 0.9);
+  border-radius: 24px;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 252, 248, 0.98),
+      rgba(255, 255, 255, 0.98)
+    );
+
+  box-shadow:
+    0 22px 56px rgba(42, 31, 25, 0.22),
+    0 8px 20px rgba(42, 31, 25, 0.12);
+
+  font-family: 'Noto Sans KR', sans-serif;
+}
+
+/* 상단 헤더 */
+.articlePage-header {
+  flex: 0 0 auto;
+
+  height: 64px;
+  padding: 0 18px 0 20px;
+
+  display: flex;
   align-items: center;
-  margin-bottom: 12px;
+  justify-content: space-between;
+
+  background: linear-gradient(135deg, #fff7ee 0%, #f7ede4 100%);
+
+  border-bottom: 1px solid rgba(230, 222, 210, 0.75);
 }
 
 .articlePage-title {
   margin: 0;
-  font-size: 18px;
-  color: #222;
+
+  color: #2b1d16;
+  font-size: 17px;
+  font-weight: 900;
+  letter-spacing: -0.3px;
 }
 
 .articlePage-closeButton {
+  width: 34px;
+  height: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   border: none;
-  background-color: transparent;
-  font-size: 16px;
+  border-radius: 50%;
+
+  background-color: rgba(255, 255, 255, 0.72);
+  color: #7a6256;
+
+  font-size: 17px;
+  font-weight: 900;
+
   cursor: pointer;
-  color: #555;
+
+  transition:
+    background-color 0.16s ease,
+    color 0.16s ease,
+    transform 0.16s ease;
 }
 
 .articlePage-closeButton:hover {
-  color: #000;
-}
-
-.articlePage-messageArea {
-  height: 330px;
-  background-color: #f5f5f5;
-  border-radius: 10px;
-  padding: 12px;
-  margin-bottom: 12px;
-  font-size: 14px;
-  overflow-y: auto;
-  box-sizing: border-box;
-}
-
-.articlePage-adminMessage {
-  background-color: #fff;
-  padding: 10px;
-  border-radius: 10px;
-  margin-bottom: 8px;
-  color: #333;
-  line-height: 1.5;
-  white-space: pre-wrap;
-}
-
-.articlePage-userInfo {
-  background-color: #fff7ef;
+  background-color: #ffffff;
   color: #702a24;
-  padding: 9px 10px;
-  border-radius: 10px;
-  margin-bottom: 8px;
-  font-size: 13px;
-  line-height: 1.4;
+  transform: rotate(90deg);
 }
 
+/* 메시지 영역 */
+/* 내용이 많아지면 이 영역만 스크롤됨 */
+.articlePage-messageArea {
+  flex: 1 1 auto;
+  min-height: 0;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  padding: 18px;
+
+  background:
+    radial-gradient(circle at top left, rgba(250, 246, 240, 0.95), transparent 38%),
+    #fffdfb;
+
+  scroll-behavior: smooth;
+}
+
+/* 스크롤바 */
+.articlePage-messageArea::-webkit-scrollbar {
+  width: 7px;
+}
+
+.articlePage-messageArea::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.articlePage-messageArea::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background-color: rgba(168, 144, 127, 0.42);
+}
+
+.articlePage-messageArea::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(112, 42, 36, 0.42);
+}
+
+/* 안내 메시지 박스 */
+.articlePage-pageInfo {
+  margin-bottom: 14px;
+  padding: 13px 15px;
+
+  border: 1px solid rgba(230, 222, 210, 0.86);
+  border-radius: 16px;
+
+  background-color: rgba(255, 255, 255, 0.86);
+  color: #715d52;
+
+  font-size: 13px;
+  line-height: 1.65;
+  letter-spacing: -0.2px;
+
+  box-shadow: 0 6px 18px rgba(68, 49, 39, 0.05);
+}
+
+/* 관리자 기본 안내 메시지 / 관리자 답변 */
+.articlePage-adminMessage {
+  max-width: 88%;
+
+  margin-bottom: 14px;
+  padding: 13px 15px;
+
+  border-radius: 18px 18px 18px 6px;
+
+  background-color: #ffffff;
+  color: #2b1d16;
+
+  font-size: 14px;
+  line-height: 1.7;
+  letter-spacing: -0.2px;
+
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+
+  box-shadow:
+    0 8px 20px rgba(68, 49, 39, 0.07),
+    inset 0 0 0 1px rgba(230, 222, 210, 0.7);
+}
+
+/* 로그인 회원 정보 */
+/* JSX에서 회원번호 문구는 제거하고 이름만 표시하는 것을 추천 */
+.articlePage-userInfo {
+  margin-bottom: 14px;
+  padding: 12px 14px;
+
+  border-radius: 16px;
+
+  background: linear-gradient(135deg, #fbf3ea, #f5e8de);
+  color: #3a2920;
+
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.6;
+  letter-spacing: -0.2px;
+
+  box-shadow: inset 0 0 0 1px rgba(230, 222, 210, 0.75);
+}
+
+/* 비회원 안내 입력 영역 */
 .articlePage-guestBox {
   display: flex;
   flex-direction: column;
-  gap: 7px;
-  margin-bottom: 8px;
+  gap: 9px;
+
+  margin-bottom: 14px;
 }
 
 .articlePage-guestInput {
   width: 100%;
-  height: 34px;
-  padding: 7px 9px;
-  box-sizing: border-box;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-family: inherit;
+  height: 42px;
+
+  padding: 0 14px;
+
+  border: 1px solid rgba(230, 222, 210, 0.95);
+  border-radius: 14px;
+
+  background-color: rgba(255, 255, 255, 0.95);
+  color: #2b1d16;
+
+  font-family: 'Noto Sans KR', sans-serif;
   font-size: 13px;
-  outline: none;
+
+  transition:
+    border-color 0.16s ease,
+    box-shadow 0.16s ease,
+    background-color 0.16s ease;
+}
+
+.articlePage-guestInput::placeholder {
+  color: #a8968d;
 }
 
 .articlePage-guestInput:focus {
-  border-color: #702a24;
+  outline: none;
+  border-color: rgba(112, 42, 36, 0.65);
+  background-color: #ffffff;
+  box-shadow: 0 0 0 4px rgba(112, 42, 36, 0.08);
 }
 
-.articlePage-pageInfo {
-  background-color: #f2f2f2;
-  color: #555;
-  padding: 8px 10px;
-  border-radius: 10px;
-  margin-bottom: 8px;
-  font-size: 12px;
-  line-height: 1.4;
-}
-
-.articlePage-userMessage {
-  background-color: #702a24;
-  color: #fff;
-  padding: 10px;
-  border-radius: 10px;
-  margin-left: 35px;
-  margin-bottom: 8px;
-  white-space: pre-wrap;
-  line-height: 1.5;
-}
-
+/* 내 상담 내역 전체 영역 */
 .articlePage-historyArea {
-  margin-top: 10px;
+  margin-top: 16px;
 }
 
-.articlePage-historyTitle {
-  margin: 10px 0 8px 0;
-  font-size: 13px;
-  font-weight: 700;
-  color: #333;
-}
+/* 내 상담 내역 제목 + 버튼 영역 */
+.articlePage-historyHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
 
-.articlePage-historyItem {
   margin-bottom: 12px;
 }
 
-.articlePage-textarea {
-  width: 100%;
-  height: 70px;
-  resize: none;
-  padding: 10px;
-  box-sizing: border-box;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  outline: none;
-  font-family: inherit;
-}
+.articlePage-historyTitle {
+  margin: 0;
 
-.articlePage-textarea:focus {
-  border-color: #702a24;
-}
-
-.articlePage-submitButton {
-  width: 100%;
-  margin-top: 10px;
-  padding: 10px;
-  border: none;
-  border-radius: 8px;
-  background-color: #702a24;
-  color: #fff;
-  cursor: pointer;
-  font-size: 15px;
-  font-weight: 600;
-}
-
-.articlePage-submitButton:hover {
-  background-color: #8a3a32;
-}
-.articlePage-historyHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 10px 0 8px 0;
+  color: #2b1d16;
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: -0.3px;
 }
 
 .articlePage-historyActions {
   display: flex;
-  gap: 6px;
-  align-items: center;
+  gap: 7px;
 }
 
-.articlePage-refreshButton {
-  border: none;
-  background-color: #fff;
-  color: #702a24;
-  border-radius: 8px;
-  padding: 5px 8px;
-  font-size: 12px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.articlePage-refreshButton:hover {
-  background-color: #f0e4df;
-}
-
+/* 새로고침 / 내역 비우기 버튼 */
+.articlePage-refreshButton,
 .articlePage-clearButton {
-  border: 1px solid #d9534f;
-  background-color: #fff;
-  color: #d9534f;
-  border-radius: 8px;
-  padding: 5px 8px;
+  height: 31px;
+  padding: 0 11px;
+
+  border: 1px solid rgba(216, 208, 196, 0.95);
+  border-radius: 999px;
+
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #6e5a50;
+
+  font-family: 'Noto Sans KR', sans-serif;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 800;
+  letter-spacing: -0.2px;
+
   cursor: pointer;
+
+  transition:
+    background-color 0.16s ease,
+    color 0.16s ease,
+    border-color 0.16s ease;
 }
 
+.articlePage-refreshButton:hover,
 .articlePage-clearButton:hover {
-  background-color: #d9534f;
-  color: #fff;
+  border-color: rgba(112, 42, 36, 0.5);
+  background-color: #fff7f2;
+  color: #702a24;
 }
 
 .articlePage-clearButton:disabled {
-  opacity: 0.45;
+  background-color: #ece4dc;
+  border-color: #ece4dc;
+  color: #ffffff;
   cursor: not-allowed;
 }
 
-.articlePage-historyItemHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 6px;
+/* 상담 내역 카드 */
+.articlePage-historyItem {
+  margin-bottom: 13px;
+  padding: 14px;
+
+  border-radius: 18px;
+
+  background-color: rgba(255, 255, 255, 0.92);
+
+  box-shadow:
+    0 8px 22px rgba(68, 49, 39, 0.07),
+    inset 0 0 0 1px rgba(230, 222, 210, 0.72);
 }
 
+/* 상담 내역 카드 상단 */
+.articlePage-historyItemHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+
+  margin-bottom: 10px;
+}
+
+/* 상품 문의 / 일반 상담 배지 묶음 */
+.articlePage-historyBadges {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+
+  min-width: 0;
+}
+
+/* 공통 배지 */
+.articlePage-typeText,
+.articlePage-itemIdText,
 .articlePage-statusText {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  height: 26px;
+  padding: 0 10px;
+
+  border-radius: 999px;
+
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 800;
+  letter-spacing: -0.2px;
+
+  white-space: nowrap;
+}
+
+/* 상품 문의 배지 */
+.articlePage-productTypeText {
+  background-color: #fff1e8;
   color: #702a24;
+}
+
+/* 일반 상담 배지 */
+.articlePage-generalTypeText {
+  background-color: #f4f0eb;
+  color: #6e5a50;
+}
+
+/* 상품번호 배지 */
+/* JSX에서 상품번호를 숨기면 이 클래스는 사용되지 않아도 괜찮음 */
+.articlePage-itemIdText {
+  background-color: rgba(112, 42, 36, 0.08);
+  color: #7a332c;
+}
+
+/* 답변 상태 배지 */
+.articlePage-statusText {
+  flex-shrink: 0;
+
+  background-color: #ffffff;
+  color: #702a24;
+
+  box-shadow: inset 0 0 0 1px rgba(230, 222, 210, 0.9);
+}
+
+/* 사용자가 남긴 상담 내용 */
+.articlePage-userMessage {
+  margin-left: auto;
+  margin-bottom: 10px;
+  padding: 12px 15px;
+
+  max-width: 92%;
+
+  border-radius: 18px 18px 6px 18px;
+
+  background: linear-gradient(135deg, #7a332c, #5b231f);
+  color: #ffffff;
+
+  font-size: 14px;
+  line-height: 1.7;
+  letter-spacing: -0.2px;
+
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+
+  box-shadow: 0 8px 18px rgba(112, 42, 36, 0.18);
+}
+
+/* 입력창 */
+.articlePage-textarea {
+  flex: 0 0 auto;
+
+  width: calc(100% - 24px);
+  height: 92px;
+
+  margin: 0 12px 10px;
+  padding: 14px 15px;
+
+  border: 1px solid rgba(230, 222, 210, 0.95);
+  border-radius: 18px;
+
+  background-color: #ffffff;
+  color: #2b1d16;
+
+  resize: none;
+
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+
+  box-shadow: 0 6px 18px rgba(68, 49, 39, 0.05);
+
+  transition:
+    border-color 0.16s ease,
+    box-shadow 0.16s ease,
+    background-color 0.16s ease;
+}
+
+.articlePage-textarea::placeholder {
+  color: #a8968d;
+}
+
+.articlePage-textarea:focus {
+  outline: none;
+  border-color: rgba(112, 42, 36, 0.65);
+  background-color: #fffdfb;
+  box-shadow:
+    0 0 0 4px rgba(112, 42, 36, 0.08),
+    0 8px 20px rgba(68, 49, 39, 0.06);
+}
+
+/* 보내기 버튼 */
+.articlePage-submitButton {
+  flex: 0 0 auto;
+
+  width: calc(100% - 24px);
+  height: 48px;
+
+  margin: 0 12px 14px;
+
+  border: none;
+  border-radius: 16px;
+
+  background: linear-gradient(135deg, #7a332c, #4f1f1b);
+  color: #ffffff;
+
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: -0.2px;
+
+  cursor: pointer;
+
+  box-shadow: 0 10px 22px rgba(112, 42, 36, 0.24);
+
+  transition:
+    transform 0.16s ease,
+    box-shadow 0.16s ease,
+    opacity 0.16s ease;
+}
+
+.articlePage-submitButton:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 13px 26px rgba(112, 42, 36, 0.3);
+}
+
+.articlePage-submitButton:active {
+  transform: translateY(0);
+}
+
+/* ================================
+   모바일 대응
+================================ */
+@media (max-width: 480px) {
+  .articlePage-button {
+    right: 18px;
+    bottom: 18px;
+
+    min-width: 100px;
+    height: 46px;
+    padding: 0 18px;
+  }
+
+  .articlePage-box {
+    right: 12px;
+    bottom: 76px;
+
+    width: calc(100vw - 24px);
+    height: 560px;
+    max-height: calc(100vh - 98px);
+
+    border-radius: 22px;
+  }
+
+  .articlePage-header {
+    height: 60px;
+    padding: 0 16px 0 18px;
+  }
+
+  .articlePage-title {
+    font-size: 16px;
+  }
+
+  .articlePage-messageArea {
+    padding: 15px;
+  }
+
+  .articlePage-historyHeader {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .articlePage-historyActions {
+    width: 100%;
+  }
+
+  .articlePage-refreshButton,
+  .articlePage-clearButton {
+    flex: 1;
+  }
+
+  .articlePage-historyItemHeader {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .articlePage-statusText {
+    align-self: flex-end;
+  }
+
+  .articlePage-textarea {
+    height: 86px;
+  }
 }
