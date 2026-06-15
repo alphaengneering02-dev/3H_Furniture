@@ -206,40 +206,40 @@ const Mypage = () => {
 
     // 구매확정 버튼-->리뷰 쓰기로 넘어감.
     const handleConfirmPurchase = async (orderId, itemId) => {
-    if (!window.confirm("구매를 확정하시겠습니까?")) return;
-    try {
-        const params = new URLSearchParams();
-        // 안전하게 순수 숫자 ID 추출
-        const targetId = (typeof orderId === 'object') ? (orderId.orderId || orderId.id) : orderId;
-        params.append('orderId', targetId);
+        if (!window.confirm("구매를 확정하시겠습니까?")) return;
+        try {
+            const params = new URLSearchParams();
+            // 안전하게 순수 숫자 ID 추출
+            const targetId = (typeof orderId === 'object') ? (orderId.orderId || orderId.id) : orderId;
+            params.append('orderId', targetId);
 
-        // 반품 성공 대문자 'Member' + 마이페이지 성공 확장자 '.do' 최종 결합 저격!
-        const response = await axios.post("http://localhost:8080/Member/purchase/confirm", params, { withCredentials: true });
-        
-        // [object Object] 방지 처리 마감
-        const successMsg = typeof response.data === 'object' ? (response.data.message || "구매가 확정되었습니다.") : response.data;
-        success(successMsg);
-        
-        // 실시간 영문 PURCHASED 화면 상자 동기화 대전환
-        setOrders((prevOrders) => 
-            prevOrders.map((order) => {
-                const currentOrderId = order.orderId || order.id;
-                const currentItemId = order.itemId;
-                return (currentOrderId === targetId && currentItemId === itemId) 
-                    ? { ...order, orderState: "PURCHASED" } 
-                    : order;
-            })
-        );
-    } catch (err) {
-        console.error("구매 확정 오류:", err);
-        if (err.response && err.response.data) {
-            const errMsg = typeof err.response.data === 'object' ? err.response.data.message : err.response.data;
-            error(errMsg);
-            return;
+            // 반품 성공 대문자 'Member' + 마이페이지 성공 확장자 '.do' 최종 결합 저격!
+            const response = await axios.post("http://localhost:8080/Member/purchase/confirm", params, { withCredentials: true });
+
+            // [object Object] 방지 처리 마감
+            const successMsg = typeof response.data === 'object' ? (response.data.message || "구매가 확정되었습니다.") : response.data;
+            success(successMsg);
+
+            // 실시간 영문 PURCHASED 화면 상자 동기화 대전환
+            setOrders((prevOrders) =>
+                prevOrders.map((order) => {
+                    const currentOrderId = order.orderId || order.id;
+                    const currentItemId = order.itemId;
+                    return (currentOrderId === targetId && currentItemId === itemId)
+                        ? { ...order, orderState: "PURCHASED" }
+                        : order;
+                })
+            );
+        } catch (err) {
+            console.error("구매 확정 오류:", err);
+            if (err.response && err.response.data) {
+                const errMsg = typeof err.response.data === 'object' ? err.response.data.message : err.response.data;
+                error(errMsg);
+                return;
+            }
+            error("구매 확정 처리 중 오류가 발생했습니다.");
         }
-        error("구매 확정 처리 중 오류가 발생했습니다.");
-    }
-};
+    };
 
 
     // const handleConfirmPurchase = async (orderId) => {
@@ -597,7 +597,7 @@ const Mypage = () => {
 
 
 
-                                                            {/* [배송상태 이늄 컬러 완전 싱크 마감] */}
+                                                            {/* [배송상태 이늄 컬러 완전 싱크 마감]
                                                             <p style={{
                                                                 fontSize: '12px', margin: '0 0 2px 0', fontWeight: '700',
                                                                 color: order.deliveryStatus === 'WAITING' ? '#801a24' :
@@ -607,7 +607,24 @@ const Mypage = () => {
                                                             }}>
                                                                 <strong>배송:</strong> {order.deliveryStatus}
                                                             </p>
+                                                        </div> */}
+
+                                                            <p style={{
+                                                                fontSize: '12px', margin: '0 0 2px 0', fontWeight: '700',
+                                                                color: order.deliveryStatus === 'WAITING' ? '#801a24' :
+                                                                    order.deliveryStatus === 'SHIPPING' ? '#c45a00' :
+                                                                        order.deliveryStatus === 'COMPLETED' ? '#0b3161' :
+                                                                            (order.deliveryStatus === 'PICKUP' || order.deliveryStatus === 'REJECTED') ? '#a63d2d' : '#111111'
+                                                            }}>
+                                                                <strong>배송:</strong> {
+                                                                    order.deliveryStatus === 'WAITING' ? '배송 대기' :
+                                                                        order.deliveryStatus === 'SHIPPING' ? '배송중' :
+                                                                            order.deliveryStatus === 'COMPLETED' ? '배송 완료' :
+                                                                                order.deliveryStatus === 'PICKUP' ? '수거중' :
+                                                                                    order.deliveryStatus === 'REJECTED' ? '반품/거부' : order.deliveryStatus
+                                                                } </p>
                                                         </div>
+
 
                                                         <div style={{ marginTop: '10px' }}>
                                                             {/* [엔티티 스펙 싱크]: order.itemId가 단독으로 오거나 item 객체 내부에 숨어있어도 모두 추적 완수! */}
