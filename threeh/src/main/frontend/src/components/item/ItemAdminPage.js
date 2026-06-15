@@ -583,6 +583,16 @@ const ItemAdminPage = () => {
         return date.toLocaleString("ko-KR");
     };
 
+    //상담 문의에 연결된 상품 상세페이지로 이동
+    const handleGoArticleItemDetail = (itemId) => {
+        if(!itemId){
+            toast.warning("일반 상담 문의는 연결된 상품이 없습니다.");
+            return;
+        }
+
+        navigate(`/item/${itemId}`);
+    }
+
     //관리자 리뷰보기: 상품 상세 페이지의 리뷰 영역가기
     const handleGoItemReviewDetail = (itemId) => {
         navigate(`/item/${itemId}?adminReview=true`);
@@ -1543,7 +1553,23 @@ const ItemAdminPage = () => {
                                                 <span>
                                                     구분: {article.memberId ? "회원" : "비회원"}
                                                 </span>
+
                                                 <span>회원ID: {article.memberId || "-"}</span>
+
+                                                <span>
+                                                    상품ID:{" "}
+                                                    {article.itemId ? (
+                                                        <button
+                                                            type="button"
+                                                            className="itemAdmin-articleItemLink"
+                                                            onClick={() => handleGoArticleItemDetail(article.itemId)}
+                                                        >
+                                                            {article.itemId}
+                                                        </button>
+                                                    ) : (
+                                                        "-"
+                                                    )}
+                                                </span>
 
                                                 <span>작성일: {formatDate(article.createdAt)}</span>
                                             </div>

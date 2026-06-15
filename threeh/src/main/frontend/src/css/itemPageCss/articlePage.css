@@ -606,4 +606,45 @@
   .articlePage-textarea {
     height: 86px;
   }
+
+  .itemAdmin-articleItemLink {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 34px;
+    height: 24px;
+    padding: 0 9px;
+
+    border: 1px solid rgba(112, 42, 36, 0.28);
+    border-radius: 999px;
+
+    background-color: #fff7f2;
+    color: #702a24;
+
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 900;
+    line-height: 1;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.16s ease,
+        color 0.16s ease,
+        border-color 0.16s ease,
+        transform 0.16s ease;
+}
+
+.itemAdmin-articleItemLink:hover {
+    border-color: rgba(112, 42, 36, 0.75);
+    background-color: #702a24;
+    color: #ffffff;
+
+    transform: translateY(-1px);
+}
+
+.itemAdmin-articleItemLink:active {
+    transform: translateY(0);
+}
 }
